@@ -1,0 +1,1642 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第二十二 查询 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第二十二章-查询检索与搜索"><a class="header" href="#第二十二章-查询检索与搜索">第二十二章 查询、检索与搜索</a></h1>
+<h2 id="221-概述"><a class="header" href="#221-概述">22.1 概述</a></h2>
+<p>查询（Query）是计算机科学中最基础也最广泛的应用之一。从最简单的数组查找，到复杂的搜索引擎，查询技术贯穿了软件开发的方方面面。本章将系统介绍查询领域的核心算法与数据结构，并结合 Rust 代码实现进行讲解。</p>
+<p>查询在计算机中有十分广泛的应用：</p>
+<ul>
+<li><strong>字符串与文本查询</strong>：在字符串或文本文件中查询关键字、模式匹配、正则表达式</li>
+<li><strong>数据结构查询</strong>：在数组、树、哈希表等数据结构中查询指定数据</li>
+<li><strong>数据库查询</strong>：通过 SQL 等语言从数据库中检索数据</li>
+<li><strong>海量非结构化数据查询</strong>：在大量非结构化文件中进行全文检索</li>
+<li><strong>搜索引擎</strong>：在互联网海量网页中快速定位相关信息</li>
+</ul>
+<p>下面是本章涉及的主要查询算法及其时间复杂度概览：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>查询类别</th><th>算法/方法</th><th>时间复杂度</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td>字符串模式匹配</td><td>暴力匹配</td><td>$O(m \times n)$</td><td>简单场景、短字符串</td></tr>
+<tr><td>字符串模式匹配</td><td>KMP 算法</td><td>$O(m + n)$</td><td>需要多次匹配的文本</td></tr>
+<tr><td>字符串模式匹配</td><td>Boyer-Moore</td><td>$O(m + n)$ 平均</td><td>实际工程中常用</td></tr>
+<tr><td>字符串模式匹配</td><td>Rabin-Karp</td><td>$O(m + n)$ 平均</td><td>多模式匹配</td></tr>
+<tr><td>敏感词检测</td><td>DFA</td><td>$O(n)$</td><td>敏感词过滤</td></tr>
+<tr><td>正则表达式</td><td>NFA/DFA</td><td>取决于模式</td><td>文本验证与提取</td></tr>
+<tr><td>线性查找</td><td>顺序扫描</td><td>$O(n)$</td><td>无序数据</td></tr>
+<tr><td>二分查找</td><td>折半查找</td><td>$O(\log n)$</td><td>有序数组</td></tr>
+<tr><td>哈希查找</td><td>哈希表</td><td>$O(1)$ 平均</td><td>键值对查找</td></tr>
+<tr><td>树结构查找</td><td>BST</td><td>$O(\log n)$ 平均</td><td>动态有序集合</td></tr>
+<tr><td>树结构查找</td><td>B+ 树</td><td>$O(\log n)$</td><td>数据库索引</td></tr>
+<tr><td>全文检索</td><td>倒排索引</td><td>$O(1) \sim O(\log n)$</td><td>搜索引擎</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>其中 $m$ 为模式串长度，$n$ 为文本串长度。</p>
+</blockquote>
+<hr>
+<h2 id="222-字符串模式匹配"><a class="header" href="#222-字符串模式匹配">22.2 字符串模式匹配</a></h2>
+<p>模式匹配是字符串处理中的一种基本运算：给定一个模式串（pattern），要求在某个文本串中找出与该模式串相同的所有子串的位置。</p>
+<p><a href="https://baike.baidu.com/item/%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D/1258334">模式匹配</a></p>
+<p><a href="https://gitee.com/zhiluniao/leetcode-rust/blob/main/src/solution/string/str_str.rs">经典问题：strStr()</a></p>
+<h3 id="2221-暴力匹配法"><a class="header" href="#2221-暴力匹配法">22.2.1 暴力匹配法</a></h3>
+<p>暴力匹配法是最直观的字符串匹配方法：从文本串的每个位置出发，逐个字符与模式串进行比较。若匹配成功则记录位置，否则回溯到文本串的下一个位置重新开始。</p>
+<p><strong>算法思路：</strong></p>
+<ol>
+<li>设文本串为 $T[0 \ldots n-1]$，模式串为 $P[0 \ldots m-1]$</li>
+<li>从 $i = 0$ 开始，比较 $T[i \ldots i+m-1]$ 与 $P[0 \ldots m-1]$</li>
+<li>若全部匹配，则找到一个匹配位置 $i$</li>
+<li>否则 $i \leftarrow i + 1$，重复步骤 2</li>
+</ol>
+<p><strong>时间复杂度：</strong> 最坏情况下为 $O(m \times n)$，即文本串和模式串的长度乘积。当文本串中存在大量与模式串部分匹配的子串时，性能退化严重。</p>
+<pre class="playground"><code class="language-rust edition2024">/// 暴力字符串匹配
+/// 返回所有匹配位置的起始下标
+pub fn brute_force_search(text: &amp;str, pattern: &amp;str) -&gt; Vec&lt;usize&gt; {
+    let text_bytes = text.as_bytes();
+    let pattern_bytes = pattern.as_bytes();
+    let n = text_bytes.len();
+    let m = pattern_bytes.len();
+    let mut result = Vec::new();
+
+    if m == 0 || m &gt; n {
+        return result;
+    }
+
+    for i in 0..=(n - m) {
+        let mut matched = true;
+        for j in 0..m {
+            if text_bytes[i + j] != pattern_bytes[j] {
+                matched = false;
+                break;
+            }
+        }
+        if matched {
+            result.push(i);
+        }
+    }
+
+    result
+}
+
+fn main() {
+    let text = "ababcabcababc";
+    let pattern = "abc";
+    let positions = brute_force_search(text, pattern);
+    println!("匹配位置: {:?}", positions); // [2, 5, 10]
+}</code></pre>
+<h3 id="2222-kmp-算法"><a class="header" href="#2222-kmp-算法">22.2.2 KMP 算法</a></h3>
+<p>KMP（Knuth-Morris-Pratt）算法是字符串模式匹配的经典算法，由 D.E.Knuth、J.H.Morris 和 V.R.Pratt 三人于 1977 年联合发表。其核心思想是：<strong>利用已匹配的信息，避免不必要的回溯</strong>，从而将时间复杂度降低到 $O(m + n)$。</p>
+<h4 id="原理"><a class="header" href="#原理">原理</a></h4>
+<p>在暴力匹配中，当匹配失败时，文本串的指针 $i$ 会回溯到之前的位置。但 KMP 算法发现：在已经匹配的部分中，可能存在“前缀“与“后缀“相同的情况，利用这一信息可以让文本串指针 $i$ 不回溯，只移动模式串指针 $j$。</p>
+<p><strong>关键概念——next 数组（部分匹配表）：</strong></p>
+<p>next 数组 <code>next[i]</code> 表示模式串 $P[0 \ldots i]$ 中，<strong>最长相等真前缀和真后缀的长度</strong>。所谓“真前缀“和“真后缀“是指不包括整个串本身的前缀和后缀。</p>
+<p>例如，模式串 <code>"ABABC"</code> 的 next 数组计算过程：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>索引 $i$</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th></tr>
+</thead>
+<tbody>
+<tr><td>字符</td><td>A</td><td>B</td><td>A</td><td>B</td><td>C</td></tr>
+<tr><td>next[i]</td><td>0</td><td>0</td><td>1</td><td>2</td><td>0</td></tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li>$i=0$：<code>"A"</code> 无真前缀真后缀，next[0] = 0</li>
+<li>$i=1$：<code>"AB"</code> 真前缀 <code>"A"</code> ≠ 真后缀 <code>"B"</code>，next[1] = 0</li>
+<li>$i=2$：<code>"ABA"</code> 真前缀 <code>"A"</code> = 真后缀 <code>"A"</code>，next[2] = 1</li>
+<li>$i=3$：<code>"ABAB"</code> 真前缀 <code>"AB"</code> = 真后缀 <code>"AB"</code>，next[3] = 2</li>
+<li>$i=4$：<code>"ABABC"</code> 真前缀与真后缀无相等，next[4] = 0</li>
+</ul>
+<h4 id="next-数组的构建"><a class="header" href="#next-数组的构建">next 数组的构建</a></h4>
+<p>构建 next 数组的过程本身是一个递推过程：</p>
+<p>$$
+\text{next}[i] = \begin{cases} 0 &amp; \text{若 } P[i] \neq P[j] \text{ 且 } j = 0 \ \text{next}[j-1] &amp; \text{若 } P[i] \neq P[j] \text{ 且 } j &gt; 0 \ j + 1 &amp; \text{若 } P[i] = P[j] \end{cases}
+$$</p>
+<p>其中 $j = \text{next}[i-1]$。</p>
+<h4 id="匹配过程"><a class="header" href="#匹配过程">匹配过程</a></h4>
+<p>当 $T[i] \neq P[j]$ 时：</p>
+<ul>
+<li>令 $j = \text{next}[j-1]$（模式串指针回退到前缀匹配位置）</li>
+<li>文本串指针 $i$ 不动</li>
+</ul>
+<p>当 $T[i] = P[j]$ 时：</p>
+<ul>
+<li>$i \leftarrow i + 1$，$j \leftarrow j + 1$</li>
+</ul>
+<p>当 $j = m$ 时，说明找到了一个完整匹配。</p>
+<h4 id="时间复杂度"><a class="header" href="#时间复杂度">时间复杂度</a></h4>
+<ul>
+<li>构建 next 数组：$O(m)$</li>
+<li>匹配过程：$O(n)$</li>
+<li><strong>总计：$O(m + n)$</strong></li>
+</ul>
+<h4 id="rust-实现"><a class="header" href="#rust-实现">Rust 实现</a></h4>
+<pre class="playground"><code class="language-rust edition2024">/// https://github.com/TheAlgorithms/Rust/blob/master/src/string/knuth_morris_pratt.rs
+pub fn knuth_morris_pratt(st: String, pat: String) -&gt; Vec&lt;usize&gt; {
+    if st.is_empty() || pat.is_empty() {
+        return vec![];
+    }
+
+    let string = st.into_bytes();
+    let pattern = pat.into_bytes();
+
+    // build the partial match table
+    let mut partial = vec![0];
+    for i in 1..pattern.len() {
+        let mut j = partial[i - 1];
+        while j &gt; 0 &amp;&amp; pattern[j] != pattern[i] {
+            j = partial[j - 1];
+        }
+        partial.push(if pattern[j] == pattern[i] { j + 1 } else { j });
+    }
+
+    // and read 'string' to find 'pattern'
+    let mut ret = vec![];
+    let mut j = 0;
+
+    for (i, &amp;c) in string.iter().enumerate() {
+        while j &gt; 0 &amp;&amp; c != pattern[j] {
+            j = partial[j - 1];
+        }
+        if c == pattern[j] {
+            j += 1;
+        }
+        if j == pattern.len() {
+            ret.push(i + 1 - j);
+            j = partial[j - 1];
+        }
+    }
+
+    ret
+}
+
+fn main() {
+    let result = knuth_morris_pratt(String::from("ababcabc"), String::from("abc"));
+    println!("{:?}", result);
+}</code></pre>
+<h3 id="2223-boyer-moore-算法"><a class="header" href="#2223-boyer-moore-算法">22.2.3 Boyer-Moore 算法</a></h3>
+<p>Boyer-Moore（BM）算法是实际应用中最快的字符串匹配算法之一，由 Robert S. Boyer 和 J Strother Moore 于 1977 年提出。与 KMP 从左向右匹配不同，BM 算法<strong>从右向左</strong>进行匹配。</p>
+<p><strong>核心思想：</strong></p>
+<ol>
+<li>
+<p><strong>坏字符规则（Bad Character Rule）</strong>：当模式串与文本串某个字符不匹配时，根据该字符在模式串中的位置，决定模式串向右滑动的距离。如果该字符不在模式串中，则可以跳过整个模式串的长度。</p>
+</li>
+<li>
+<p><strong>好后缀规则（Good Suffix Rule）</strong>：当模式串的某个后缀已经匹配但某个字符不匹配时，利用已匹配的后缀信息来决定滑动距离。</p>
+</li>
+</ol>
+<p>BM 算法取坏字符规则和好后缀规则中滑动距离较大者，因此平均时间复杂度可达 $O(n/m)$，最坏情况为 $O(m + n)$。在实际应用中（如文本编辑器的查找功能），BM 算法通常比 KMP 更快。</p>
+<h3 id="2224-rabin-karp-算法"><a class="header" href="#2224-rabin-karp-算法">22.2.4 Rabin-Karp 算法</a></h3>
+<p>Rabin-Karp 算法由 Michael O. Rabin 和 Richard M. Karp 于 1987 年提出，采用**滚动哈希（Rolling Hash）**的思想进行字符串匹配。</p>
+<p><strong>核心思想：</strong></p>
+<ol>
+<li>计算模式串的哈希值 $h(P)$</li>
+<li>计算文本串中每个长度为 $m$ 的子串的哈希值</li>
+<li>若哈希值相等，再逐字符比较确认（避免哈希冲突）</li>
+</ol>
+<p><strong>滚动哈希的优势：</strong> 当窗口从位置 $i$ 滑动到位置 $i+1$ 时，不需要重新计算整个子串的哈希值，而是通过减去最左边字符的贡献、加上新字符的贡献，在 $O(1)$ 时间内完成更新：</p>
+<p>$$
+h(T[i+1 \ldots i+m]) = (h(T[i \ldots i+m-1]) - T[i] \times d^{m-1}) \times d + T[i+m]
+$$</p>
+<p>其中 $d$ 为字符集大小（基数）。</p>
+<p>Rabin-Karp 算法的平均时间复杂度为 $O(m + n)$，特别适合<strong>多模式匹配</strong>的场景——只需对文本串遍历一次，与多个模式串的哈希值进行比较即可。</p>
+<h3 id="2225-各算法对比"><a class="header" href="#2225-各算法对比">22.2.5 各算法对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>时间复杂度（最坏）</th><th>时间复杂度（平均）</th><th>空间复杂度</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td>暴力匹配</td><td>$O(m \times n)$</td><td>$O(m + n)$</td><td>$O(1)$</td><td>实现简单，适合短串</td></tr>
+<tr><td>KMP</td><td>$O(m + n)$</td><td>$O(m + n)$</td><td>$O(m)$</td><td>不回溯，适合流式处理</td></tr>
+<tr><td>Boyer-Moore</td><td>$O(m \times n)$</td><td>$O(n/m)$</td><td>$O(\sigma)$</td><td>实际最快，从右向左</td></tr>
+<tr><td>Rabin-Karp</td><td>$O(m \times n)$</td><td>$O(m + n)$</td><td>$O(1)$</td><td>适合多模式匹配</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>$\sigma$ 为字符集大小。</p>
+</blockquote>
+<hr>
+<h2 id="223-dfa-敏感词检测"><a class="header" href="#223-dfa-敏感词检测">22.3 DFA 敏感词检测</a></h2>
+<h3 id="2231-dfa-原理"><a class="header" href="#2231-dfa-原理">22.3.1 DFA 原理</a></h3>
+<p>DFA（Deterministic Finite Automaton，确定有限状态自动机）是一种计算模型，它具有以下特征：</p>
+<ul>
+<li><strong>有限个状态</strong>：自动机在任意时刻处于某个确定的状态</li>
+<li><strong>确定性的转移</strong>：对于每个状态和输入字符，最多有一个转移目标</li>
+<li><strong>初始状态和接受状态</strong>：从初始状态出发，根据输入字符序列进行状态转移，若最终到达接受状态，则表示匹配成功</li>
+</ul>
+<p>DFA 可以用一个五元组 $M = (Q, \Sigma, \delta, q_0, F)$ 来形式化描述：</p>
+<ul>
+<li>$Q$：有限状态集合</li>
+<li>$\Sigma$：输入字母表（字符集）</li>
+<li>$\delta$：状态转移函数 $Q \times \Sigma \to Q$</li>
+<li>$q_0$：初始状态</li>
+<li>$F$：接受状态集合（$F \subseteq Q$）</li>
+</ul>
+<h3 id="2232-trie-树结构"><a class="header" href="#2232-trie-树结构">22.3.2 Trie 树结构</a></h3>
+<p>在敏感词检测中，DFA 的状态转移图实际上是一棵 <strong>Trie 树</strong>（也称前缀树或字典树）。Trie 树的核心思想是：</p>
+<ul>
+<li>每个节点代表一个字符</li>
+<li>从根节点到某个节点的路径上的字符连接起来，构成一个前缀</li>
+<li>标记为结束的节点表示一个完整的敏感词</li>
+</ul>
+<p>例如，敏感词集合 <code>{"信用卡套现", "信用卡代付", "信用卡代还"}</code> 构成的 Trie 树结构如下：</p>
+<pre><code>信
+ └── 用
+      └── 卡
+           ├── 套
+           │    └── 现 [END]
+           └── 代
+                ├── 付 [END]
+                └── 还 [END]
+</code></pre>
+<h3 id="2233-最小匹配-vs-最大匹配"><a class="header" href="#2233-最小匹配-vs-最大匹配">22.3.3 最小匹配 vs 最大匹配</a></h3>
+<p>在敏感词检测中，有两种匹配策略：</p>
+<ul>
+<li><strong>最小匹配（MinMatchType）</strong>：一旦发现当前路径构成一个完整敏感词，立即停止并返回。适合对误判敏感的场景。</li>
+<li><strong>最大匹配（MaxMatchType）</strong>：继续沿 Trie 树向下查找，直到无法继续为止，返回最长的敏感词。适合需要检测所有嵌套敏感词的场景。</li>
+</ul>
+<h3 id="2234-时间复杂度分析"><a class="header" href="#2234-时间复杂度分析">22.3.4 时间复杂度分析</a></h3>
+<p>DFA 敏感词检测的时间复杂度为 $O(n)$，其中 $n$ 为待检测文本的长度。这是因为：</p>
+<ul>
+<li>每个字符最多被访问一次（不回溯）</li>
+<li>状态转移的时间为 $O(1)$（HashMap 查找）</li>
+<li>无论敏感词库中有多少词，检测时间仅与文本长度线性相关</li>
+</ul>
+<p>这使得 DFA 算法非常适合大规模敏感词库的实时检测。</p>
+<h3 id="2235-rust-完整实现"><a class="header" href="#2235-rust-完整实现">22.3.5 Rust 完整实现</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use lazy_static::lazy_static;
+use std::collections::BTreeSet;
+use std::collections::HashMap;
+use std::fs::File;
+use std::io::prelude::*;
+use std::io::BufReader;
+
+use std::str::Chars;
+
+/// 敏感词检测DFA算法（Rust实现，参考Java版实现 https://www.cnblogs.com/shihaiming/p/7048379.html）
+/// 由于语言方面的限制，具体实现与Java有一定的差异。
+///
+lazy_static! {
+    static ref SENSITIVE_WORD_MAP: HashMap&lt;char, SensitiveWordMap&gt; = {
+        let set = read_sensitive_word_file();
+        build_sensitive_word_map(set)
+    };
+}
+
+pub enum MatchType {
+    MinMatchType, //最小匹配规则
+    MaxMatchType, //最大匹配规则
+}
+
+#[derive(Debug)]
+struct SensitiveWordMap {
+    word: char,
+    is_end: char,
+    word_map: Option&lt;HashMap&lt;char, Box&lt;SensitiveWordMap&gt;&gt;&gt;,
+}
+
+/// 替换敏感字字符
+/// # Examples
+/// ```
+/// let result = rust_by_example::dfa::replace_sensitive_word("信用卡之家", &amp;MatchType::MinMatchType, '*')
+/// assert_eq!(result,"**卡之家");
+/// ```
+pub fn replace_sensitive_word(txt: &amp;str, match_type: &amp;MatchType, replace_char: char) -&gt; String {
+    let set: BTreeSet&lt;String&gt; = find_sensitive_word(txt, match_type);
+    let mut replace_str = String::from(txt);
+    for word in set {
+        let len = word.chars().count();
+        let replace_chars: String = vec![replace_char; len].iter().collect();
+        replace_str = replace_str.replace(word.as_str(), &amp;replace_chars);
+    }
+
+    replace_str
+}
+/// 判断文字是否包含敏感字符
+///
+pub fn is_contains_sensitive_word(txt: &amp;str, match_type: &amp;MatchType) -&gt; bool {
+    let mut is_contains = false;
+    let len = txt.chars().count();
+    let txt_vec: Vec&lt;char&gt; = txt.chars().collect();
+    let mut i = 0;
+    while i &lt; len {
+        let length = check_sensitive_word(txt, i, match_type);
+        if length &gt; 0 {
+            is_contains = true;
+            break;
+        }
+        i += 1;
+    }
+    is_contains
+}
+
+/// 获取文字中的敏感词
+///
+pub fn find_sensitive_word(txt: &amp;str, match_type: &amp;MatchType) -&gt; BTreeSet&lt;String&gt; {
+    let mut sensitive_word_set = BTreeSet::&lt;String&gt;::new();
+    let len = txt.chars().count();
+    let txt_vec: Vec&lt;char&gt; = txt.chars().collect();
+    let mut i = 0;
+    while i &lt; len {
+        let length = check_sensitive_word(txt, i, match_type);
+        if length &gt; 0 {
+            //存在,加入list中
+            sensitive_word_set.insert(txt_vec[i..i + length].iter().collect());
+            i += length - 1; //减1的原因，是因为循环会自增
+        }
+        i += 1;
+    }
+
+    sensitive_word_set
+}
+
+/// 查文字中是否包含检敏感字符,如果存在，则返回敏感词字符的长度，不存在返回0
+///
+fn check_sensitive_word(txt: &amp;str, begin_index: usize, match_type: &amp;MatchType) -&gt; usize {
+    let mut match_flag = 0;
+    let mut last_match_length = 0;
+    let mut word: char;
+    let txt_vec: Vec&lt;char&gt; = txt.chars().collect();
+    let len = txt.len();
+    if let Some(word) = &amp;txt_vec.get(begin_index) {
+        if let Some(swm) = SENSITIVE_WORD_MAP.get(word) {
+            match_flag += 1;
+            if (*swm).is_end == '1' {
+                last_match_length = match_flag;
+
+                match match_type {
+                    MatchType::MinMatchType =&gt; {
+                        return last_match_length;
+                    }
+                    MatchType::MaxMatchType =&gt; (),
+                }
+            }
+
+            //递归查找
+            let mut j = begin_index + 1;
+            recursive_find_map(
+                swm,
+                &amp;txt_vec,
+                &amp;mut j,
+                &amp;mut match_flag,
+                &amp;mut last_match_length,
+                match_type,
+            );
+        }
+    }
+    last_match_length
+}
+/// 递归查找map
+///
+fn recursive_find_map(
+    swm: &amp;SensitiveWordMap,
+    txt_vec: &amp;[char],
+    i: &amp;mut usize,
+    match_flag: &amp;mut usize,
+    last_match_length: &amp;mut usize,
+    match_type: &amp;MatchType,
+) {
+    if let Some(word) = txt_vec.get(*i) {
+        if let Some(wm) = &amp;swm.word_map {
+            if let Some(next_swm) = wm.get(word) {
+                *match_flag += 1;
+
+                if swm.is_end == '1' {
+                    *last_match_length = *match_flag;
+                    match match_type {
+                        MatchType::MinMatchType =&gt; {
+                            return;
+                        }
+                        MatchType::MaxMatchType =&gt; (),
+                    }
+                }
+
+                if next_swm.is_end == '1' {
+                    *last_match_length = *match_flag;
+                    match match_type {
+                        MatchType::MinMatchType =&gt; {
+                            return;
+                        }
+                        MatchType::MaxMatchType =&gt; (),
+                    }
+                }
+
+                if let Some(nwm) = &amp;next_swm.word_map {
+                    if nwm.is_empty() {
+                        *last_match_length = *match_flag;
+                        match match_type {
+                            MatchType::MinMatchType =&gt; {
+                                return;
+                            }
+                            MatchType::MaxMatchType =&gt; (),
+                        }
+                    }
+                }
+
+                *i += 1;
+                recursive_find_map(
+                    next_swm,
+                    txt_vec,
+                    i,
+                    match_flag,
+                    last_match_length,
+                    match_type,
+                );
+            }
+        }
+    }
+}
+/// 递归地修改map
+fn recursive_build_map(map: &amp;mut SensitiveWordMap, chars: &amp;mut Chars, count: &amp;mut usize) {
+    if let Some(ch) = chars.next() {
+        *count -= 1;
+        if let Some(now_map) = map.word_map.as_mut() {
+            // let contains_key = now_map.contains_key(&amp;ch);
+
+            if let std::collections::hash_map::Entry::Vacant(e) = now_map.entry(ch) {
+                let mut is_end = if *count == 0 { '1' } else { '0' };
+                let mut swm = SensitiveWordMap {
+                    word: ch,
+                    is_end,
+                    word_map: Some(HashMap::&lt;char, Box&lt;SensitiveWordMap&gt;&gt;::new()),
+                };
+                now_map.insert(ch, Box::new(swm));
+                if let Some(m) = now_map.get_mut(&amp;ch) {
+                    recursive_build_map(&amp;mut *m, &amp;mut *chars, count);
+                }
+            } else if let Some(m) = now_map.get_mut(&amp;ch) {
+                recursive_build_map(&amp;mut *m, &amp;mut *chars, count);
+            }
+        }
+    }
+}
+
+/// 读取敏感词库，将敏感词放入HashMap中，构建一个DFA算法模型
+///  {
+///   '信': SensitiveWordMap {
+///       word: '信',
+///       is_end: '0',
+///       word_map: Some({
+///           '用': SensitiveWordMap {
+///               word: '用',
+///               is_end: '0',
+///               word_map: Some({
+///                   '卡': SensitiveWordMap {
+///                       word: '卡',
+///                       is_end: '0',
+///                       word_map: Some({
+///                           '套': SensitiveWordMap {
+///                               word: '套',
+///                               is_end: '0',
+///                               word_map: Some({
+///                                   '现': SensitiveWordMap {
+///                                       word: '现',
+///                                       is_end: '1',
+///                                       word_map: Som e({})
+///                                   }
+///                               })
+///                           },
+///                           '代': SensitiveWordMap {
+///                               word: '代',
+///                               is_end: '0',
+///                               word_map: Some({
+///                                   '付': SensitiveWordMap {
+///                                       word: '付',
+///                                       is_end: '1',
+///                                       word_map: Some({})
+///                                   },
+///                                   '还': SensitiveWordMap {
+///                                       word: '还',
+///                                       is_end: '1',
+///                                       word_map: Some({})
+///                                   }
+///                               })
+///                           }
+///                       })
+///                   }
+///               })
+///           }
+///       })
+///   }
+///
+fn build_sensitive_word_map(set: BTreeSet&lt;String&gt;) -&gt; HashMap&lt;char, SensitiveWordMap&gt; {
+    let mut sensitive_word_map = HashMap::&lt;char, SensitiveWordMap&gt;::new();
+
+    let mut iterator = set.iter();
+    for key in iterator {
+        let len = key.chars().count();
+        let mut count = len;
+        let mut key_chars = key.chars();
+        //读取每行的首个字符
+        if let Some(first_char) = key_chars.next() {
+            count -= 1;
+            if let Some(word_map) = sensitive_word_map.get_mut(&amp;first_char) {
+                //读取下一个字符
+                recursive_build_map(&amp;mut *word_map, &amp;mut key_chars, &amp;mut count);
+            } else {
+                let mut is_end = if len == 1 { '1' } else { '0' };
+
+                let mut now_map = SensitiveWordMap {
+                    word: first_char,
+                    is_end,
+                    word_map: Some(HashMap::&lt;char, Box&lt;SensitiveWordMap&gt;&gt;::new()),
+                };
+                sensitive_word_map.insert(first_char, now_map);
+
+                if let Some(now_map) = sensitive_word_map.get_mut(&amp;first_char) {
+                    recursive_build_map(&amp;mut *now_map, &amp;mut key_chars, &amp;mut count);
+                }
+            }
+        }
+    }
+
+    sensitive_word_map
+}
+
+/// 读取敏感词库中的内容，将内容添加到set集合中
+fn read_sensitive_word_file() -&gt; BTreeSet&lt;String&gt; {
+    let mut set = BTreeSet::&lt;String&gt;::new();
+    match File::open("sensitive-words.txt") {
+        Ok(f) =&gt; {
+            let reader = BufReader::new(f);
+            let lines = reader.lines();
+            for line in lines.map(|x| x.unwrap()) {
+                println!("{}", line);
+
+                set.insert(line);
+            }
+        }
+        Err(e) =&gt; panic!("can't open this file :{}", e),
+    }
+
+    set
+}
+
+pub fn read_file() {
+    let str_vec = vec![
+        "花呗信用卡代还OK套现",
+        "套花呗分期代付",
+        "马上套现信用卡",
+        "期货套利",
+        "空手套白狼",
+        "守信用卡脖子",
+        "坚定信心,同舟共济,科学防治,精准施策",
+        "D+1还是T+1秒到结算免结算费",
+    ];
+
+    println!("find_sensitive_word MaxMatchType......");
+    for str in &amp;str_vec {
+        let set = find_sensitive_word(str, &amp;MatchType::MaxMatchType);
+        println!("{} --&gt; {:?}", str, set);
+    }
+
+    println!("find_sensitive_word MinMatchType......");
+    for str in &amp;str_vec {
+        let set = find_sensitive_word(str, &amp;MatchType::MinMatchType);
+        println!("{} --&gt; {:?}", str, set);
+    }
+
+    println!("is_contains_sensitive_word......");
+    for str in &amp;str_vec {
+        let is_contains = is_contains_sensitive_word(str, &amp;MatchType::MinMatchType);
+        println!("{} is contains sensitive words : {}", str, is_contains);
+    }
+
+    println!("replace_sensitive_word......");
+    for str in &amp;str_vec {
+        let replace_str = replace_sensitive_word(str, &amp;MatchType::MinMatchType, '*');
+
+        println!("{} --&gt; {}", str, replace_str);
+    }
+
+    let result = replace_sensitive_word("信用卡之家", &amp;MatchType::MinMatchType, '*');
+    assert_eq!(result, "**卡之家");
+}
+
+#[test]
+fn sub_str() {
+    //实现类似Java String.substring()的功能，注意并不是适用于所有的字符。
+    let str = String::from("hello world");
+    let char_vec: Vec&lt;char&gt; = str.chars().collect();
+    let sub_str: String = char_vec[0..5].iter().collect();
+    println!("sub_str:{}", sub_str);
+
+    //不能使用上述代码进行截取子字符串的字符
+    for c in "नमस्ते".chars() {
+        println!("{}", c);
+    }
+}
+
+#[test]
+fn set_iter() {
+    let mut b_tree_set = BTreeSet::&lt;String&gt;::new();
+    b_tree_set.insert(String::from("A"));
+    b_tree_set.insert(String::from("B"));
+    b_tree_set.insert(String::from("C"));
+    b_tree_set.insert(String::from("D"));
+    b_tree_set.insert(String::from("E"));
+
+    for val in &amp;b_tree_set {
+        println!("{}", val);
+    }
+
+    let rm_key = String::from("C");
+    b_tree_set.remove(&amp;rm_key);
+
+    println!("b_tree_set has {} items", b_tree_set.len());
+
+    println!("using VSCode coding rust program is greate");
+}
+
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="224-正则表达式"><a class="header" href="#224-正则表达式">22.4 正则表达式</a></h2>
+<p>正则表达式（Regular Expression，简称 regex）是一种用于描述字符串模式的强大工具。它使用特定的语法规则来定义文本匹配的模式，广泛应用于文本搜索、验证、替换和提取等场景。</p>
+<h3 id="2241-正则表达式基础语法"><a class="header" href="#2241-正则表达式基础语法">22.4.1 正则表达式基础语法</a></h3>
+<p>正则表达式由普通字符和特殊字符（元字符）组成。以下是常用的元字符：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>符号</th><th>含义</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><code>.</code></td><td>匹配任意单个字符（除换行符）</td><td><code>a.c</code> 匹配 <code>abc</code>、<code>a1c</code></td></tr>
+<tr><td><code>*</code></td><td>前一个字符出现 0 次或多次</td><td><code>ab*c</code> 匹配 <code>ac</code>、<code>abbc</code></td></tr>
+<tr><td><code>+</code></td><td>前一个字符出现 1 次或多次</td><td><code>ab+c</code> 匹配 <code>abc</code>、<code>abbc</code></td></tr>
+<tr><td><code>?</code></td><td>前一个字符出现 0 次或 1 次</td><td><code>ab?c</code> 匹配 <code>ac</code>、<code>abc</code></td></tr>
+<tr><td><code>^</code></td><td>匹配行首</td><td><code>^Hello</code> 匹配行首的 Hello</td></tr>
+<tr><td><code>$</code></td><td>匹配行尾</td><td><code>world$</code> 匹配行尾的 world</td></tr>
+<tr><td><code>\d</code></td><td>匹配数字 <code>[0-9]</code></td><td><code>\d+</code> 匹配 <code>123</code></td></tr>
+<tr><td><code>\w</code></td><td>匹配字母、数字、下划线</td><td><code>\w+</code> 匹配 <code>hello_1</code></td></tr>
+<tr><td><code>\s</code></td><td>匹配空白字符</td><td><code>\s+</code> 匹配空格、制表符</td></tr>
+<tr><td><code>[abc]</code></td><td>字符集合，匹配其中任一字符</td><td><code>[aeiou]</code> 匹配元音</td></tr>
+<tr><td><code>{n,m}</code></td><td>前一个字符出现 n 到 m 次</td><td><code>a{2,4}</code> 匹配 <code>aa</code>、<code>aaa</code></td></tr>
+<tr><td><code>(...)</code></td><td>分组捕获</td><td><code>(ab)+</code> 匹配 <code>abab</code></td></tr>
+<tr><td><code>|</code></td><td>或（alternation）</td><td><code>cat|dog</code> 匹配 cat 或 dog</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="2242-rust-regex-库"><a class="header" href="#2242-rust-regex-库">22.4.2 Rust regex 库</a></h3>
+<p>Rust 的正则表达式生态以 <code>regex</code> crate 为核心，它基于正则表达式的 NFA（非确定有限状态自动机）引擎实现，提供了高性能的模式匹配能力。</p>
+<p>在 <code>Cargo.toml</code> 中添加依赖：</p>
+<pre><code class="language-toml">[dependencies]
+regex = "1"
+lazy_static = "1"
+</code></pre>
+<p>正则表达式的四大核心功能：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>功能</th><th>方法</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>查询（Search）</td><td><code>is_match()</code> / <code>find()</code></td><td>检查是否存在匹配 / 查找匹配位置</td></tr>
+<tr><td>验证（Validate）</td><td><code>is_match()</code> + <code>^</code> <code>$</code></td><td>验证整个字符串是否符合模式</td></tr>
+<tr><td>替换（Replace）</td><td><code>replace()</code> / <code>replace_all()</code></td><td>替换匹配的文本</td></tr>
+<tr><td>提取（Extract）</td><td><code>captures()</code> / <code>captures_iter()</code></td><td>提取分组匹配的内容</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="2243-驼峰命名与蛇形命名转换"><a class="header" href="#2243-驼峰命名与蛇形命名转换">22.4.3 驼峰命名与蛇形命名转换</a></h3>
+<p>在实际开发中，不同编程语言有不同的命名规范。Rust 使用蛇形命名（snake_case），而 Java/C# 使用驼峰命名（camelCase），数据库字段也常用蛇形命名。下面通过正则表达式实现命名风格的转换。</p>
+<pre><code class="language-shell"> echo "camelToSnakeName" | sed 's/\([a-z0-9]\)\([A-Z]\)/\1_\2/g' | tr '[:lower:]' '[:upper:]'
+</code></pre>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml dependencies:
+// lazy_static = "1"
+// regex = "1"
+
+use lazy_static::lazy_static;
+use regex::Captures;
+use regex::Regex;
+
+lazy_static! {
+    // 驼峰命名转蛇形：第一遍处理 "任意字符 + 大写字母开头单词" 边界
+    // 如 "FalconHeavy" -&gt; "Falcon_Heavy"
+    static ref CAMEL_TO_SNAKE1: Regex = Regex::new(r"(.)([A-Z][a-z]+)").unwrap();
+    // 第二遍处理 "小写/数字 + 大写" 边界，如 "HeavyRocket" -&gt; "Heavy_Rocket"
+    static ref CAMEL_TO_SNAKE2: Regex = Regex::new(r"([a-z0-9])([A-Z])").unwrap();
+}
+
+/// 驼峰命名转为蛇形命名（全大写）
+/// 例："FalconHeavyRocket" -&gt; "FALCON_HEAVY_ROCKET"
+pub fn camel_to_snake(origin: &amp;str) -&gt; String {
+    let result0 = CAMEL_TO_SNAKE1.replace_all(origin, |caps: &amp;Captures| {
+        format!("{}_{}", &amp;caps[1], &amp;caps[2])
+    });
+    let result = CAMEL_TO_SNAKE2.replace_all(&amp;result0, |caps: &amp;Captures| {
+        format!("{}_{}", &amp;caps[1], &amp;caps[2])
+    });
+    result.to_uppercase()
+}
+
+/// 蛇形命名转为帕斯卡命名法（每个单词首字母大写，无分隔符）
+/// 例："falcon_heavy_rocket" -&gt; "FalconHeavyRocket"
+pub fn snake_to_pascal(origin: &amp;str) -&gt; String {
+    origin
+        .split('_')
+        .map(|word| {
+            let mut chars = word.chars();
+            match chars.next() {
+                Some(ch) =&gt; {
+                    let mut s = ch.to_uppercase().collect::&lt;String&gt;();
+                    s.push_str(chars.as_str());
+                    s
+                }
+                None =&gt; String::new(),
+            }
+        })
+        .collect::&lt;String&gt;()
+}
+
+/// 蛇形命名转驼峰命名（帕斯卡命名法首字母小写）
+/// 例："falcon_heavy_rocket" -&gt; "falconHeavyRocket"
+pub fn snake_to_camel(s: &amp;str) -&gt; String {
+    let result = snake_to_pascal(s);
+    let mut chars = result.chars();
+    match chars.next() {
+        Some(ch) =&gt; {
+            let mut s = ch.to_lowercase().collect::&lt;String&gt;();
+            s.push_str(chars.as_str());
+            s
+        }
+        None =&gt; String::new(),
+    }
+}
+
+fn main() {
+    // 测试驼峰 -&gt; 蛇形
+    let fields_vec = vec!["FalconHeavyRocket", "HTTPResponseCodeXYZ"];
+    for &amp;field in &amp;fields_vec {
+        let result = camel_to_snake(field);
+        println!("camel_to_snake({}) = {}", field, result);
+    }
+
+    println!("");
+
+    // 测试蛇形 -&gt; 帕斯卡
+    let columns_vec = vec!["falcon_heavy_rocket", "http_response_code_xyz"];
+    for &amp;col in &amp;columns_vec {
+        let result = snake_to_pascal(col);
+        println!("snake_to_pascal({}) = {}", col, result);
+    }
+
+    println!("");
+
+    // 测试蛇形 -&gt; 驼峰
+    for &amp;col in &amp;columns_vec {
+        let result = snake_to_camel(col);
+        println!("snake_to_camel({}) = {}", col, result);
+    }
+}</code></pre>
+<p><a href="https://gitee.com/zhiluniao/rust-by-example/blob/master/src/validators.rs">更多正则表达式示例代码</a></p>
+<hr>
+<h2 id="225-经典查询算法"><a class="header" href="#225-经典查询算法">22.5 经典查询算法</a></h2>
+<p>查询算法是计算机科学中最基本的算法类别之一。根据数据是否有序、数据结构的不同，查询算法的选择和效率有很大差异。本节介绍几种经典的查找算法。</p>
+<h3 id="2251-线性查找"><a class="header" href="#2251-线性查找">22.5.1 线性查找</a></h3>
+<p>线性查找（Linear Search）是最简单的查找算法：从数据结构的第一个元素开始，逐个与目标值进行比较，直到找到目标或遍历完所有元素。</p>
+<p><strong>时间复杂度：</strong> $O(n)$，其中 $n$ 为数据规模。</p>
+<p><strong>适用场景：</strong> 无序数据、小规模数据、链表等不支持随机访问的数据结构。</p>
+<pre class="playground"><code class="language-rust edition2024">/// 线性查找：返回目标值的索引，未找到返回 None
+pub fn linear_search&lt;T: PartialEq&gt;(arr: &amp;[T], target: &amp;T) -&gt; Option&lt;usize&gt; {
+    for (i, item) in arr.iter().enumerate() {
+        if item == target {
+            return Some(i);
+        }
+    }
+    None
+}
+
+fn main() {
+    let arr = vec![5, 3, 8, 1, 9, 2];
+    if let Some(idx) = linear_search(&amp;arr, &amp;8) {
+        println!("找到 8，索引为 {}", idx);
+    }
+}</code></pre>
+<h3 id="2252-二分查找"><a class="header" href="#2252-二分查找">22.5.2 二分查找</a></h3>
+<p>二分查找（Binary Search）是一种高效的查找算法，<strong>前提是数据必须是有序的</strong>。其核心思想是：每次将查找区间缩小一半，通过比较中间元素与目标值的大小关系来决定查找方向。</p>
+<p><strong>算法步骤：</strong></p>
+<ol>
+<li>设有序数组为 $A[0 \ldots n-1]$，目标值为 $T$</li>
+<li>初始化左边界 $left = 0$，右边界 $right = n - 1$</li>
+<li>计算中间位置 $pivot = left + \lfloor(right - left) / 2\rfloor$</li>
+<li>若 $A[pivot] = T$，找到目标，返回 $pivot$</li>
+<li>若 $T &lt; A[pivot]$，则 $right = pivot - 1$（目标在左半部分）</li>
+<li>若 $T &gt; A[pivot]$，则 $left = pivot + 1$（目标在右半部分）</li>
+<li>重复步骤 3-6，直到 $left &gt; right$</li>
+</ol>
+<p><strong>时间复杂度分析：</strong></p>
+<p>每次查找将区间缩小一半，因此最多需要比较的次数为：</p>
+<p>$$
+k = \lfloor \log_2 n \rfloor + 1
+$$</p>
+<p>即时间复杂度为 $O(\log n)$。对于 $n = 10^6$ 的有序数组，最多只需约 20 次比较即可找到目标。</p>
+<pre class="playground"><code class="language-rust edition2024">/// 力扣（704. 二分查找) https://leetcode-cn.com/problems/binary-search/
+pub fn search(nums: Vec&lt;i32&gt;, target: i32) -&gt; i32 {
+    // target在[left,right]中查找
+    let len = nums.len();
+    let mut left = 0;
+    let mut right = len - 1;
+    let mut pivot;
+    while left &lt;= right {
+        pivot = left + (right - left) / 2;
+        // 注意usize的范围和nums的下标范围
+        if nums[pivot] == target {
+            return pivot as i32;
+        }
+        if target &lt; nums[pivot] {
+            if pivot == 0 {
+                break;
+            }
+            right = pivot - 1;
+        } else {
+            if pivot == len - 1 {
+                break;
+            }
+            left = pivot + 1;
+        }
+    }
+    -1
+}
+
+fn main() {
+    let nums = vec![-1, 0, 3, 5, 9, 12];
+    let target = 9;
+    let result = search(nums, target);
+    println!("result: {}", result);
+}</code></pre>
+<h3 id="2253-哈希查找"><a class="header" href="#2253-哈希查找">22.5.3 哈希查找</a></h3>
+<p>哈希查找通过哈希函数将键映射到数组中的位置，从而实现 $O(1)$ 平均时间复杂度的查找。</p>
+<p><strong>核心思想：</strong></p>
+<ol>
+<li>使用哈希函数 $h(key)$ 计算键的存储位置</li>
+<li>直接通过索引访问，无需逐个比较</li>
+<li>处理哈希冲突（链地址法、开放寻址法等）</li>
+</ol>
+<p>Rust 标准库中的 <code>HashMap</code> 和 <code>HashSet</code> 就是基于哈希查找实现的。</p>
+<pre class="playground"><code class="language-rust edition2024">use std::collections::HashMap;
+
+fn main() {
+    let mut map = HashMap::new();
+    map.insert("apple", 3);
+    map.insert("banana", 5);
+    map.insert("cherry", 2);
+
+    // 哈希查找：O(1) 平均时间复杂度
+    if let Some(&amp;count) = map.get("banana") {
+        println!("banana 的数量: {}", count);
+    }
+}</code></pre>
+<h3 id="2254-插值查找"><a class="header" href="#2254-插值查找">22.5.4 插值查找</a></h3>
+<p>插值查找（Interpolation Search）是二分查找的改进版本，适用于<strong>均匀分布的有序数据</strong>。与二分查找总是取中间位置不同，插值查找根据目标值在区间中的相对位置来估算其可能的位置：</p>
+<p>$$
+pivot = left + \frac{(target - A[left]) \times (right - left)}{A[right] - A[left]}
+$$</p>
+<p><strong>时间复杂度：</strong> 平均 $O(\log \log n)$（均匀分布时），最坏 $O(n)$。</p>
+<p>插值查找在电话簿查号、字典查词等场景中非常高效，因为这些数据通常是近似均匀分布的。</p>
+<h3 id="2255-各查找算法对比"><a class="header" href="#2255-各查找算法对比">22.5.5 各查找算法对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>时间复杂度</th><th>空间复杂度</th><th>是否需要有序</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td>线性查找</td><td>$O(n)$</td><td>$O(1)$</td><td>否</td><td>无序数据、小数据量</td></tr>
+<tr><td>二分查找</td><td>$O(\log n)$</td><td>$O(1)$</td><td>是</td><td>静态有序数据</td></tr>
+<tr><td>哈希查找</td><td>$O(1)$ 平均</td><td>$O(n)$</td><td>否</td><td>键值对查找</td></tr>
+<tr><td>插值查找</td><td>$O(\log \log n)$ 平均</td><td>$O(1)$</td><td>是</td><td>均匀分布的有序数据</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="226-树结构查找"><a class="header" href="#226-树结构查找">22.6 树结构查找</a></h2>
+<p>树结构是一种重要的非线性数据结构，在查找场景中有着广泛的应用。本节介绍基于树的查找方法。</p>
+<h3 id="2261-二叉搜索树bst"><a class="header" href="#2261-二叉搜索树bst">22.6.1 二叉搜索树（BST）</a></h3>
+<p>二叉搜索树（Binary Search Tree，BST）是一种特殊的二叉树，满足以下性质：</p>
+<ul>
+<li>左子树中所有节点的值均<strong>小于</strong>根节点的值</li>
+<li>右子树中所有节点的值均<strong>大于</strong>根节点的值</li>
+<li>左右子树也分别是二叉搜索树</li>
+</ul>
+<pre><code>       8
+      / \
+     3   10
+    / \    \
+   1   6    14
+      / \   /
+     4   7 13
+</code></pre>
+<p><strong>查找过程：</strong></p>
+<ol>
+<li>从根节点开始</li>
+<li>若目标值等于当前节点值，查找成功</li>
+<li>若目标值小于当前节点值，递归查找左子树</li>
+<li>若目标值大于当前节点值，递归查找右子树</li>
+<li>若到达空节点，查找失败</li>
+</ol>
+<p><strong>时间复杂度：</strong></p>
+<ul>
+<li>平均情况（平衡树）：$O(\log n)$</li>
+<li>最坏情况（退化为链表）：$O(n)$</li>
+</ul>
+<p><strong>插入与删除：</strong></p>
+<ul>
+<li><strong>插入</strong>：按照查找路径走到空位置，将新节点插入</li>
+<li><strong>删除</strong>：分三种情况——叶子节点直接删除；只有一个子节点则用子节点替代；有两个子节点则用中序后继（或前驱）替代</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml dependencies（Playground 运行时需添加）:
+// 无需第三方 crate，纯标准库
+
+//! 二叉树
+//! https://leetcode-cn.com/tag/binary-tree/problemset/
+
+use std::cell::RefCell;
+use std::cmp::max;
+use std::rc::Rc;
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;,
+    pub right: Option&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;,
+}
+
+impl TreeNode {
+    #[inline]
+    pub fn new(val: i32) -&gt; Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
+    }
+
+    /// 树的深度：也称为树的高度，树中所有结点的层次最大值称为树的深度
+    pub fn get_height(root: &amp;Option&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;) -&gt; i32 {
+        fn dfs(root: &amp;Option&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;) -&gt; i32 {
+            match root {
+                None =&gt; 0,
+                Some(node) =&gt; {
+                    let node = node.borrow();
+                    1 + max(dfs(&amp;node.left), dfs(&amp;node.right))
+                }
+            }
+        }
+        dfs(root)
+    }
+}
+
+/// 从层序遍历数组构建二叉树（i32::MIN 表示空节点）
+/// 标准层序: 对于下标 i，左子节点 = 2*i+1，右子节点 = 2*i+2
+fn build_tree_from_level_order(arr: &amp;[i32]) -&gt; Option&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt; {
+    if arr.is_empty() || arr[0] == i32::MIN {
+        return None;
+    }
+
+    let root = Rc::new(RefCell::new(TreeNode::new(arr[0])));
+    let mut queue: Vec&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt; = vec![Rc::clone(&amp;root)];
+    let mut i = 1;
+
+    while i &lt; arr.len() {
+        let current = queue.remove(0);
+
+        // 左子节点
+        if i &lt; arr.len() &amp;&amp; arr[i] != i32::MIN {
+            let left_child = Rc::new(RefCell::new(TreeNode::new(arr[i])));
+            current.borrow_mut().left = Some(Rc::clone(&amp;left_child));
+            queue.push(left_child);
+        }
+        i += 1;
+
+        // 右子节点
+        if i &lt; arr.len() &amp;&amp; arr[i] != i32::MIN {
+            let right_child = Rc::new(RefCell::new(TreeNode::new(arr[i])));
+            current.borrow_mut().right = Some(Rc::clone(&amp;right_child));
+            queue.push(right_child);
+        }
+        i += 1;
+    }
+
+    Some(root)
+}
+
+/// 230. 二叉搜索树中第K小的元素 https://leetcode.cn/problems/kth-smallest-element-in-a-bst/
+/// 中序遍历 BST，第 k 个元素即为第 k 小
+pub fn kth_smallest(root: Option&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;, k: i32) -&gt; i32 {
+    fn inorder(node: &amp;Option&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;, result: &amp;mut Vec&lt;i32&gt;) {
+        if let Some(n) = node {
+            let n = n.borrow();
+            inorder(&amp;n.left, result);
+            result.push(n.val);
+            inorder(&amp;n.right, result);
+        }
+    }
+
+    let mut result = vec![];
+    inorder(&amp;root, &amp;mut result);
+
+    // 中序遍历结果打印（辅助观察）
+    println!("中序遍历结果: {:?}", result);
+
+    result[(k - 1) as usize]
+}
+
+fn main() {
+    // 构建二叉搜索树:
+    //       3
+    //      / \
+    //     1   4
+    //      \
+    //       2
+    // 中序遍历: [1, 2, 3, 4]
+    // 第 1 小 = 1
+    let node2 = Rc::new(RefCell::new(TreeNode::new(2)));
+    let node1 = Rc::new(RefCell::new(TreeNode {
+        val: 1,
+        left: None,
+        right: Some(Rc::clone(&amp;node2)),
+    }));
+    let node4 = Rc::new(RefCell::new(TreeNode::new(4)));
+    let node3 = Rc::new(RefCell::new(TreeNode {
+        val: 3,
+        left: Some(Rc::clone(&amp;node1)),
+        right: Some(Rc::clone(&amp;node4)),
+    }));
+    let root = Some(node3);
+
+    let k = 1;
+    let result = kth_smallest(root, k);
+    println!("第 {} 小的元素: {}", k, result);
+
+    // 也可以使用辅助函数从层序数组构建（i32::MIN = 空节点）
+    let arr = vec![3, 1, 4, i32::MIN, 2];
+    let root2 = build_tree_from_level_order(&amp;arr);
+    println!("\n树的高度: {}", TreeNode::get_height(&amp;root2));
+}</code></pre>
+<h3 id="2262-avl-树"><a class="header" href="#2262-avl-树">22.6.2 AVL 树</a></h3>
+<p>AVL 树（Adelson-Velsky and Landis Tree）是一种<strong>自平衡二叉搜索树</strong>。它通过引入<strong>平衡因子</strong>（Balance Factor）来维持树的平衡：</p>
+<p>$$
+\text{BalanceFactor}(node) = \text{height}(left_subtree) - \text{height}(right_subtree)
+$$</p>
+<p>AVL 树要求任意节点的平衡因子绝对值不超过 1（即 $|\text{BF}| \leq 1$）。当插入或删除操作导致平衡因子超出范围时，通过<strong>旋转</strong>操作恢复平衡：</p>
+<ul>
+<li><strong>LL 旋转</strong>（右旋）：左子树的左子树过深</li>
+<li><strong>RR 旋转</strong>（左旋）：右子树的右子树过深</li>
+<li><strong>LR 旋转</strong>（先左旋后右旋）：左子树的右子树过深</li>
+<li><strong>RL 旋转</strong>（先右旋后左旋）：右子树的左子树过深</li>
+</ul>
+<p><strong>时间复杂度：</strong> 查找、插入、删除均为 $O(\log n)$。</p>
+<h3 id="2263-红黑树"><a class="header" href="#2263-红黑树">22.6.3 红黑树</a></h3>
+<p>红黑树（Red-Black Tree）是另一种自平衡二叉搜索树，通过为节点着色（红色或黑色）并遵循特定规则来保持平衡。Rust 标准库中的 <code>BTreeMap</code> 和 <code>BTreeSet</code> 就是基于红黑树实现的。</p>
+<p><strong>红黑树的五条性质：</strong></p>
+<ol>
+<li>每个节点是红色或黑色</li>
+<li>根节点是黑色</li>
+<li>叶子节点（NIL 节点）是黑色</li>
+<li>红色节点的两个子节点都是黑色（不能有连续的红色节点）</li>
+<li>从任意节点到其所有叶子节点的路径上，黑色节点数量相同</li>
+</ol>
+<p><strong>时间复杂度：</strong> 查找、插入、删除均为 $O(\log n)$。与 AVL 树相比，红黑树在插入和删除时需要的旋转操作更少，适合频繁修改的场景。</p>
+<h3 id="2264-b-树与-b-树"><a class="header" href="#2264-b-树与-b-树">22.6.4 B 树与 B+ 树</a></h3>
+<p>B 树（B-tree）和 B+ 树是<strong>多路平衡查找树</strong>，广泛应用于数据库索引和文件系统。</p>
+<p><strong>B 树的特点：</strong></p>
+<ul>
+<li>每个节点最多有 $m$ 个子节点（$m$ 阶 B 树）</li>
+<li>除根节点和叶子节点外，每个节点至少有 $\lceil m/2 \rceil$ 个子节点</li>
+<li>所有叶子节点在同一层</li>
+<li>节点中的键值按序排列</li>
+</ul>
+<p><strong>B+ 树与 B 树的区别：</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th>B 树</th><th>B+ 树</th></tr>
+</thead>
+<tbody>
+<tr><td>数据存储</td><td>所有节点都存储数据</td><td>数据只存储在叶子节点</td></tr>
+<tr><td>叶子节点链接</td><td>无</td><td>叶子节点通过链表连接</td></tr>
+<tr><td>范围查询</td><td>效率较低</td><td>效率高（遍历链表即可）</td></tr>
+<tr><td>单次查询</td><td>可能提前终止</td><td>必须到达叶子节点</td></tr>
+</tbody>
+</table>
+</div>
+<p>B+ 树是数据库索引的主流数据结构，MySQL 的 InnoDB 引擎就使用 B+ 树作为索引结构。</p>
+<hr>
+<h2 id="227-数据库查询"><a class="header" href="#227-数据库查询">22.7 数据库查询</a></h2>
+<p>数据库查询是实际开发中最常见的查询场景之一。理解数据库查询的原理有助于编写高效的查询语句。</p>
+<h3 id="2271-sql-查询基础"><a class="header" href="#2271-sql-查询基础">22.7.1 SQL 查询基础</a></h3>
+<p>SQL（Structured Query Language）是关系型数据库的标准查询语言。以下是常用的查询操作：</p>
+<pre><code class="language-sql">-- 基本查询
+SELECT name, age FROM users WHERE age &gt; 18;
+
+-- 聚合查询
+SELECT department, COUNT(*) as count, AVG(salary) as avg_salary
+FROM employees
+GROUP BY department
+HAVING COUNT(*) &gt; 5
+ORDER BY avg_salary DESC;
+
+-- 多表连接查询
+SELECT u.name, o.product, o.amount
+FROM users u
+INNER JOIN orders o ON u.id = o.user_id
+WHERE o.amount &gt; 100;
+
+-- 子查询
+SELECT name FROM users
+WHERE id IN (SELECT user_id FROM orders WHERE amount &gt; 1000);
+</code></pre>
+<h3 id="2272-索引原理"><a class="header" href="#2272-索引原理">22.7.2 索引原理</a></h3>
+<p>数据库索引的本质是<strong>空间换时间</strong>。通过预先建立的数据结构（通常是 B+ 树），避免全表扫描，从而加速查询。</p>
+<p><strong>B+ 树索引的查找过程：</strong></p>
+<ol>
+<li>从根节点出发，根据比较结果选择合适的子节点</li>
+<li>逐层向下查找，直到到达叶子节点</li>
+<li>在叶子节点中找到目标记录或确认不存在</li>
+</ol>
+<p>对于一棵 $m$ 阶 B+ 树，树的高度为 $h$，则查找的时间复杂度为 $O(h)$。一棵高度为 3 的 B+ 树，在 $m = 1000$ 时可以存储约 $10^9$ 条记录，即<strong>三次磁盘 I/O 即可定位到目标数据</strong>。</p>
+<p><strong>索引的设计原则：</strong></p>
+<ul>
+<li>选择性高的列（唯一值多的列）适合建索引</li>
+<li>频繁作为 WHERE 条件的列适合建索引</li>
+<li>联合索引遵循最左前缀匹配原则</li>
+<li>避免在索引列上使用函数或隐式类型转换</li>
+</ul>
+<h3 id="2273-rust-数据库查询"><a class="header" href="#2273-rust-数据库查询">22.7.3 Rust 数据库查询</a></h3>
+<p>在 Rust 生态中，常用的数据库 ORM/查询框架包括：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>框架</th><th>类型</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td>Diesel</td><td>同步 ORM</td><td>类型安全、编译时检查、性能优秀</td></tr>
+<tr><td>SeaORM</td><td>异步 ORM</td><td>基于 SeaQuery，支持异步、动态查询</td></tr>
+<tr><td>SQLx</td><td>异步 SQL 工具包</td><td>编译时 SQL 检查、原生 SQL、轻量级</td></tr>
+<tr><td>rbatis</td><td>动态 ORM</td><td>类似 MyBatis，支持动态 SQL</td></tr>
+</tbody>
+</table>
+</div>
+<p>以下是使用 Diesel 的简单示例：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Cargo.toml
+// [dependencies]
+// diesel = { version = "2.0", features = ["postgres"] }
+
+use diesel::prelude::*;
+
+// 查询所有年龄大于 18 的用户
+fn find_adults(conn: &amp;mut PgConnection) -&gt; Vec&lt;User&gt; {
+    users::table
+        .filter(users::age.gt(18))
+        .load(conn)
+        .expect("Error loading users")
+}
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="228-搜索引擎简介"><a class="header" href="#228-搜索引擎简介">22.8 搜索引擎简介</a></h2>
+<p>搜索引擎是查询技术的集大成者，需要在海量数据中快速、准确地找到用户需要的信息。</p>
+<h3 id="2281-倒排索引"><a class="header" href="#2281-倒排索引">22.8.1 倒排索引</a></h3>
+<p>倒排索引（Inverted Index）是搜索引擎的核心数据结构。与传统的“文档 -&gt; 单词“的正向索引不同，倒排索引建立的是“单词 -&gt; 文档“的映射。</p>
+<p><strong>构建过程：</strong></p>
+<ol>
+<li>对每个文档进行分词（Tokenization）</li>
+<li>对每个词项（Term）建立倒排列表（Posting List），记录包含该词项的文档 ID 及位置信息</li>
+</ol>
+<pre><code>文档1: "Rust 是一门系统编程语言"
+文档2: "Rust 注重安全性和并发"
+文档3: "Go 也是一门系统编程语言"
+
+倒排索引:
+  "Rust"     -&gt; [文档1, 文档2]
+  "是"       -&gt; [文档1, 文档3]
+  "一门"     -&gt; [文档1, 文档3]
+  "系统"     -&gt; [文档1, 文档3]
+  "编程"     -&gt; [文档1, 文档3]
+  "语言"     -&gt; [文档1, 文档3]
+  "注重"     -&gt; [文档2]
+  "安全性"   -&gt; [文档2]
+  "和"       -&gt; [文档2]
+  "并发"     -&gt; [文档2]
+  "Go"       -&gt; [文档3]
+  "也"       -&gt; [文档3]
+</code></pre>
+<p><strong>查询过程：</strong></p>
+<p>当用户搜索 “Rust 编程” 时：</p>
+<ol>
+<li>对查询进行分词：[“Rust”, “编程”]</li>
+<li>查找倒排列表：<code>"Rust" -&gt; [文档1, 文档2]</code>，<code>"编程" -&gt; [文档1, 文档3]</code></li>
+<li>求交集：[文档1]</li>
+<li>返回结果：文档1</li>
+</ol>
+<h3 id="2282-pagerank"><a class="header" href="#2282-pagerank">22.8.2 PageRank</a></h3>
+<p>PageRank 是 Google 创始人 Larry Page 提出的网页排名算法。它将互联网看作一个有向图，网页是节点，超链接是边。一个网页的 PageRank 值取决于指向它的其他网页的 PageRank 值和链接数量。</p>
+<p>$$
+PR(A) = (1 - d) + d \sum_{i=1}^{n} \frac{PR(T_i)}{C(T_i)}
+$$</p>
+<p>其中：</p>
+<ul>
+<li>$PR(A)$ 是页面 A 的 PageRank 值</li>
+<li>$d$ 是阻尼系数（通常取 0.85），表示用户随机点击链接的概率</li>
+<li>$T_i$ 是指向页面 A 的页面</li>
+<li>$C(T_i)$ 是页面 $T_i$ 的出链数量</li>
+<li>$n$ 是指向页面 A 的页面总数</li>
+</ul>
+<h3 id="2283-全文检索"><a class="header" href="#2283-全文检索">22.8.3 全文检索</a></h3>
+<p>全文检索（Full-Text Search）是指在大规模文本数据中，根据用户输入的关键词快速找到相关文档的技术。主流的全文检索引擎包括：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>引擎</th><th>语言</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td>Elasticsearch</td><td>Java</td><td>分布式、实时搜索、生态丰富</td></tr>
+<tr><td>Apache Lucene</td><td>Java</td><td>底层搜索引擎库</td></tr>
+<tr><td>Solr</td><td>Java</td><td>基于 Lucene、企业级搜索平台</td></tr>
+<tr><td>Meilisearch</td><td>Rust</td><td>轻量、快速、易部署</td></tr>
+<tr><td><strong>Tantivy</strong></td><td><strong>Rust</strong></td><td>纯 Rust 实现、类 Lucene、高性能</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="2284-rust-的-tantivy-全文搜索引擎"><a class="header" href="#2284-rust-的-tantivy-全文搜索引擎">22.8.4 Rust 的 Tantivy 全文搜索引擎</a></h3>
+<p>Tantivy 是一个用 Rust 编写的全文搜索引擎库，其设计灵感来自 Apache Lucene，但追求更高的性能和更低的资源消耗。</p>
+<p><strong>Tantivy 的核心特性：</strong></p>
+<ul>
+<li>纯 Rust 实现，无 unsafe 代码</li>
+<li>支持全文检索、分词、BM25 相关性评分</li>
+<li>支持增量索引和近实时搜索</li>
+<li>压缩率高，内存占用低</li>
+<li>支持多种分词器（中文分词需配合 jieba-rs 等）</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml
+// [dependencies]
+// tantivy = "0.22"
+
+use tantivy::schema::*;
+use tantivy::{Index, IndexWriter, doc};
+
+fn main() -&gt; tantivy::Result&lt;()&gt; {
+    // 1. 定义 schema
+    let mut schema_builder = Schema::builder();
+    let title = schema_builder.add_text_field("title", TEXT | STORED);
+    let body = schema_builder.add_text_field("body", TEXT);
+    let schema = schema_builder.build();
+
+    // 2. 创建索引
+    let index = Index::create_in_ram(schema.clone());
+    let mut writer = index.writer(50_000_000)?;
+
+    // 3. 添加文档
+    writer.add_document(doc!(
+        title =&gt; "Rust 编程语言",
+        body =&gt; "Rust 是一门注重安全性、并发性和性能的系统编程语言"
+    ));
+    writer.add_document(doc!(
+        title =&gt; "Go 编程语言",
+        body =&gt; "Go 是一门注重简洁性和并发性的编程语言"
+    ));
+    writer.commit()?;
+
+    // 4. 搜索
+    let reader = index.reader()?;
+    let searcher = reader.searcher();
+    let query_parser = QueryParser::for_index(&amp;index, vec![title, body]);
+    let query = query_parser.parse_query("Rust 安全")?;
+
+    let top_docs = searcher.search(&amp;query, &amp;TopDocs::with_limit(10))?;
+    for (_score, doc_address) in top_docs {
+        let retrieved_doc = searcher.doc(doc_address)?;
+        println!("匹配文档: {}", schema.to_json(&amp;retrieved_doc));
+    }
+
+    Ok(())
+}</code></pre>
+<hr>
+<h2 id="229-总结"><a class="header" href="#229-总结">22.9 总结</a></h2>
+<p>本章系统介绍了查询领域的核心算法与数据结构，从字符串模式匹配到搜索引擎，涵盖了查询技术的各个层面。下面是各查询算法的综合对比：</p>
+<h3 id="各查询算法综合对比"><a class="header" href="#各查询算法综合对比">各查询算法综合对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法/数据结构</th><th>时间复杂度</th><th>空间复杂度</th><th>数据要求</th><th>主要应用场景</th></tr>
+</thead>
+<tbody>
+<tr><td>暴力匹配</td><td>$O(m \times n)$</td><td>$O(1)$</td><td>无</td><td>简单短串匹配</td></tr>
+<tr><td>KMP</td><td>$O(m + n)$</td><td>$O(m)$</td><td>无</td><td>流式文本匹配</td></tr>
+<tr><td>Boyer-Moore</td><td>$O(n/m)$ 平均</td><td>$O(\sigma)$</td><td>无</td><td>文本编辑器查找</td></tr>
+<tr><td>Rabin-Karp</td><td>$O(m + n)$ 平均</td><td>$O(1)$</td><td>无</td><td>多模式匹配</td></tr>
+<tr><td>DFA 敏感词检测</td><td>$O(n)$</td><td>$O(k)$</td><td>敏感词库</td><td>内容安全过滤</td></tr>
+<tr><td>正则表达式</td><td>取决于模式</td><td>取决于模式</td><td>无</td><td>文本验证与提取</td></tr>
+<tr><td>线性查找</td><td>$O(n)$</td><td>$O(1)$</td><td>无</td><td>无序小数据</td></tr>
+<tr><td>二分查找</td><td>$O(\log n)$</td><td>$O(1)$</td><td>有序数组</td><td>静态有序数据</td></tr>
+<tr><td>哈希查找</td><td>$O(1)$ 平均</td><td>$O(n)$</td><td>无</td><td>键值对查找</td></tr>
+<tr><td>BST</td><td>$O(\log n)$ 平均</td><td>$O(n)$</td><td>无</td><td>动态有序集合</td></tr>
+<tr><td>B+ 树</td><td>$O(\log n)$</td><td>$O(n)$</td><td>无</td><td>数据库索引</td></tr>
+<tr><td>倒排索引</td><td>$O(k)$</td><td>$O(n)$</td><td>文档集合</td><td>搜索引擎</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>$m$ 为模式串长度，$n$ 为文本/数据规模，$k$ 为结果数量，$\sigma$ 为字符集大小。</p>
+</blockquote>
+<h3 id="场景选择建议"><a class="header" href="#场景选择建议">场景选择建议</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>场景</th><th>推荐算法/工具</th><th>理由</th></tr>
+</thead>
+<tbody>
+<tr><td>简单子串查找</td><td>暴力匹配 / 标准库 <code>str::find()</code></td><td>实现简单，标准库已优化</td></tr>
+<tr><td>大文本多次匹配</td><td>KMP / Boyer-Moore</td><td>避免回溯，性能稳定</td></tr>
+<tr><td>敏感词过滤</td><td>DFA（Trie 树）</td><td>$O(n)$ 线性扫描，支持大规模词库</td></tr>
+<tr><td>文本格式验证</td><td>正则表达式</td><td>表达力强，覆盖面广</td></tr>
+<tr><td>有序数组查找</td><td>二分查找</td><td>$O(\log n)$，效率极高</td></tr>
+<tr><td>键值对查找</td><td>哈希表（HashMap）</td><td>$O(1)$ 平均，最常用</td></tr>
+<tr><td>动态有序数据</td><td>BTreeMap / 红黑树</td><td>自动排序，$O(\log n)$ 操作</td></tr>
+<tr><td>数据库查询</td><td>B+ 树索引 + SQL</td><td>成熟的索引技术</td></tr>
+<tr><td>全文检索</td><td>Tantivy / Elasticsearch</td><td>倒排索引，相关性排序</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="2210-练习题"><a class="header" href="#2210-练习题">22.10 练习题</a></h2>
+<p><strong>练习 1：</strong> 实现暴力字符串匹配算法，找出文本串中所有模式串出现的位置，并分析其在最好和最坏情况下的时间复杂度。</p>
+<p><strong>练习 2：</strong> 手动计算模式串 <code>"ABABABC"</code> 的 KMP next 数组（部分匹配表），并画出匹配过程示意图。</p>
+<p><strong>练习 3：</strong> 使用 Rust 的 <code>regex</code> crate 实现一个简单的邮箱地址验证器，要求支持常见邮箱格式（如 <code>user@example.com</code>）。</p>
+<p><strong>练习 4：</strong> 给定一个有序整数数组和目标值，使用二分查找实现“查找第一个大于等于目标值的位置“（即 lower_bound）。</p>
+<p><strong>练习 5：</strong> 实现一个简单的 Trie 树（前缀树），支持插入、查找和前缀搜索（判断是否存在以某前缀开头的单词）。</p>
+<p><strong>练习 6：</strong> 使用 Tantivy 构建一个包含 100 篇文档的全文索引，实现关键词搜索并按相关性排序返回前 10 条结果。</p>
+<p><strong>练习 7：</strong> 对比分析 KMP 算法和 Boyer-Moore 算法在以下两种场景中的性能差异：（1）文本串和模式串都是英文小写字母；（2）模式串中包含大量重复子串。</p>
+<p><strong>练习 8：</strong> 设计一个基于 DFA 的 URL 敏感词检测系统，要求：（1）支持从文件加载敏感词库；（2）支持最小匹配和最大匹配两种模式；（3）支持敏感词替换功能。提示：可参考本章 22.3 节的 DFA 实现，将字符集从中文扩展到 URL 字符。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_21.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_23_Sort.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_21.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_23_Sort.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

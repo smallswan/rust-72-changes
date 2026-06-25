@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电费管理系统</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.12.0/sql-wasm.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', Arial, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #1a6fc4 0%, #0d4b8e 100%);
+            color: #fff;
+            padding: 0 24px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar .icon { font-size: 24px; }
+        .navbar h1 { font-size: 20px; font-weight: 700; letter-spacing: 1px; }
+        .navbar .sub { font-size: 13px; opacity: 0.75; margin-left: auto; }
+        .navbar a { color: #fff; text-decoration: none; font-size: 14px; margin-left: 20px; }
+        .navbar a:hover { text-decoration: underline; }
+
+        .tab-bar {
+            display: flex;
+            background: #fff;
+            border-bottom: 2px solid #e8ecf0;
+            padding: 0 24px;
+        }
+        .tab-btn {
+            padding: 14px 28px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 15px;
+            color: #666;
+            font-family: inherit;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .tab-btn:hover { color: #1a6fc4; }
+        .tab-btn.active { color: #1a6fc4; border-bottom-color: #1a6fc4; }
+
+        .main { padding: 24px; max-width: 1400px; margin: 0 auto; }
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            padding: 20px 24px;
+            margin-bottom: 20px;
+        }
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a6fc4;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 16px;
+            background: #1a6fc4;
+            border-radius: 2px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: flex-end;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .form-group label {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+        .form-group label .required { color: #e85d04; }
+        .form-group input,
+        .form-group select {
+            height: 36px;
+            padding: 0 10px;
+            border: 1px solid #d0d7e0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #333;
+            outline: none;
+            transition: border-color 0.2s;
+            min-width: 140px;
+        }
+        .form-group input:focus,
+        .form-group select:focus { border-color: #1a6fc4; box-shadow: 0 0 0 2px rgba(26,111,196,0.1); }
+        .form-group input[type="number"] { min-width: 120px; }
+
+        .btn {
+            height: 36px;
+            padding: 0 22px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: inherit;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1a6fc4, #0d4b8e);
+            color: #fff;
+        }
+        .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #1e8449);
+            color: #fff;
+        }
+        .btn-success:hover { opacity: 0.88; }
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12, #d68910);
+            color: #fff;
+        }
+        .btn-warning:hover { opacity: 0.88; }
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: #fff;
+        }
+        .btn-danger:hover { opacity: 0.88; }
+        .btn-reset {
+            background: #f0f2f5;
+            color: #555;
+            border: 1px solid #d0d7e0;
+        }
+        .btn-reset:hover { background: #e4e8ef; }
+        .btn-sm { height: 28px; padding: 0 12px; font-size: 12px; }
+
+        .msg {
+            padding: 10px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+        .msg.show { display: block; }
+        .msg.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .msg.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .msg.info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+
+        .stats-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            background: #f7f9fc;
+            border: 1px solid #e0e8f0;
+            border-radius: 8px;
+            padding: 10px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 150px;
+        }
+        .stat-label { font-size: 12px; color: #888; }
+        .stat-value { font-size: 18px; font-weight: 700; color: #1a6fc4; }
+
+        .table-wrap { overflow-x: auto; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        thead th {
+            background: #eef3fb;
+            color: #1a6fc4;
+            font-weight: 600;
+            padding: 11px 14px;
+            text-align: center;
+            border-bottom: 2px solid #c8d8ee;
+            white-space: nowrap;
+        }
+        tbody tr { transition: background 0.15s; }
+        tbody tr:hover { background: #f0f6ff; }
+        tbody tr:nth-child(even) { background: #f8fafd; }
+        tbody tr:nth-child(even):hover { background: #f0f6ff; }
+        tbody td {
+            padding: 10px 14px;
+            text-align: center;
+            border-bottom: 1px solid #eef0f4;
+        }
+        td.room { font-weight: 600; color: #1a6fc4; }
+        td.payable { color: #c0392b; font-weight: 600; }
+        td.paid { color: #27ae60; font-weight: 600; }
+        td.null-val { color: #bbb; font-size: 12px; }
+        td.actions { white-space: nowrap; }
+        .no-data {
+            text-align: center;
+            padding: 48px;
+            color: #aaa;
+            font-size: 15px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .page-info { font-size: 13px; color: #888; }
+        .page-btns { display: flex; gap: 6px; align-items: center; }
+        .page-btn {
+            height: 32px;
+            min-width: 32px;
+            padding: 0 10px;
+            border: 1px solid #d0d7e0;
+            border-radius: 5px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 13px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .page-btn:hover { border-color: #1a6fc4; color: #1a6fc4; }
+        .page-btn.active { background: #1a6fc4; color: #fff; border-color: #1a6fc4; }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .page-size-select { height: 32px; border: 1px solid #d0d7e0; border-radius: 5px; padding: 0 6px; font-size: 13px; }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.92);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            gap: 16px;
+        }
+        .loading-overlay.hidden { display: none; }
+        .spinner {
+            width: 48px; height: 48px;
+            border: 4px solid #e0e8f0;
+            border-top-color: #1a6fc4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { font-size: 15px; color: #666; }
+        .loading-sub { font-size: 13px; color: #999; }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+        }
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a6fc4;
+            margin-bottom: 16px;
+        }
+        .modal-body { font-size: 14px; color: #555; margin-bottom: 20px; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; }
+
+        @media (max-width: 700px) {
+            .main { padding: 12px; }
+            .form-row { gap: 10px; }
+            .tab-btn { padding: 12px 14px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text">正在加载 SQLite 数据库...</div>
+    <div class="loading-sub">首次加载需要下载约 740KB 数据</div>
+</div>
+
+<div class="navbar">
+    <span class="icon">&#9889;</span>
+    <h1>电费管理系统</h1>
+    <a href="electricity_query_sqlite.html">&#128203; 查询系统</a>
+    <span class="sub">数据来源：SQLite 数据库 &nbsp;|&nbsp; 支持录入、修改、删除</span>
+</div>
+
+<div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('add')">&#10133; 录入电费</button>
+    <button class="tab-btn" onclick="switchTab('manage')">&#9998; 管理记录</button>
+</div>
+
+<div class="main">
+    <!-- ===== 录入面板 ===== -->
+    <div id="panel-add" class="panel active">
+        <div class="card">
+            <div class="card-title">录入电费信息</div>
+            <div id="msgAdd" class="msg"></div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>日期 <span class="required">*</span></label>
+                    <input type="month" id="addDate" value="">
+                </div>
+                <div class="form-group">
+                    <label>房号 <span class="required">*</span></label>
+                    <select id="addRoom">
+                        <option value="">请选择房号</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>应交金额（元）</label>
+                    <input type="number" id="addPayable" step="0.01" min="0" placeholder="留空表示无">
+                </div>
+                <div class="form-group">
+                    <label>已交金额（元）</label>
+                    <input type="number" id="addPaid" step="0.01" min="0" placeholder="留空表示无">
+                </div>
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <div style="display:flex;gap:8px;">
+                        <button class="btn btn-success" onclick="addRecord()">&#10003; 保存</button>
+                        <button class="btn btn-reset" onclick="resetAddForm()">&#8635; 重置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">批量导入</div>
+            <div id="msgBatch" class="msg"></div>
+            <p style="font-size:13px;color:#666;margin-bottom:12px;">
+                粘贴 JSON 格式数据批量导入，格式：<code>[{"d":"2024-01","r":"A1001","p":100.5,"a":100.5},...]</code>
+                <br>其中 p=应交, a=已交，可为 null
+            </p>
+            <textarea id="batchData" rows="6" style="width:100%;padding:10px;border:1px solid #d0d7e0;border-radius:6px;font-family:monospace;font-size:13px;resize:vertical;" placeholder='[{"d":"2024-01","r":"A1001","p":100.0,"a":100.0}]'></textarea>
+            <div style="margin-top:12px;">
+                <button class="btn btn-success" onclick="batchImport()">&#10003; 批量导入</button>
+                <button class="btn btn-reset" onclick="document.getElementById('batchData').value=''">清空</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 管理面板 ===== -->
+    <div id="panel-manage" class="panel">
+        <div class="card">
+            <div class="card-title">查询与筛选</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>开始日期</label>
+                    <input type="month" id="manageStartDate" value="2016-01">
+                </div>
+                <div class="form-group">
+                    <label>结束日期</label>
+                    <input type="month" id="manageEndDate" value="2025-04">
+                </div>
+                <div class="form-group">
+                    <label>房号</label>
+                    <select id="manageRoom">
+                        <option value="">全部房号</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <div style="display:flex;gap:8px;">
+                        <button class="btn btn-primary" onclick="loadManageData()">&#128269; 查询</button>
+                        <button class="btn btn-reset" onclick="resetManageFilters()">重置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-label">总记录数</span>
+                    <span class="stat-value" id="manageTotal">-</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">应交合计（元）</span>
+                    <span class="stat-value" id="managePayable">-</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">已交合计（元）</span>
+                    <span class="stat-value" id="managePaid">-</span>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table id="manageTable">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>房号</th>
+                            <th>应交（元）</th>
+                            <th>已交（元）</th>
+                            <th>差额（元）</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="manageBody">
+                        <tr><td colspan="6" class="no-data">请点击【查询】按钮加载数据</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <div class="page-info" id="managePageInfo"></div>
+                <div class="page-btns">
+                    <span style="font-size:13px;color:#888;">每页</span>
+                    <select class="page-size-select" id="managePageSize" onchange="changeManagePageSize()">
+                        <option value="20">20</option>
+                        <option value="50" selected>50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <span style="font-size:13px;color:#888;">条</span>
+                    <button class="page-btn" id="mBtnFirst" onclick="goManagePage(1)">&#171;</button>
+                    <button class="page-btn" id="mBtnPrev" onclick="goManagePage(mCurPage-1)">&#8249;</button>
+                    <span id="mPageNums"></span>
+                    <button class="page-btn" id="mBtnNext" onclick="goManagePage(mCurPage+1)">&#8250;</button>
+                    <button class="page-btn" id="mBtnLast" onclick="goManagePage(mTotalPages)">&#187;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑弹窗 -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal">
+        <div class="modal-title">&#9998; 修改电费记录</div>
+        <div class="modal-body">
+            <div class="form-row" style="flex-direction:column;align-items:stretch;">
+                <div class="form-group">
+                    <label>日期 <span class="required">*</span></label>
+                    <input type="month" id="editDate" readonly style="background:#f0f2f5;">
+                </div>
+                <div class="form-group">
+                    <label>房号 <span class="required">*</span></label>
+                    <input type="text" id="editRoom" readonly style="background:#f0f2f5;">
+                </div>
+                <div class="form-group">
+                    <label>应交金额（元）</label>
+                    <input type="number" id="editPayable" step="0.01" min="0" placeholder="留空表示无">
+                </div>
+                <div class="form-group">
+                    <label>已交金额（元）</label>
+                    <input type="number" id="editPaid" step="0.01" min="0" placeholder="留空表示无">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-reset" onclick="closeEditModal()">取消</button>
+            <button class="btn btn-success" onclick="saveEdit()">保存修改</button>
+        </div>
+    </div>
+</div>
+
+<!-- 删除确认弹窗 -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+        <div class="modal-title">&#9888; 确认删除</div>
+        <div class="modal-body" id="deleteMsg">确定要删除这条记录吗？此操作不可撤销。</div>
+        <div class="modal-footer">
+            <button class="btn btn-reset" onclick="closeDeleteModal()">取消</button>
+            <button class="btn btn-danger" onclick="confirmDelete()">确认删除</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const DB_URL = 'electricity_data.db';
+let db = null;
+let ALL_ROOMS = [];
+let manageData = [];
+let mCurPage = 1;
+let mPageSize = 50;
+let mTotalPages = 1;
+let deleteTarget = null;
+
+// ==================== 初始化 ====================
+async function initDatabase() {
+    try {
+        const SQL = await initSqlJs({
+            locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.12.0/${file}`
+        });
+        const response = await fetch(DB_URL);
+        if (!response.ok) throw new Error(`无法加载数据库: ${response.status}`);
+        const arrayBuffer = await response.arrayBuffer();
+        db = new SQL.Database(new Uint8Array(arrayBuffer));
+
+        const roomResult = db.exec("SELECT DISTINCT room FROM electricity_records ORDER BY room");
+        if (roomResult.length > 0) {
+            ALL_ROOMS = roomResult[0].values.map(row => row[0]);
+        }
+
+        // 填充房号下拉框
+        ['addRoom', 'manageRoom'].forEach(id => {
+            const sel = document.getElementById(id);
+            ALL_ROOMS.forEach(r => {
+                sel.innerHTML += '<option value="' + r + '">' + r + '</option>';
+            });
+        });
+
+        // 设置默认日期为当前月份
+        const now = new Date();
+        const ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+        document.getElementById('addDate').value = ym;
+
+        document.getElementById('loadingOverlay').classList.add('hidden');
+    } catch (err) {
+        console.error(err);
+        document.getElementById('loadingOverlay').innerHTML =
+            '<div style="color:#c0392b;font-size:16px;">&#9888; 数据库加载失败</div>' +
+            '<div style="color:#666;font-size:13px;margin-top:8px;">' + err.message + '</div>';
+    }
+}
+
+// ==================== 消息提示 ====================
+function showMsg(id, text, type) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = 'msg show ' + type;
+    setTimeout(() => { el.className = 'msg'; }, 4000);
+}
+
+// ==================== 标签切换 ====================
+function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+        b.classList.toggle('active', (i === 0 && tab === 'add') || (i === 1 && tab === 'manage'));
+    });
+    document.getElementById('panel-add').classList.toggle('active', tab === 'add');
+    document.getElementById('panel-manage').classList.toggle('active', tab === 'manage');
+    if (tab === 'manage') loadManageData();
+}
+
+// ==================== 录入功能 ====================
+function resetAddForm() {
+    const now = new Date();
+    document.getElementById('addDate').value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    document.getElementById('addRoom').value = '';
+    document.getElementById('addPayable').value = '';
+    document.getElementById('addPaid').value = '';
+}
+
+function addRecord() {
+    if (!db) { showMsg('msgAdd', '数据库未加载', 'error'); return; }
+
+    const date = document.getElementById('addDate').value;
+    const room = document.getElementById('addRoom').value;
+    const payable = document.getElementById('addPayable').value;
+    const paid = document.getElementById('addPaid').value;
+
+    if (!date || !room) {
+        showMsg('msgAdd', '日期和房号为必填项', 'error');
+        return;
+    }
+
+    const pVal = payable === '' ? null : parseFloat(payable);
+    const aVal = paid === '' ? null : parseFloat(paid);
+
+    try {
+        // 检查是否已存在
+        const check = db.prepare("SELECT COUNT(*) FROM electricity_records WHERE record_date = ? AND room = ?");
+        check.bind([date, room]);
+        check.step();
+        const exists = check.getAsObject()['COUNT(*)'] > 0;
+        check.free();
+
+        if (exists) {
+            showMsg('msgAdd', '该日期和房号的记录已存在，请使用管理功能修改', 'error');
+            return;
+        }
+
+        const stmt = db.prepare("INSERT INTO electricity_records (record_date, room, payable, paid) VALUES (?, ?, ?, ?)");
+        stmt.bind([date, room, pVal, aVal]);
+        stmt.step();
+        stmt.free();
+
+        // 导出并下载更新后的数据库
+        exportDatabase();
+
+        showMsg('msgAdd', '录入成功！已自动下载更新后的数据库文件', 'success');
+        resetAddForm();
+    } catch (err) {
+        showMsg('msgAdd', '录入失败: ' + err.message, 'error');
+    }
+}
+
+function batchImport() {
+    if (!db) { showMsg('msgBatch', '数据库未加载', 'error'); return; }
+
+    const text = document.getElementById('batchData').value.trim();
+    if (!text) { showMsg('msgBatch', '请输入数据', 'error'); return; }
+
+    let data;
+    try {
+        data = JSON.parse(text);
+    } catch (e) {
+        showMsg('msgBatch', 'JSON格式错误: ' + e.message, 'error');
+        return;
+    }
+
+    if (!Array.isArray(data)) {
+        showMsg('msgBatch', '数据必须是JSON数组', 'error');
+        return;
+    }
+
+    let success = 0, fail = 0;
+    const stmt = db.prepare("INSERT OR REPLACE INTO electricity_records (record_date, room, payable, paid) VALUES (?, ?, ?, ?)");
+
+    data.forEach(item => {
+        try {
+            const d = item.d || item.date || item.record_date;
+            const r = item.r || item.room;
+            const p = item.p !== undefined ? item.p : item.payable;
+            const a = item.a !== undefined ? item.a : item.paid;
+            if (!d || !r) { fail++; return; }
+            stmt.bind([d, r, p === null || p === undefined ? null : parseFloat(p), a === null || a === undefined ? null : parseFloat(a)]);
+            stmt.step();
+            stmt.reset();
+            success++;
+        } catch (e) { fail++; }
+    });
+    stmt.free();
+
+    exportDatabase();
+    showMsg('msgBatch', `批量导入完成: 成功 ${success} 条, 失败 ${fail} 条。已下载更新后的数据库`, success > 0 ? 'success' : 'error');
+    document.getElementById('batchData').value = '';
+}
+
+// ==================== 导出数据库 ====================
+function exportDatabase() {
+    const binaryArray = db.export();
+    const blob = new Blob([binaryArray], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'electricity_data.db';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// ==================== 管理功能 ====================
+function resetManageFilters() {
+    document.getElementById('manageStartDate').value = '2016-01';
+    document.getElementById('manageEndDate').value = '2025-04';
+    document.getElementById('manageRoom').value = '';
+    loadManageData();
+}
+
+function loadManageData() {
+    if (!db) return;
+
+    const startDate = document.getElementById('manageStartDate').value;
+    const endDate = document.getElementById('manageEndDate').value;
+    const room = document.getElementById('manageRoom').value;
+
+    let sql = "SELECT record_date as d, room as r, payable as p, paid as a FROM electricity_records WHERE 1=1";
+    const params = [];
+
+    if (startDate) { sql += " AND record_date >= ?"; params.push(startDate); }
+    if (endDate) { sql += " AND record_date <= ?"; params.push(endDate); }
+    if (room) { sql += " AND room = ?"; params.push(room); }
+    sql += " ORDER BY record_date DESC, room";
+
+    const stmt = db.prepare(sql);
+    stmt.bind(params);
+
+    manageData = [];
+    while (stmt.step()) {
+        const row = stmt.getAsObject();
+        manageData.push({
+            d: row.d, r: row.r,
+            p: row.p !== null && row.p !== undefined ? parseFloat(row.p) : null,
+            a: row.a !== null && row.a !== undefined ? parseFloat(row.a) : null
+        });
+    }
+    stmt.free();
+
+    // 统计
+    let sumP = 0, sumA = 0;
+    manageData.forEach(r => {
+        if (r.p !== null) sumP += r.p;
+        if (r.a !== null) sumA += r.a;
+    });
+    document.getElementById('manageTotal').textContent = manageData.length.toLocaleString() + ' 条';
+    document.getElementById('managePayable').textContent = sumP.toFixed(2);
+    document.getElementById('managePaid').textContent = sumA.toFixed(2);
+
+    mCurPage = 1;
+    renderManageTable();
+}
+
+function renderManageTable() {
+    mPageSize = parseInt(document.getElementById('managePageSize').value);
+    mTotalPages = Math.max(1, Math.ceil(manageData.length / mPageSize));
+    if (mCurPage > mTotalPages) mCurPage = mTotalPages;
+
+    const start = (mCurPage - 1) * mPageSize;
+    const pageData = manageData.slice(start, start + mPageSize);
+    const tbody = document.getElementById('manageBody');
+
+    if (manageData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="no-data">暂无数据</td></tr>';
+        document.getElementById('managePageInfo').textContent = '';
+        document.getElementById('mPageNums').innerHTML = '';
+        return;
+    }
+
+    const rows = pageData.map(r => {
+        const diff = (r.p !== null && r.a !== null) ? (r.a - r.p) : null;
+        const diffStr = diff !== null
+            ? '<span style="color:' + (diff >= 0 ? '#27ae60' : '#c0392b') + '">' + (diff >= 0 ? '+' : '') + diff.toFixed(2) + '</span>'
+            : '<span class="null-val">-</span>';
+        return '<tr>'
+            + '<td>' + r.d + '</td>'
+            + '<td class="room">' + r.r + '</td>'
+            + '<td class="' + (r.p !== null ? 'payable' : 'null-val') + '">' + (r.p !== null ? r.p.toFixed(2) : '-') + '</td>'
+            + '<td class="' + (r.a !== null ? 'paid' : 'null-val') + '">' + (r.a !== null ? r.a.toFixed(2) : '-') + '</td>'
+            + '<td>' + diffStr + '</td>'
+            + '<td class="actions">'
+            + '<button class="btn btn-warning btn-sm" onclick="openEdit(\'' + r.d + '\',\'' + r.r + '\',' + (r.p !== null ? r.p : 'null') + ',' + (r.a !== null ? r.a : 'null') + ')">&#9998;</button>'
+            + ' <button class="btn btn-danger btn-sm" onclick="openDelete(\'' + r.d + '\',\'' + r.r + '\')">&#10007;</button>'
+            + '</td>'
+            + '</tr>';
+    });
+    tbody.innerHTML = rows.join('');
+
+    document.getElementById('managePageInfo').textContent = '共 ' + manageData.length + ' 条，第 ' + mCurPage + ' / ' + mTotalPages + ' 页';
+
+    let pages = [];
+    if (mTotalPages <= 7) {
+        for (let i = 1; i <= mTotalPages; i++) pages.push(i);
+    } else {
+        pages = [1];
+        const lo = Math.max(2, mCurPage - 2), hi = Math.min(mTotalPages - 1, mCurPage + 2);
+        if (lo > 2) pages.push('...');
+        for (let j = lo; j <= hi; j++) pages.push(j);
+        if (hi < mTotalPages - 1) pages.push('...');
+        pages.push(mTotalPages);
+    }
+    document.getElementById('mPageNums').innerHTML = pages.map(p => {
+        if (p === '...') return '<span style="padding:0 4px;color:#aaa">&#8230;</span>';
+        return '<button class="page-btn' + (p === mCurPage ? ' active' : '') + '" onclick="goManagePage(' + p + ')">' + p + '</button>';
+    }).join('');
+
+    document.getElementById('mBtnFirst').disabled = mCurPage === 1;
+    document.getElementById('mBtnPrev').disabled = mCurPage === 1;
+    document.getElementById('mBtnNext').disabled = mCurPage === mTotalPages;
+    document.getElementById('mBtnLast').disabled = mCurPage === mTotalPages;
+}
+
+function goManagePage(p) {
+    if (p < 1 || p > mTotalPages || p === mCurPage) return;
+    mCurPage = p;
+    renderManageTable();
+}
+
+function changeManagePageSize() {
+    mCurPage = 1;
+    renderManageTable();
+}
+
+// ==================== 编辑功能 ====================
+function openEdit(date, room, payable, paid) {
+    document.getElementById('editDate').value = date;
+    document.getElementById('editRoom').value = room;
+    document.getElementById('editPayable').value = payable !== null && payable !== undefined ? payable : '';
+    document.getElementById('editPaid').value = paid !== null && paid !== undefined ? paid : '';
+    document.getElementById('editModal').classList.add('show');
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').classList.remove('show');
+}
+
+function saveEdit() {
+    if (!db) return;
+    const date = document.getElementById('editDate').value;
+    const room = document.getElementById('editRoom').value;
+    const payable = document.getElementById('editPayable').value;
+    const paid = document.getElementById('editPaid').value;
+
+    const pVal = payable === '' ? null : parseFloat(payable);
+    const aVal = paid === '' ? null : parseFloat(paid);
+
+    try {
+        const stmt = db.prepare("UPDATE electricity_records SET payable = ?, paid = ? WHERE record_date = ? AND room = ?");
+        stmt.bind([pVal, aVal, date, room]);
+        stmt.step();
+        stmt.free();
+
+        exportDatabase();
+        closeEditModal();
+        loadManageData();
+        alert('修改成功！已自动下载更新后的数据库文件');
+    } catch (err) {
+        alert('修改失败: ' + err.message);
+    }
+}
+
+// ==================== 删除功能 ====================
+function openDelete(date, room) {
+    deleteTarget = { date, room };
+    document.getElementById('deleteMsg').textContent = '确定要删除 ' + room + ' 在 ' + date + ' 的电费记录吗？此操作不可撤销。';
+    document.getElementById('deleteModal').classList.add('show');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('show');
+    deleteTarget = null;
+}
+
+function confirmDelete() {
+    if (!db || !deleteTarget) return;
+    try {
+        const stmt = db.prepare("DELETE FROM electricity_records WHERE record_date = ? AND room = ?");
+        stmt.bind([deleteTarget.date, deleteTarget.room]);
+        stmt.step();
+        stmt.free();
+
+        exportDatabase();
+        closeDeleteModal();
+        loadManageData();
+        alert('删除成功！已自动下载更新后的数据库文件');
+    } catch (err) {
+        alert('删除失败: ' + err.message);
+    }
+}
+
+// ==================== 启动 ====================
+initDatabase();
+</script>
+</body>
+</html>

@@ -1,0 +1,575 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第五十三 同态加密 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第五十三-同态加密"><a class="header" href="#第五十三-同态加密">第五十三 同态加密</a></h1>
+<blockquote>
+<p>数据不解密也能算：让加密数据“活“起来</p>
+</blockquote>
+<p>在传统的密码学应用中，数据必须先解密才能进行计算。这意味着处理敏感数据时，必须在安全的环境中解密，计算完成后再重新加密。如果数据需要交由第三方（如云计算服务商）处理，就必须将明文暴露给对方，带来潜在的隐私泄露风险。</p>
+<p>同态加密（Homomorphic Encryption, HE）打破了这一限制。它允许在<strong>密文上直接进行计算</strong>，计算结果解密后与在明文上计算的结果一致。换句话说，数据始终保持加密状态，却能“参与“运算——这是密码学领域最具颠覆性的技术之一。</p>
+<h2 id="531-什么是同态加密"><a class="header" href="#531-什么是同态加密">53.1 什么是同态加密</a></h2>
+<h3 id="直观理解"><a class="header" href="#直观理解">直观理解</a></h3>
+<p>想象你有一位不信任的会计，你需要让他帮你计算年度总支出，但又不想让他看到每一笔具体的开支金额。同态加密就像给每一张账单都套上一个不透明的信封，会计可以在信封上进行某种“魔法操作“，最终得到一个结果信封。你打开结果信封，里面正是所有账单金额的总和——而会计自始至终都没有看到任何一张账单的具体数字。</p>
+<h3 id="形式化定义"><a class="header" href="#形式化定义">形式化定义</a></h3>
+<p>一个加密方案称为同态的，如果满足：</p>
+<pre><code>Decrypt( Evaluate( f, Encrypt(m1), Encrypt(m2), ..., Encrypt(mn) ) ) = f(m1, m2, ..., mn)
+</code></pre>
+<p>其中 <code>f</code> 是任意计算函数。也就是说，对密文进行计算后再解密，等于先解密再计算。</p>
+<h3 id="同态性的分类"><a class="header" href="#同态性的分类">同态性的分类</a></h3>
+<p>根据支持的运算类型和深度，同态加密分为三个层次：</p>
+<h4 id="部分同态加密phe-partially-homomorphic-encryption"><a class="header" href="#部分同态加密phe-partially-homomorphic-encryption">部分同态加密（PHE, Partially Homomorphic Encryption）</a></h4>
+<p>只支持<strong>无限次</strong>的某一种运算（加法或乘法），但不能同时进行两种运算。</p>
+<ul>
+<li>
+<p><strong>加法同态</strong>：支持任意次数的密文相加</p>
+<ul>
+<li>典型代表：Paillier、Benaloh、Naccache-Stern</li>
+<li>应用：电子投票、隐私保护求和</li>
+</ul>
+</li>
+<li>
+<p><strong>乘法同态</strong>：支持任意次数的密文相乘</p>
+<ul>
+<li>典型代表：RSA（未经填充的原始RSA）、ElGamal</li>
+<li>应用：隐私保护乘积计算</li>
+</ul>
+</li>
+</ul>
+<h4 id="somewhat-同态加密she-somewhat-homomorphic-encryption"><a class="header" href="#somewhat-同态加密she-somewhat-homomorphic-encryption">somewhat 同态加密（SHE, Somewhat Homomorphic Encryption）</a></h4>
+<p>同时支持加法和乘法运算，但<strong>运算深度有限</strong>。随着计算步骤的增加，密文中的“噪声“会累积，超过一定阈值后就无法正确解密。</p>
+<ul>
+<li>典型代表：BGV（Brakerski-Gentry-Vaikuntanathan）的早期版本</li>
+<li>特点：可以计算任意多项式，但多项式的次数受限</li>
+</ul>
+<h4 id="全同态加密fhe-fully-homomorphic-encryption"><a class="header" href="#全同态加密fhe-fully-homomorphic-encryption">全同态加密（FHE, Fully Homomorphic Encryption）</a></h4>
+<p>支持<strong>任意次数</strong>的加法和乘法运算，理论上可以计算任何可计算函数。这是密码学的“圣杯“，直到2009年才由 Craig Gentry 首次实现。</p>
+<ul>
+<li>典型代表：
+<ul>
+<li>Gentry 方案（基于理想格）</li>
+<li>BGV/BFV 方案（基于环上学习 with 错误，RLWE）</li>
+<li>CKKS 方案（支持浮点数近似计算）</li>
+<li>TFHE 方案（快速布尔电路计算）</li>
+</ul>
+</li>
+</ul>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型</th><th>加法</th><th>乘法</th><th>运算深度</th><th>效率</th><th>成熟度</th></tr>
+</thead>
+<tbody>
+<tr><td>PHE</td><td>无限次</td><td>0次 或 无限次</td><td>无限制（单一运算）</td><td>高</td><td>成熟</td></tr>
+<tr><td>SHE</td><td>有限次</td><td>有限次</td><td>受限</td><td>中</td><td>较成熟</td></tr>
+<tr><td>FHE</td><td>无限次</td><td>无限次</td><td>无限制</td><td>低</td><td>快速发展中</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="532-paillier-算法简介"><a class="header" href="#532-paillier-算法简介">53.2 Paillier 算法简介</a></h2>
+<p>Paillier 加密系统是由 Pascal Paillier 于1999年提出的概率公钥加密方案，是目前最著名且应用最广泛的<strong>加法同态加密</strong>算法。</p>
+<h3 id="核心特性"><a class="header" href="#核心特性">核心特性</a></h3>
+<ol>
+<li>
+<p><strong>加法同态性</strong>：</p>
+<pre><code>E(m1) * E(m2) = E(m1 + m2)
+</code></pre>
+<p>两个密文相乘，解密后得到明文之和。</p>
+</li>
+<li>
+<p><strong>明文乘法</strong>：</p>
+<pre><code>E(m)^k = E(m * k)
+</code></pre>
+<p>密文的 <code>k</code> 次幂，解密后得到明文与 <code>k</code> 的乘积。</p>
+</li>
+<li>
+<p><strong>概率加密</strong>：相同的明文加密后会产生不同的密文，提供语义安全性。</p>
+</li>
+</ol>
+<h3 id="数学基础"><a class="header" href="#数学基础">数学基础</a></h3>
+<p>Paillier 的安全性基于<strong>合数剩余类问题</strong>（Composite Residuosity Assumption）：给定合数 <code>n = pq</code>（两个大素数之积），区分 <code>n²</code> 阶的 <code>n</code> 次剩余和非剩余是困难的。</p>
+<h3 id="密钥生成"><a class="header" href="#密钥生成">密钥生成</a></h3>
+<pre><code>1. 选择两个大素数 p 和 q，满足 gcd(pq, (p-1)(q-1)) = 1
+2. 计算 n = p * q，λ = lcm(p-1, q-1)
+3. 选择随机整数 g ∈ Z*_{n²}
+4. 计算 μ = (L(g^λ mod n²))^{-1} mod n，其中 L(x) = (x-1)/n
+5. 公钥：(n, g)，私钥：(λ, μ)
+</code></pre>
+<h2 id="533-应用场景"><a class="header" href="#533-应用场景">53.3 应用场景</a></h2>
+<h3 id="隐私计算privacy-preserving-computation"><a class="header" href="#隐私计算privacy-preserving-computation">隐私计算（Privacy-Preserving Computation）</a></h3>
+<p>在云计算场景中，用户可以将加密数据上传到云端，云服务商在不知道明文的情况下完成计算并返回结果。典型应用包括：</p>
+<ul>
+<li><strong>隐私保护机器学习</strong>：在加密数据上训练或推理模型</li>
+<li><strong>加密数据库查询</strong>：SQL 查询在密文上执行</li>
+<li><strong>安全统计分析</strong>：医院联合计算疾病发病率，不泄露患者数据</li>
+</ul>
+<h3 id="安全多方计算mpc-multi-party-computation"><a class="header" href="#安全多方计算mpc-multi-party-computation">安全多方计算（MPC, Multi-Party Computation）</a></h3>
+<p>多个参与方希望共同计算一个函数，但各自的数据保持私密。同态加密是 MPC 的重要构建模块之一。</p>
+<p>例如：多家银行想计算行业平均存款额，但不想暴露各自的存款数据。通过同态加密，每家银行加密自己的数据上传，计算方在密文上求平均，结果只有各方联合才能解密。</p>
+<h3 id="电子投票"><a class="header" href="#电子投票">电子投票</a></h3>
+<p>利用加法同态性，可以设计隐私保护的电子投票系统：</p>
+<ul>
+<li>每个选民加密自己的选票（0或1）</li>
+<li>将所有密文相乘（同态加法）得到总票数密文</li>
+<li>只有选举委员会能解密最终结果</li>
+<li>任何中间人都无法知道单个选民的投票选择</li>
+</ul>
+<h3 id="隐私保护机器学习"><a class="header" href="#隐私保护机器学习">隐私保护机器学习</a></h3>
+<p>在联邦学习中，各参与方上传加密的模型梯度，服务器在密文上聚合更新全局模型，无需看到任何一方的原始梯度数据。</p>
+<h2 id="534-rust-实现"><a class="header" href="#534-rust-实现">53.4 Rust 实现</a></h2>
+<p>Rust 生态中有多个同态加密库可供选择。下面介绍使用 <code>rust-paillier</code> 进行加法同态加密的示例。</p>
+<h3 id="cargotoml-依赖"><a class="header" href="#cargotoml-依赖">Cargo.toml 依赖</a></h3>
+<pre><code class="language-toml">[dependencies]
+paillier = "0.4"
+rand = "0.8"
+</code></pre>
+<h3 id="基础加密解密示例"><a class="header" href="#基础加密解密示例">基础加密解密示例</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use paillier::{Keypair, EncryptionKey, DecryptionKey};
+use paillier::Paillier;
+use rand::thread_rng;
+
+fn main() {
+    // 1. 生成密钥对（实际应用应使用更大的密钥，如2048位）
+    let (ek, dk): (EncryptionKey, DecryptionKey) = Paillier::keypair(&amp;mut thread_rng()).keys();
+
+    // 2. 待加密的明文
+    let m1 = 10u64;
+    let m2 = 20u64;
+
+    // 3. 加密
+    let c1 = Paillier::encrypt(&amp;ek, m1);
+    let c2 = Paillier::encrypt(&amp;ek, m2);
+
+    println!("明文 m1 = {}, m2 = {}", m1, m2);
+    println!("密文 c1 = {:?}", c1);
+    println!("密文 c2 = {:?}", c2);
+
+    // 4. 解密验证
+    let d1 = Paillier::decrypt(&amp;dk, &amp;c1);
+    let d2 = Paillier::decrypt(&amp;dk, &amp;c2);
+
+    println!("解密 d1 = {}, d2 = {}", d1, d2);
+    assert_eq!(m1, d1);
+    assert_eq!(m2, d2);
+}</code></pre>
+<h3 id="加法同态运算"><a class="header" href="#加法同态运算">加法同态运算</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use paillier::{EncryptionKey, DecryptionKey, Paillier};
+use rand::thread_rng;
+
+fn main() {
+    let (ek, dk): (EncryptionKey, DecryptionKey) = Paillier::keypair(&amp;mut thread_rng()).keys();
+
+    let m1 = 15u64;
+    let m2 = 25u64;
+
+    // 加密两个明文
+    let c1 = Paillier::encrypt(&amp;ek, m1);
+    let c2 = Paillier::encrypt(&amp;ek, m2);
+
+    // 同态加法：密文相乘 = 明文相加
+    let c_sum = Paillier::add(&amp;ek, &amp;c1, &amp;c2);
+
+    // 解密结果
+    let m_sum = Paillier::decrypt(&amp;dk, &amp;c_sum);
+
+    println!("{} + {} = {} (同态计算结果)", m1, m2, m_sum);
+    assert_eq!(m_sum, m1 + m2);
+
+    // 同态数乘：密文的 k 次幂 = 明文乘以 k
+    let k = 3u64;
+    let c_mul = Paillier::mul(&amp;ek, &amp;c1, k);
+    let m_mul = Paillier::decrypt(&amp;dk, &amp;c_mul);
+
+    println!("{} * {} = {} (同态计算结果)", m1, k, m_mul);
+    assert_eq!(m_mul, m1 * k);
+}</code></pre>
+<h3 id="隐私保护求和场景"><a class="header" href="#隐私保护求和场景">隐私保护求和场景</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use paillier::{EncryptionKey, DecryptionKey, Paillier};
+use rand::thread_rng;
+
+/// 模拟隐私保护求和：多个参与方贡献数据，计算总和但不泄露各自数据
+fn privacy_preserving_sum() {
+    let (ek, dk): (EncryptionKey, DecryptionKey) = Paillier::keypair(&amp;mut thread_rng()).keys();
+
+    // 三个参与方的敏感数据
+    let alice_salary = 5000u64;
+    let bob_salary = 7000u64;
+    let charlie_salary = 6000u64;
+
+    // 各自加密自己的数据
+    let c_alice = Paillier::encrypt(&amp;ek, alice_salary);
+    let c_bob = Paillier::encrypt(&amp;ek, bob_salary);
+    let c_charlie = Paillier::encrypt(&amp;ek, charlie_salary);
+
+    println!("Alice 加密了工资数据");
+    println!("Bob 加密了工资数据");
+    println!("Charlie 加密了工资数据");
+
+    // 计算服务方在密文上求和（看不到任何明文）
+    let c_total = Paillier::add(
+        &amp;ek,
+        &amp;Paillier::add(&amp;ek, &amp;c_alice, &amp;c_bob),
+        &amp;c_charlie,
+    );
+
+    // 只有持有私钥的一方能解密结果
+    let total_salary = Paillier::decrypt(&amp;dk, &amp;c_total);
+    let expected = alice_salary + bob_salary + charlie_salary;
+
+    println!("工资总和 = {} (期望: {})", total_salary, expected);
+    assert_eq!(total_salary, expected);
+
+    // 还可以计算平均值（同态数乘实现除法）
+    let count = 3u64;
+    let c_avg = Paillier::mul(&amp;ek, &amp;c_total, 1); // 这里简化为先解密再除，实际可用更复杂协议
+    let avg_salary = Paillier::decrypt(&amp;dk, &amp;c_avg) / count;
+    println!("平均工资 = {}", avg_salary);
+}
+<span class="boring">}</span></code></pre>
+<h3 id="全同态加密的-rust-生态"><a class="header" href="#全同态加密的-rust-生态">全同态加密的 Rust 生态</a></h3>
+<p>对于需要全同态加密的场景，Rust 生态正在快速发展：</p>
+<ul>
+<li><strong><code>concrete</code></strong>：Zama 公司开发的全同态加密库，基于 TFHE 方案，支持布尔和整数运算</li>
+<li><strong><code>fhe.rs</code></strong>：纯 Rust 实现的 FHE 库，支持 BFV 和 BGV 方案</li>
+<li><strong><code>sunscreen</code></strong>：提供编译器将普通 Rust 代码转换为 FHE 电路</li>
+</ul>
+<pre><code class="language-toml">[dependencies]
+concrete = "0.8"
+</code></pre>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// concrete 库的简单示例（概念演示）
+use concrete::*;
+
+fn fhe_example() -&gt; Result&lt;(), CryptoAPIError&gt; {
+    // 1. 定义加密参数
+    let secret_key = LWESecretKey::new(&amp;LWE128_630);
+    
+    // 2. 创建编码器（定义明文的数值范围）
+    let encoder = Encoder::new(-10., 10., 5, 1)?;
+    
+    // 3. 加密明文
+    let m1 = 3.;
+    let m2 = 5.;
+    let c1 = LWE::encode_encrypt(&amp;secret_key, m1, &amp;encoder)?;
+    let c2 = LWE::encode_encrypt(&amp;secret_key, m2, &amp;encoder)?;
+    
+    // 4. 同态加法
+    let c_add = &amp;c1 + &amp;c2;
+    
+    // 5. 解密
+    let m_add = c_add.decrypt_decode(&amp;secret_key)?;
+    println!("{} + {} = {}", m1, m2, m_add);
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre>
+<h2 id="535-同态加密的挑战与展望"><a class="header" href="#535-同态加密的挑战与展望">53.5 同态加密的挑战与展望</a></h2>
+<h3 id="当前挑战"><a class="header" href="#当前挑战">当前挑战</a></h3>
+<ol>
+<li><strong>计算开销大</strong>：FHE 的密文膨胀严重，计算速度比明文慢数万到数百万倍</li>
+<li><strong>噪声管理</strong>：SHE/FHE 需要复杂的噪声控制机制（如自举 bootstrapping）</li>
+<li><strong>功能限制</strong>：部分方案只支持整数运算，浮点数支持仍在发展中</li>
+<li><strong>标准化不足</strong>：相比传统密码学，HE 的标准化工作仍在初期</li>
+</ol>
+<h3 id="发展趋势"><a class="header" href="#发展趋势">发展趋势</a></h3>
+<ul>
+<li><strong>硬件加速</strong>：专用 FPGA/ASIC 加速器正在开发，有望将性能提升数个数量级</li>
+<li><strong>方案优化</strong>：CKKS 方案在机器学习场景中表现优异，TFHE 在布尔电路中效率突出</li>
+<li><strong>混合方案</strong>：将同态加密与 MPC、零知识证明等技术结合，取长补短</li>
+</ul>
+<h2 id="536-本章总结"><a class="header" href="#536-本章总结">53.6 本章总结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>说明</th><th>典型算法/库</th></tr>
+</thead>
+<tbody>
+<tr><td>PHE</td><td>部分同态加密，支持无限次单一运算</td><td>Paillier、ElGamal</td></tr>
+<tr><td>SHE</td><td>somewhat 同态加密，支持有限深度加减乘</td><td>BGV（早期）、BFV</td></tr>
+<tr><td>FHE</td><td>全同态加密，支持任意计算</td><td>CKKS、TFHE、concrete</td></tr>
+<tr><td>加法同态</td><td>密文相乘等价于明文相加</td><td>Paillier</td></tr>
+<tr><td>乘法同态</td><td>密文相乘等价于明文相乘</td><td>RSA、ElGamal</td></tr>
+<tr><td>噪声</td><td>密文中累积的计算误差，需控制或刷新</td><td>Bootstrapping</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
+<ol>
+<li>
+<p><strong>基础练习</strong>：使用 <code>rust-paillier</code> 实现一个加密计算器，支持密文加法和数乘运算，验证同态性质。</p>
+</li>
+<li>
+<p><strong>中级练习</strong>：模拟电子投票系统：10个选民各自加密投票（0或1），在密文上统计总票数，确保单个投票不可追踪。</p>
+</li>
+<li>
+<p><strong>高级练习</strong>：调研 <code>concrete</code> 或 <code>fhe.rs</code> 库，实现一个简单的全同态加密示例（如密文上的多项式求值），分析其性能开销。</p>
+</li>
+<li>
+<p><strong>实践项目</strong>：设计一个隐私保护的数据聚合服务：多个客户端上传加密数据，服务端在密文上计算统计指标（均值、方差），客户端联合解密结果。</p>
+</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_52_zkp.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_54_quantum_cryptography.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_52_zkp.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_54_quantum_cryptography.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,701 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第四十九 数字证书与PKI - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第四十九章-数字证书与-pki"><a class="header" href="#第四十九章-数字证书与-pki">第四十九章 数字证书与 PKI</a></h1>
+<blockquote>
+<p>公钥的身份证：如何证明“我是我“</p>
+</blockquote>
+<p>在上一章我们学习了非对称加密和数字签名，但还有一个关键问题没有解决：当你收到一个公钥时，如何确定它真的属于声称的那个人？如果攻击者替换了你手中的公钥，整个加密通信就会形同虚设。数字证书与公钥基础设施（PKI）正是为了解决“公钥分发与身份绑定“这一核心问题而诞生的。</p>
+<h2 id="491-为什么需要数字证书"><a class="header" href="#491-为什么需要数字证书">49.1 为什么需要数字证书</a></h2>
+<h3 id="信任问题的本质"><a class="header" href="#信任问题的本质">信任问题的本质</a></h3>
+<p>假设 Alice 想给 Bob 发送加密消息，她需要 Bob 的公钥。但如果中间人 Mallory 将 Bob 的公钥替换为自己的公钥，Alice 就会用 Mallory 的公钥加密，Mallory 可以解密、篡改、重新加密后转发给 Bob。这就是<strong>公钥分发问题</strong>。</p>
+<p>解决思路：引入一个双方都信任的第三方，由这个第三方为公钥“背书“——这就是<strong>数字证书</strong>的核心思想。</p>
+<h3 id="数字证书的作用"><a class="header" href="#数字证书的作用">数字证书的作用</a></h3>
+<p>数字证书（Digital Certificate）是由证书颁发机构（CA）签名的数据结构，它将以下信息绑定在一起：</p>
+<ul>
+<li><strong>主体身份</strong>：个人、服务器或组织的标识信息</li>
+<li><strong>公钥</strong>：主体的公钥</li>
+<li><strong>有效期</strong>：证书的有效时间范围</li>
+<li><strong>颁发者</strong>：签发该证书的 CA 信息</li>
+<li><strong>数字签名</strong>：CA 对该证书内容的签名</li>
+</ul>
+<p>任何人都可以用 CA 的公钥验证证书签名的真实性，从而确认证书中的公钥确实属于证书声明的主体。</p>
+<h2 id="492-x509-证书格式"><a class="header" href="#492-x509-证书格式">49.2 X.509 证书格式</a></h2>
+<p>X.509 是国际电信联盟（ITU-T）制定的数字证书标准，也是目前最广泛使用的证书格式。TLS/SSL、代码签名、电子邮件加密等场景都基于 X.509。</p>
+<h3 id="x509-v3-证书结构"><a class="header" href="#x509-v3-证书结构">X.509 v3 证书结构</a></h3>
+<p>一个 X.509 证书包含以下核心字段：</p>
+<pre><code>Certificate
+├── tbsCertificate (待签名内容)
+│   ├── version (版本号，v3 为 2)
+│   ├── serialNumber (证书序列号)
+│   ├── signature (签名算法标识)
+│   ├── issuer (颁发者名称)
+│   ├── validity (有效期)
+│   │   ├── notBefore (生效时间)
+│   │   └── notAfter (过期时间)
+│   ├── subject (主体名称)
+│   ├── subjectPublicKeyInfo (主体公钥信息)
+│   │   ├── algorithm (公钥算法)
+│   │   └── subjectPublicKey (公钥值)
+│   └── extensions (扩展字段，v3 特有)
+│       ├── subjectKeyIdentifier (主体密钥标识符)
+│       ├── authorityKeyIdentifier (颁发者密钥标识符)
+│       ├── keyUsage (密钥用途)
+│       ├── extendedKeyUsage (扩展密钥用途)
+│       ├── subjectAltName (主体备用名称，如 DNS 名、IP 地址)
+│       └── basicConstraints (基本约束，如是否为 CA)
+├── signatureAlgorithm (签名算法)
+└── signatureValue (签名值)
+</code></pre>
+<h3 id="证书编码格式"><a class="header" href="#证书编码格式">证书编码格式</a></h3>
+<p>X.509 证书有两种常见的编码表示：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>格式</th><th>扩展名</th><th>编码方式</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td>DER</td><td><code>.der</code>, <code>.cer</code></td><td>二进制 ASN.1 DER</td><td>紧凑、不可读</td></tr>
+<tr><td>PEM</td><td><code>.pem</code>, <code>.crt</code></td><td>Base64 编码的 DER</td><td>文本格式，以 <code>-----BEGIN CERTIFICATE-----</code> 开头</td></tr>
+</tbody>
+</table>
+</div>
+<p>PEM 格式更常见，可以用文本编辑器查看，也方便在邮件和配置文件中传递。</p>
+<h3 id="查看证书内容"><a class="header" href="#查看证书内容">查看证书内容</a></h3>
+<p>使用 OpenSSL 可以查看证书详情：</p>
+<pre><code class="language-bash"># 查看 PEM 证书内容
+openssl x509 -in server.crt -text -noout
+
+# 查看证书主题和颁发者
+openssl x509 -in server.crt -subject -issuer -noout
+</code></pre>
+<p>输出示例（部分）：</p>
+<pre><code>Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            04:7d:3c:...
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C = US, O = Let's Encrypt, CN = R3
+        Validity
+            Not Before: Jan  1 00:00:00 2024 GMT
+            Not After : Apr  1 00:00:00 2024 GMT
+        Subject: CN = example.com
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                RSA Public-Key: (2048 bit)
+        X509v3 extensions:
+            X509v3 Subject Alternative Name:
+                DNS:example.com, DNS:www.example.com
+</code></pre>
+<h2 id="493-证书链与信任锚"><a class="header" href="#493-证书链与信任锚">49.3 证书链与信任锚</a></h2>
+<h3 id="证书链certificate-chain"><a class="header" href="#证书链certificate-chain">证书链（Certificate Chain）</a></h3>
+<p>CA 通常采用层级结构。根 CA 直接签发证书的情况很少见，更多时候是：</p>
+<ul>
+<li><strong>根 CA（Root CA）</strong>：自签名证书，预装在操作系统和浏览器中</li>
+<li><strong>中间 CA（Intermediate CA）</strong>：由根 CA 签发，负责实际签发终端实体证书</li>
+<li><strong>终端实体（End Entity）</strong>：服务器、用户等持有的证书，由中间 CA 签发</li>
+</ul>
+<p>这样就形成了一条<strong>证书链</strong>：</p>
+<pre><code>终端实体证书（example.com）
+    ↑ 由 Intermediate CA 签名
+中间 CA 证书（Let's Encrypt R3）
+    ↑ 由 Root CA 签名
+根 CA 证书（ISRG Root X1）
+    ↑ 自签名
+</code></pre>
+<p>验证证书时，验证方从终端实体证书开始，沿着证书链逐级验证每个证书的签名，直到到达一个受信任的根证书。</p>
+<h3 id="信任锚trust-anchor"><a class="header" href="#信任锚trust-anchor">信任锚（Trust Anchor）</a></h3>
+<p>信任锚是证书验证的起点，通常是<strong>自签名的根 CA 证书</strong>。操作系统和浏览器预装了数百个受信任的根证书，构成了<strong>信任库（Trust Store）</strong>。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 概念示意：信任库中的根证书
+let trust_anchors = vec![
+    "DigiCert Global Root CA",
+    "ISRG Root X1",           // Let's Encrypt
+    "GlobalSign Root CA",
+    // ... 数百个根证书
+];
+<span class="boring">}</span></code></pre>
+<p><strong>自签名证书</strong>：根 CA 的证书是自己签名的，没有更上层的颁发者。这意味着信任根 CA 是一种<strong>人为约定</strong>，基于其声誉、审计和安全实践。</p>
+<h3 id="证书链验证过程"><a class="header" href="#证书链验证过程">证书链验证过程</a></h3>
+<pre><code>1. 获取服务器证书
+2. 检查有效期（notBefore &lt;= 当前时间 &lt;= notAfter）
+3. 检查证书吊销状态（CRL 或 OCSP）
+4. 验证签名：用中间 CA 的公钥验证服务器证书签名
+5. 获取中间 CA 证书，验证其签名：用根 CA 公钥验证
+6. 根 CA 证书是否在信任库中？
+7. 全部通过 → 证书可信
+</code></pre>
+<h2 id="494-证书颁发机构ca"><a class="header" href="#494-证书颁发机构ca">49.4 证书颁发机构（CA）</a></h2>
+<h3 id="ca-的角色与职责"><a class="header" href="#ca-的角色与职责">CA 的角色与职责</a></h3>
+<p>证书颁发机构（Certificate Authority）是 PKI 的核心组件，主要职责包括：</p>
+<ol>
+<li><strong>身份验证</strong>：在签发证书前验证申请者的身份</li>
+<li><strong>证书签发</strong>：使用 CA 的私钥对证书进行数字签名</li>
+<li><strong>证书更新</strong>：在证书过期前重新签发</li>
+<li><strong>证书吊销</strong>：在私钥泄露或身份变更时宣布证书失效</li>
+<li><strong>发布 CRL 和 OCSP</strong>：提供证书状态查询服务</li>
+</ol>
+<h3 id="域名验证dv组织验证ov与扩展验证ev"><a class="header" href="#域名验证dv组织验证ov与扩展验证ev">域名验证（DV）、组织验证（OV）与扩展验证（EV）</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型</th><th>验证内容</th><th>签发时间</th><th>浏览器显示</th></tr>
+</thead>
+<tbody>
+<tr><td>DV</td><td>仅验证域名所有权</td><td>分钟级</td><td>普通锁图标</td></tr>
+<tr><td>OV</td><td>验证域名 + 组织身份</td><td>小时到几天</td><td>普通锁图标</td></tr>
+<tr><td>EV</td><td>严格验证组织法律身份</td><td>几天到几周</td><td>曾显示绿色组织名（现大多浏览器已取消）</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="私有-ca-与自签名证书"><a class="header" href="#私有-ca-与自签名证书">私有 CA 与自签名证书</a></h3>
+<p>除了公共 CA（如 Let’s Encrypt、DigiCert），组织也可以搭建<strong>私有 CA</strong>用于内部系统。开发测试环境中，<strong>自签名证书</strong>（自己签发自己的证书）也很常见。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 自签名证书 vs CA 签发证书的区别
+
+// 自签名证书：issuer == subject
+let self_signed = Certificate {
+    subject: "My Server",
+    issuer: "My Server",   // 相同！
+    public_key: server_pub_key,
+    signature: sign_with(server_priv_key, ...),
+};
+
+// CA 签发证书：issuer 是 CA
+let ca_signed = Certificate {
+    subject: "My Server",
+    issuer: "My CA",       // 不同
+    public_key: server_pub_key,
+    signature: sign_with(ca_priv_key, ...),
+};
+<span class="boring">}</span></code></pre>
+<h2 id="495-证书生命周期"><a class="header" href="#495-证书生命周期">49.5 证书生命周期</a></h2>
+<h3 id="证书申请流程"><a class="header" href="#证书申请流程">证书申请流程</a></h3>
+<pre><code>1. 生成密钥对（申请者本地完成）
+2. 创建证书签名请求（CSR）
+3. 提交 CSR 和身份证明材料给 CA
+4. CA 验证身份
+5. CA 签发证书
+6. 下载并安装证书
+</code></pre>
+<h3 id="证书签名请求csr"><a class="header" href="#证书签名请求csr">证书签名请求（CSR）</a></h3>
+<p>CSR（Certificate Signing Request）是向 CA 申请证书时提交的文件，包含公钥和主体信息，用申请者的私钥签名。</p>
+<pre><code class="language-bash"># 生成私钥和 CSR
+openssl req -new -newkey rsa:2048 -nodes \
+    -keyout server.key -out server.csr \
+    -subj "/C=CN/O=MyOrg/CN=example.com"
+
+# 查看 CSR 内容
+openssl req -in server.csr -text -noout
+</code></pre>
+<h3 id="证书吊销"><a class="header" href="#证书吊销">证书吊销</a></h3>
+<p>证书可能在过期前就需要失效，常见原因：</p>
+<ul>
+<li>私钥泄露或丢失</li>
+<li>域名所有权变更</li>
+<li>组织信息变更</li>
+<li>证书签发错误</li>
+</ul>
+<p><strong>吊销机制</strong>：</p>
+<ul>
+<li><strong>CRL（Certificate Revocation List）</strong>：CA 定期发布的已吊销证书序列号列表</li>
+<li><strong>OCSP（Online Certificate Status Protocol）</strong>：实时在线查询证书状态</li>
+<li><strong>OCSP Stapling</strong>：服务器预先获取 OCSP 响应，在 TLS 握手时附带发送</li>
+</ul>
+<h2 id="496-rust-实现生成与验证证书"><a class="header" href="#496-rust-实现生成与验证证书">49.6 Rust 实现：生成与验证证书</a></h2>
+<h3 id="使用-rcgen-生成自签名证书"><a class="header" href="#使用-rcgen-生成自签名证书">使用 rcgen 生成自签名证书</a></h3>
+<p><code>rcgen</code> 是一个纯 Rust 的证书生成库，适合在测试环境或内部工具中生成证书。</p>
+<pre><code class="language-toml"># Cargo.toml
+[dependencies]
+rcgen = "0.12"
+</code></pre>
+<pre class="playground"><code class="language-rust edition2024">use rcgen::{Certificate, CertificateParams, KeyPair, SanType};
+use std::fs;
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // 创建证书参数
+    let mut params = CertificateParams::new(vec![
+        "localhost".to_string(),
+        "127.0.0.1".to_string(),
+    ]);
+
+    // 添加 Subject Alternative Name（对于 TLS 很重要）
+    params.subject_alt_names = vec![
+        SanType::DnsName("localhost".to_string()),
+        SanType::IpAddress(std::net::IpAddr::V4("127.0.0.1".parse()?)),
+    ];
+
+    // 生成自签名证书
+    let cert = Certificate::from_params(params)?;
+
+    // 获取 PEM 格式的证书和私钥
+    let cert_pem = cert.serialize_pem()?;
+    let key_pem = cert.serialize_private_key_pem();
+
+    // 保存到文件
+    fs::write("server.crt", cert_pem)?;
+    fs::write("server.key", key_pem)?;
+
+    println!("自签名证书已生成：");
+    println!("  证书: server.crt");
+    println!("  私钥: server.key");
+
+    Ok(())
+}</code></pre>
+<h3 id="生成-ca-并签发终端证书"><a class="header" href="#生成-ca-并签发终端证书">生成 CA 并签发终端证书</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use rcgen::{Certificate, CertificateParams, KeyUsagePurpose};
+
+fn create_ca() -&gt; Result&lt;Certificate, Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut params = CertificateParams::new(vec!["My Test CA".to_string()]);
+
+    // 标记为基本约束：这是 CA 证书
+    params.is_ca = rcgen::IsCa::Ca(rcgen::BasicConstraints::Unconstrained);
+
+    // 设置密钥用途
+    params.key_usages = vec![
+        KeyUsagePurpose::KeyCertSign,
+        KeyUsagePurpose::CrlSign,
+    ];
+
+    let ca_cert = Certificate::from_params(params)?;
+    Ok(ca_cert)
+}
+
+fn sign_server_cert(ca: &amp;Certificate) -&gt; Result&lt;Certificate, Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut params = CertificateParams::new(vec!["example.com".to_string()]);
+
+    params.subject_alt_names = vec![
+        rcgen::SanType::DnsName("example.com".to_string()),
+        rcgen::SanType::DnsName("www.example.com".to_string()),
+    ];
+
+    // 设置扩展密钥用途：TLS 服务器认证
+    params.extended_key_usages = vec![
+        rcgen::ExtendedKeyUsagePurpose::ServerAuth,
+    ];
+
+    let server_cert = Certificate::from_params(params)?;
+
+    // 用 CA 的私钥签名服务器证书
+    let signed_pem = server_cert.serialize_pem_with_signer(ca)?;
+
+    // 返回签名后的证书（实际使用时需要重新构造或保存 PEM）
+    Ok(server_cert)
+}
+<span class="boring">}</span></code></pre>
+<h3 id="使用-rustls-验证证书链"><a class="header" href="#使用-rustls-验证证书链">使用 rustls 验证证书链</a></h3>
+<p><code>rustls</code> 是 Rust 生态中最流行的 TLS 库，它内置了证书验证功能。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use rustls::{ClientConfig, RootCertStore};
+use rustls_pemfile;
+use std::fs::File;
+use std::io::BufReader;
+use std::sync::Arc;
+
+fn create_tls_client() -&gt; Result&lt;Arc&lt;ClientConfig&gt;, Box&lt;dyn std::error::Error&gt;&gt; {
+    // 加载系统根证书
+    let mut root_store = RootCertStore::empty();
+
+    // 从文件加载自定义 CA 证书（用于测试环境）
+    let ca_file = File::open("ca.crt")?;
+    let mut ca_reader = BufReader::new(ca_file);
+
+    let certs: Vec&lt;_&gt; = rustls_pemfile::certs(&amp;mut ca_reader)
+        .filter_map(|r| r.ok())
+        .collect();
+
+    for cert in certs {
+        root_store.add(cert)?;
+    }
+
+    // 创建 TLS 客户端配置
+    let config = ClientConfig::builder()
+        .with_root_certificates(root_store)
+        .with_no_client_auth();
+
+    Ok(Arc::new(config))
+}
+<span class="boring">}</span></code></pre>
+<h3 id="解析和检查-x509-证书"><a class="header" href="#解析和检查-x509-证书">解析和检查 X.509 证书</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use x509_parser::pem::parse_x509_pem;
+use x509_parser::prelude::*;
+
+fn inspect_certificate(pem_data: &amp;[u8]) -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let (_, pem) = parse_x509_pem(pem_data)?;
+    let cert = pem.parse_x509()?;
+
+    // 基本信息
+    println!("版本: {:?}", cert.version());
+    println!("序列号: {}", cert.tbs_certificate.raw_serial_as_string());
+
+    // 颁发者和主体
+    println!("颁发者: {}", cert.issuer());
+    println!("主体: {}", cert.subject());
+
+    // 有效期
+    let validity = cert.validity();
+    println!("生效时间: {}", validity.not_before);
+    println!("过期时间: {}", validity.not_after);
+
+    // 公钥信息
+    let pubkey = cert.tbs_certificate.subject_pki;
+    println!("公钥算法: {:?}", pubkey.algorithm.algorithm);
+
+    // 扩展字段
+    for ext in cert.extensions() {
+        println!("扩展: {:?}", ext.oid);
+    }
+
+    // 验证证书是否过期
+    let now = x509_parser::time::ASN1Time::now();
+    if now &lt; validity.not_before || now &gt; validity.not_after {
+        println!("警告：证书已过期或尚未生效！");
+    } else {
+        println!("证书在有效期内");
+    }
+
+    Ok(())
+}
+<span class="boring">}</span></code></pre>
+<h3 id="完整的证书生成与验证示例"><a class="header" href="#完整的证书生成与验证示例">完整的证书生成与验证示例</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use rcgen::{Certificate, CertificateParams, SanType};
+use ring::signature;
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // 1. 创建 CA
+    let mut ca_params = CertificateParams::new(vec!["Test CA".to_string()]);
+    ca_params.is_ca = rcgen::IsCa::Ca(rcgen::BasicConstraints::Unconstrained);
+    let ca_cert = Certificate::from_params(ca_params)?;
+
+    // 2. 创建服务器证书
+    let mut server_params = CertificateParams::new(vec!["myapp.local".to_string()]);
+    server_params.subject_alt_names = vec![
+        SanType::DnsName("myapp.local".to_string()),
+        SanType::IpAddress("192.168.1.1".parse()?),
+    ];
+    let server_cert = Certificate::from_params(server_params)?;
+
+    // 3. 用 CA 签名服务器证书
+    let signed_cert_pem = server_cert.serialize_pem_with_signer(&amp;ca_cert)?;
+    let ca_cert_pem = ca_cert.serialize_pem()?;
+
+    println!("=== CA 证书 ===");
+    println!("{}", ca_cert_pem);
+    println!("=== 服务器证书 ===");
+    println!("{}", signed_cert_pem);
+
+    // 4. 验证证书链（概念演示）
+    // 实际验证应使用 rustls 或 webpki
+    println!("\n证书链验证：");
+    println!("  服务器证书由 CA 签名 ✓");
+    println!("  CA 证书自签名 ✓");
+    println!("  信任链完整 ✓");
+
+    Ok(())
+}</code></pre>
+<h2 id="497-本章总结"><a class="header" href="#497-本章总结">49.7 本章总结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>说明</th><th>Rust 生态</th></tr>
+</thead>
+<tbody>
+<tr><td>X.509</td><td>数字证书国际标准格式</td><td><code>x509-parser</code> 用于解析</td></tr>
+<tr><td>证书链</td><td>从终端实体到根 CA 的层级信任链</td><td><code>rustls</code> 自动验证</td></tr>
+<tr><td>CA</td><td>证书颁发机构，负责身份验证和签名</td><td><code>rcgen</code> 可用于构建测试 CA</td></tr>
+<tr><td>信任锚</td><td>预装的受信任根证书</td><td><code>webpki-roots</code> 提供 Mozilla 根证书</td></tr>
+<tr><td>证书吊销</td><td>CRL 和 OCSP 机制</td><td><code>rustls</code> 支持 OCSP Stapling</td></tr>
+<tr><td>自签名证书</td><td>自己签名的证书，适合测试</td><td><code>rcgen</code> 生成</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
+<ol>
+<li>
+<p><strong>基础练习</strong>：使用 <code>rcgen</code> 生成一个自签名证书，用 OpenSSL 查看其内容，确认包含正确的 SAN 扩展。</p>
+</li>
+<li>
+<p><strong>中级练习</strong>：构建一个两层 PKI（根 CA + 中间 CA + 服务器证书），验证完整证书链。</p>
+</li>
+<li>
+<p><strong>高级练习</strong>：实现一个简易的证书验证工具，解析 PEM 证书文件，检查有效期、密钥用途和签名算法强度。</p>
+</li>
+<li>
+<p><strong>实践项目</strong>：为你的 Rust Web 应用（如 Axum 或 Actix-web）配置 TLS，使用 <code>rustls</code> 和自签名证书启用 HTTPS。</p>
+</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>密码学箴言</strong>：证书解决的不是加密问题，而是信任问题。再强的加密算法，如果信任根基被攻破，也只是空中楼阁。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_48_authorization.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_50_tls.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_48_authorization.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_50_tls.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

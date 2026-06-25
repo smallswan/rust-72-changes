@@ -1,0 +1,1136 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第三十九 强化学习 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第三十九-强化学习reinforcement-learning"><a class="header" href="#第三十九-强化学习reinforcement-learning">第三十九 强化学习（Reinforcement Learning）</a></h1>
+<pre><code class="language-txt">第三十九 强化学习
+├── 什么是强化学习（RL）
+├── 智能体与环境
+├── 马尔可夫决策过程（MDP）
+│   ├── 状态、动作、奖励
+│   ├── 转移概率与折扣因子
+│   └── MDP 的形式化定义
+├── 贝尔曼方程
+│   ├── 状态价值函数
+│   ├── 动作价值函数
+│   └── 最优价值函数
+├── 策略与价值函数
+│   ├── 策略（确定性 / 随机性）
+│   ├── 策略评估
+│   └── 策略改进
+├── 探索与利用
+│   ├── ε-贪心策略
+│   └── 其他探索方法
+├── 强化学习算法
+│   ├── Q-Learning
+│   ├── SARSA
+│   ├── 深度强化学习（DQN）
+│   └── 近端策略优化（PPO）
+├── 实战：用 Rust 实现 Q-Learning
+│   └── FrozenLake 环境
+├── Rust 强化学习生态
+└── 总结与练习
+</code></pre>
+<p>强化学习（Reinforcement Learning，简称 RL）是人工智能中最接近“学习“本质的分支。与监督学习依赖标注数据、无监督学习挖掘数据结构不同，强化学习让智能体（Agent）通过与环境（Environment）的不断交互，在试错中学习最优行为策略——这与人类婴儿学走路、学说话的过程惊人地相似。</p>
+<p>$$\text{强化学习} = \text{试错探索} + \text{延迟奖励} + \text{策略优化}$$</p>
+<hr>
+<h2 id="一什么是强化学习"><a class="header" href="#一什么是强化学习">一、什么是强化学习</a></h2>
+<h3 id="11-定义"><a class="header" href="#11-定义">1.1 定义</a></h3>
+<p>强化学习是机器学习的一大范式，其核心思想是：智能体在环境中采取动作，环境返回奖励信号，智能体通过最大化累积奖励来学习最优策略。它既不依赖标注数据，也不需要显式的问题建模，而是通过“做中学“（Learning by Doing）来获取知识。</p>
+<h3 id="12-强化学习与其他机器学习范式的对比"><a class="header" href="#12-强化学习与其他机器学习范式的对比">1.2 强化学习与其他机器学习范式的对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>范式</th><th>输入</th><th>反馈</th><th>目标</th><th>典型场景</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>监督学习</strong></td><td>特征 + 标签</td><td>即时、正确答案</td><td>预测标签</td><td>图像分类、机器翻译</td></tr>
+<tr><td><strong>无监督学习</strong></td><td>特征</td><td>无反馈</td><td>发现数据结构</td><td>聚类、降维</td></tr>
+<tr><td><strong>强化学习</strong></td><td>状态</td><td>延迟奖励信号</td><td>最大化累积奖励</td><td>游戏AI、机器人控制</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="13-发展简史"><a class="header" href="#13-发展简史">1.3 发展简史</a></h3>
+<ul>
+<li><strong>1989</strong>：Watkins 提出 Q-Learning，奠定值函数方法基础</li>
+<li><strong>1992</strong>：Tesauro 用 TD-Gammon 程序挑战西洋双陆棋</li>
+<li><strong>2013</strong>：DeepMind 发表 Playing Atari with Deep RL（DQN）</li>
+<li><strong>2016</strong>：AlphaGo 击败李世石，强化学习走入大众视野</li>
+<li><strong>2017</strong>：PPO 算法提出，成为 OpenAI 默认策略优化方法</li>
+<li><strong>2020s</strong>：RLHF（基于人类反馈的强化学习）赋能大语言模型</li>
+</ul>
+<hr>
+<h2 id="二智能体与环境"><a class="header" href="#二智能体与环境">二、智能体与环境</a></h2>
+<p>强化学习的基本框架由两个核心角色构成：<strong>智能体（Agent）</strong> 和 <strong>环境（Environment）</strong>。二者通过循环交互完成学习过程。</p>
+<h3 id="21-交互循环"><a class="header" href="#21-交互循环">2.1 交互循环</a></h3>
+<pre><code>┌──────────┐   动作 a_t    ┌──────────┐
+│          │ ────────────&gt; │          │
+│  智能体   │               │   环境   │
+│ (Agent)  │ &lt;──────────── │  (Env)   │
+│          │  状态 s_{t+1}  │          │
+│          │  奖励 r_{t+1}  │          │
+└──────────┘               └──────────┘
+</code></pre>
+<p>每一步交互的流程：</p>
+<ol>
+<li>智能体观察当前状态 $s_t$</li>
+<li>智能体根据策略选择动作 $a_t$</li>
+<li>环境接收动作，转移到下一状态 $s_{t+1}$</li>
+<li>环境返回奖励 $r_{t+1}$</li>
+<li>智能体根据反馈更新策略</li>
+</ol>
+<h3 id="22-用-rust-描述交互循环"><a class="header" href="#22-用-rust-描述交互循环">2.2 用 Rust 描述交互循环</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// 智能体 trait：定义智能体的基本行为
+trait Agent {
+    /// 根据当前状态选择动作
+    fn select_action(&amp;mut self, state: usize) -&gt; usize;
+    /// 根据转移结果更新策略
+    fn update(&amp;mut self, state: usize, action: usize, reward: f64, next_state: usize);
+}
+
+/// 环境 trait：定义环境的基本接口
+trait Environment {
+    /// 重置环境到初始状态
+    fn reset(&amp;mut self) -&gt; usize;
+    /// 执行动作，返回 (下一状态, 奖励, 是否结束)
+    fn step(&amp;mut self, state: usize, action: usize) -&gt; (usize, f64, bool);
+}
+
+/// 训练循环
+fn train&lt;A: Agent, E: Environment&gt;(agent: &amp;mut A, env: &amp;mut E, episodes: usize) {
+    for episode in 0..episodes {
+        let mut state = env.reset();
+        let mut total_reward = 0.0;
+        let mut steps = 0;
+
+        loop {
+            let action = agent.select_action(state);
+            let (next_state, reward, done) = env.step(state, action);
+            agent.update(state, action, reward, next_state);
+            total_reward += reward;
+            steps += 1;
+            state = next_state;
+
+            if done {
+                break;
+            }
+        }
+
+        if (episode + 1) % 100 == 0 {
+            println!("Episode {}: 总奖励 = {:.2}, 步数 = {}", 
+                     episode + 1, total_reward, steps);
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="三马尔可夫决策过程mdp"><a class="header" href="#三马尔可夫决策过程mdp">三、马尔可夫决策过程（MDP）</a></h2>
+<p>马尔可夫决策过程（Markov Decision Process, MDP）是强化学习的数学框架，它用精确的数学语言描述了智能体与环境交互的全部要素。</p>
+<h3 id="31-mdp-的五元组"><a class="header" href="#31-mdp-的五元组">3.1 MDP 的五元组</a></h3>
+<p>一个 MDP 由一个五元组 $\langle S, A, P, R, \gamma \rangle$ 定义：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>要素</th><th>符号</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>状态空间</strong></td><td>$S$</td><td>智能体可能处于的所有状态的集合</td></tr>
+<tr><td><strong>动作空间</strong></td><td>$A$</td><td>智能体可以执行的所有动作的集合</td></tr>
+<tr><td><strong>转移概率</strong></td><td>$P(s’ \mid s, a)$</td><td>在状态 $s$ 执行动作 $a$ 后转移到状态 $s’$ 的概率</td></tr>
+<tr><td><strong>奖励函数</strong></td><td>$R(s, a, s’)$</td><td>执行动作后获得的即时奖励</td></tr>
+<tr><td><strong>折扣因子</strong></td><td>$\gamma \in [0, 1)$</td><td>衡量未来奖励的衰减程度</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="32-马尔可夫性质"><a class="header" href="#32-马尔可夫性质">3.2 马尔可夫性质</a></h3>
+<p>MDP 的核心假设是<strong>马尔可夫性质</strong>（Markov Property）：当前状态包含了做出最优决策所需的全部信息，即未来只与现在有关，与过去无关。</p>
+<p>$$P(s_{t+1} \mid s_t, a_t, s_{t-1}, a_{t-1}, \ldots) = P(s_{t+1} \mid s_t, a_t)$$</p>
+<h3 id="33-转移概率与奖励函数"><a class="header" href="#33-转移概率与奖励函数">3.3 转移概率与奖励函数</a></h3>
+<p>状态转移概率满足归一化条件：</p>
+<p>$$\sum_{s’ \in S} P(s’ \mid s, a) = 1, \quad \forall s \in S, \forall a \in A$$</p>
+<p>奖励函数 $R(s, a, s’)$ 定义了智能体在状态 $s$ 执行动作 $a$ 后转移到 $s’$ 时获得的即时反馈。</p>
+<h3 id="34-折扣因子"><a class="header" href="#34-折扣因子">3.4 折扣因子</a></h3>
+<p>折扣因子 $\gamma$ 决定了智能体对远期奖励的重视程度：</p>
+<ul>
+<li>$\gamma \to 1$：智能体有远见，重视长期回报</li>
+<li>$\gamma \to 0$：智能体目光短浅，只关注即时奖励</li>
+</ul>
+<p>累积回报（Return）定义为从时刻 $t$ 开始的所有折扣奖励之和：</p>
+<p>$$G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \cdots = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}$$</p>
+<h3 id="35-用-rust-定义-mdp"><a class="header" href="#35-用-rust-定义-mdp">3.5 用 Rust 定义 MDP</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// MDP 的五元组定义
+struct Mdp {
+    num_states: usize,       // |S|
+    num_actions: usize,      // |A|
+    transitions: Vec&lt;Vec&lt;Vec&lt;f64&gt;&gt;&gt;, // P[s][a][s'] 转移概率
+    rewards: Vec&lt;Vec&lt;Vec&lt;f64&gt;&gt;&gt;,    // R[s][a][s'] 奖励函数
+    gamma: f64,              // 折扣因子
+}
+
+impl Mdp {
+    fn new(num_states: usize, num_actions: usize, gamma: f64) -&gt; Self {
+        // 初始化转移概率和奖励矩阵
+        let transitions = vec![vec![vec![1.0 / num_states as f64; num_states]; num_actions]; num_states];
+        let rewards = vec![vec![vec![0.0; num_states]; num_actions]; num_states];
+        Mdp { num_states, num_actions, transitions, rewards, gamma }
+    }
+
+    /// 获取转移概率 P(s'|s,a)
+    fn get_transition(&amp;self, s: usize, a: usize, s_prime: usize) -&gt; f64 {
+        self.transitions[s][a][s_prime]
+    }
+
+    /// 获取奖励 R(s,a,s')
+    fn get_reward(&amp;self, s: usize, a: usize, s_prime: usize) -&gt; f64 {
+        self.rewards[s][a][s_prime]
+    }
+}
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="四贝尔曼方程"><a class="header" href="#四贝尔曼方程">四、贝尔曼方程</a></h2>
+<p>贝尔曼方程（Bellman Equation）是强化学习的基石，它将价值函数表达为即时奖励与未来价值的递推关系。</p>
+<h3 id="41-状态价值函数"><a class="header" href="#41-状态价值函数">4.1 状态价值函数</a></h3>
+<p>状态价值函数 $V^\pi(s)$ 表示在策略 $\pi$ 下，从状态 $s$ 出发的期望累积回报：</p>
+<p>$$V^\pi(s) = \mathbb{E}<em>\pi \left[ G_t \mid S_t = s \right] = \mathbb{E}</em>\pi \left[ \sum_{k=0}^{\infty} \gamma^k R_{t+k+1} \mid S_t = s \right]$$</p>
+<p>根据贝尔曼方程，它可以分解为即时奖励加上下一状态的价值：</p>
+<p>$$V^\pi(s) = \sum_a \pi(a \mid s) \sum_{s’} P(s’ \mid s, a) \left[ R(s, a, s’) + \gamma V^\pi(s’) \right]$$</p>
+<h3 id="42-动作价值函数"><a class="header" href="#42-动作价值函数">4.2 动作价值函数</a></h3>
+<p>动作价值函数 $Q^\pi(s, a)$ 表示在状态 $s$ 执行动作 $a$ 后，遵循策略 $\pi$ 的期望累积回报：</p>
+<p>$$Q^\pi(s, a) = \mathbb{E}_\pi \left[ G_t \mid S_t = s, A_t = a \right]$$</p>
+<p>贝尔曼方程形式：</p>
+<p>$$Q^\pi(s, a) = \sum_{s’} P(s’ \mid s, a) \left[ R(s, a, s’) + \gamma \sum_{a’} \pi(a’ \mid s’) Q^\pi(s’, a’) \right]$$</p>
+<h3 id="43-最优价值函数"><a class="header" href="#43-最优价值函数">4.3 最优价值函数</a></h3>
+<p>最优状态价值函数和最优动作价值函数：</p>
+<p>$$V^*(s) = \max_\pi V^\pi(s)$$</p>
+<p>$$Q^*(s, a) = \max_\pi Q^\pi(s, a)$$</p>
+<p>最优贝尔曼方程：</p>
+<p>$$V^<em>(s) = \max_a \sum_{s’} P(s’ \mid s, a) \left[ R(s, a, s’) + \gamma V^</em>(s’) \right]$$</p>
+<p>$$Q^<em>(s, a) = \sum_{s’} P(s’ \mid s, a) \left[ R(s, a, s’) + \gamma \max_{a’} Q^</em>(s’, a’) \right]$$</p>
+<h3 id="44-用-rust-实现价值迭代"><a class="header" href="#44-用-rust-实现价值迭代">4.4 用 Rust 实现价值迭代</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// 价值迭代算法求解最优价值函数
+fn value_iteration(mdp: &amp;Mdp, max_iterations: usize, theta: f64) -&gt; Vec&lt;f64&gt; {
+    let mut v = vec![0.0; mdp.num_states];
+
+    for _ in 0..max_iterations {
+        let mut delta = 0.0;
+
+        for s in 0..mdp.num_states {
+            let mut max_value = f64::NEG_INFINITY;
+
+            for a in 0..mdp.num_actions {
+                let mut action_value = 0.0;
+                for s_prime in 0..mdp.num_states {
+                    let p = mdp.get_transition(s, a, s_prime);
+                    let r = mdp.get_reward(s, a, s_prime);
+                    action_value += p * (r + mdp.gamma * v[s_prime]);
+                }
+                max_value = max_value.max(action_value);
+            }
+
+            delta = delta.max((max_value - v[s]).abs());
+            v[s] = max_value;
+        }
+
+        if delta &lt; theta {
+            println!("价值迭代在 {} 次迭代后收敛", max_iterations);
+            break;
+        }
+    }
+
+    v
+}
+
+/// 从最优价值函数提取最优策略
+fn extract_policy(mdp: &amp;Mdp, v: &amp;[f64]) -&gt; Vec&lt;usize&gt; {
+    let mut policy = vec![0; mdp.num_states];
+
+    for s in 0..mdp.num_states {
+        let mut best_action = 0;
+        let mut best_value = f64::NEG_INFINITY;
+
+        for a in 0..mdp.num_actions {
+            let mut action_value = 0.0;
+            for s_prime in 0..mdp.num_states {
+                let p = mdp.get_transition(s, a, s_prime);
+                let r = mdp.get_reward(s, a, s_prime);
+                action_value += p * (r + mdp.gamma * v[s_prime]);
+            }
+            if action_value &gt; best_value {
+                best_value = action_value;
+                best_action = a;
+            }
+        }
+        policy[s] = best_action;
+    }
+
+    policy
+}
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="五策略与价值函数"><a class="header" href="#五策略与价值函数">五、策略与价值函数</a></h2>
+<h3 id="51-策略的定义"><a class="header" href="#51-策略的定义">5.1 策略的定义</a></h3>
+<p>策略 $\pi$ 是智能体的行为规则，定义了在每个状态下应该采取什么动作。</p>
+<p><strong>确定性策略</strong>：每个状态对应唯一动作</p>
+<p>$$a = \pi(s)$$</p>
+<p><strong>随机性策略</strong>：每个状态下各动作的概率分布</p>
+<p>$$\pi(a \mid s) = P(A_t = a \mid S_t = s)$$</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// 策略 trait
+trait Policy {
+    /// 在给定状态下选择动作
+    fn select_action(&amp;self, state: usize) -&gt; usize;
+}
+
+/// 确定性策略：每个状态映射到一个动作
+struct DeterministicPolicy {
+    action_map: Vec&lt;usize&gt;,
+}
+
+impl DeterministicPolicy {
+    fn new(action_map: Vec&lt;usize&gt;) -&gt; Self {
+        Self { action_map }
+    }
+}
+
+impl Policy for DeterministicPolicy {
+    fn select_action(&amp;self, state: usize) -&gt; usize {
+        self.action_map[state]
+    }
+}
+
+/// 随机性策略：每个状态下各动作的概率
+struct StochasticPolicy {
+    /// prob[s][a] = 在状态 s 选择动作 a 的概率
+    prob: Vec&lt;Vec&lt;f64&gt;&gt;,
+    num_actions: usize,
+}
+
+impl StochasticPolicy {
+    fn new(num_states: usize, num_actions: usize) -&gt; Self {
+        // 均匀初始化
+        let prob = vec![vec![1.0 / num_actions as f64; num_actions]; num_states];
+        Self { prob, num_actions }
+    }
+}
+
+impl Policy for StochasticPolicy {
+    fn select_action(&amp;self, state: usize) -&gt; usize {
+        // 按概率分布采样
+        let r = rand::random::&lt;f64&gt;();
+        let mut cumulative = 0.0;
+        for a in 0..self.num_actions {
+            cumulative += self.prob[state][a];
+            if r &lt; cumulative {
+                return a;
+            }
+        }
+        self.num_actions - 1
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="52-策略评估"><a class="header" href="#52-策略评估">5.2 策略评估</a></h3>
+<p>策略评估的目标是计算给定策略 $\pi$ 下的状态价值函数 $V^\pi$。采用迭代法：</p>
+<p>$$V_{k+1}(s) = \sum_a \pi(a \mid s) \sum_{s’} P(s’ \mid s, a) \left[ R(s, a, s’) + \gamma V_k(s’) \right]$$</p>
+<h3 id="53-策略改进"><a class="header" href="#53-策略改进">5.3 策略改进</a></h3>
+<p>在获得价值函数后，通过贪婪地选择每个状态的最优动作来改进策略：</p>
+<p>$$\pi’(s) = \arg\max_a Q^\pi(s, a) = \arg\max_a \sum_{s’} P(s’ \mid s, a) \left[ R(s, a, s’) + \gamma V^\pi(s’) \right]$$</p>
+<p>策略评估与策略改进交替执行，构成**策略迭代（Policy Iteration）**算法，保证收敛到最优策略。</p>
+<hr>
+<h2 id="六探索与利用"><a class="header" href="#六探索与利用">六、探索与利用</a></h2>
+<p>强化学习面临一个核心困境：<strong>探索（Exploration）</strong> 还是 <strong>利用（Exploitation）</strong>？</p>
+<ul>
+<li><strong>利用</strong>：选择当前已知最优的动作，获取最大即时收益</li>
+<li><strong>探索</strong>：尝试未知动作，可能发现更好的策略</li>
+</ul>
+<p>$$\text{探索与利用的权衡} \iff \text{已知的好 vs 未知的好}$$</p>
+<h3 id="61-ε-贪心策略"><a class="header" href="#61-ε-贪心策略">6.1 ε-贪心策略</a></h3>
+<p>最常用的探索方法是 $\varepsilon$-贪心（$\varepsilon$-greedy）：以概率 $1 - \varepsilon$ 选择当前最优动作，以概率 $\varepsilon$ 随机选择动作。</p>
+<p>$$a_t = \begin{cases} \arg\max_a Q(s_t, a) &amp; \text{以概率 } 1 - \varepsilon \ \text{随机动作} &amp; \text{以概率 } \varepsilon \end{cases}$$</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// ε-贪心策略实现
+struct EpsilonGreedy {
+    q_table: Vec&lt;Vec&lt;f64&gt;&gt;,  // Q(s, a) 表
+    epsilon: f64,            // 探索率
+    num_actions: usize,
+}
+
+impl EpsilonGreedy {
+    fn new(num_states: usize, num_actions: usize, epsilon: f64) -&gt; Self {
+        Self {
+            q_table: vec![vec![0.0; num_actions]; num_states],
+            epsilon,
+            num_actions,
+        }
+    }
+
+    /// ε-贪心选择动作
+    fn select_action(&amp;self, state: usize) -&gt; usize {
+        if rand::random::&lt;f64&gt;() &lt; self.epsilon {
+            // 探索：随机选择
+            (rand::random::&lt;f64&gt;() * self.num_actions as f64).floor() as usize
+        } else {
+            // 利用：选择 Q 值最大的动作
+            self.q_table[state]
+                .iter()
+                .enumerate()
+                .max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap())
+                .map(|(idx, _)| idx)
+                .unwrap()
+        }
+    }
+
+    /// ε 衰减：随着训练进行逐渐减少探索
+    fn decay_epsilon(&amp;mut self, decay: f64, min_epsilon: f64) {
+        self.epsilon = (self.epsilon * decay).max(min_epsilon);
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="62-其他探索方法"><a class="header" href="#62-其他探索方法">6.2 其他探索方法</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方法</th><th>原理</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Boltzmann 探索</strong></td><td>按 Q 值的 softmax 概率选择动作</td><td>需要平滑探索</td></tr>
+<tr><td><strong>UCB（上置信界）</strong></td><td>选择置信区间上界最大的动作</td><td>多臂老虎机问题</td></tr>
+<tr><td><strong>乐观初始化</strong></td><td>将 Q 值初始化为较大值，鼓励探索</td><td>表格型方法</td></tr>
+<tr><td><strong>噪声网络</strong></td><td>在网络参数中添加噪声</td><td>连续动作空间</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="七强化学习算法"><a class="header" href="#七强化学习算法">七、强化学习算法</a></h2>
+<h3 id="71-q-learning"><a class="header" href="#71-q-learning">7.1 Q-Learning</a></h3>
+<p>Q-Learning 是最经典的**异策略（off-policy）**时序差分算法。它直接学习最优动作价值函数 $Q^*(s, a)$，不依赖当前策略的执行。</p>
+<p>更新规则：</p>
+<p>$$Q(s, a) \leftarrow Q(s, a) + \alpha \left[ r + \gamma \max_{a’} Q(s’, a’) - Q(s, a) \right]$$</p>
+<p>其中 $\alpha$ 为学习率，$\gamma$ 为折扣因子。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// Q-Learning 智能体
+struct QLearningAgent {
+    q_table: Vec&lt;Vec&lt;f64&gt;&gt;,
+    learning_rate: f64,  // α
+    discount_factor: f64, // γ
+    epsilon: f64,
+    num_actions: usize,
+}
+
+impl QLearningAgent {
+    fn new(num_states: usize, num_actions: usize, lr: f64, gamma: f64, epsilon: f64) -&gt; Self {
+        Self {
+            q_table: vec![vec![0.0; num_actions]; num_states],
+            learning_rate: lr,
+            discount_factor: gamma,
+            epsilon,
+            num_actions,
+        }
+    }
+
+    /// Q-Learning 更新规则
+    fn update(&amp;mut self, s: usize, a: usize, r: f64, s_next: usize, done: bool) {
+        // 计算目标值
+        let max_q_next = if done {
+            0.0
+        } else {
+            self.q_table[s_next]
+                .iter()
+                .cloned()
+                .fold(f64::NEG_INFINITY, f64::max)
+        };
+
+        let target = r + self.discount_factor * max_q_next;
+        // 时序差分更新
+        let td_error = target - self.q_table[s][a];
+        self.q_table[s][a] += self.learning_rate * td_error;
+    }
+
+    /// 选择动作（ε-贪心）
+    fn select_action(&amp;self, state: usize) -&gt; usize {
+        if rand::random::&lt;f64&gt;() &lt; self.epsilon {
+            (rand::random::&lt;f64&gt;() * self.num_actions as f64).floor() as usize
+        } else {
+            self.q_table[state]
+                .iter()
+                .enumerate()
+                .max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap())
+                .map(|(idx, _)| idx)
+                .unwrap()
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="72-sarsa"><a class="header" href="#72-sarsa">7.2 SARSA</a></h3>
+<p>SARSA 是一种**同策略（on-policy）**算法，它使用实际执行的动作来更新 Q 值，而非贪婪地选择最大 Q 值。</p>
+<p>更新规则：</p>
+<p>$$Q(s, a) \leftarrow Q(s, a) + \alpha \left[ r + \gamma Q(s’, a’) - Q(s, a) \right]$$</p>
+<p>其中 $a’$ 是在状态 $s’$ 下实际执行的动作（也遵循 $\varepsilon$-贪心策略）。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// SARSA 智能体
+struct SarsaAgent {
+    q_table: Vec&lt;Vec&lt;f64&gt;&gt;,
+    learning_rate: f64,
+    discount_factor: f64,
+    epsilon: f64,
+    num_actions: usize,
+}
+
+impl SarsaAgent {
+    fn new(num_states: usize, num_actions: usize, lr: f64, gamma: f64, epsilon: f64) -&gt; Self {
+        Self {
+            q_table: vec![vec![0.0; num_actions]; num_states],
+            learning_rate: lr,
+            discount_factor: gamma,
+            epsilon,
+            num_actions,
+        }
+    }
+
+    /// SARSA 更新规则（使用实际选择的下一个动作 a'）
+    fn update(&amp;mut self, s: usize, a: usize, r: f64, s_next: usize, a_next: usize, done: bool) {
+        let next_q = if done { 0.0 } else { self.q_table[s_next][a_next] };
+        let target = r + self.discount_factor * next_q;
+        let td_error = target - self.q_table[s][a];
+        self.q_table[s][a] += self.learning_rate * td_error;
+    }
+
+    fn select_action(&amp;self, state: usize) -&gt; usize {
+        if rand::random::&lt;f64&gt;() &lt; self.epsilon {
+            (rand::random::&lt;f64&gt;() * self.num_actions as f64).floor() as usize
+        } else {
+            self.q_table[state]
+                .iter()
+                .enumerate()
+                .max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap())
+                .map(|(idx, _)| idx)
+                .unwrap()
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="73-q-learning-与-sarsa-的对比"><a class="header" href="#73-q-learning-与-sarsa-的对比">7.3 Q-Learning 与 SARSA 的对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th>Q-Learning</th><th>SARSA</th></tr>
+</thead>
+<tbody>
+<tr><td>策略类型</td><td>异策略（off-policy）</td><td>同策略（on-policy）</td></tr>
+<tr><td>更新目标</td><td>$\max_{a’} Q(s’, a’)$</td><td>$Q(s’, a’)$（实际动作）</td></tr>
+<tr><td>探索影响</td><td>不受探索策略影响</td><td>受探索策略影响</td></tr>
+<tr><td>收敛性</td><td>更激进，可能过估计</td><td>更保守，更稳定</td></tr>
+<tr><td>适用场景</td><td>目标明确的任务</td><td>需要安全探索的任务</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="74-深度-q-网络dqn"><a class="header" href="#74-深度-q-网络dqn">7.4 深度 Q 网络（DQN）</a></h3>
+<p>当状态空间或动作空间非常大时，Q 表无法存储所有状态-动作对。深度 Q 网络（Deep Q-Network, DQN）用神经网络近似 $Q(s, a)$，将状态作为输入，输出各动作的 Q 值。</p>
+<p>DQN 的两个关键创新：</p>
+<ol>
+<li><strong>经验回放（Experience Replay）</strong>：将转移元组 $(s, a, r, s’)$ 存入回放缓冲区，训练时随机采样，打破数据相关性</li>
+<li><strong>目标网络（Target Network）</strong>：使用独立的网络计算目标 Q 值，定期同步，提高训练稳定性</li>
+</ol>
+<p>$$\text{损失函数：} \mathcal{L}(\theta) = \mathbb{E} \left[ \left( r + \gamma \max_{a’} Q(s’, a’; \theta^-) - Q(s, a; \theta) \right)^2 \right]$$</p>
+<p>其中 $\theta$ 为在线网络参数，$\theta^-$ 为目标网络参数。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// 经验回放缓冲区
+struct ReplayBuffer {
+    buffer: Vec&lt;Experience&gt;,
+    capacity: usize,
+}
+
+/// 一次转移的经验
+#[derive(Clone)]
+struct Experience {
+    state: usize,
+    action: usize,
+    reward: f64,
+    next_state: usize,
+    done: bool,
+}
+
+impl ReplayBuffer {
+    fn new(capacity: usize) -&gt; Self {
+        Self { buffer: Vec::with_capacity(capacity), capacity }
+    }
+
+    /// 存入经验
+    fn push(&amp;mut self, exp: Experience) {
+        if self.buffer.len() &gt;= self.capacity {
+            self.buffer.remove(0); // FIFO 淘汰最旧经验
+        }
+        self.buffer.push(exp);
+    }
+
+    /// 随机采样一批经验
+    fn sample(&amp;self, batch_size: usize) -&gt; Vec&lt;&amp;Experience&gt; {
+        use rand::seq::SliceRandom;
+        let mut rng = rand::thread_rng();
+        self.buffer.choose_multiple(&amp;mut rng, batch_size).collect()
+    }
+
+    fn len(&amp;self) -&gt; usize {
+        self.buffer.len()
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="75-近端策略优化ppo"><a class="header" href="#75-近端策略优化ppo">7.5 近端策略优化（PPO）</a></h3>
+<p>近端策略优化（Proximal Policy Optimization, PPO）是目前最广泛使用的策略梯度算法之一。它通过限制策略更新幅度来保证训练稳定性。</p>
+<p>PPO-Clip 目标函数：</p>
+<p>$$L^{\text{CLIP}}(\theta) = \mathbb{E}_t \left[ \min\left( r_t(\theta) \hat{A}_t,\ \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) \hat{A}_t \right) \right]$$</p>
+<p>其中：</p>
+<ul>
+<li>$r_t(\theta) = \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)}$ 是新旧策略的概率比</li>
+<li>$\hat{A}_t$ 是优势函数估计</li>
+<li>$\epsilon$ 是裁剪参数（通常取 0.1 ~ 0.2）</li>
+</ul>
+<p>PPO 的核心思想是：当新策略偏离旧策略太远时，通过裁剪来限制梯度更新，避免策略崩溃。</p>
+<hr>
+<h2 id="八实战用-rust-实现-q-learningfrozenlake-环境"><a class="header" href="#八实战用-rust-实现-q-learningfrozenlake-环境">八、实战：用 Rust 实现 Q-Learning（FrozenLake 环境）</a></h2>
+<p>下面我们用一个经典的 FrozenLake（冰湖）环境来演示 Q-Learning 的完整实现。冰湖是一个 4x4 的网格世界，智能体需要从起点 S 走到终点 G，途中要避开冰洞 H。</p>
+<pre><code>SFFF
+FHFH
+FFFH
+HFFG
+</code></pre>
+<p>S = 起点, F = 冰面（安全）, H = 冰洞（掉入则失败）, G = 目标（到达则成功）</p>
+<pre class="playground"><code class="language-rust edition2024">use rand::Rng;
+
+/// FrozenLake 环境
+struct FrozenLake {
+    /// 4x4 网格，共 16 个状态
+    grid: [i8; 16],
+    current_state: usize,
+}
+
+impl FrozenLake {
+    fn new() -&gt; Self {
+        // 0=安全, 1=冰洞, 2=起点, 3=终点
+        let grid = [
+            2, 0, 0, 0,  // SFFF
+            0, 1, 0, 1,  // FHFH
+            0, 0, 0, 1,  // FFFH
+            1, 0, 0, 3,  // HFFG
+        ];
+        Self { grid, current_state: 0 }
+    }
+
+    /// 4 个动作：0=左, 1=下, 2=右, 3=上
+    fn step(&amp;mut self, action: usize) -&gt; (usize, f64, bool) {
+        let s = self.current_state as i32;
+        let row = s / 4;
+        let col = s % 4;
+
+        let (new_row, new_col) = match action {
+            0 =&gt; (row, col - 1),     // 左
+            1 =&gt; (row + 1, col),     // 下
+            2 =&gt; (row, col + 1),     // 右
+            3 =&gt; (row - 1, col),     // 上
+            _ =&gt; (row, col),
+        };
+
+        // 边界检查：超出边界则原地不动
+        let new_state = if new_row &lt; 0 || new_row &gt; 3 || new_col &lt; 0 || new_col &gt; 3 {
+            self.current_state
+        } else {
+            (new_row * 4 + new_col) as usize
+        };
+
+        self.current_state = new_state;
+
+        let reward = if self.grid[new_state] == 3 { 1.0 } else { 0.0 };
+        let done = self.grid[new_state] == 1 || self.grid[new_state] == 3;
+
+        (new_state, reward, done)
+    }
+
+    fn reset(&amp;mut self) -&gt; usize {
+        self.current_state = 0;
+        0
+    }
+}
+
+/// Q-Learning 智能体
+struct QLearner {
+    q_table: [[f64; 4]; 16], // 16 个状态，4 个动作
+    lr: f64,
+    gamma: f64,
+    epsilon: f64,
+    epsilon_min: f64,
+    epsilon_decay: f64,
+}
+
+impl QLearner {
+    fn new(lr: f64, gamma: f64, epsilon: f64) -&gt; Self {
+        Self {
+            q_table: [[0.0; 4]; 16],
+            lr,
+            gamma,
+            epsilon,
+            epsilon_min: 0.01,
+            epsilon_decay: 0.995,
+        }
+    }
+
+    fn select_action(&amp;self, state: usize) -&gt; usize {
+        let mut rng = rand::thread_rng();
+        if rng.gen::&lt;f64&gt;() &lt; self.epsilon {
+            rng.gen_range(0..4)
+        } else {
+            self.q_table[state]
+                .iter()
+                .enumerate()
+                .max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap())
+                .map(|(idx, _)| idx)
+                .unwrap()
+        }
+    }
+
+    fn update(&amp;mut self, s: usize, a: usize, r: f64, s_next: usize, done: bool) {
+        let max_q = if done {
+            0.0
+        } else {
+            self.q_table[s_next].iter().cloned().fold(f64::NEG_INFINITY, f64::max)
+        };
+        let target = r + self.gamma * max_q;
+        self.q_table[s][a] += self.lr * (target - self.q_table[s][a]);
+    }
+
+    fn decay_epsilon(&amp;mut self) {
+        self.epsilon = (self.epsilon * self.epsilon_decay).max(self.epsilon_min);
+    }
+}
+
+fn main() {
+    let mut env = FrozenLake::new();
+    let mut agent = QLearner::new(0.1, 0.99, 1.0);
+    let episodes = 10_000;
+
+    println!("=== FrozenLake Q-Learning 训练 ===\n");
+
+    for ep in 0..episodes {
+        let mut state = env.reset();
+        let mut total_reward = 0.0;
+
+        loop {
+            let action = agent.select_action(state);
+            let (next_state, reward, done) = env.step(action);
+            agent.update(state, action, reward, next_state, done);
+            total_reward += reward;
+            state = next_state;
+
+            if done { break; }
+        }
+
+        agent.decay_epsilon();
+
+        if (ep + 1) % 1000 == 0 {
+            let wins = evaluate(&amp;mut env, &amp;agent, 100);
+            println!(
+                "Episode {}: ε={:.4}, 胜率={:.0}%",
+                ep + 1, agent.epsilon, wins
+            );
+        }
+    }
+
+    // 打印学到的策略
+    println!("\n=== 学到的最优策略 ===");
+    let action_names = ["←", "↓", "→", "↑"];
+    for s in 0..16 {
+        let best = agent.q_table[s]
+            .iter()
+            .enumerate()
+            .max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap())
+            .map(|(idx, _)| idx)
+            .unwrap();
+        print!("{}", action_names[best]);
+        if (s + 1) % 4 == 0 { println!(); }
+    }
+}
+
+/// 评估当前策略的胜率
+fn evaluate(env: &amp;mut FrozenLake, agent: &amp;QLearner, trials: usize) -&gt; f64 {
+    let mut wins = 0;
+    for _ in 0..trials {
+        let mut state = env.reset();
+        loop {
+            let action = agent.q_table[state]
+                .iter()
+                .enumerate()
+                .max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap())
+                .map(|(idx, _)| idx)
+                .unwrap();
+            let (next_state, _reward, done) = env.step(action);
+            state = next_state;
+            if done {
+                if env.grid[state] == 3 { wins += 1; }
+                break;
+            }
+        }
+    }
+    wins as f64 / trials as f64 * 100.0
+}</code></pre>
+<p>运行后，智能体将逐渐学会避开冰洞、到达终点的最优路径。</p>
+<hr>
+<h2 id="九rust-强化学习生态"><a class="header" href="#九rust-强化学习生态">九、Rust 强化学习生态</a></h2>
+<p>Rust 在强化学习领域虽然不如 Python 生态成熟，但凭借其性能优势和安全性，正在快速发展。以下是主要的 Rust RL 相关 crate 和工具：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Crate / 项目</th><th>说明</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>candle</strong></td><td>HuggingFace 出品的深度学习框架</td><td>DQN/PPO 等深度 RL 算法的网络部分</td></tr>
+<tr><td><strong>burn</strong></td><td>灵活的深度学习框架，支持多种后端</td><td>神经网络训练与推理</td></tr>
+<tr><td><strong>smartcore</strong></td><td>纯 Rust 机器学习库</td><td>基础数学运算、线性代数</td></tr>
+<tr><td><strong>ndarray</strong></td><td>N 维数组库，类似 NumPy</td><td>矩阵运算、张量操作</td></tr>
+<tr><td><strong>rand</strong></td><td>随机数生成</td><td>探索策略、经验采样</td></tr>
+<tr><td><strong>tch</strong></td><td>PyTorch 的 Rust 绑定</td><td>需要直接使用 PyTorch 模型</td></tr>
+<tr><td><strong>rugraph</strong></td><td>图计算库</td><td>状态转移图建模</td></tr>
+<tr><td><strong>gym-rs</strong></td><td>OpenAI Gym 的 Rust 移植</td><td>经典 RL 环境接口</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="91-使用-ndarray-进行矩阵运算"><a class="header" href="#91-使用-ndarray-进行矩阵运算">9.1 使用 ndarray 进行矩阵运算</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use ndarray::{array, Array2};
+
+fn main() {
+    // Q 表用 ndarray 表示
+    let mut q_table: Array2&lt;f64&gt; = Array2::zeros((16, 4));
+
+    // 设置初始值
+    q_table[[0, 2]] = 0.5; // 状态 0，动作"右"
+    q_table[[1, 1]] = 0.3; // 状态 1，动作"下"
+
+    // 获取某状态的最大 Q 值
+    let state = 0;
+    let max_q = q_table.row(state).iter().cloned()
+        .fold(f64::NEG_INFINITY, f64::max);
+    println!("状态 {} 的最大 Q 值: {:.2}", state, max_q);
+
+    // 获取最优动作
+    let best_action = q_table.row(state)
+        .iter().enumerate()
+        .max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap())
+        .map(|(idx, _)| idx)
+        .unwrap();
+    println!("最优动作: {}", best_action);
+}</code></pre>
+<h3 id="92-rust-实现-rl-的优势"><a class="header" href="#92-rust-实现-rl-的优势">9.2 Rust 实现 RL 的优势</a></h3>
+<ol>
+<li><strong>内存安全</strong>：无需垃圾回收，无数据竞争，适合长时间训练任务</li>
+<li><strong>高性能</strong>：零成本抽象，适合大规模环境模拟</li>
+<li><strong>并发友好</strong>：<code>rayon</code> 等库轻松实现并行环境采样</li>
+<li><strong>WebAssembly</strong>：可将训练好的 RL 模型部署到浏览器</li>
+<li><strong>嵌入式部署</strong>：适合边缘设备和实时控制系统</li>
+</ol>
+<hr>
+<h2 id="十总结与练习"><a class="header" href="#十总结与练习">十、总结与练习</a></h2>
+<h3 id="101-本章要点总结"><a class="header" href="#101-本章要点总结">10.1 本章要点总结</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>主题</th><th>核心内容</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>强化学习定义</strong></td><td>智能体通过与环境交互、试错学习来最大化累积奖励</td></tr>
+<tr><td><strong>MDP</strong></td><td>五元组 $\langle S, A, P, R, \gamma \rangle$，马尔可夫性质是核心假设</td></tr>
+<tr><td><strong>贝尔曼方程</strong></td><td>价值函数的递推分解，连接即时奖励与未来价值</td></tr>
+<tr><td><strong>策略与价值函数</strong></td><td>$V^\pi(s)$ 评估状态好坏，$Q^\pi(s,a)$ 评估动作好坏</td></tr>
+<tr><td><strong>探索与利用</strong></td><td>$\varepsilon$-贪心是最常用的平衡方法</td></tr>
+<tr><td><strong>Q-Learning</strong></td><td>异策略、off-policy，直接学习最优 Q 值</td></tr>
+<tr><td><strong>SARSA</strong></td><td>同策略、on-policy，考虑实际执行的动作</td></tr>
+<tr><td><strong>DQN</strong></td><td>用神经网络近似 Q 函数，经验回放 + 目标网络</td></tr>
+<tr><td><strong>PPO</strong></td><td>策略梯度方法，通过裁剪限制策略更新幅度</td></tr>
+<tr><td><strong>Rust 生态</strong></td><td>candle、burn、ndarray 等库支撑 RL 开发</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="102-练习建议"><a class="header" href="#102-练习建议">10.2 练习建议</a></h3>
+<p><strong>练习 1：实现 SARSA 求解 FrozenLake</strong></p>
+<p>在第八节的 FrozenLake 环境基础上，将 Q-Learning 替换为 SARSA 算法，对比两种算法的收敛速度和最终胜率。</p>
+<p><strong>练习 2：实现策略迭代</strong></p>
+<p>编写完整的策略迭代算法（策略评估 + 策略改进），在小规模 MDP 上验证其收敛性，并与价值迭代对比迭代次数。</p>
+<p><strong>练习 3：多臂老虎机</strong></p>
+<p>实现一个简单的多臂老虎机（Multi-Armed Bandit）环境，分别用 $\varepsilon$-贪心、UCB 和 Boltzmann 探索三种策略求解，绘制累积奖励曲线。</p>
+<p><strong>练习 4：经验回放缓冲区优化</strong></p>
+<p>使用 <code>VecDeque</code> 替代 <code>Vec</code> 实现更高效的 FIFO 经验回放缓冲区，并添加优先级采样（Prioritized Experience Replay）功能。</p>
+<p><strong>练习 5：扩展 FrozenLake</strong></p>
+<p>将 FrozenLake 扩展为 8x8 网格，增加随机风（Wind）效果——智能体有概率被吹到其他方向。调整超参数，观察 Q-Learning 的表现变化。</p>
+<hr>
+<blockquote>
+<p><strong>下一章预告</strong>：第四十章将探讨生成式 AI（Generative AI），包括自编码器、变分自编码器（VAE）和生成对抗网络（GAN）的原理与 Rust 实现。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_38_cv.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_40_agi.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_38_cv.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_40_agi.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

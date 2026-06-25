@@ -1,0 +1,602 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第九 视频 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第九-视频"><a class="header" href="#第九-视频">第九 视频</a></h1>
+<p>视频是现代社会最重要的信息媒介之一。从电影电视到短视频直播，从视频会议到监控安防，视频技术深刻改变了人们获取和传播信息的方式。与静态图片不同，视频是随时间连续变化的图像序列，同时伴随音频流。本章将探讨视频的本质、编码原理、主流编码格式，以及如何使用 Rust 进行视频处理。</p>
+<h2 id="91-视频的本质"><a class="header" href="#91-视频的本质">9.1 视频的本质</a></h2>
+<p>视频本质上是一系列静态图像（称为帧）按照一定速率连续播放，利用人眼的视觉暂留效应产生运动的错觉。衡量视频质量的核心参数有三个：帧率、分辨率和码率。</p>
+<h3 id="911-帧率"><a class="header" href="#911-帧率">9.1.1 帧率</a></h3>
+<p>**帧率（Frame Rate）**表示每秒显示的图像帧数，单位是 FPS（Frames Per Second）。</p>
+<ul>
+<li><strong>24 FPS</strong>：电影标准，画面具有电影感。</li>
+<li><strong>25 FPS / 30 FPS</strong>：传统电视广播标准（PAL / NTSC）。</li>
+<li><strong>60 FPS</strong>：游戏和高清视频常用，运动画面更流畅。</li>
+<li><strong>120 FPS / 240 FPS</strong>：高帧率视频，用于慢动作回放和电竞。</li>
+</ul>
+<p>帧率越高，运动画面越流畅，但数据量也越大。对于普通观影，24~30 FPS 已足够；对于快速运动场景（如体育赛事、游戏），60 FPS 能显著提升观感。</p>
+<h3 id="912-分辨率"><a class="header" href="#912-分辨率">9.1.2 分辨率</a></h3>
+<p><strong>分辨率</strong>表示视频画面的像素尺寸，决定了画面的清晰度。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">分辨率</th><th style="text-align: center">像素尺寸</th><th style="text-align: center">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">SD（标清）</td><td style="text-align: center">720 × 480 / 720 × 576</td><td style="text-align: center">传统 DVD 标准</td></tr>
+<tr><td style="text-align: center">HD（高清）</td><td style="text-align: center">1280 × 720</td><td style="text-align: center">720p</td></tr>
+<tr><td style="text-align: center">Full HD</td><td style="text-align: center">1920 × 1080</td><td style="text-align: center">1080p，目前主流</td></tr>
+<tr><td style="text-align: center">2K</td><td style="text-align: center">2560 × 1440</td><td style="text-align: center">1440p</td></tr>
+<tr><td style="text-align: center">4K UHD</td><td style="text-align: center">3840 × 2160</td><td style="text-align: center">超高清，四倍于 1080p</td></tr>
+<tr><td style="text-align: center">8K UHD</td><td style="text-align: center">7680 × 4320</td><td style="text-align: center">超高分辨率，未来趋势</td></tr>
+</tbody>
+</table>
+</div>
+<p>分辨率越高，画面细节越丰富，但像素数量呈指数增长。4K 的像素数是 1080p 的 4 倍，数据量也相应大幅增加。</p>
+<h3 id="913-码率"><a class="header" href="#913-码率">9.1.3 码率</a></h3>
+<p>**码率（Bitrate）**表示视频每秒传输的数据量，单位通常是 kbps 或 Mbps。码率直接决定视频的画质和文件大小。</p>
+<ul>
+<li><strong>恒定码率（CBR）</strong>：码率保持不变，适合网络流媒体。</li>
+<li><strong>可变码率（VBR）</strong>：根据画面复杂度动态调整码率，相同平均码率下画质更好。</li>
+</ul>
+<p>以 1080p 视频为例：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">码率</th><th style="text-align: center">画质</th><th style="text-align: center">一小时文件大小</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">5 Mbps</td><td style="text-align: center">一般</td><td style="text-align: center">约 2.2 GB</td></tr>
+<tr><td style="text-align: center">10 Mbps</td><td style="text-align: center">良好</td><td style="text-align: center">约 4.4 GB</td></tr>
+<tr><td style="text-align: center">25 Mbps</td><td style="text-align: center">优秀</td><td style="text-align: center">约 11 GB</td></tr>
+<tr><td style="text-align: center">50 Mbps</td><td style="text-align: center">接近无损</td><td style="text-align: center">约 22 GB</td></tr>
+</tbody>
+</table>
+</div>
+<p>未经压缩的 1080p@60FPS 视频数据量极为惊人：</p>
+<pre><code>1920 × 1080 × 3（RGB）× 60 FPS = 373,248,000 字节/秒 ≈ 356 MB/s
+一小时约 1.25 TB
+</code></pre>
+<p>这正是视频压缩编码技术存在的根本原因。</p>
+<h2 id="92-视频编码原理"><a class="header" href="#92-视频编码原理">9.2 视频编码原理</a></h2>
+<p>视频编码的核心目标是在尽可能保持画质的前提下，大幅减少数据量。主要利用两种冗余：空间冗余和时间冗余。</p>
+<h3 id="921-帧内压缩"><a class="header" href="#921-帧内压缩">9.2.1 帧内压缩</a></h3>
+<p>**帧内压缩（Intra-frame Compression）**利用单帧图像内部的空间冗余。相邻像素通常具有相似的颜色值，通过以下技术实现压缩：</p>
+<ul>
+<li><strong>色彩空间转换</strong>：将 RGB 转换为 YUV（亮度+色度），利用人眼对色度不敏感的特性降低色度采样精度（如 4:2:0）。</li>
+<li><strong>离散余弦变换（DCT）</strong>：将图像块从空间域转换到频率域，能量集中在低频分量。</li>
+<li><strong>量化</strong>：对高频分量进行较大量化，丢弃人眼不敏感的细节。</li>
+<li><strong>熵编码</strong>：使用哈夫曼编码或算术编码进一步压缩数据。</li>
+</ul>
+<p>只使用帧内压缩的帧称为 <strong>I 帧（Intra-coded Frame）</strong>，可以独立解码，是视频随机访问的锚点。</p>
+<h3 id="922-帧间压缩"><a class="header" href="#922-帧间压缩">9.2.2 帧间压缩</a></h3>
+<p>**帧间压缩（Inter-frame Compression）**利用相邻帧之间的时间冗余。视频相邻帧通常非常相似，只需记录变化部分即可。</p>
+<ul>
+<li><strong>P 帧（Predicted Frame）</strong>：参考前面的 I 帧或 P 帧，只编码差异部分和运动矢量。</li>
+<li><strong>B 帧（Bidirectional Predicted Frame）</strong>：同时参考前后帧，压缩率最高，但解码需要更多计算。</li>
+</ul>
+<p>典型的视频帧序列如：<code>I P B B P B B I P B B ...</code></p>
+<p>帧间压缩是视频编码效率的关键。一个 I 帧可能占用数兆字节，而 P 帧和 B 帧通常只有几十到几百 KB。</p>
+<h3 id="923-运动估计与补偿"><a class="header" href="#923-运动估计与补偿">9.2.3 运动估计与补偿</a></h3>
+<p>帧间压缩的核心技术是<strong>运动估计</strong>。编码器将画面划分为宏块（如 16×16 像素），在参考帧中搜索最佳匹配位置，记录<strong>运动矢量</strong>（位移偏移量）。解码时根据运动矢量从参考帧“搬运“像素块，再叠加残差数据还原当前帧。</p>
+<p>运动估计的计算量巨大，是视频编码中最耗时的环节，也是硬件加速的重点。</p>
+<h2 id="93-视频编码格式"><a class="header" href="#93-视频编码格式">9.3 视频编码格式</a></h2>
+<h3 id="931-h264--avc"><a class="header" href="#931-h264--avc">9.3.1 H.264 / AVC</a></h3>
+<p>H.264（又称 AVC，Advanced Video Coding）是目前最广泛使用的视频编码标准，由 ITU-T 和 ISO/IEC 联合制定。</p>
+<ul>
+<li><strong>发布时间</strong>：2003 年。</li>
+<li><strong>压缩效率</strong>：相比前代 MPEG-2，同等画质下码率降低约 50%。</li>
+<li><strong>特点</strong>：兼容性好、专利授权成熟、硬件解码支持最广泛。</li>
+<li><strong>应用场景</strong>：网络视频（YouTube、Bilibili）、蓝光光盘、视频监控、视频会议。</li>
+<li><strong>Profile 等级</strong>：
+<ul>
+<li>Baseline：低复杂度，适合视频通话和移动设备。</li>
+<li>Main：平衡画质和复杂度，用于标清广播。</li>
+<li>High：最高画质，用于高清和蓝光。</li>
+</ul>
+</li>
+</ul>
+<h3 id="932-h265--hevc"><a class="header" href="#932-h265--hevc">9.3.2 H.265 / HEVC</a></h3>
+<p>H.265（又称 HEVC，High Efficiency Video Coding）是 H.264 的继任者。</p>
+<ul>
+<li><strong>发布时间</strong>：2013 年。</li>
+<li><strong>压缩效率</strong>：同等画质下码率比 H.264 降低约 50%，即 1080p 的码率可看 4K 画质。</li>
+<li><strong>特点</strong>：支持更高分辨率（8K）、更高效的帧间预测、更大的编码单元（CTU 最大 64×64）。</li>
+<li><strong>缺点</strong>：专利授权复杂且昂贵，导致普及速度不及预期。</li>
+<li><strong>应用场景</strong>：4K 蓝光、Apple 设备、部分流媒体平台。</li>
+</ul>
+<h3 id="933-av1"><a class="header" href="#933-av1">9.3.3 AV1</a></h3>
+<p>AV1（AOMedia Video 1）是由开放媒体联盟（AOMedia）主导开发的开源免版税视频编码格式。</p>
+<ul>
+<li><strong>发布时间</strong>：2018 年。</li>
+<li><strong>压缩效率</strong>：同等画质下码率比 H.265 低约 20%~30%，比 H.264 低约 50%。</li>
+<li><strong>特点</strong>：完全开源免版税、由 Google、Mozilla、Netflix 等巨头推动。</li>
+<li><strong>缺点</strong>：编码速度较慢（正在快速改善），硬件解码支持仍在普及中。</li>
+<li><strong>应用场景</strong>：YouTube、Netflix、WebRTC、浏览器视频。</li>
+</ul>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">编码格式</th><th style="text-align: center">发布时间</th><th style="text-align: center">压缩效率</th><th style="text-align: center">专利授权</th><th style="text-align: center">硬件支持</th><th style="text-align: center">主要应用</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">H.264</td><td style="text-align: center">2003</td><td style="text-align: center">基准</td><td style="text-align: center">收费</td><td style="text-align: center">最广泛</td><td style="text-align: center">全网通用</td></tr>
+<tr><td style="text-align: center">H.265</td><td style="text-align: center">2013</td><td style="text-align: center">比 H.264 提升 50%</td><td style="text-align: center">昂贵</td><td style="text-align: center">较广泛</td><td style="text-align: center">4K 内容</td></tr>
+<tr><td style="text-align: center">AV1</td><td style="text-align: center">2018</td><td style="text-align: center">比 H.265 提升 20%~30%</td><td style="text-align: center">免版税</td><td style="text-align: center">growing</td><td style="text-align: center">流媒体/Web</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="94-rust-视频处理"><a class="header" href="#94-rust-视频处理">9.4 Rust 视频处理</a></h2>
+<p>Rust 在视频处理领域虽然不如 Python 或 C++ 生态成熟，但已有可用的库和绑定，特别是通过 FFI 调用 FFmpeg 这一业界标准工具。</p>
+<h3 id="941-ffmpeg-简介"><a class="header" href="#941-ffmpeg-简介">9.4.1 FFmpeg 简介</a></h3>
+<p><a href="http://ffmpeg.org/">FFmpeg</a> 是开源多媒体处理的事实标准，支持几乎所有音视频格式的编解码、转码、流媒体处理。它由 C 语言编写，提供了命令行工具和 C 库（libavcodec、libavformat、libavutil 等）。</p>
+<p>Rust 社区提供了 FFmpeg 的绑定库 <a href="https://github.com/zmwangx/rust-ffmpeg">ffmpeg-next</a>，使得在 Rust 中调用 FFmpeg 功能成为可能。</p>
+<p>在 <code>Cargo.toml</code> 中添加依赖：</p>
+<pre><code class="language-toml">[dependencies]
+ffmpeg-next = "6.1"
+</code></pre>
+<h3 id="942-使用-ffmpeg-next-读取视频信息"><a class="header" href="#942-使用-ffmpeg-next-读取视频信息">9.4.2 使用 ffmpeg-next 读取视频信息</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use ffmpeg_next as ffmpeg;
+
+fn main() {
+    // 初始化 FFmpeg
+    ffmpeg::init().unwrap();
+
+    // 打开视频文件
+    let mut ictx = ffmpeg::format::input(&amp;"video.mp4").unwrap();
+
+    // 遍历所有流，找到视频流
+    for (stream_index, stream) in ictx.streams().enumerate() {
+        let codec = stream.codec();
+        match codec.medium() {
+            ffmpeg::media::Type::Video =&gt; {
+                let video = codec.decoder().video().unwrap();
+                println!("视频流 #{}:", stream_index);
+                println!("  编码格式: {:?}", video.id());
+                println!("  分辨率: {}x{}", video.width(), video.height());
+                println!("  帧率: {}/{}",
+                    stream.rate().0, stream.rate().1);
+                println!("  总帧数: {}", stream.frames());
+            }
+            ffmpeg::media::Type::Audio =&gt; {
+                let audio = codec.decoder().audio().unwrap();
+                println!("音频流 #{}:", stream_index);
+                println!("  采样率: {}", audio.rate());
+                println!("  声道数: {}", audio.channels());
+            }
+            _ =&gt; {}
+        }
+    }
+}</code></pre>
+<h3 id="943-使用-ffmpeg-next-解码视频帧"><a class="header" href="#943-使用-ffmpeg-next-解码视频帧">9.4.3 使用 ffmpeg-next 解码视频帧</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use ffmpeg_next as ffmpeg;
+use ffmpeg::software::scaling::{context::Context, flag::Flags};
+use ffmpeg::util::frame::video::Video;
+
+fn main() {
+    ffmpeg::init().unwrap();
+
+    let mut ictx = ffmpeg::format::input(&amp;"video.mp4").unwrap();
+
+    // 找到第一个视频流
+    let input_stream = ictx.streams()
+        .best(ffmpeg::media::Type::Video)
+        .expect("未找到视频流");
+    let stream_index = input_stream.index();
+
+    // 创建解码器
+    let context_decoder = ffmpeg::codec::context::Context::from_parameters(input_stream.parameters()).unwrap();
+    let mut decoder = context_decoder.decoder().video().unwrap();
+
+    // 创建缩放器，将帧转换为 RGB24 格式
+    let mut scaler = Context::get(
+        decoder.format(),
+        decoder.width(),
+        decoder.height(),
+        ffmpeg::format::Pixel::RGB24,
+        decoder.width(),
+        decoder.height(),
+        Flags::BILINEAR,
+    ).unwrap();
+
+    // 读取数据包并解码
+    for (stream, packet) in ictx.packets() {
+        if stream.index() == stream_index {
+            decoder.send_packet(&amp;packet).unwrap();
+
+            let mut decoded = Video::empty();
+            while decoder.receive_frame(&amp;mut decoded).is_ok() {
+                let mut rgb_frame = Video::empty();
+                scaler.run(&amp;decoded, &amp;mut rgb_frame).unwrap();
+
+                println!("解码一帧: {}x{}", rgb_frame.width(), rgb_frame.height());
+
+                // 此处可以对 rgb_frame.data(0) 中的 RGB 像素数据进行处理
+                // 例如保存为图片、进行图像识别等
+            }
+        }
+    }
+
+    // 刷新解码器
+    decoder.send_eof().unwrap();
+}</code></pre>
+<h3 id="944-使用-ffmpeg-next-进行视频转码"><a class="header" href="#944-使用-ffmpeg-next-进行视频转码">9.4.4 使用 ffmpeg-next 进行视频转码</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use ffmpeg_next as ffmpeg;
+
+fn main() {
+    ffmpeg::init().unwrap();
+
+    // 打开输入文件
+    let mut ictx = ffmpeg::format::input(&amp;"input.mp4").unwrap();
+
+    // 创建输出上下文
+    let mut octx = ffmpeg::format::output(&amp;"output.mkv").unwrap();
+
+    // 遍历输入流，在输出中添加对应流
+    for (stream_index, istream) in ictx.streams().enumerate() {
+        let codec_id = istream.codec().id();
+        let mut ostream = octx.add_stream(codec_id).unwrap();
+        ostream.set_parameters(istream.parameters()).unwrap();
+    }
+
+    octx.write_header().unwrap();
+
+    // 复制数据包
+    for (stream, mut packet) in ictx.packets() {
+        let istream_index = stream.index();
+        let ostream = octx.stream(istream_index).unwrap();
+
+        packet.set_stream(ostream.index());
+        packet.rescale_ts(stream.time_base(), ostream.time_base());
+        packet.write_interleaved(&amp;mut octx).unwrap();
+    }
+
+    octx.write_trailer().unwrap();
+    println!("转码完成: input.mp4 -&gt; output.mkv");
+}</code></pre>
+<h3 id="945-rav1erust-原生的-av1-编码器"><a class="header" href="#945-rav1erust-原生的-av1-编码器">9.4.5 rav1e：Rust 原生的 AV1 编码器</a></h3>
+<p><a href="https://github.com/xiph/rav1e">rav1e</a> 是由 Xiph.Org 基金会开发的 AV1 编码器，使用 Rust 和 Assembly 编写，是 Rust 视频编码领域的重要项目。</p>
+<pre class="playground"><code class="language-rust edition2024">// rav1e 基本使用示例（API 可能随版本变化）
+use rav1e::config::Config;
+use rav1e::encoder::EncoderStatus;
+
+fn main() {
+    // 创建编码配置
+    let mut cfg = Config::default();
+    cfg.enc.width = 1920;
+    cfg.enc.height = 1080;
+    cfg.enc.bit_depth = 8;
+    cfg.enc.time_base = rav1e::data::Rational { num: 1, den: 30 }; // 30 FPS
+
+    // 创建编码器
+    let mut ctx = cfg.new_context().unwrap();
+
+    // 发送帧进行编码
+    // ctx.send_frame(frame).unwrap();
+
+    // 刷新编码器
+    ctx.flush();
+
+    // 接收编码后的数据包
+    loop {
+        match ctx.receive_packet() {
+            Ok(packet) =&gt; {
+                println!("收到编码包，大小: {} 字节", packet.data.len());
+                // 将 packet.data 写入文件或传输
+            }
+            Err(EncoderStatus::LimitReached) =&gt; break,
+            Err(EncoderStatus::Encoded) =&gt; continue,
+            Err(e) =&gt; {
+                println!("编码错误: {:?}", e);
+                break;
+            }
+        }
+    }
+}</code></pre>
+<p>rav1e 展示了 Rust 在性能敏感型多媒体处理领域的潜力，其内存安全特性对于处理大规模视频数据尤为重要。</p>
+<h3 id="946-相关-rust-库"><a class="header" href="#946-相关-rust-库">9.4.6 相关 Rust 库</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">库名</th><th style="text-align: left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://github.com/zmwangx/rust-ffmpeg">ffmpeg-next</a></td><td style="text-align: left">FFmpeg 的 Rust 绑定，功能全面</td></tr>
+<tr><td style="text-align: left"><a href="https://github.com/xiph/rav1e">rav1e</a></td><td style="text-align: left">Rust 编写的 AV1 编码器</td></tr>
+<tr><td style="text-align: left"><a href="https://github.com/image-rs/image">image</a></td><td style="text-align: left">图像处理，可用于视频帧处理</td></tr>
+<tr><td style="text-align: left"><a href="https://github.com/gfx-rs/wgpu">wgpu</a></td><td style="text-align: left">跨平台 GPU 计算，可用于视频渲染</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="95-本章小结"><a class="header" href="#95-本章小结">9.5 本章小结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">概念</th><th style="text-align: left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">帧率</td><td style="text-align: left">每秒显示帧数，电影 24 FPS，高清 60 FPS</td></tr>
+<tr><td style="text-align: left">分辨率</td><td style="text-align: left">画面像素尺寸，1080p、4K、8K 等</td></tr>
+<tr><td style="text-align: left">码率</td><td style="text-align: left">每秒数据量，决定画质和文件大小</td></tr>
+<tr><td style="text-align: left">I 帧</td><td style="text-align: left">帧内压缩，可独立解码的完整帧</td></tr>
+<tr><td style="text-align: left">P 帧</td><td style="text-align: left">前向预测帧，参考前面帧编码</td></tr>
+<tr><td style="text-align: left">B 帧</td><td style="text-align: left">双向预测帧，参考前后帧，压缩率最高</td></tr>
+<tr><td style="text-align: left">H.264</td><td style="text-align: left">最广泛使用的视频编码标准</td></tr>
+<tr><td style="text-align: left">H.265</td><td style="text-align: left">H.264 继任者，4K 时代主流</td></tr>
+<tr><td style="text-align: left">AV1</td><td style="text-align: left">开源免版税编码格式，未来趋势</td></tr>
+<tr><td style="text-align: left">FFmpeg</td><td style="text-align: left">业界标准多媒体处理工具</td></tr>
+<tr><td style="text-align: left">ffmpeg-next</td><td style="text-align: left">FFmpeg 的 Rust 绑定库</td></tr>
+<tr><td style="text-align: left">rav1e</td><td style="text-align: left">Rust 原生 AV1 编码器</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h2>
+<ol>
+<li>使用 ffmpeg-next 编写程序，读取一个视频文件的完整元数据（分辨率、帧率、码率、编码格式、时长等）。</li>
+<li>使用 ffmpeg-next 提取视频中的每一帧，保存为 PNG 图片序列。</li>
+<li>对比同一视频分别用 H.264、H.265、AV1 编码后的文件大小和画质差异。</li>
+<li>编写程序计算视频的平均码率和峰值码率。</li>
+<li>了解 Rust 的 <a href="https://github.com/rust-av/vpx">vpx-encode</a> 或 <a href="https://github.com/rust-av/x264-rs">x264</a> 绑定，尝试进行视频编码。</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_8_Audio.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_10.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_8_Audio.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_10.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

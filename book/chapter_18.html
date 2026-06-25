@@ -1,0 +1,779 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第十八 交换、反转、旋转 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第十八-交换反转旋转"><a class="header" href="#第十八-交换反转旋转">第十八 交换、反转、旋转</a></h1>
+<h2 id="概述"><a class="header" href="#概述">概述</a></h2>
+<p>交换（swap）、反转（reverse）、旋转（rotate）是计算机科学中最基础的三种操作。它们看似简单，却是许多经典算法的基石：</p>
+<ul>
+<li><strong>排序算法</strong>中的元素交换</li>
+<li><strong>字符串处理</strong>中的翻转与旋转</li>
+<li><strong>数组操作</strong>中的轮转</li>
+<li><strong>链表操作</strong>中的指针交换</li>
+<li><strong>矩阵运算</strong>中的行列变换</li>
+</ul>
+<p>这三者之间存在深刻的内在联系：<strong>rotate 通过三次 reverse 实现，reverse 通过 swap 实现</strong>。理解这一关系，有助于我们以统一的视角看待各种数据变换操作。</p>
+<hr>
+<h2 id="交换swap操作"><a class="header" href="#交换swap操作">交换（swap）操作</a></h2>
+<h3 id="原理"><a class="header" href="#原理">原理</a></h3>
+<p>交换操作将两个位置上的值互换。最基本的实现方式是借助一个临时变量：</p>
+<p>$$\text{temp} = a, \quad a = b, \quad b = \text{temp}$$</p>
+<p>也可以利用异或运算（XOR）实现无临时变量的交换（详见第十七章位运算）：</p>
+<p>$$a = a \oplus b, \quad b = a \oplus b, \quad a = a \oplus b$$</p>
+<h3 id="rust-中的-swap-方法"><a class="header" href="#rust-中的-swap-方法">Rust 中的 swap 方法</a></h3>
+<p>Rust 标准库提供了多种 swap 方法，覆盖了不同的数据结构：</p>
+<h4 id="1-sliceswap--交换切片中两个位置的元素"><a class="header" href="#1-sliceswap--交换切片中两个位置的元素">1. slice.swap() – 交换切片中两个位置的元素</a></h4>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let mut arr = [1, 2, 3, 4, 5];
+    arr.swap(0, 4);
+    println!("{:?}", arr); // [5, 2, 3, 4, 1]
+
+    arr.swap(1, 3);
+    println!("{:?}", arr); // [5, 4, 3, 2, 1]
+}</code></pre>
+<h4 id="2-vecswap--交换-vec-中两个位置的元素"><a class="header" href="#2-vecswap--交换-vec-中两个位置的元素">2. Vec::swap() – 交换 Vec 中两个位置的元素</a></h4>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let mut vec = vec!["a", "b", "c", "d"];
+    vec.swap(0, 3);
+    println!("{:?}", vec); // ["d", "b", "c", "a"]
+}</code></pre>
+<h4 id="3-stdmemswap--交换两个变量的值"><a class="header" href="#3-stdmemswap--交换两个变量的值">3. std::mem::swap – 交换两个变量的值</a></h4>
+<pre class="playground"><code class="language-rust edition2024">use std::mem;
+
+fn main() {
+    let mut a = String::from("hello");
+    let mut b = String::from("world");
+
+    mem::swap(&amp;mut a, &amp;mut b);
+    println!("a = {}, b = {}", a, b); // a = world, b = hello
+}</code></pre>
+<p><code>std::mem::swap</code> 可以交换任意类型的两个值，不仅限于数值类型。它的底层实现使用了 <code>std::ptr::swap_nonoverlapping</code>，对于大型结构体也能高效完成（只交换内存，不涉及深拷贝）。</p>
+<h3 id="异或交换不用临时变量"><a class="header" href="#异或交换不用临时变量">异或交换（不用临时变量）</a></h3>
+<p>利用异或运算的自反性 $a \oplus b \oplus a = b$，可以不借助临时变量实现交换：</p>
+<pre class="playground"><code class="language-rust edition2024">fn xor_swap(a: &amp;mut i32, b: &amp;mut i32) {
+    *a ^= *b;
+    *b ^= *a;
+    *a ^= *b;
+}
+
+fn main() {
+    let mut x = 42;
+    let mut y = 99;
+    println!("交换前: x = {}, y = {}", x, y);
+    xor_swap(&amp;mut x, &amp;mut y);
+    println!("交换后: x = {}, y = {}", x, y); // x = 99, y = 42
+}</code></pre>
+<blockquote>
+<p><strong>注意</strong>：异或交换有一个致命缺陷 – 当两个变量指向同一内存地址时，结果会变为 0。因此实际开发中应优先使用 <code>std::mem::swap</code>。</p>
+</blockquote>
+<h3 id="实战剑指-offer-03--数组中重复的数字"><a class="header" href="#实战剑指-offer-03--数组中重复的数字">实战：剑指 Offer 03 – 数组中重复的数字</a></h3>
+<p><a href="https://leetcode.cn/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/">剑指 Offer 03. 数组中重复的数字</a></p>
+<p><strong>题目</strong>：在一个长度为 n 的数组 <code>nums</code> 里的所有数字都在 $0 \sim n-1$ 的范围内。找出数组中任意一个重复的数字。</p>
+<p><strong>思路</strong>：利用原地交换，将每个数字放到它“应该在“的位置。如果目标位置已经有相同的数字，说明找到了重复。</p>
+<pre class="playground"><code class="language-rust edition2024">/// 方法：原地交换
+pub fn find_repeat_number_v3(nums: Vec&lt;i32&gt;) -&gt; i32 {
+    let len = nums.len();
+    let mut new_nums = nums;
+    let mut i = 0;
+    while i &lt; len {
+        let num = new_nums[i] as usize;
+        if num == i {
+            i += 1;
+            continue;
+        }
+        if new_nums[num] as usize == num {
+            return num as i32;
+        }
+        new_nums.swap(i, num);
+    }
+
+    -1
+}
+
+fn main() {
+    let documents = Vec::from([2, 5, 3, 0, 5, 0]);
+    let result = find_repeat_number_v3(documents);
+    println!("result: {}", result); // 5 或 0
+}</code></pre>
+<p><strong>复杂度分析</strong>：</p>
+<ul>
+<li>时间复杂度：$O(n)$，每个元素最多被交换一次到正确位置</li>
+<li>空间复杂度：$O(1)$，原地操作，不需要额外空间</li>
+</ul>
+<h3 id="更多-swap-应用场景"><a class="header" href="#更多-swap-应用场景">更多 swap 应用场景</a></h3>
+<h4 id="选择排序中的交换"><a class="header" href="#选择排序中的交换">选择排序中的交换</a></h4>
+<pre class="playground"><code class="language-rust edition2024">fn selection_sort(arr: &amp;mut [i32]) {
+    let n = arr.len();
+    for i in 0..n {
+        let mut min_idx = i;
+        for j in (i + 1)..n {
+            if arr[j] &lt; arr[min_idx] {
+                min_idx = j;
+            }
+        }
+        if min_idx != i {
+            arr.swap(i, min_idx);
+        }
+    }
+}
+
+fn main() {
+    let mut arr = [64, 25, 12, 22, 11];
+    selection_sort(&amp;mut arr);
+    println!("{:?}", arr); // [11, 12, 22, 25, 64]
+}</code></pre>
+<h4 id="快速排序中的交换"><a class="header" href="#快速排序中的交换">快速排序中的交换</a></h4>
+<pre class="playground"><code class="language-rust edition2024">fn quick_sort(arr: &amp;mut [i32]) {
+    if arr.len() &lt;= 1 {
+        return;
+    }
+    let pivot = partition(arr);
+    quick_sort(&amp;mut arr[..pivot]);
+    quick_sort(&amp;mut arr[pivot + 1..]);
+}
+
+fn partition(arr: &amp;mut [i32]) -&gt; usize {
+    let len = arr.len();
+    let pivot_idx = len / 2;
+    arr.swap(pivot_idx, len - 1); // 将pivot放到末尾
+    let mut i = 0;
+    for j in 0..len - 1 {
+        if arr[j] &lt; arr[len - 1] {
+            arr.swap(i, j);
+            i += 1;
+        }
+    }
+    arr.swap(i, len - 1); // 将pivot放到正确位置
+    i
+}
+
+fn main() {
+    let mut arr = [3, 6, 8, 10, 1, 2, 1];
+    quick_sort(&amp;mut arr);
+    println!("{:?}", arr); // [1, 1, 2, 3, 6, 8, 10]
+}</code></pre>
+<hr>
+<h2 id="反转reverse操作"><a class="header" href="#反转reverse操作">反转（reverse）操作</a></h2>
+<h3 id="原理-1"><a class="header" href="#原理-1">原理</a></h3>
+<p>反转操作将序列中的元素顺序完全颠倒。其核心思想是<strong>双指针交换</strong>：一个指针从头部向后移动，另一个指针从尾部向前移动，逐步交换两个指针所指的元素，直到两个指针相遇。</p>
+<p>$$[a_0, a_1, \ldots, a_{n-2}, a_{n-1}] \xrightarrow{\text{reverse}} [a_{n-1}, a_{n-2}, \ldots, a_1, a_0]$$</p>
+<h3 id="rust-中的-reverse-方法"><a class="header" href="#rust-中的-reverse-方法">Rust 中的 reverse 方法</a></h3>
+<h4 id="1-slicereverse--原地反转切片"><a class="header" href="#1-slicereverse--原地反转切片">1. slice.reverse() – 原地反转切片</a></h4>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let mut arr = [1, 2, 3, 4, 5];
+    arr.reverse();
+    println!("{:?}", arr); // [5, 4, 3, 2, 1]
+}</code></pre>
+<h4 id="2-vecreverse--原地反转-vec"><a class="header" href="#2-vecreverse--原地反转-vec">2. Vec::reverse() – 原地反转 Vec</a></h4>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let mut vec = vec!["apple", "banana", "cherry"];
+    vec.reverse();
+    println!("{:?}", vec); // ["cherry", "banana", "apple"]
+}</code></pre>
+<h4 id="3-iteratorrev--反转迭代器惰性不修改原数据"><a class="header" href="#3-iteratorrev--反转迭代器惰性不修改原数据">3. Iterator::rev() – 反转迭代器（惰性，不修改原数据）</a></h4>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let arr = [1, 2, 3, 4, 5];
+
+    // rev() 返回一个反转的迭代器，不修改原数组
+    for item in arr.iter().rev() {
+        print!("{} ", item); // 5 4 3 2 1
+    }
+    println!();
+
+    // 收集为新的 Vec
+    let reversed: Vec&lt;i32&gt; = arr.iter().rev().copied().collect();
+    println!("{:?}", reversed); // [5, 4, 3, 2, 1]
+}</code></pre>
+<blockquote>
+<p><strong>注意</strong>：<code>slice.reverse()</code> 是原地修改，而 <code>Iterator::rev()</code> 是惰性操作，返回一个新的迭代器视图，不会修改原始数据。</p>
+</blockquote>
+<h3 id="字符串反转"><a class="header" href="#字符串反转">字符串反转</a></h3>
+<pre class="playground"><code class="language-rust edition2024">fn reverse_string(s: &amp;str) -&gt; String {
+    s.chars().rev().collect()
+}
+
+fn main() {
+    let original = "hello";
+    let reversed = reverse_string(original);
+    println!("{} -&gt; {}", original, reversed); // hello -&gt; olleh
+
+    // 处理包含中文的字符串
+    let chinese = "你好世界";
+    let reversed_cn = reverse_string(chinese);
+    println!("{} -&gt; {}", chinese, reversed_cn); // 你好世界 -&gt; 界世好你
+}</code></pre>
+<blockquote>
+<p><strong>注意</strong>：Rust 中的 <code>String</code> 不能直接使用 <code>reverse()</code> 方法（因为 <code>String</code> 不是切片）。需要通过 <code>chars().rev().collect()</code> 来实现，这样可以正确处理 UTF-8 多字节字符。</p>
+</blockquote>
+<h3 id="链表反转"><a class="header" href="#链表反转">链表反转</a></h3>
+<p>链表反转是面试中的高频题目，体现了 swap 操作在指针操作中的应用：</p>
+<pre class="playground"><code class="language-rust edition2024">#[derive(Debug)]
+struct ListNode {
+    val: i32,
+    next: Option&lt;Box&lt;ListNode&gt;&gt;,
+}
+
+impl ListNode {
+    fn new(val: i32) -&gt; Self {
+        ListNode { val, next: None }
+    }
+}
+
+/// 反转链表（迭代法）
+fn reverse_list(head: Option&lt;Box&lt;ListNode&gt;&gt;) -&gt; Option&lt;Box&lt;ListNode&gt;&gt; {
+    let mut prev = None;
+    let mut current = head;
+
+    while let Some(mut node) = current {
+        current = node.next.take(); // 暂存下一个节点
+        node.next = prev;           // 反转指针
+        prev = Some(node);          // 前进
+    }
+
+    prev
+}
+
+fn main() {
+    // 构建链表 1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt; 5
+    let mut head = Some(Box::new(ListNode::new(1)));
+    let mut current = head.as_mut().unwrap();
+    for i in 2..=5 {
+        current.next = Some(Box::new(ListNode::new(i)));
+        current = current.next.as_mut().unwrap();
+    }
+
+    let reversed = reverse_list(head);
+    // 输出: 5 -&gt; 4 -&gt; 3 -&gt; 2 -&gt; 1
+    let mut node = &amp;reversed;
+    while let Some(n) = node {
+        print!("{} -&gt; ", n.val);
+        node = &amp;n.next;
+    }
+    println!("None");
+}</code></pre>
+<h3 id="实战剑指-offer-58-i--翻转单词顺序"><a class="header" href="#实战剑指-offer-58-i--翻转单词顺序">实战：剑指 Offer 58-I – 翻转单词顺序</a></h3>
+<p><a href="https://leetcode-cn.com/problems/fan-zhuan-dan-ci-shun-xu-lcof/">剑指 Offer 58 - I. 翻转单词顺序</a></p>
+<p><strong>题目</strong>：输入一个英文句子，翻转句子中单词的顺序，但单词内字符的顺序不变。</p>
+<p><strong>思路</strong>：先将整个字符串按空格分割为单词数组，然后反转整个数组，最后拼接。</p>
+<pre class="playground"><code class="language-rust edition2024">pub fn reverse_words(s: String) -&gt; String {
+    let mut words: Vec&lt;&amp;str&gt; = s.split(' ').collect();
+    let mut result = String::new();
+    words.reverse();
+    for word in words {
+        // 注意：按照" "分割，结果中空字符串为""而不是" "
+        if !word.is_empty() {
+            result = format!("{} {}", result, word);
+        }
+    }
+    result.trim().to_string()
+}
+
+fn main() {
+    let message = "the sky is blue";
+    let result = reverse_words(message.to_string());
+    println!("result: {}", result); // "blue is sky the"
+}</code></pre>
+<p><strong>复杂度分析</strong>：</p>
+<ul>
+<li>时间复杂度：$O(n)$，分割和反转都是线性操作</li>
+<li>空间复杂度：$O(n)$，需要存储分割后的单词数组</li>
+</ul>
+<h3 id="回文判断"><a class="header" href="#回文判断">回文判断</a></h3>
+<p>利用反转操作可以方便地判断一个字符串是否为回文：</p>
+<pre class="playground"><code class="language-rust edition2024">fn is_palindrome(s: &amp;str) -&gt; bool {
+    let chars: Vec&lt;char&gt; = s.chars().collect();
+    let n = chars.len();
+    for i in 0..n / 2 {
+        if chars[i] != chars[n - 1 - i] {
+            return false;
+        }
+    }
+    true
+}
+
+fn main() {
+    println!("\"racecar\" 是回文: {}", is_palindrome("racecar")); // true
+    println!("\"hello\" 是回文: {}", is_palindrome("hello"));     // false
+    println!("\"上海自来水来自海上\" 是回文: {}", is_palindrome("上海自来水来自海上")); // true
+}</code></pre>
+<h3 id="整数反转"><a class="header" href="#整数反转">整数反转</a></h3>
+<p><a href="https://leetcode-cn.com/problems/reverse-integer/">7. 整数反转</a></p>
+<pre class="playground"><code class="language-rust edition2024">pub fn reverse(x: i32) -&gt; i32 {
+    let sign = x.signum();
+    let mut n = (x as i64).abs();
+    let mut result: i64 = 0;
+
+    while n &gt; 0 {
+        result = result * 10 + n % 10;
+        n /= 10;
+    }
+
+    result *= sign as i64;
+
+    if result &gt; i32::MAX as i64 || result &lt; i32::MIN as i64 {
+        return 0;
+    }
+
+    result as i32
+}
+
+fn main() {
+    println!("{}", reverse(123));    // 321
+    println!("{}", reverse(-123));   // -321
+    println!("{}", reverse(120));    // 21
+    println!("{}", reverse(0));      // 0
+}</code></pre>
+<hr>
+<h2 id="旋转rotate操作"><a class="header" href="#旋转rotate操作">旋转（rotate）操作</a></h2>
+<h3 id="原理-2"><a class="header" href="#原理-2">原理</a></h3>
+<p>旋转操作将序列中的元素循环移动。左旋 k 位意味着每个元素向左移动 k 个位置，超出边界的元素从另一端进入。</p>
+<p>$$[a_0, a_1, \ldots, a_{k-1}, a_k, \ldots, a_{n-1}] \xrightarrow{\text{rotate_left}(k)} [a_k, \ldots, a_{n-1}, a_0, a_1, \ldots, a_{k-1}]$$</p>
+<h3 id="三次翻转法"><a class="header" href="#三次翻转法">三次翻转法</a></h3>
+<p>旋转可以通过三次反转来实现，这是最优雅的旋转算法。Doug Mcllroy 给出了将十元数组向上旋转 5 个位置的翻手例子：初始时掌心对着我们的脸，左手在右手上面。通过“翻转左手“、“翻转右手”、“翻转双手“三次翻转，达到模拟向左旋转 5 位的效果。</p>
+<p>rotate(旋转) 可以通过三次 reverse 实现；
+reverse(反转，颠倒，翻转) 可以通过交换（swap）实现。</p>
+<h4 id="左旋rotate_left"><a class="header" href="#左旋rotate_left">左旋（rotate_left）</a></h4>
+<p>将数组左旋 k 位，通过以下三次 reverse 实现：</p>
+<pre><code>（1）rotate_left(mid) 可以通过以下三次reverse实现：
+reverse(0, mid);      // 翻转前半部分
+reverse(mid, len);    // 翻转后半部分
+reverse(0, len);      // 翻转整个数组
+</code></pre>
+<p>以 <code>[1, 2, 3, 4, 5, 6, 7]</code> 左旋 3 位为例：</p>
+<pre><code>原始:   [1, 2, 3, | 4, 5, 6, 7]
+步骤1:  [3, 2, 1, | 4, 5, 6, 7]  -- reverse(0, 3)
+步骤2:  [3, 2, 1, | 7, 6, 5, 4]  -- reverse(3, 7)
+步骤3:  [4, 5, 6, 7, | 1, 2, 3]  -- reverse(0, 7)
+</code></pre>
+<h4 id="右旋rotate_right"><a class="header" href="#右旋rotate_right">右旋（rotate_right）</a></h4>
+<p>将数组右旋 k 位，通过以下三次 reverse 实现：</p>
+<pre><code>（2）rotate_right(mid) 可以通过以下三次reverse实现：
+reverse(0, len);      // 翻转整个数组
+reverse(0, mid);       // 翻转前半部分
+reverse(mid, len);     // 翻转后半部分
+</code></pre>
+<h3 id="rust-中的-rotate-方法"><a class="header" href="#rust-中的-rotate-方法">Rust 中的 rotate 方法</a></h3>
+<p>Rust 标准库为切片提供了内置的旋转方法：</p>
+<h4 id="1-slicerotate_left--左旋"><a class="header" href="#1-slicerotate_left--左旋">1. slice.rotate_left() – 左旋</a></h4>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let mut arr = [1, 2, 3, 4, 5, 6, 7];
+    arr.rotate_left(3);
+    println!("{:?}", arr); // [4, 5, 6, 7, 1, 2, 3]
+
+    // 旋转超过长度时自动取模
+    let mut arr = [1, 2, 3, 4, 5];
+    arr.rotate_left(7); // 等价于 rotate_left(2)
+    println!("{:?}", arr); // [3, 4, 5, 1, 2]
+}</code></pre>
+<h4 id="2-slicerotate_right--右旋"><a class="header" href="#2-slicerotate_right--右旋">2. slice.rotate_right() – 右旋</a></h4>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let mut arr = [1, 2, 3, 4, 5, 6, 7];
+    arr.rotate_right(3);
+    println!("{:?}", arr); // [5, 6, 7, 1, 2, 3, 4]
+}</code></pre>
+<blockquote>
+<p><strong>注意</strong>：<code>rotate_left(k)</code> 等价于 <code>rotate_right(n - k)</code>，其中 n 为数组长度。</p>
+</blockquote>
+<h3 id="实战189-轮转数组"><a class="header" href="#实战189-轮转数组">实战：189. 轮转数组</a></h3>
+<p><a href="https://leetcode.cn/problems/rotate-array/description/">189. 轮转数组</a></p>
+<p><strong>题目</strong>：给定一个数组，将数组中的元素向右轮转 k 个位置。</p>
+<p><strong>思路</strong>：使用三次翻转法。右旋 k 位 = 先整体翻转，再分别翻转前 k 个和后 n-k 个。</p>
+<pre class="playground"><code class="language-rust edition2024">pub fn rotate(nums: &amp;mut Vec&lt;i32&gt;, k: i32) {
+    let len = nums.len();
+    if len &lt;= 1 {
+        return;
+    }
+    let offset = (k as usize) % len;
+    if offset == 0 {
+        return;
+    }
+
+    // 第一次翻转：整体翻转
+    nums.reverse();
+
+    // 第二次翻转：翻转前offset个元素
+    for i in 0..offset / 2 {
+        nums.swap(i, offset - i - 1);
+    }
+
+    // 第三次翻转：翻转后(len - offset)个元素
+    for j in 0..(len - offset) / 2 {
+        nums.swap(j + offset, len - j - 1);
+    }
+}
+
+fn main() {
+    let mut nums = vec![1, 2, 3, 4, 5, 6, 7];
+    let k = 3;
+    rotate(&amp;mut nums, k);
+    println!("result: {:?}", nums); // [5, 6, 7, 1, 2, 3, 4]
+}</code></pre>
+<p><strong>复杂度分析</strong>：</p>
+<ul>
+<li>时间复杂度：$O(n)$，三次翻转总共访问每个元素约两次</li>
+<li>空间复杂度：$O(1)$，原地操作</li>
+</ul>
+<p>也可以直接使用 Rust 标准库方法简化：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn rotate_std(nums: &amp;mut Vec&lt;i32&gt;, k: i32) {
+    let k = (k as usize) % nums.len();
+    if k &gt; 0 {
+        nums.rotate_right(k);
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="字符串旋转判断"><a class="header" href="#字符串旋转判断">字符串旋转判断</a></h3>
+<p>判断一个字符串是否是另一个字符串旋转得到的：</p>
+<pre class="playground"><code class="language-rust edition2024">fn is_rotation(s1: &amp;str, s2: &amp;str) -&gt; bool {
+    if s1.len() != s2.len() {
+        return false;
+    }
+    // 将s1与自身拼接，s2如果是s1的旋转，必然是拼接后的子串
+    let doubled = format!("{}{}", s1, s1);
+    doubled.contains(s2)
+}
+
+fn main() {
+    println!("{}", is_rotation("waterbottle", "erbottlewat")); // true
+    println!("{}", is_rotation("abcde", "cdeab"));             // true
+    println!("{}", is_rotation("abcde", "abced"));             // false
+}</code></pre>
+<hr>
+<h2 id="三者关系"><a class="header" href="#三者关系">三者关系</a></h2>
+<p>交换、反转、旋转三者之间存在递进的包含关系：</p>
+<pre><code>swap（交换）
+  └── reverse（反转）= 多次 swap
+        └── rotate（旋转）= 三次 reverse
+</code></pre>
+<p>用代码验证这一关系：</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let mut arr = [1, 2, 3, 4, 5, 6, 7];
+
+    // rotate_left(3) 等价于三次 reverse
+    let mut arr2 = arr.clone();
+    arr2[0..3].reverse();
+    arr2[3..].reverse();
+    arr2.reverse();
+    println!("三次reverse: {:?}", arr2); // [4, 5, 6, 7, 1, 2, 3]
+
+    // 使用标准库 rotate_left
+    arr.rotate_left(3);
+    println!("rotate_left: {:?}", arr); // [4, 5, 6, 7, 1, 2, 3]
+
+    assert_eq!(arr, arr2);
+}</code></pre>
+<p>理解这一关系有助于：</p>
+<ol>
+<li>在没有内置 rotate 的语言中，用 reverse 实现 rotate</li>
+<li>在没有内置 reverse 的语言中，用 swap 实现 reverse</li>
+<li>从更高层次理解数据变换的本质</li>
+</ol>
+<hr>
+<h2 id="相关问题"><a class="header" href="#相关问题">相关问题</a></h2>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/string-to-integer-atoi/">8. 字符串转整数（atoi）</a></li>
+<li><a href="https://leetcode-cn.com/problems/reverse-words-in-a-string/">151. 翻转字符串里的单词</a></li>
+<li><a href="https://leetcode.cn/problems/rotate-array/description/">189. 轮转数组</a></li>
+<li><a href="https://leetcode-cn.com/problems/reverse-linked-list/">206. 反转链表</a></li>
+<li><a href="https://leetcode.cn/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/">剑指 Offer 03. 数组中重复的数字</a></li>
+<li><a href="https://leetcode-cn.com/problems/fan-zhuan-dan-ci-shun-xu-lcof/">剑指 Offer 58 - I. 翻转单词顺序</a></li>
+<li><a href="https://github.com/smallswan/rust-by-example/blob/master/src/dfa.rs">敏感词过滤 – DFA算法(rust)</a></li>
+</ul>
+<hr>
+<h2 id="总结"><a class="header" href="#总结">总结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>操作</th><th>含义</th><th>Rust 方法</th><th>时间复杂度</th><th>空间复杂度</th></tr>
+</thead>
+<tbody>
+<tr><td>交换（swap）</td><td>交换两个位置的值</td><td><code>slice.swap(i, j)</code> / <code>mem::swap</code></td><td>$O(1)$</td><td>$O(1)$</td></tr>
+<tr><td>反转（reverse）</td><td>颠倒整个序列</td><td><code>slice.reverse()</code> / <code>iter().rev()</code></td><td>$O(n)$</td><td>$O(1)$</td></tr>
+<tr><td>左旋（rotate_left）</td><td>元素向左循环移动</td><td><code>slice.rotate_left(k)</code></td><td>$O(n)$</td><td>$O(1)$</td></tr>
+<tr><td>右旋（rotate_right）</td><td>元素向右循环移动</td><td><code>slice.rotate_right(k)</code></td><td>$O(n)$</td><td>$O(1)$</td></tr>
+</tbody>
+</table>
+</div>
+<p>三者关系：<code>rotate = 3 * reverse</code>，<code>reverse = n/2 * swap</code></p>
+<hr>
+<h2 id="练习题"><a class="header" href="#练习题">练习题</a></h2>
+<ol>
+<li>
+<p><strong>反转字符串 II</strong>（<a href="https://leetcode-cn.com/problems/reverse-string-ii/">LeetCode 541</a>）：给定一个字符串 <code>s</code> 和一个整数 <code>k</code>，从字符串开头算起，每计数至 <code>2k</code> 个字符，就反转这 <code>2k</code> 字符中的前 <code>k</code> 个字符。</p>
+</li>
+<li>
+<p><strong>旋转数组的最小值</strong>（<a href="https://leetcode-cn.com/problems/xuan-zhuan-shu-zu-de-zui-xiao-shu-zi-lcof/">剑指 Offer 11</a>）：把一个数组最开始的若干个元素搬到数组的末尾，称之为数组的旋转。输入一个递增排序的数组的一个旋转，输出旋转数组的最小元素。</p>
+</li>
+<li>
+<p><strong>链表两两交换</strong>（<a href="https://leetcode-cn.com/problems/swap-nodes-in-pairs/">LeetCode 24</a>）：给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。</p>
+</li>
+<li>
+<p><strong>手动实现 reverse</strong>：不使用 <code>slice.reverse()</code>，仅使用 <code>slice.swap()</code> 实现一个切片的反转函数。</p>
+</li>
+<li>
+<p><strong>字符串旋转</strong>：实现一个函数，判断字符串 s2 是否可以通过旋转 s1 得到。要求不使用字符串拼接（即不使用 <code>s1 + s1</code> 的技巧），而是通过逐位旋转比较。</p>
+</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_17.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_19.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_17.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_19.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

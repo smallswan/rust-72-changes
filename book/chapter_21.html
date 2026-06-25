@@ -1,0 +1,950 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第二十一 打包/拆包 压缩/解压 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第二十一章-打包拆包-压缩解压"><a class="header" href="#第二十一章-打包拆包-压缩解压">第二十一章 打包/拆包 压缩/解压</a></h1>
+<h2 id="211-概述"><a class="header" href="#211-概述">21.1 概述</a></h2>
+<p>一般而言，数据越小在存储时占用的空间更小、在传输时速度更快、在处理时耗时更少。
+在大数据时代，海量数据的存储、传输、处理都将耗费巨额的成本。为了减少成本，
+对数据采用恰当的编码算法进行压缩变得十分重要。<a href="https://www.oschina.net/news/207430/aws-from-gzip-to-zstd">AWS 压缩算法从 gzip 切换到 zstd，节约 30% 存储空间</a></p>
+<h3 id="为什么要压缩"><a class="header" href="#为什么要压缩">为什么要压缩</a></h3>
+<ul>
+<li><strong>存储成本</strong>：数据量越大，存储介质的采购和维护成本越高。压缩可以显著降低存储需求。</li>
+<li><strong>传输速度</strong>：网络带宽是有限资源，压缩后的数据传输更快，用户体验更好。</li>
+<li><strong>处理效率</strong>：更小的数据意味着更少的 I/O 操作和内存占用，处理速度更快。</li>
+</ul>
+<h3 id="压缩的本质消除冗余"><a class="header" href="#压缩的本质消除冗余">压缩的本质：消除冗余</a></h3>
+<p>数据压缩的核心思想是<strong>消除冗余</strong>。现实世界中的数据往往存在大量重复模式和可预测的结构，
+例如文本中高频出现的字符、图像中大面积相同颜色的区域、音频中的静音段等。
+压缩算法通过识别这些冗余并用更紧凑的方式表示它们来实现数据缩减。</p>
+<h3 id="信息论基础"><a class="header" href="#信息论基础">信息论基础</a></h3>
+<p>压缩的理论极限由**香农熵（Shannon Entropy）**给出。对于离散随机变量 $X$，其熵定义为：</p>
+<p>$$H(X) = -\sum_{x \in X} p(x) \log_2 p(x)$$</p>
+<p>其中 $p(x)$ 是符号 $x$ 出现的概率。香农熵的单位是<strong>比特（bit）</strong>，表示编码每个符号所需的平均最小比特数。</p>
+<p><strong>关键结论</strong>：</p>
+<ul>
+<li>任何无损压缩算法的平均编码长度不可能小于信源的香农熵。</li>
+<li>当数据中各符号等概率分布时，熵最大，压缩效果最差。</li>
+<li>当数据中存在大量重复符号时，熵较小，压缩空间大。</li>
+</ul>
+<p>例如，对于只包含字符 <code>A</code> 和 <code>B</code> 的字符串：</p>
+<ul>
+<li>若 <code>A</code> 出现概率为 0.9，<code>B</code> 为 0.1，则 $H(X) = -(0.9 \log_2 0.9 + 0.1 \log_2 0.1) \approx 0.469$ bit/符号</li>
+<li>若 <code>A</code> 和 <code>B</code> 各出现概率 0.5，则 $H(X) = 1.0$ bit/符号</li>
+</ul>
+<h3 id="常用场景"><a class="header" href="#常用场景">常用场景</a></h3>
+<ul>
+<li>文件、日志归档</li>
+<li>网络传输</li>
+<li>数据存储</li>
+<li>敏感数据加密前先压缩</li>
+</ul>
+<hr>
+<h2 id="212-压缩算法分类"><a class="header" href="#212-压缩算法分类">21.2 压缩算法分类</a></h2>
+<h3 id="无损压缩-vs-有损压缩"><a class="header" href="#无损压缩-vs-有损压缩">无损压缩 vs 有损压缩</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型</th><th>说明</th><th>适用场景</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>无损压缩</strong></td><td>压缩后可完整还原原始数据，不丢失任何信息</td><td>文本、代码、数据库、配置文件</td><td>gzip、zstd、LZ4、Snappy</td></tr>
+<tr><td><strong>有损压缩</strong></td><td>压缩后无法完整还原，丢弃部分信息</td><td>图片、音频、视频</td><td>JPEG、MP3、H.264、WebP</td></tr>
+</tbody>
+</table>
+</div>
+<p>本章重点讨论<strong>无损压缩</strong>，因为它是系统编程和数据处理中最常用的压缩方式。</p>
+<h3 id="通用压缩-vs-专用压缩"><a class="header" href="#通用压缩-vs-专用压缩">通用压缩 vs 专用压缩</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型</th><th>说明</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>通用压缩</strong></td><td>不依赖特定数据类型，适用于任意数据</td><td>压缩率适中，适用范围广</td></tr>
+<tr><td><strong>专用压缩</strong></td><td>针对特定数据格式优化</td><td>压缩率极高，但适用范围窄</td></tr>
+</tbody>
+</table>
+</div>
+<p>例如：</p>
+<ul>
+<li>通用压缩：gzip、zstd、LZ4 可压缩任意二进制或文本数据</li>
+<li>专用压缩：PNG（图像）、FLAC（音频）、VP9（视频）针对特定数据类型优化</li>
+</ul>
+<h3 id="压缩算法全景"><a class="header" href="#压缩算法全景">压缩算法全景</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>类型</th><th>压缩率</th><th>速度</th><th>典型用途</th></tr>
+</thead>
+<tbody>
+<tr><td>Huffman</td><td>统计编码</td><td>中</td><td>快</td><td>文本编码、DEFLATE的组成部分</td></tr>
+<tr><td>LZ77/LZ78</td><td>字典编码</td><td>中</td><td>快</td><td>通用压缩基础</td></tr>
+<tr><td>DEFLATE</td><td>混合（LZ77+Huffman）</td><td>中高</td><td>中</td><td>gzip、zip、HTTP</td></tr>
+<tr><td>Snappy</td><td>字典编码</td><td>中</td><td>极快</td><td>数据库、分布式系统</td></tr>
+<tr><td>LZ4</td><td>字典编码</td><td>中</td><td>极快</td><td>实时压缩、缓存</td></tr>
+<tr><td>Zstandard (zstd)</td><td>混合</td><td>高</td><td>快</td><td>云存储、大数据</td></tr>
+<tr><td>Brotli</td><td>混合（LZ77+Huffman）</td><td>高</td><td>中</td><td>HTTP内容压缩</td></tr>
+<tr><td>LZO</td><td>字典编码</td><td>中</td><td>快</td><td>内核压缩、嵌入式</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="213-经典压缩算法原理"><a class="header" href="#213-经典压缩算法原理">21.3 经典压缩算法原理</a></h2>
+<h3 id="2131-哈夫曼编码huffman-coding"><a class="header" href="#2131-哈夫曼编码huffman-coding">21.3.1 哈夫曼编码（Huffman Coding）</a></h3>
+<p>哈夫曼编码是一种<strong>变长编码</strong>方案，由 David Huffman 于 1952 年提出。其核心思想是：
+<strong>频率高的字符使用较短的编码，频率低的字符使用较长的编码</strong>，从而最小化整体编码长度。</p>
+<h4 id="构建哈夫曼树"><a class="header" href="#构建哈夫曼树">构建哈夫曼树</a></h4>
+<ol>
+<li>统计每个字符的出现频率</li>
+<li>将每个字符作为一个叶子节点，放入优先队列（按频率排序）</li>
+<li>每次取出频率最低的两个节点，合并为一个新的内部节点（频率为两者之和）</li>
+<li>将新节点放回优先队列</li>
+<li>重复步骤 3-4，直到只剩一个根节点</li>
+<li>从根节点到叶子节点的路径即为该字符的编码（左分支为 0，右分支为 1）</li>
+</ol>
+<h4 id="编码示例"><a class="header" href="#编码示例">编码示例</a></h4>
+<p>假设文本为 <code>BCAADDDCCACACAC</code>，字符频率统计：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>字符</th><th>频率</th></tr>
+</thead>
+<tbody>
+<tr><td>A</td><td>5</td></tr>
+<tr><td>B</td><td>1</td></tr>
+<tr><td>C</td><td>6</td></tr>
+<tr><td>D</td><td>3</td></tr>
+</tbody>
+</table>
+</div>
+<p>构建哈夫曼树后，可能的编码结果：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>字符</th><th>编码</th><th>频率</th><th>总比特数</th></tr>
+</thead>
+<tbody>
+<tr><td>C</td><td>0</td><td>6</td><td>6</td></tr>
+<tr><td>A</td><td>10</td><td>5</td><td>10</td></tr>
+<tr><td>D</td><td>110</td><td>3</td><td>9</td></tr>
+<tr><td>B</td><td>111</td><td>1</td><td>3</td></tr>
+</tbody>
+</table>
+</div>
+<p>总比特数 = 6 + 10 + 9 + 3 = 28 bit，而固定长度编码需要 $15 \times 2 = 30$ bit（4个字符需要2 bit编码）。</p>
+<h4 id="rust-实现哈夫曼编码"><a class="header" href="#rust-实现哈夫曼编码">Rust 实现哈夫曼编码</a></h4>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::collections::{BinaryHeap, HashMap};
+use std::cmp::Ordering;
+
+#[derive(Debug, Eq, PartialEq)]
+struct HuffmanNode {
+    freq: usize,
+    char: Option&lt;char&gt;,
+    left: Option&lt;Box&lt;HuffmanNode&gt;&gt;,
+    right: Option&lt;Box&lt;HuffmanNode&gt;&gt;,
+}
+
+impl Ord for HuffmanNode {
+    fn cmp(&amp;self, other: &amp;Self) -&gt; Ordering {
+        other.freq.cmp(&amp;self.freq) // 最小堆
+    }
+}
+
+impl PartialOrd for HuffmanNode {
+    fn partial_cmp(&amp;self, other: &amp;Self) -&gt; Option&lt;Ordering&gt; {
+        Some(self.cmp(other))
+    }
+}
+
+impl HuffmanNode {
+    fn leaf(freq: usize, c: char) -&gt; Self {
+        HuffmanNode { freq, char: Some(c), left: None, right: None }
+    }
+
+    fn internal(freq: usize, left: Box&lt;HuffmanNode&gt;, right: Box&lt;HuffmanNode&gt;) -&gt; Self {
+        HuffmanNode { freq, char: None, left: Some(left), right: Some(right) }
+    }
+}
+
+fn build_huffman_tree(freq_map: &amp;HashMap&lt;char, usize&gt;) -&gt; Option&lt;HuffmanNode&gt; {
+    let mut heap: BinaryHeap&lt;HuffmanNode&gt; = freq_map
+        .iter()
+        .map(|(&amp;c, &amp;f)| HuffmanNode::leaf(f, c))
+        .collect();
+
+    while heap.len() &gt; 1 {
+        let left = heap.pop().unwrap();
+        let right = heap.pop().unwrap();
+        let parent = HuffmanNode::internal(left.freq + right.freq, Box::new(left), Box::new(right));
+        heap.push(parent);
+    }
+
+    heap.pop()
+}
+
+fn generate_codes(node: &amp;HuffmanNode, prefix: String, codes: &amp;mut HashMap&lt;char, String&gt;) {
+    match (&amp;node.left, &amp;node.right) {
+        (None, None) =&gt; {
+            if let Some(c) = node.char {
+                codes.insert(c, prefix);
+            }
+        }
+        _ =&gt; {
+            if let Some(left) = &amp;node.left {
+                generate_codes(left, format!("{}0", prefix), codes);
+            }
+            if let Some(right) = &amp;node.right {
+                generate_codes(right, format!("{}1", prefix), codes);
+            }
+        }
+    }
+}
+
+fn huffman_encode(text: &amp;str) -&gt; (String, HashMap&lt;char, String&gt;) {
+    // 统计频率
+    let mut freq_map = HashMap::new();
+    for c in text.chars() {
+        *freq_map.entry(c).or_insert(0) += 1;
+    }
+
+    // 构建哈夫曼树
+    let root = build_huffman_tree(&amp;freq_map).unwrap();
+
+    // 生成编码表
+    let mut codes = HashMap::new();
+    generate_codes(&amp;root, String::new(), &amp;mut codes);
+
+    // 编码文本
+    let encoded: String = text.chars().map(|c| codes.get(&amp;c).unwrap()).collect();
+    (encoded, codes)
+}
+
+#[test]
+fn test_huffman() {
+    let text = "BCAADDDCCACACAC";
+    let (encoded, codes) = huffman_encode(text);
+
+    println!("编码表: {:?}", codes);
+    println!("原始文本: {} ({} 字符)", text, text.len());
+    println!("编码结果: {} ({} bit)", encoded, encoded.len());
+    println!("固定编码: {} bit", text.len() * 2);
+}
+<span class="boring">}</span></code></pre>
+<h3 id="2132-lz77--lz78-算法"><a class="header" href="#2132-lz77--lz78-算法">21.3.2 LZ77 / LZ78 算法</a></h3>
+<p>LZ77 和 LZ78 是由 Abraham Lempel 和 Jacob Ziv 于 1977 年和 1978 年提出的两种字典压缩算法，
+是现代压缩技术的基石。</p>
+<h4 id="lz77滑动窗口算法"><a class="header" href="#lz77滑动窗口算法">LZ77：滑动窗口算法</a></h4>
+<p>LZ77 使用一个**滑动窗口（Sliding Window）**在已处理的输出中查找与当前输入匹配的内容。
+其核心思想是：<strong>用 (距离, 长度) 对来替代重复出现的字符串</strong>。</p>
+<p><strong>工作原理</strong>：</p>
+<ol>
+<li>维护一个固定大小的滑动窗口（通常 4KB ~ 64KB）</li>
+<li>从当前位置向前搜索窗口内是否有匹配的字符串</li>
+<li>如果找到匹配（长度 &gt;= 最小匹配长度），输出 <code>(距离, 长度)</code> 对</li>
+<li>如果未找到匹配，输出原始字符</li>
+</ol>
+<p><strong>编码格式</strong>：<code>(offset, length, next_char)</code></p>
+<ul>
+<li><code>offset</code>：匹配位置相对于当前位置的偏移量</li>
+<li><code>length</code>：匹配的长度</li>
+<li><code>next_char</code>：匹配后的下一个字符</li>
+</ul>
+<p><strong>示例</strong>：</p>
+<p>文本 <code>AABAABAAAAB</code> 的 LZ77 编码过程（窗口大小为 6）：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>位置</th><th>当前字符</th><th>匹配</th><th>编码</th></tr>
+</thead>
+<tbody>
+<tr><td>0</td><td>A</td><td>无</td><td>(0, 0, ‘A’)</td></tr>
+<tr><td>1</td><td>A</td><td>无</td><td>(0, 0, ‘A’)</td></tr>
+<tr><td>2</td><td>B</td><td>无</td><td>(0, 0, ‘B’)</td></tr>
+<tr><td>3</td><td>A</td><td>AAB (offset=3, len=3)</td><td>(3, 3, ‘A’)</td></tr>
+<tr><td>7</td><td>A</td><td>AA (offset=1, len=2)</td><td>(1, 2, ‘B’)</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="lz78显式字典算法"><a class="header" href="#lz78显式字典算法">LZ78：显式字典算法</a></h4>
+<p>LZ78 与 LZ77 不同，它维护一个<strong>显式字典</strong>，将新发现的短语逐步加入字典中。
+每次编码时，在字典中查找最长匹配，然后输出字典索引和下一个字符。</p>
+<h3 id="2133-deflate-算法"><a class="header" href="#2133-deflate-算法">21.3.3 DEFLATE 算法</a></h3>
+<p>DEFLATE 是 LZ77 与 Huffman 编码的结合体，由 Phil Katz 于 1993 年设计，
+广泛应用于 gzip、zip、PNG 等格式中。</p>
+<p><strong>DEFLATE 的工作流程</strong>：</p>
+<ol>
+<li><strong>LZ77 阶段</strong>：使用滑动窗口消除重复字符串，生成字面量和 (距离, 长度) 对的序列</li>
+<li><strong>Huffman 编码阶段</strong>：对 LZ77 的输出进行 Huffman 编码，进一步压缩</li>
+</ol>
+<pre><code>原始数据 → LZ77编码（消除重复）→ Huffman编码（消除统计冗余）→ 压缩数据
+</code></pre>
+<p>gzip 就是基于 DEFLATE 算法，额外添加了文件头、CRC32 校验等元数据。</p>
+<p><a href="https://blog.csdn.net/dreamzuora/article/details/108793360">常见压缩算法学习</a></p>
+<hr>
+<h2 id="214-现代压缩算法"><a class="header" href="#214-现代压缩算法">21.4 现代压缩算法</a></h2>
+<h3 id="2141-snappy"><a class="header" href="#2141-snappy">21.4.1 Snappy</a></h3>
+<p>Snappy 是 Google 开发的压缩库， formerly known as Zippy。其设计目标是<strong>速度优先</strong>，
+在牺牲一定压缩率的前提下追求极致的压缩和解压速度。</p>
+<p><strong>特点</strong>：</p>
+<ul>
+<li>压缩速度约 250 MB/s，解压速度约 500 MB/s</li>
+<li>压缩率适中（通常 1.5x ~ 2x）</li>
+<li>不追求最大压缩率，适合实时场景</li>
+<li>广泛应用于 LevelDB、Cassandra、Hadoop 等系统</li>
+</ul>
+<h3 id="2142-lz4"><a class="header" href="#2142-lz4">21.4.2 LZ4</a></h3>
+<p>LZ4 由 Yann Collet 开发，以<strong>极快的压缩和解压速度</strong>著称。</p>
+<p><strong>特点</strong>：</p>
+<ul>
+<li>解压速度可达数 GB/s（接近内存带宽极限）</li>
+<li>压缩速度约 400 MB/s</li>
+<li>压缩率适中</li>
+<li>提供 LZ4 block format 和 LZ4 frame format 两种模式</li>
+<li>适用于实时压缩、缓存、内存数据库等场景</li>
+</ul>
+<h3 id="2143-zstandardzstd"><a class="header" href="#2143-zstandardzstd">21.4.3 Zstandard（zstd）</a></h3>
+<p>Zstandard（简称 zstd）由 Facebook（现 Meta）的 Yann Collet 开发，
+目标是提供<strong>速度与压缩率的最佳平衡</strong>。zstd 于 2016 年开源，已被 <a href="https://datatracker.ietf.org/doc/html/rfc8878">RFC 8878</a> 标准化。</p>
+<p><strong>特点</strong>：</p>
+<ul>
+<li>提供 1-22 级压缩级别，灵活调节速度与压缩率</li>
+<li>默认级别 3 的速度与 gzip 相当，但压缩率更高</li>
+<li>级别 19+ 可提供接近 LZMA 的压缩率</li>
+<li>支持流式压缩和字典压缩</li>
+<li>小数据压缩表现优异</li>
+</ul>
+<p><strong>压缩级别说明</strong>：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>级别</th><th>速度</th><th>压缩率</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>极快</td><td>低</td><td>实时压缩、网络传输</td></tr>
+<tr><td>3（默认）</td><td>快</td><td>中高</td><td>通用场景</td></tr>
+<tr><td>10</td><td>中</td><td>高</td><td>离线存储</td></tr>
+<tr><td>19</td><td>慢</td><td>极高</td><td>归档存储</td></tr>
+<tr><td>22</td><td>极慢</td><td>最高</td><td>一次性压缩、长期归档</td></tr>
+</tbody>
+</table>
+</div>
+<p><a href="https://zhuanlan.zhihu.com/p/353505496">速度快，性能好！压缩神器 zstd</a></p>
+<h4 id="rust-中使用-zstd"><a class="header" href="#rust-中使用-zstd">Rust 中使用 zstd</a></h4>
+<pre class="playground"><code class="language-rust edition2024">use std::fs::File;
+#[cfg(target_os = "windows")]
+use std::os::windows::prelude::MetadataExt;
+#[cfg(target_os = "linux")]
+use std::os::linux::fs::MetadataExt;
+use zstd::stream;
+
+fn main() -&gt; std::io::Result&lt;()&gt; {
+    // 压缩文件
+    let source = File::open("C:\\data\\movies.json")?;
+    let destination = File::create("C:\\data\\movies.zst")?;
+    match stream::copy_encode(&amp;source, &amp;destination, 7) {
+        Ok(_) =&gt; {
+            let metadata1 = source.metadata()?;
+            let metadata2 = destination.metadata()?;
+            println!(
+                "compress success: {} =&gt; {}",
+                metadata1.file_size(),
+                metadata2.file_size()
+            )
+        }
+        Err(e) =&gt; println!("{}", e),
+    }
+
+    // 解压文件
+    let destination = File::open("why-rust.zst")?;
+    let bytes = stream::decode_all(destination).unwrap();
+    println!("{}", String::from_utf8_lossy(&amp;bytes));
+    Ok(())
+}</code></pre>
+<p><strong>Cargo.toml 依赖</strong>：</p>
+<pre><code class="language-toml">[dependencies]
+zstd = "0.13"
+</code></pre>
+<p><a href="https://github.com/facebook/zstd">zstd github</a></p>
+<h3 id="2144-brotli"><a class="header" href="#2144-brotli">21.4.4 Brotli</a></h3>
+<p>Brotli 是 Google 开发的压缩算法，专为 <strong>HTTP 内容压缩</strong>优化，
+已被 <a href="https://datatracker.ietf.org/doc/html/rfc7932">RFC 7932</a> 标准化。
+现代浏览器（Chrome、Firefox、Edge 等）均支持 Brotli 压缩。</p>
+<p><strong>特点</strong>：</p>
+<ul>
+<li>使用 LZ77 + Huffman + 上下文建模的组合</li>
+<li>压缩率通常比 gzip 高 15-25%</li>
+<li>支持预定义字典（针对 HTML、CSS、JavaScript 等优化）</li>
+<li>解压速度与 gzip 相当，压缩速度较慢</li>
+<li>适用于 Web 服务器静态资源压缩</li>
+</ul>
+<p><a href="https://baike.baidu.com/item/Brotli%E7%A8%8B%E5%BA%8F%E5%BA%93/22910640?fr=aladdin">Brotli程序库</a>
+<a href="https://github.com/google/brotli">Brotli</a>
+<a href="https://github.com/dropbox/rust-brotli">rust-brotli</a></p>
+<h3 id="2145-各算法性能对比"><a class="header" href="#2145-各算法性能对比">21.4.5 各算法性能对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>压缩速度</th><th>解压速度</th><th>压缩率</th><th>内存占用</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td>Snappy</td><td>极快</td><td>极快</td><td>低</td><td>低</td><td>数据库、分布式系统</td></tr>
+<tr><td>LZ4</td><td>极快</td><td>极快（&gt;10GB/s）</td><td>低</td><td>极低</td><td>实时压缩、缓存</td></tr>
+<tr><td>zstd (lv3)</td><td>快</td><td>快</td><td>中高</td><td>中</td><td>通用场景、云存储</td></tr>
+<tr><td>zstd (lv19)</td><td>慢</td><td>快</td><td>极高</td><td>高</td><td>离线归档</td></tr>
+<tr><td>gzip (DEFLATE)</td><td>中</td><td>快</td><td>中高</td><td>低</td><td>通用压缩、HTTP</td></tr>
+<tr><td>Brotli</td><td>慢</td><td>快</td><td>高</td><td>中</td><td>HTTP内容压缩</td></tr>
+<tr><td>LZMA/7z</td><td>极慢</td><td>中</td><td>极高</td><td>高</td><td>长期归档</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>注意</strong>：以上数据为相对比较，实际性能受硬件、数据类型和压缩级别影响。
+压缩率通常以文本数据为基准，二进制数据（如已压缩的媒体文件）压缩效果较差。</p>
+</blockquote>
+<hr>
+<h2 id="215-打包与归档"><a class="header" href="#215-打包与归档">21.5 打包与归档</a></h2>
+<h3 id="tar-格式"><a class="header" href="#tar-格式">tar 格式</a></h3>
+<p><strong>tar</strong>（Tape Archive）是一种<strong>打包（归档）格式</strong>，其作用是将多个文件和目录合并为一个文件。
+需要注意的是：<strong>tar 本身不进行压缩</strong>，仅负责将多个文件合并为一个归档文件。</p>
+<p>tar 文件通常与压缩算法配合使用，常见的组合：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>格式</th><th>压缩算法</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><code>.tar</code></td><td>无</td><td>仅打包，不压缩</td></tr>
+<tr><td><code>.tar.gz</code> / <code>.tgz</code></td><td>gzip</td><td>打包 + gzip 压缩</td></tr>
+<tr><td><code>.tar.bz2</code></td><td>bzip2</td><td>打包 + bzip2 压缩</td></tr>
+<tr><td><code>.tar.xz</code></td><td>xz (LZMA2)</td><td>打包 + xz 压缩</td></tr>
+<tr><td><code>.tar.zst</code></td><td>zstd</td><td>打包 + zstd 压缩</td></tr>
+<tr><td><code>.tar.lz4</code></td><td>lz4</td><td>打包 + lz4 压缩</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="文件打包tar--zstd-压缩"><a class="header" href="#文件打包tar--zstd-压缩">文件打包（tar + zstd 压缩）</a></h3>
+<p>为了方便管理，先使用 tar 将多个文件打包成一个 tar 文件，然后使用 gzip、lz4、zstd 等压缩算法压缩 tar 文件。
+而当我们需要使用文件时，则先解压后拆包得到原先的文件。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::fs::File;
+use tar::Builder;
+use zstd::stream;
+
+#[test]
+fn archive_encode() {
+    // 打包
+    let file = File::create("examples/file/foo.tar").unwrap();
+    let mut a = Builder::new(file);
+    a.append_path("why-rust.txt").unwrap();
+    a.append_path("sensitive-words.txt").unwrap();
+    a.append_path("large_file.txt").unwrap();
+
+    // 压缩
+    let source = File::open("examples/file/foo.tar").unwrap();
+    let destination = File::create("examples/file/foo.tar.zst").unwrap();
+    match stream::copy_encode(&amp;source, &amp;destination, 7) {
+        Ok(_) =&gt; {
+            let metadata1 = source.metadata().unwrap();
+            if let Ok(metadata2) = destination.metadata() {
+                let size = metadata2.file_size();
+                println!("compress success: {} =&gt; {}", metadata1.file_size(), size);
+            }
+
+            if let Ok(metadata) = fs::metadata("examples/file/foo.tar.zst") {
+                println!(
+                    "{:?},{},{:?}",
+                    metadata.file_type(),
+                    metadata.len(),
+                    metadata.created().unwrap()
+                );
+            }
+        }
+        Err(e) =&gt; println!("copy_encode : {}", e),
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="文件拆包解压--tar-拆包"><a class="header" href="#文件拆包解压--tar-拆包">文件拆包（解压 + tar 拆包）</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::fs::File;
+use std::io::Read;
+use tar::Archive;
+use zstd::stream;
+
+#[test]
+fn decode_unpackage() {
+    // 解压 zst 文件
+    if let Ok(source) = File::open("examples/file/github_users_sample_set.tar.zst") {
+        if let Ok(destination) = File::create("examples/file/github_users_sample_set.tar") {
+            stream::copy_decode(source, destination);
+        }
+    }
+
+    // 拆包 tar 文件
+    let file = File::open("examples/file/github_users_sample_set.tar").unwrap();
+    let mut a = Archive::new(file);
+
+    for file in a.entries().unwrap() {
+        // Make sure there wasn't an I/O error
+        let mut file = file.unwrap();
+
+        // Inspect metadata about the file
+        println!("{:?}", file.header().path().unwrap());
+        println!("{}", file.header().size().unwrap());
+
+        // files implement the Read trait
+        let mut s = String::new();
+        file.read_to_string(&amp;mut s).unwrap();
+        println!("{}", s);
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="linux-相关命令"><a class="header" href="#linux-相关命令">Linux 相关命令</a></h3>
+<pre><code class="language-shell"># 打包压缩
+tar -zcvf destination.tar.gz source          # gzip 压缩
+tar -jcvf destination.tar.bz2 source          # bzip2 压缩
+tar -Jcvf destination.tar.xz source           # xz 压缩
+tar --zstd -cvf destination.tar.zst source     # zstd 压缩
+
+# 解压拆包
+tar -zxvf destination.tar.gz                  # gzip 解压
+tar -jxvf destination.tar.bz2                 # bzip2 解压
+tar -Jxvf destination.tar.xz                  # xz 解压
+tar --zstd -xvf destination.tar.zst           # zstd 解压
+</code></pre>
+<blockquote>
+<p><strong>编码知识补充</strong>：base64 编码将 3 字节映射为 4 字符（膨胀 33%），hex 编码将 1 字节映射为 2 字符（膨胀 100%）。
+这两种编码的目的不是压缩，而是将二进制数据转换为文本安全格式。</p>
+</blockquote>
+<hr>
+<h2 id="216-压缩与加密的顺序"><a class="header" href="#216-压缩与加密的顺序">21.6 压缩与加密的顺序</a></h2>
+<p><strong>压缩一定在加密之前。</strong> 因为加密以后，比特序列的冗余性消失，基本上无法再压缩了。
+在加密前进行压缩的做法不仅仅限于混合密码系统，而是对所有密码都适用。</p>
+<h3 id="为什么加密后无法压缩"><a class="header" href="#为什么加密后无法压缩">为什么加密后无法压缩</a></h3>
+<p>加密算法（如 AES）的设计目标是<strong>将数据随机化</strong>，使得密文在统计上与随机数据不可区分。
+这意味着：</p>
+<ol>
+<li>加密后的数据熵接近最大值（每个比特等概率为 0 或 1）</li>
+<li>没有任何重复模式可以利用</li>
+<li>压缩算法无法找到可消除的冗余</li>
+</ol>
+<p>从信息论角度看，加密后数据的熵为 $H(X) = n$（$n$ 为比特数），即每个比特携带 1 bit 信息，
+已经达到理论极限，无法进一步压缩。</p>
+<h3 id="正确的处理顺序"><a class="header" href="#正确的处理顺序">正确的处理顺序</a></h3>
+<pre><code>原始数据 → 压缩 → 加密 → 传输/存储
+</code></pre>
+<pre><code>接收数据 → 解密 → 解压 → 原始数据
+</code></pre>
+<h3 id="shell-命令示例"><a class="header" href="#shell-命令示例">Shell 命令示例</a></h3>
+<pre><code class="language-shell"># 正确顺序：先压缩，再加密
+tar -zcvf destination.tar.gz source
+gpg -c destination.tar.gz
+
+# 解密后解压
+gpg -d destination.tar.gz.gpg | tar -zxvf -
+</code></pre>
+<hr>
+<h2 id="217-rust-中的压缩库"><a class="header" href="#217-rust-中的压缩库">21.7 Rust 中的压缩库</a></h2>
+<p>Rust 生态中拥有丰富的压缩/解压库，以下列出常用的库及其用途：</p>
+<h3 id="核心压缩库"><a class="header" href="#核心压缩库">核心压缩库</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>库名</th><th>用途</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://crates.io/crates/flate2">flate2</a></td><td>gzip / deflate / zlib</td><td>最通用的压缩库，支持 DEFLATE 系列算法</td></tr>
+<tr><td><a href="https://crates.io/crates/zip">zip</a></td><td>ZIP 格式</td><td>读写 ZIP 压缩包</td></tr>
+<tr><td><a href="https://crates.io/crates/tar">tar</a></td><td>tar 归档</td><td>读写 tar 打包文件</td></tr>
+<tr><td><a href="https://crates.io/crates/zstd">zstd</a></td><td>Zstandard 压缩</td><td>Facebook 的 zstd 算法 Rust 绑定</td></tr>
+<tr><td><a href="https://crates.io/crates/lz4_flex">lz4_flex</a></td><td>LZ4 压缩</td><td>纯 Rust 实现的 LZ4 压缩</td></tr>
+<tr><td><a href="https://crates.io/crates/brotli">brotli</a></td><td>Brotli 压缩</td><td>Google 的 Brotli 算法 Rust 实现</td></tr>
+<tr><td><a href="https://crates.io/crates/snap">snap</a></td><td>Snappy 压缩</td><td>纯 Rust 实现的 Snappy 压缩</td></tr>
+<tr><td><a href="https://crates.io/crates/xz2">xz2</a></td><td>xz / LZMA2 压缩</td><td>xz 压缩格式的 Rust 绑定</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="相关资源链接"><a class="header" href="#相关资源链接">相关资源链接</a></h3>
+<ul>
+<li><a href="https://github.com/google/snappy">snappy</a> - Snappy is a compression/decompression library.</li>
+<li><a href="https://github.com/BurntSushi/rust-snappy">rust-snappy</a></li>
+<li><a href="https://github.com/facebook/zstd">zstd github</a> - Zstandard - Fast real-time compression algorithm</li>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc8878">RFC 8878</a> - Zstandard 压缩算法规范</li>
+<li><a href="https://github.com/google/brotli">Brotli</a> - Google Brotli 压缩库</li>
+<li><a href="https://github.com/dropbox/rust-brotli">rust-brotli</a> - Brotli 的 Rust 实现</li>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc7932">RFC 7932</a> - Brotli 压缩算法规范</li>
+<li><a href="https://lz4.org/">LZ4</a> - LZ4 极速压缩库</li>
+<li><a href="https://github.com/richox/orz">orz</a> - 基于 LZ77 的列式压缩库</li>
+</ul>
+<h3 id="cargotoml-依赖示例"><a class="header" href="#cargotoml-依赖示例">Cargo.toml 依赖示例</a></h3>
+<pre><code class="language-toml">[dependencies]
+# gzip / deflate / zlib 压缩
+flate2 = "1"
+
+# ZIP 压缩包读写
+zip = "2"
+
+# tar 归档
+tar = "0.4"
+
+# zstd 压缩
+zstd = "0.13"
+
+# LZ4 压缩
+lz4_flex = "0.11"
+
+# Brotli 压缩
+brotli = "7"
+
+# Snappy 压缩
+snap = "1"
+</code></pre>
+<h3 id="flate2-使用示例gzip-压缩"><a class="header" href="#flate2-使用示例gzip-压缩">flate2 使用示例（gzip 压缩）</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use flate2::write::GzEncoder;
+use flate2::read::GzDecoder;
+use flate2::Compression;
+use std::fs::File;
+use std::io::{Write, Read};
+
+fn compress_gzip(input_path: &amp;str, output_path: &amp;str) -&gt; std::io::Result&lt;()&gt; {
+    let input = File::open(input_path)?;
+    let output = File::create(output_path)?;
+    let mut encoder = GzEncoder::new(output, Compression::default());
+    std::io::copy(&amp;mut input.take(0), &amp;mut encoder)?;
+    encoder.finish()?;
+    Ok(())
+}
+
+fn decompress_gzip(input_path: &amp;str, output_path: &amp;str) -&gt; std::io::Result&lt;()&gt; {
+    let input = File::open(input_path)?;
+    let mut decoder = GzDecoder::new(input);
+    let mut output = Vec::new();
+    decoder.read_to_end(&amp;mut output)?;
+    std::fs::write(output_path, output)?;
+    Ok(())
+}
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="218-总结"><a class="header" href="#218-总结">21.8 总结</a></h2>
+<h3 id="压缩算法对比总览"><a class="header" href="#压缩算法对比总览">压缩算法对比总览</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>压缩率</th><th>压缩速度</th><th>解压速度</th><th>复杂度</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td>Huffman</td><td>中</td><td>快</td><td>快</td><td>低</td><td>文本编码、理论教学</td></tr>
+<tr><td>LZ77</td><td>中</td><td>快</td><td>快</td><td>低</td><td>通用压缩基础</td></tr>
+<tr><td>DEFLATE/gzip</td><td>中高</td><td>中</td><td>快</td><td>中</td><td>通用压缩、HTTP、ZIP</td></tr>
+<tr><td>Snappy</td><td>低</td><td>极快</td><td>极快</td><td>低</td><td>数据库、实时处理</td></tr>
+<tr><td>LZ4</td><td>低</td><td>极快</td><td>极快</td><td>低</td><td>实时压缩、缓存、内存数据库</td></tr>
+<tr><td>zstd</td><td>高（可调）</td><td>快（可调）</td><td>快</td><td>中</td><td>通用场景、云存储、大数据</td></tr>
+<tr><td>Brotli</td><td>高</td><td>慢</td><td>快</td><td>高</td><td>HTTP 内容压缩</td></tr>
+<tr><td>LZMA/7z</td><td>极高</td><td>极慢</td><td>中</td><td>高</td><td>长期归档</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="场景选择建议"><a class="header" href="#场景选择建议">场景选择建议</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>场景</th><th>推荐算法</th><th>理由</th></tr>
+</thead>
+<tbody>
+<tr><td>Web 服务器静态资源</td><td>Brotli / gzip</td><td>浏览器原生支持，压缩率高</td></tr>
+<tr><td>数据库列存储</td><td>LZ4 / Snappy</td><td>压缩/解压速度极快，减少延迟</td></tr>
+<tr><td>日志归档</td><td>zstd (lv3~10)</td><td>压缩率高，速度可接受</td></tr>
+<tr><td>长期冷数据归档</td><td>zstd (lv19+) / LZMA</td><td>最大压缩率，节省存储成本</td></tr>
+<tr><td>实时网络传输</td><td>LZ4 / Snappy</td><td>极低延迟</td></tr>
+<tr><td>通用文件压缩</td><td>zstd (默认级别)</td><td>速度与压缩率的最佳平衡</td></tr>
+<tr><td>内存中缓存</td><td>LZ4</td><td>解压速度接近内存拷贝</td></tr>
+<tr><td>电子书/文档分发</td><td>gzip / DEFLATE</td><td>通用兼容性好</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="关键要点"><a class="header" href="#关键要点">关键要点</a></h3>
+<ol>
+<li><strong>压缩的本质是消除冗余</strong>，理论上限由香农熵决定</li>
+<li><strong>没有万能的压缩算法</strong>，需要根据场景在速度、压缩率、内存占用之间权衡</li>
+<li><strong>先压缩，后加密</strong>，加密后的数据无法再压缩</li>
+<li><strong>tar 只打包不压缩</strong>，需要配合压缩算法使用</li>
+<li><strong>zstd 是当前最推荐的通用压缩算法</strong>，在速度和压缩率之间取得了优秀的平衡</li>
+</ol>
+<hr>
+<h2 id="219-练习题"><a class="header" href="#219-练习题">21.9 练习题</a></h2>
+<p><strong>练习 1</strong>：计算字符串 <code>"aabbbccccddddd"</code> 的香农熵 $H(X)$，并解释为什么该字符串具有较好的可压缩性。</p>
+<p><strong>练习 2</strong>：使用 Rust 的 <code>flate2</code> 库实现对一个文本文件的 gzip 压缩和解压，并比较压缩前后的文件大小。</p>
+<p><strong>练习 3</strong>：手动构建字符串 <code>"ABRACADABRA"</code> 的哈夫曼树，写出每个字符的编码，并计算编码后的总比特数。</p>
+<p><strong>练习 4</strong>：对字符串 <code>"ABCABCABCABC"</code> 进行 LZ77 编码（假设窗口大小为 9），写出每一步的编码结果。</p>
+<p><strong>练习 5</strong>：使用 Rust 的 <code>tar</code> 和 <code>zstd</code> 库，编写一个函数将指定目录下的所有 <code>.log</code> 文件打包并压缩为 <code>.tar.zst</code> 格式。</p>
+<p><strong>练习 6</strong>：为什么加密后的数据几乎无法再压缩？请从信息论的角度给出解释。</p>
+<p><strong>练习 7</strong>：分别使用 zstd 的压缩级别 1、3、10、19 压缩同一个大文件（&gt;100MB），记录每种级别的压缩时间和压缩后文件大小，绘制速度-压缩率曲线并分析。</p>
+<p><strong>练习 8</strong>：在一个 Web 服务项目中，分别使用 gzip 和 Brotli 压缩 JSON API 响应数据，比较压缩率和响应时间，给出你的选型建议。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_20.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_22.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_20.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_22.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

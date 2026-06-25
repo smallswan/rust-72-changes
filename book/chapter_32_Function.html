@@ -1,0 +1,735 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第三十二 函数 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第三十二-函数function"><a class="header" href="#第三十二-函数function">第三十二 函数（Function）</a></h1>
+<p>函数（Function）是数学中最核心的概念之一，描述了两个集合之间的一种对应关系：对于定义域中的每一个输入，都有唯一确定的输出与之对应。函数是微积分的研究对象，也是计算机编程的基本构建块。</p>
+<hr>
+<h2 id="一函数的基本概念"><a class="header" href="#一函数的基本概念">一、函数的基本概念</a></h2>
+<h3 id="11-定义"><a class="header" href="#11-定义">1.1 定义</a></h3>
+<p>设 $D$ 是一个非空实数集，如果对于 $D$ 中的每一个 $x$，按照某种对应法则 $f$，都有唯一确定的实数 $y$ 与之对应，则称 $f$ 为定义在 $D$ 上的函数，记作：</p>
+<p>$$y = f(x), \quad x \in D$$</p>
+<p>其中 $x$ 称为自变量，$y$ 称为因变量，$D$ 称为函数的定义域。</p>
+<h3 id="12-有界函数与无界函数"><a class="header" href="#12-有界函数与无界函数">1.2 有界函数与无界函数</a></h3>
+<p><strong>有界函数</strong>：如果存在正数 $M$，使得对于定义域内的所有 $x$，都有 $|f(x)| \le M$，则称 $f(x)$ 为有界函数。</p>
+<p><strong>无界函数</strong>：不存在这样的 $M$，则称 $f(x)$ 为无界函数。</p>
+<pre class="playground"><code class="language-rust edition2024">fn is_bounded(f: impl Fn(f64) -&gt; f64, a: f64, b: f64, samples: usize) -&gt; Option&lt;f64&gt; {
+    let mut max_abs = 0.0_f64;
+    for i in 0..=samples {
+        let x = a + (b - a) * (i as f64 / samples as f64);
+        let y = f(x).abs();
+        if y.is_infinite() {
+            return None; // 无界
+        }
+        max_abs = max_abs.max(y);
+    }
+    Some(max_abs)
+}
+
+fn main() {
+    // sin(x) 在 [0, 2π] 上有界
+    let sin_bound = is_bounded(|x| x.sin(), 0.0, 2.0 * std::f64::consts::PI, 100);
+    println!("sin(x) 的最大绝对值: {:?}", sin_bound);  // Some(1.0)
+
+    // 1/x 在 [-1, 1] 上无界
+    let inv_bound = is_bounded(|x| 1.0 / x, -1.0, 1.0, 100);
+    println!("1/x 有界吗: {:?}", inv_bound);  // None
+}</code></pre>
+<hr>
+<h2 id="二函数的基本性质"><a class="header" href="#二函数的基本性质">二、函数的基本性质</a></h2>
+<h3 id="21-奇偶性"><a class="header" href="#21-奇偶性">2.1 奇偶性</a></h3>
+<p><strong>奇函数</strong>：如果对于定义域内的任意 $x$，都有 $f(-x) = -f(x)$，则称 $f(x)$ 为奇函数。奇函数的图像关于原点对称。</p>
+<p><strong>偶函数</strong>：如果对于定义域内的任意 $x$，都有 $f(-x) = f(x)$，则称 $f(x)$ 为偶函数。偶函数的图像关于 $y$ 轴对称。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>函数</th><th>奇偶性</th><th>图像特征</th></tr>
+</thead>
+<tbody>
+<tr><td>$f(x) = x^3$</td><td>奇函数</td><td>关于原点对称</td></tr>
+<tr><td>$f(x) = x^2$</td><td>偶函数</td><td>关于 $y$ 轴对称</td></tr>
+<tr><td>$f(x) = \sin x$</td><td>奇函数</td><td>关于原点对称</td></tr>
+<tr><td>$f(x) = \cos x$</td><td>偶函数</td><td>关于 $y$ 轴对称</td></tr>
+<tr><td>$f(x) = e^x$</td><td>非奇非偶</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">fn is_odd(f: impl Fn(f64) -&gt; f64, x: f64) -&gt; bool {
+    (f(-x) + f(x)).abs() &lt; 1e-10
+}
+
+fn is_even(f: impl Fn(f64) -&gt; f64, x: f64) -&gt; bool {
+    (f(-x) - f(x)).abs() &lt; 1e-10
+}
+
+fn main() {
+    let x = 2.0;
+    println!("x³ 是奇函数: {}", is_odd(|x| x.powi(3), x));   // true
+    println!("x² 是偶函数: {}", is_even(|x| x.powi(2), x));  // true
+    println!("sin(x) 是奇函数: {}", is_odd(|x| x.sin(), x)); // true
+    println!("cos(x) 是偶函数: {}", is_even(|x| x.cos(), x)); // true
+}</code></pre>
+<h3 id="22-单调性"><a class="header" href="#22-单调性">2.2 单调性</a></h3>
+<p><strong>单调递增</strong>：如果对于定义域内的任意 $x_1 &lt; x_2$，都有 $f(x_1) \le f(x_2)$，则称 $f(x)$ 单调递增。</p>
+<p><strong>单调递减</strong>：如果对于定义域内的任意 $x_1 &lt; x_2$，都有 $f(x_1) \ge f(x_2)$，则称 $f(x)$ 单调递减。</p>
+<p><strong>严格单调</strong>：上述不等式中的等号不成立时，称为严格单调。</p>
+<blockquote>
+<p>若 $f(x)$ 可导，则：</p>
+<ul>
+<li>$f’(x) &gt; 0$ $\Rightarrow$ $f(x)$ 严格单调递增</li>
+<li>$f’(x) &lt; 0$ $\Rightarrow$ $f(x)$ 严格单调递减</li>
+</ul>
+</blockquote>
+<h3 id="23-周期性"><a class="header" href="#23-周期性">2.3 周期性</a></h3>
+<p>如果存在非零常数 $T$，使得对于定义域内的任意 $x$，都有 $f(x + T) = f(x)$，则称 $f(x)$ 为周期函数，$T$ 称为周期。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>函数</th><th>周期</th></tr>
+</thead>
+<tbody>
+<tr><td>$\sin x$, $\cos x$</td><td>$2\pi$</td></tr>
+<tr><td>$\tan x$, $\cot x$</td><td>$\pi$</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="24-凹凸性"><a class="header" href="#24-凹凸性">2.4 凹凸性</a></h3>
+<p><strong>凹函数（下凸）</strong>：曲线向上弯，任意两点连线在曲线上方。</p>
+<p>$$f(\lambda x_1 + (1-\lambda)x_2) \le \lambda f(x_1) + (1-\lambda)f(x_2) \quad (\lambda \in (0,1))$$</p>
+<p><strong>凸函数（上凸）</strong>：曲线向下弯，任意两点连线在曲线下方。</p>
+<p>$$f(\lambda x_1 + (1-\lambda)x_2) \ge \lambda f(x_1) + (1-\lambda)f(x_2) \quad (\lambda \in (0,1))$$</p>
+<blockquote>
+<p>若 $f(x)$ 二阶可导，则：</p>
+<ul>
+<li>$f’’(x) &gt; 0$ $\Rightarrow$ 凹函数（下凸）</li>
+<li>$f’’(x) &lt; 0$ $\Rightarrow$ 凸函数（上凸）</li>
+</ul>
+</blockquote>
+<h3 id="25-连续性"><a class="header" href="#25-连续性">2.5 连续性</a></h3>
+<p>函数 $f(x)$ 在点 $x_0$ 处连续，当且仅当：</p>
+<p>$$\lim_{x \to x_0} f(x) = f(x_0)$$</p>
+<p><strong>间断点的分类：</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型</th><th>定义</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>第一类间断点（可去）</strong></td><td>左右极限存在且相等，但不等于函数值</td><td>$f(x) = \frac{\sin x}{x}$ 在 $x=0$</td></tr>
+<tr><td><strong>第一类间断点（跳跃）</strong></td><td>左右极限存在但不相等</td><td>符号函数 $\text{sgn}(x)$ 在 $x=0$</td></tr>
+<tr><td><strong>第二类间断点</strong></td><td>至少一侧极限不存在</td><td>$f(x) = \frac{1}{x}$ 在 $x=0$</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">fn is_continuous_at(f: impl Fn(f64) -&gt; f64, x0: f64, epsilon: f64) -&gt; bool {
+    let h = 1e-6;
+    let left_limit = f(x0 - h);
+    let right_limit = f(x0 + h);
+    let f_x0 = f(x0);
+
+    (left_limit - f_x0).abs() &lt; epsilon &amp;&amp; (right_limit - f_x0).abs() &lt; epsilon
+}
+
+fn main() {
+    // sin(x)/x 在 x=0 处有可去间断点
+    let f = |x: f64| if x == 0.0 { 1.0 } else { x.sin() / x };
+    println!("sin(x)/x 在 x=0 连续: {}", is_continuous_at(f, 0.0, 1e-5));
+}</code></pre>
+<hr>
+<h2 id="三基本初等函数"><a class="header" href="#三基本初等函数">三、基本初等函数</a></h2>
+<h3 id="31-幂函数"><a class="header" href="#31-幂函数">3.1 幂函数</a></h3>
+<p>$$f(x) = x^a \quad (a \in \mathbb{R})$$</p>
+<p><strong>运算法则：</strong></p>
+<p>$$a^m \cdot a^n = a^{m+n}$$
+$$\frac{a^m}{a^n} = a^{m-n}$$
+$$(a^m)^n = a^{mn}$$
+$$a^{-n} = \frac{1}{a^n}$$</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let x: f64 = 2.0;
+    println!("平方根: {}", x.sqrt());      // 1.4142
+    println!("立方: {}", x.powi(3));       // 8
+    println!("x^0.5: {}", x.powf(0.5));    // 1.4142
+}</code></pre>
+<h3 id="32-指数函数"><a class="header" href="#32-指数函数">3.2 指数函数</a></h3>
+<p>$$f(x) = a^x \quad (a &gt; 0, a \neq 1)$$</p>
+<p>最常用的指数函数是以 $e$ 为底的指数函数：</p>
+<p>$$f(x) = e^x$$</p>
+<p><strong>性质：</strong></p>
+<ul>
+<li>定义域：$(-\infty, +\infty)$</li>
+<li>值域：$(0, +\infty)$</li>
+<li>过点 $(0, 1)$</li>
+<li>$a &gt; 1$ 时单调递增，$0 &lt; a &lt; 1$ 时单调递减</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let x = 2.0_f64;
+    println!("e^2 = {}", x.exp());  // 7.3891
+    println!("2^3 = {}", 2.0_f64.powf(3.0));  // 8
+}</code></pre>
+<h3 id="33-对数函数"><a class="header" href="#33-对数函数">3.3 对数函数</a></h3>
+<p>$$f(x) = \log_a x \quad (a &gt; 0, a \neq 1, x &gt; 0)$$</p>
+<p>常用对数：</p>
+<ul>
+<li>自然对数：$\ln x = \log_e x$</li>
+<li>常用对数：$\lg x = \log_{10} x$</li>
+</ul>
+<p><strong>运算法则：</strong></p>
+<p>$$\log_a(M \cdot N) = \log_a M + \log_a N$$
+$$\log_a\left(\frac{M}{N}\right) = \log_a M - \log_a N$$
+$$\log_a(M^k) = k \cdot \log_a M$$
+$$\log_a b = \frac{\log_c b}{\log_c a} \quad \text{（换底公式）}$$</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let x = 100.0_f64;
+    println!("ln(100) = {}", x.ln());      // 4.6052
+    println!("log10(100) = {}", x.log10()); // 2
+    println!("log2(64) = {}", 64.0_f64.log2()); // 6
+}</code></pre>
+<h3 id="34-三角函数"><a class="header" href="#34-三角函数">3.4 三角函数</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>函数</th><th>定义</th><th>周期</th><th>奇偶性</th></tr>
+</thead>
+<tbody>
+<tr><td>$\sin x$</td><td>对边/斜边</td><td>$2\pi$</td><td>奇函数</td></tr>
+<tr><td>$\cos x$</td><td>邻边/斜边</td><td>$2\pi$</td><td>偶函数</td></tr>
+<tr><td>$\tan x$</td><td>$\sin x / \cos x$</td><td>$\pi$</td><td>奇函数</td></tr>
+<tr><td>$\cot x$</td><td>$\cos x / \sin x$</td><td>$\pi$</td><td>奇函数</td></tr>
+<tr><td>$\sec x$</td><td>$1 / \cos x$</td><td>$2\pi$</td><td>偶函数</td></tr>
+<tr><td>$\csc x$</td><td>$1 / \sin x$</td><td>$2\pi$</td><td>奇函数</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>平方和关系：</strong></p>
+<p>$$\sin^2\theta + \cos^2\theta = 1$$
+$$1 + \tan^2\theta = \sec^2\theta$$
+$$1 + \cot^2\theta = \csc^2\theta$$</p>
+<p><strong>两角和差公式：</strong></p>
+<p>$$\sin(\alpha \pm \beta) = \sin\alpha\cos\beta \pm \cos\alpha\sin\beta$$
+$$\cos(\alpha \pm \beta) = \cos\alpha\cos\beta \mp \sin\alpha\sin\beta$$
+$$\tan(\alpha \pm \beta) = \frac{\tan\alpha \pm \tan\beta}{1 \mp \tan\alpha\tan\beta}$$</p>
+<p><strong>二倍角公式：</strong></p>
+<p>$$\sin 2\theta = 2\sin\theta\cos\theta$$
+$$\cos 2\theta = \cos^2\theta - \sin^2\theta = 2\cos^2\theta - 1 = 1 - 2\sin^2\theta$$
+$$\tan 2\theta = \frac{2\tan\theta}{1 - \tan^2\theta}$$</p>
+<p><strong>半角公式（降幂公式）：</strong></p>
+<p>$$\sin^2\frac{\theta}{2} = \frac{1 - \cos\theta}{2}$$
+$$\cos^2\frac{\theta}{2} = \frac{1 + \cos\theta}{2}$$</p>
+<p><strong>辅助角公式：</strong></p>
+<p>$$a\sin\theta + b\cos\theta = \sqrt{a^2 + b^2} \sin(\theta + \varphi) \quad \left(\tan\varphi = \frac{b}{a}\right)$$</p>
+<pre class="playground"><code class="language-rust edition2024">use std::f64::consts::PI;
+
+fn main() {
+    let theta = PI / 6.0; // 30°
+
+    println!("sin(30°) = {}", theta.sin());   // 0.5
+    println!("cos(30°) = {}", theta.cos());   // 0.8660
+    println!("tan(30°) = {}", theta.tan());   // 0.5774
+
+    // 验证 sin²θ + cos²θ = 1
+    let identity = theta.sin().powi(2) + theta.cos().powi(2);
+    println!("sin²θ + cos²θ = {}", identity);  // 1.0
+
+    // 勾三股四弦五，求勾所对应的角度
+    let opposite = 3.0;
+    let hypotenuse = 5.0;
+    let angle_rad = (opposite / hypotenuse).asin();
+    let angle_deg = angle_rad * 180.0 / PI;
+    println!("角度 = {:.2}°", angle_deg);  // 36.87°
+}</code></pre>
+<h3 id="35-反三角函数"><a class="header" href="#35-反三角函数">3.5 反三角函数</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>函数</th><th>定义</th><th>定义域</th><th>值域</th></tr>
+</thead>
+<tbody>
+<tr><td>$\arcsin x$</td><td>$\sin(\arcsin x) = x$</td><td>$[-1, 1]$</td><td>$[-\frac{\pi}{2}, \frac{\pi}{2}]$</td></tr>
+<tr><td>$\arccos x$</td><td>$\cos(\arccos x) = x$</td><td>$[-1, 1]$</td><td>$[0, \pi]$</td></tr>
+<tr><td>$\arctan x$</td><td>$\tan(\arctan x) = x$</td><td>$(-\infty, +\infty)$</td><td>$(-\frac{\pi}{2}, \frac{\pi}{2})$</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let x = 0.5_f64;
+    println!("arcsin(0.5) = {:.4} rad = {:.2}°", x.asin(), x.asin().to_degrees());
+    println!("arccos(0.5) = {:.4} rad = {:.2}°", x.acos(), x.acos().to_degrees());
+    println!("arctan(1.0) = {:.4} rad = {:.2}°", 1.0_f64.atan(), 1.0_f64.atan().to_degrees());
+}</code></pre>
+<hr>
+<h2 id="四复合函数与反函数"><a class="header" href="#四复合函数与反函数">四、复合函数与反函数</a></h2>
+<h3 id="41-复合函数"><a class="header" href="#41-复合函数">4.1 复合函数</a></h3>
+<p>设 $y = f(u)$，$u = g(x)$，则 $y = f(g(x))$ 称为 $f$ 和 $g$ 的复合函数。</p>
+<h3 id="42-反函数"><a class="header" href="#42-反函数">4.2 反函数</a></h3>
+<p>如果函数 $f$ 是一一对应的，则存在反函数 $f^{-1}$，满足：</p>
+<p>$$f(f^{-1}(x)) = x, \quad f^{-1}(f(x)) = x$$</p>
+<p><strong>性质：</strong></p>
+<ul>
+<li>函数与其反函数的图像关于直线 $y = x$ 对称</li>
+<li>单调函数一定存在反函数</li>
+</ul>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>函数</th><th>反函数</th></tr>
+</thead>
+<tbody>
+<tr><td>$f(x) = x^3$</td><td>$f^{-1}(x) = \sqrt[3]{x}$</td></tr>
+<tr><td>$f(x) = e^x$</td><td>$f^{-1}(x) = \ln x$</td></tr>
+<tr><td>$f(x) = \sin x$（限制定义域）</td><td>$f^{-1}(x) = \arcsin x$</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="五双曲函数"><a class="header" href="#五双曲函数">五、双曲函数</a></h2>
+<p>双曲函数与三角函数类似，但基于指数函数定义：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>函数</th><th>定义</th><th>恒等式</th></tr>
+</thead>
+<tbody>
+<tr><td>双曲正弦 $\sinh x$</td><td>$\frac{e^x - e^{-x}}{2}$</td><td>$\cosh^2 x - \sinh^2 x = 1$</td></tr>
+<tr><td>双曲余弦 $\cosh x$</td><td>$\frac{e^x + e^{-x}}{2}$</td><td>—</td></tr>
+<tr><td>双曲正切 $\tanh x$</td><td>$\frac{\sinh x}{\cosh x}$</td><td>—</td></tr>
+<tr><td>反双曲正弦 $\text{arsinh } x$</td><td>$\ln(x + \sqrt{x^2 + 1})$</td><td>—</td></tr>
+<tr><td>反双曲余弦 $\text{arcosh } x$</td><td>$\ln(x + \sqrt{x^2 - 1})$（$x \ge 1$）</td><td>—</td></tr>
+<tr><td>反双曲正切 $\text{artanh } x$</td><td>$\frac{1}{2}\ln\frac{1+x}{1-x}$（$</td><td>x</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let x = 2.0_f64;
+
+    println!("sinh(2) = {}", x.sinh());    // 3.6269
+    println!("cosh(2) = {}", x.cosh());    // 3.7622
+    println!("tanh(2) = {}", x.tanh());    // 0.9640
+
+    // 验证恒等式: cosh²(x) - sinh²(x) = 1
+    let identity = x.cosh().powi(2) - x.sinh().powi(2);
+    println!("恒等式验证: {}", identity);  // 1.0
+
+    // 反双曲函数
+    println!("arsinh(2) = {}", x.asinh());  // 1.4436
+    println!("arcosh(2) = {}", x.acosh());  // 1.3170
+}</code></pre>
+<hr>
+<h2 id="六正弦定理与余弦定理"><a class="header" href="#六正弦定理与余弦定理">六、正弦定理与余弦定理</a></h2>
+<h3 id="61-正弦定理"><a class="header" href="#61-正弦定理">6.1 正弦定理</a></h3>
+<p>对于任意三角形，记角 $A, B, C$ 为三个角，对应的边为 $a, b, c$，则：</p>
+<p>$$\frac{a}{\sin A} = \frac{b}{\sin B} = \frac{c}{\sin C} = 2R$$</p>
+<p>其中 $R$ 为三角形外接圆的半径。</p>
+<h3 id="62-余弦定理"><a class="header" href="#62-余弦定理">6.2 余弦定理</a></h3>
+<p>$$a^2 = b^2 + c^2 - 2bc\cos A$$
+$$b^2 = a^2 + c^2 - 2ac\cos B$$
+$$c^2 = a^2 + b^2 - 2ab\cos C$$</p>
+<pre class="playground"><code class="language-rust edition2024">use std::f64::consts::PI;
+
+fn solve_triangle_sas(b: f64, c: f64, angle_a: f64) -&gt; (f64, f64, f64) {
+    // 已知两边及其夹角，求第三边和另外两个角
+    let a = (b * b + c * c - 2.0 * b * c * angle_a.cos()).sqrt();
+    let angle_b = ((b * b + a * a - c * c) / (2.0 * b * a)).acos();
+    let angle_c = PI - angle_a - angle_b;
+    (a, angle_b, angle_c)
+}
+
+fn main() {
+    let (a, b, c) = solve_triangle_sas(3.0, 4.0, PI / 2.0);
+    println!("第三边 a = {:.4}", a);           // 5.0
+    println!("角 B = {:.2}°", b.to_degrees());  // 53.13°
+    println!("角 C = {:.2}°", c.to_degrees());  // 36.87°
+}</code></pre>
+<hr>
+<h2 id="七欧拉公式"><a class="header" href="#七欧拉公式">七、欧拉公式</a></h2>
+<p>欧拉公式是数学中最优美的公式之一，将指数函数、三角函数和虚数联系在一起：</p>
+<p>$$e^{i\theta} = \cos\theta + i\sin\theta$$</p>
+<p>当 $\theta = \pi$ 时，得到欧拉恒等式：</p>
+<p>$$e^{i\pi} + 1 = 0$$</p>
+<p>这个等式将数学中五个最重要的常数联系在一起：$e$（自然常数）、$i$（虚数单位）、$\pi$（圆周率）、1（乘法单位元）、0（加法单位元）。</p>
+<hr>
+<h2 id="八函数在-rust-中的表示"><a class="header" href="#八函数在-rust-中的表示">八、函数在 Rust 中的表示</a></h2>
+<h3 id="81-闭包"><a class="header" href="#81-闭包">8.1 闭包</a></h3>
+<p>Rust 中的闭包（Closure）可以捕获环境中的变量，类似于数学中的函数：</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let a = 2.0;
+    let b = 3.0;
+
+    // 线性函数 f(x) = ax + b
+    let linear = |x: f64| a * x + b;
+
+    println!("f(1) = {}", linear(1.0));  // 5.0
+    println!("f(2) = {}", linear(2.0));  // 7.0
+
+    // 二次函数 f(x) = x² + 2x + 1
+    let quadratic = |x: f64| x * x + 2.0 * x + 1.0;
+    println!("g(3) = {}", quadratic(3.0));  // 16.0
+}</code></pre>
+<h3 id="82-高阶函数"><a class="header" href="#82-高阶函数">8.2 高阶函数</a></h3>
+<p>接受函数作为参数或返回函数的函数：</p>
+<pre class="playground"><code class="language-rust edition2024">fn compose&lt;F, G&gt;(f: F, g: G) -&gt; impl Fn(f64) -&gt; f64
+where
+    F: Fn(f64) -&gt; f64,
+    G: Fn(f64) -&gt; f64,
+{
+    move |x| f(g(x))
+}
+
+fn main() {
+    let f = |x: f64| x + 1.0;
+    let g = |x: f64| x * 2.0;
+
+    let h = compose(f, g);  // h(x) = f(g(x)) = 2x + 1
+    println!("h(3) = {}", h(3.0));  // 7.0
+}</code></pre>
+<hr>
+<h2 id="九数值积分"><a class="header" href="#九数值积分">九、数值积分</a></h2>
+<h3 id="91-复合梯形法则"><a class="header" href="#91-复合梯形法则">9.1 复合梯形法则</a></h3>
+<p>$$\int_a^b f(x) dx \approx \frac{b - a}{2n} \sum_{i=0}^{n-1} [f(x_i) + f(x_{i+1})]$$</p>
+<h3 id="92-复合辛普森法则"><a class="header" href="#92-复合辛普森法则">9.2 复合辛普森法则</a></h3>
+<p>$$\int_a^b f(x) dx \approx \frac{h}{3}[f(x_0) + 4f(x_1) + 2f(x_2) + 4f(x_3) + \cdots + 2f(x_{n-2}) + 4f(x_{n-1}) + f(x_n)]$$</p>
+<p>其中 $h = \frac{b-a}{n}$，$n$ 为偶数。</p>
+<pre class="playground"><code class="language-rust edition2024">fn simpson_integral(f: impl Fn(f64) -&gt; f64, a: f64, b: f64, n: usize) -&gt; f64 {
+    assert!(n % 2 == 0, "n 必须是偶数");
+    let h = (b - a) / n as f64;
+    let mut sum = f(a) + f(b);
+
+    for i in 1..n {
+        let x = a + i as f64 * h;
+        if i % 2 == 0 {
+            sum += 2.0 * f(x);
+        } else {
+            sum += 4.0 * f(x);
+        }
+    }
+
+    sum * h / 3.0
+}
+
+fn main() {
+    // 计算 ∫₀¹ x² dx = 1/3
+    let result = simpson_integral(|x| x * x, 0.0, 1.0, 100);
+    println!("∫₀¹ x² dx ≈ {}", result);  // 0.3333
+
+    // 计算 ∫₀^π sin(x) dx = 2
+    let result2 = simpson_integral(|x| x.sin(), 0.0, std::f64::consts::PI, 100);
+    println!("∫₀^π sin(x) dx ≈ {}", result2);  // 2.0
+}</code></pre>
+<hr>
+<h2 id="十特殊函数"><a class="header" href="#十特殊函数">十、特殊函数</a></h2>
+<h3 id="101-sigmoid-函数"><a class="header" href="#101-sigmoid-函数">10.1 Sigmoid 函数</a></h3>
+<p>$$\sigma(x) = \frac{1}{1 + e^{-x}}$$</p>
+<p>Sigmoid 函数的核心作用是将任意实数输入压缩到 $(0, 1)$ 区间，形成一个光滑的 S 形曲线。在神经网络中，它常被用作激活函数，将线性输出转换为概率。</p>
+<pre class="playground"><code class="language-rust edition2024">fn sigmoid(x: f64) -&gt; f64 {
+    1.0 / (1.0 + (-x).exp())
+}
+
+fn main() {
+    println!("sigmoid(0) = {}", sigmoid(0.0));     // 0.5
+    println!("sigmoid(2) = {}", sigmoid(2.0));     // 0.8808
+    println!("sigmoid(-2) = {}", sigmoid(-2.0));   // 0.1192
+}</code></pre>
+<h3 id="102-高斯函数"><a class="header" href="#102-高斯函数">10.2 高斯函数</a></h3>
+<p>$$f(x) = e^{-x^2}$$</p>
+<p>$$\int_{-\infty}^{+\infty} e^{-x^2} dx = \sqrt{\pi}$$</p>
+<hr>
+<h2 id="十一物理中的应用"><a class="header" href="#十一物理中的应用">十一、物理中的应用</a></h2>
+<h3 id="111-万有引力"><a class="header" href="#111-万有引力">11.1 万有引力</a></h3>
+<p>$$F = G \frac{m_1 m_2}{r^2}$$</p>
+<h3 id="112-质能方程"><a class="header" href="#112-质能方程">11.2 质能方程</a></h3>
+<p>$$E = mc^2$$</p>
+<h3 id="113-单摆周期"><a class="header" href="#113-单摆周期">11.3 单摆周期</a></h3>
+<p>$$T = 2\pi \sqrt{\frac{l}{g}}$$</p>
+<hr>
+<h2 id="十二总结"><a class="header" href="#十二总结">十二、总结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>要点</th></tr>
+</thead>
+<tbody>
+<tr><td>奇偶性</td><td>奇函数 $f(-x) = -f(x)$，偶函数 $f(-x) = f(x)$</td></tr>
+<tr><td>单调性</td><td>导数大于零递增，小于零递减</td></tr>
+<tr><td>周期性</td><td>$f(x+T) = f(x)$</td></tr>
+<tr><td>凹凸性</td><td>二阶导数大于零下凸，小于零上凸</td></tr>
+<tr><td>连续性</td><td>$\lim_{x \to x_0} f(x) = f(x_0)$</td></tr>
+<tr><td>幂函数</td><td>$x^a$，指数运算法则</td></tr>
+<tr><td>指数函数</td><td>$a^x$，以 $e^x$ 最常用</td></tr>
+<tr><td>对数函数</td><td>$\log_a x$，换底公式</td></tr>
+<tr><td>三角函数</td><td>$\sin, \cos, \tan$ 及其关系</td></tr>
+<tr><td>双曲函数</td><td>$\sinh, \cosh, \tanh$</td></tr>
+<tr><td>欧拉公式</td><td>$e^{i\theta} = \cos\theta + i\sin\theta$</td></tr>
+<tr><td>Sigmoid</td><td>$\sigma(x) = \frac{1}{1+e^{-x}}$</td></tr>
+</tbody>
+</table>
+</div>
+<p>函数是数学和计算机科学的核心概念。从基本的初等函数到复杂的复合函数，从连续的数学函数到离散的计算机程序，函数的思想贯穿始终。</p>
+<blockquote>
+<p><strong>练习建议：</strong></p>
+<ol>
+<li>用 Rust 实现各种初等函数的性质验证</li>
+<li>实现牛顿迭代法求方程的根</li>
+<li>用数值积分方法计算定积分</li>
+</ol>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_31_Vector.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_33_integrate.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_31_Vector.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_33_integrate.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

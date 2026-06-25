@@ -1,0 +1,732 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第二十三 排序 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第二十三-排序"><a class="header" href="#第二十三-排序">第二十三 排序</a></h1>
+<p>排序（Sorting）是计算机科学中最基础、最重要的算法问题之一。它的目标是将一组数据按照某种特定的顺序重新排列。无论是数据库查询、搜索引擎排序，还是日常的数据处理，排序都无处不在。Rust 作为一门系统级编程语言，对排序提供了高效的标准库支持，同时也允许我们深入底层，亲手实现各种经典算法。</p>
+<hr>
+<h2 id="一排序的基本概念"><a class="header" href="#一排序的基本概念">一、排序的基本概念</a></h2>
+<h3 id="11-什么是排序"><a class="header" href="#11-什么是排序">1.1 什么是排序</a></h3>
+<p>排序是将一组无序的数据元素按照关键字的大小重新排列，使其满足递增或递减顺序的过程。例如，将 <code>[3, 1, 4, 1, 5]</code> 排列为 <code>[1, 1, 3, 4, 5]</code>。</p>
+<h3 id="12-稳定性"><a class="header" href="#12-稳定性">1.2 稳定性</a></h3>
+<p><strong>稳定性</strong>是排序算法的一个重要属性。如果排序算法在排序后能够保持相等元素的原始相对顺序，则称该算法是<strong>稳定的</strong>；反之则是不稳定的。</p>
+<p>例如，对 <code>[("Alice", 85), ("Bob", 90), ("Carol", 85)]</code> 按分数排序，稳定排序会保持 Alice 在 Carol 之前；而不稳定排序可能改变它们的相对位置。</p>
+<h3 id="13-时间复杂度与空间复杂度"><a class="header" href="#13-时间复杂度与空间复杂度">1.3 时间复杂度与空间复杂度</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>复杂度类型</th><th>含义</th><th>常见级别</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>时间复杂度</strong></td><td>算法执行所需时间随数据规模增长的趋势</td><td>O(1)、O(log n)、O(n)、O(n log n)、O(n²)</td></tr>
+<tr><td><strong>空间复杂度</strong></td><td>算法执行所需额外内存空间</td><td>O(1)（原地排序）、O(n)、O(log n)</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>原地排序（In-place）</strong> 指空间复杂度为 O(1) 的排序算法，不需要额外的存储空间。</p>
+<hr>
+<h2 id="二简单排序"><a class="header" href="#二简单排序">二、简单排序</a></h2>
+<h3 id="21-冒泡排序"><a class="header" href="#21-冒泡排序">2.1 冒泡排序</a></h3>
+<p>冒泡排序（Bubble Sort）通过重复遍历数组，比较相邻元素并交换位置，使较大的元素逐渐“冒泡“到数组末端。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn bubble_sort(arr: &amp;mut [i32]) {
+    let n = arr.len();
+    for i in 0..n {
+        let mut swapped = false;
+        for j in 0..n - i - 1 {
+            if arr[j] &gt; arr[j + 1] {
+                arr.swap(j, j + 1);
+                swapped = true;
+            }
+        }
+        if !swapped {
+            break; // 已排序，提前退出
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>指标</th><th>值</th></tr>
+</thead>
+<tbody>
+<tr><td>平均时间复杂度</td><td>O(n²)</td></tr>
+<tr><td>最坏时间复杂度</td><td>O(n²)</td></tr>
+<tr><td>空间复杂度</td><td>O(1)</td></tr>
+<tr><td>稳定性</td><td>稳定</td></tr>
+</tbody>
+</table>
+</div>
+<p>冒泡排序思路简单，但效率较低，适合教学理解和极小数据集。</p>
+<h3 id="22-选择排序"><a class="header" href="#22-选择排序">2.2 选择排序</a></h3>
+<p>选择排序（Selection Sort）每次从未排序部分选出最小（或最大）元素，放到已排序部分的末尾。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn selection_sort(arr: &amp;mut [i32]) {
+    let n = arr.len();
+    for i in 0..n {
+        let mut min_idx = i;
+        for j in i + 1..n {
+            if arr[j] &lt; arr[min_idx] {
+                min_idx = j;
+            }
+        }
+        arr.swap(i, min_idx);
+    }
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>指标</th><th>值</th></tr>
+</thead>
+<tbody>
+<tr><td>平均时间复杂度</td><td>O(n²)</td></tr>
+<tr><td>最坏时间复杂度</td><td>O(n²)</td></tr>
+<tr><td>空间复杂度</td><td>O(1)</td></tr>
+<tr><td>稳定性</td><td>不稳定</td></tr>
+</tbody>
+</table>
+</div>
+<p>选择排序的交换次数最少（最多 n-1 次），但不稳定。</p>
+<h3 id="23-插入排序"><a class="header" href="#23-插入排序">2.3 插入排序</a></h3>
+<p>插入排序（Insertion Sort）将数组分为已排序和未排序两部分，逐个将未排序元素插入到已排序部分的正确位置。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn insertion_sort(arr: &amp;mut [i32]) {
+    for i in 1..arr.len() {
+        let key = arr[i];
+        let mut j = i;
+        while j &gt; 0 &amp;&amp; arr[j - 1] &gt; key {
+            arr[j] = arr[j - 1];
+            j -= 1;
+        }
+        arr[j] = key;
+    }
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>指标</th><th>值</th></tr>
+</thead>
+<tbody>
+<tr><td>平均时间复杂度</td><td>O(n²)</td></tr>
+<tr><td>最坏时间复杂度</td><td>O(n²)</td></tr>
+<tr><td>最好时间复杂度</td><td>O(n)（已有序）</td></tr>
+<tr><td>空间复杂度</td><td>O(1)</td></tr>
+<tr><td>稳定性</td><td>稳定</td></tr>
+</tbody>
+</table>
+</div>
+<p>插入排序对小规模或基本有序的数据非常高效，是归并排序和快速排序的常用优化手段。</p>
+<hr>
+<h2 id="三高效排序"><a class="header" href="#三高效排序">三、高效排序</a></h2>
+<h3 id="31-快速排序"><a class="header" href="#31-快速排序">3.1 快速排序</a></h3>
+<p>快速排序（Quick Sort）采用分治策略，选择一个基准元素（pivot），将数组划分为小于基准和大于基准的两部分，然后递归排序。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn quick_sort(arr: &amp;mut [i32]) {
+    if arr.len() &lt;= 1 {
+        return;
+    }
+    let pivot_index = partition(arr);
+    let (left, right) = arr.split_at_mut(pivot_index);
+    quick_sort(left);
+    quick_sort(&amp;mut right[1..]);
+}
+
+fn partition(arr: &amp;mut [i32]) -&gt; usize {
+    let len = arr.len();
+    let pivot = arr[len - 1];
+    let mut i = 0;
+    for j in 0..len - 1 {
+        if arr[j] &lt;= pivot {
+            arr.swap(i, j);
+            i += 1;
+        }
+    }
+    arr.swap(i, len - 1);
+    i
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>指标</th><th>值</th></tr>
+</thead>
+<tbody>
+<tr><td>平均时间复杂度</td><td>O(n log n)</td></tr>
+<tr><td>最坏时间复杂度</td><td>O(n²)（罕见，可通过随机化避免）</td></tr>
+<tr><td>空间复杂度</td><td>O(log n)（递归栈）</td></tr>
+<tr><td>稳定性</td><td>不稳定</td></tr>
+</tbody>
+</table>
+</div>
+<p>快速排序是实际应用中平均性能最好的排序算法之一。Rust 标准库的 <code>sort_unstable</code> 就是基于快速排序的优化版本（内省排序）。</p>
+<h3 id="32-归并排序"><a class="header" href="#32-归并排序">3.2 归并排序</a></h3>
+<p>归并排序（Merge Sort）同样采用分治策略，将数组不断二分，直到子数组长度为 1，然后逐层合并两个有序子数组。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn merge_sort(arr: &amp;mut [i32]) {
+    let len = arr.len();
+    if len &lt;= 1 {
+        return;
+    }
+    let mid = len / 2;
+    merge_sort(&amp;mut arr[..mid]);
+    merge_sort(&amp;mut arr[mid..]);
+
+    let mut temp = arr.to_vec();
+    merge(&amp;arr[..mid], &amp;arr[mid..], &amp;mut temp);
+    arr.copy_from_slice(&amp;temp);
+}
+
+fn merge(left: &amp;[i32], right: &amp;[i32], temp: &amp;mut [i32]) {
+    let (mut i, mut j, mut k) = (0, 0, 0);
+    while i &lt; left.len() &amp;&amp; j &lt; right.len() {
+        if left[i] &lt;= right[j] {
+            temp[k] = left[i];
+            i += 1;
+        } else {
+            temp[k] = right[j];
+            j += 1;
+        }
+        k += 1;
+    }
+    while i &lt; left.len() {
+        temp[k] = left[i];
+        i += 1;
+        k += 1;
+    }
+    while j &lt; right.len() {
+        temp[k] = right[j];
+        j += 1;
+        k += 1;
+    }
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>指标</th><th>值</th></tr>
+</thead>
+<tbody>
+<tr><td>平均时间复杂度</td><td>O(n log n)</td></tr>
+<tr><td>最坏时间复杂度</td><td>O(n log n)</td></tr>
+<tr><td>空间复杂度</td><td>O(n)</td></tr>
+<tr><td>稳定性</td><td>稳定</td></tr>
+</tbody>
+</table>
+</div>
+<p>归并排序保证 O(n log n) 的最坏时间复杂度，且稳定，但需要额外 O(n) 空间。它是 Rust 标准库 <code>sort</code>（稳定排序）的核心基础。</p>
+<h3 id="33-堆排序"><a class="header" href="#33-堆排序">3.3 堆排序</a></h3>
+<p>堆排序（Heap Sort）利用二叉堆的数据结构。首先构建最大堆，然后将堆顶（最大值）与末尾交换，再对剩余元素重新调整堆，重复此过程。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn heap_sort(arr: &amp;mut [i32]) {
+    let n = arr.len();
+    // 构建最大堆
+    for i in (0..n / 2).rev() {
+        heapify(arr, n, i);
+    }
+    // 逐个提取最大值
+    for i in (1..n).rev() {
+        arr.swap(0, i);
+        heapify(arr, i, 0);
+    }
+}
+
+fn heapify(arr: &amp;mut [i32], n: usize, i: usize) {
+    let mut largest = i;
+    let left = 2 * i + 1;
+    let right = 2 * i + 2;
+
+    if left &lt; n &amp;&amp; arr[left] &gt; arr[largest] {
+        largest = left;
+    }
+    if right &lt; n &amp;&amp; arr[right] &gt; arr[largest] {
+        largest = right;
+    }
+    if largest != i {
+        arr.swap(i, largest);
+        heapify(arr, n, largest);
+    }
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>指标</th><th>值</th></tr>
+</thead>
+<tbody>
+<tr><td>平均时间复杂度</td><td>O(n log n)</td></tr>
+<tr><td>最坏时间复杂度</td><td>O(n log n)</td></tr>
+<tr><td>空间复杂度</td><td>O(1)</td></tr>
+<tr><td>稳定性</td><td>不稳定</td></tr>
+</tbody>
+</table>
+</div>
+<p>堆排序是原地排序且最坏时间复杂度为 O(n log n)，非常适合内存受限的场景。</p>
+<hr>
+<h2 id="四非比较排序"><a class="header" href="#四非比较排序">四、非比较排序</a></h2>
+<p>非比较排序不通过元素间的直接比较来确定顺序，而是利用数据的特定特征（如数值范围），在特定条件下可以达到 O(n) 的时间复杂度。</p>
+<h3 id="41-计数排序"><a class="header" href="#41-计数排序">4.1 计数排序</a></h3>
+<p>计数排序（Counting Sort）适用于数据范围较小且为整数的场景。它统计每个值出现的次数，然后按顺序输出。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn counting_sort(arr: &amp;mut [i32]) {
+    if arr.is_empty() {
+        return;
+    }
+    let max = *arr.iter().max().unwrap();
+    let min = *arr.iter().min().unwrap();
+    let range = (max - min + 1) as usize;
+
+    let mut count = vec![0; range];
+    for &amp;num in arr.iter() {
+        count[(num - min) as usize] += 1;
+    }
+
+    let mut idx = 0;
+    for (i, &amp;c) in count.iter().enumerate() {
+        for _ in 0..c {
+            arr[idx] = i as i32 + min;
+            idx += 1;
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>指标</th><th>值</th></tr>
+</thead>
+<tbody>
+<tr><td>时间复杂度</td><td>O(n + k)，k 为数据范围</td></tr>
+<tr><td>空间复杂度</td><td>O(k)</td></tr>
+<tr><td>稳定性</td><td>稳定</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="42-桶排序"><a class="header" href="#42-桶排序">4.2 桶排序</a></h3>
+<p>桶排序（Bucket Sort）将数据分到若干个有序的桶中，每个桶内再分别排序（通常用插入排序），最后按顺序合并。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn bucket_sort(arr: &amp;mut [f64]) {
+    let n = arr.len();
+    if n &lt;= 1 {
+        return;
+    }
+
+    let mut buckets: Vec&lt;Vec&lt;f64&gt;&gt; = vec![vec![]; n];
+    for &amp;num in arr.iter() {
+        let idx = (num * n as f64) as usize;
+        let idx = idx.min(n - 1);
+        buckets[idx].push(num);
+    }
+
+    for bucket in buckets.iter_mut() {
+        bucket.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    }
+
+    let mut idx = 0;
+    for bucket in buckets.iter() {
+        for &amp;num in bucket.iter() {
+            arr[idx] = num;
+            idx += 1;
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>桶排序在数据均匀分布时效率极高，接近 O(n)。</p>
+<h3 id="43-基数排序"><a class="header" href="#43-基数排序">4.3 基数排序</a></h3>
+<p>基数排序（Radix Sort）按位数从低到高（或从高到低）依次排序，每一位的排序使用稳定的计数排序。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn radix_sort(arr: &amp;mut [i32]) {
+    if arr.is_empty() {
+        return;
+    }
+    let max = *arr.iter().max().unwrap();
+    let mut exp = 1;
+    while max / exp &gt; 0 {
+        counting_sort_by_digit(arr, exp);
+        exp *= 10;
+    }
+}
+
+fn counting_sort_by_digit(arr: &amp;mut [i32], exp: i32) {
+    let n = arr.len();
+    let mut output = vec![0; n];
+    let mut count = [0; 10];
+
+    for &amp;num in arr.iter() {
+        let digit = ((num / exp) % 10) as usize;
+        count[digit] += 1;
+    }
+    for i in 1..10 {
+        count[i] += count[i - 1];
+    }
+    for i in (0..n).rev() {
+        let digit = ((arr[i] / exp) % 10) as usize;
+        count[digit] -= 1;
+        output[count[digit]] = arr[i];
+    }
+    arr.copy_from_slice(&amp;output);
+}
+<span class="boring">}</span></code></pre>
+<p>基数排序的时间复杂度为 O(d × (n + k))，其中 d 是最大位数，k 是基数（通常为 10）。</p>
+<hr>
+<h2 id="五rust-标准库排序"><a class="header" href="#五rust-标准库排序">五、Rust 标准库排序</a></h2>
+<p>Rust 标准库为切片类型提供了两种高效的排序方法。</p>
+<h3 id="51-slicesort--稳定排序"><a class="header" href="#51-slicesort--稳定排序">5.1 <code>slice::sort</code> — 稳定排序</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut v = [3, 1, 4, 1, 5, 9, 2, 6];
+v.sort();
+println!("{:?}", v); // [1, 1, 2, 3, 4, 5, 6, 9]
+<span class="boring">}</span></code></pre>
+<p><code>sort</code> 是稳定排序，基于 Timsort 算法（归并排序的优化变体），最坏时间复杂度为 O(n log n)。</p>
+<h3 id="52-slicesort_unstable--非稳定排序"><a class="header" href="#52-slicesort_unstable--非稳定排序">5.2 <code>slice::sort_unstable</code> — 非稳定排序</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut v = [3, 1, 4, 1, 5, 9, 2, 6];
+v.sort_unstable();
+println!("{:?}", v);
+<span class="boring">}</span></code></pre>
+<p><code>sort_unstable</code> 基于模式 defeating 快速排序（Pattern-defeating Quicksort，pdqsort），平均性能通常优于稳定排序，且不分配额外内存。</p>
+<h3 id="53-自定义排序"><a class="header" href="#53-自定义排序">5.3 自定义排序</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut words = ["banana", "apple", "cherry"];
+words.sort_by(|a, b| a.len().cmp(&amp;b.len()));
+
+let mut nums = [3, 1, 4, 1, 5];
+nums.sort_by_key(|&amp;x| -x); // 降序
+<span class="boring">}</span></code></pre>
+<h3 id="54-对自定义类型排序"><a class="header" href="#54-对自定义类型排序">5.4 对自定义类型排序</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+struct Student {
+    name: String,
+    score: u32,
+}
+
+let mut students = vec![
+    Student { name: "Alice".to_string(), score: 85 },
+    Student { name: "Bob".to_string(), score: 92 },
+];
+students.sort(); // 需要实现 Ord trait
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="六排序算法对比"><a class="header" href="#六排序算法对比">六、排序算法对比</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>平均时间</th><th>最坏时间</th><th>空间</th><th>稳定性</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td>冒泡排序</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>稳定</td><td>教学、极小数据</td></tr>
+<tr><td>选择排序</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>不稳定</td><td>交换代价高的场景</td></tr>
+<tr><td>插入排序</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>稳定</td><td>小数据、基本有序</td></tr>
+<tr><td>快速排序</td><td>O(n log n)</td><td>O(n²)</td><td>O(log n)</td><td>不稳定</td><td>通用场景，平均最快</td></tr>
+<tr><td>归并排序</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>稳定</td><td>需要稳定排序</td></tr>
+<tr><td>堆排序</td><td>O(n log n)</td><td>O(n log n)</td><td>O(1)</td><td>不稳定</td><td>内存受限</td></tr>
+<tr><td>计数排序</td><td>O(n + k)</td><td>O(n + k)</td><td>O(k)</td><td>稳定</td><td>整数、范围小</td></tr>
+<tr><td>桶排序</td><td>O(n)</td><td>O(n²)</td><td>O(n)</td><td>稳定</td><td>数据均匀分布</td></tr>
+<tr><td>基数排序</td><td>O(d(n + k))</td><td>O(d(n + k))</td><td>O(n + k)</td><td>稳定</td><td>整数、固定位数</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="七总结与练习"><a class="header" href="#七总结与练习">七、总结与练习</a></h2>
+<h3 id="本章小结"><a class="header" href="#本章小结">本章小结</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>知识点</th><th>要点</th></tr>
+</thead>
+<tbody>
+<tr><td>稳定性</td><td>相等元素排序后是否保持原有顺序</td></tr>
+<tr><td>原地排序</td><td>空间复杂度为 O(1) 的排序</td></tr>
+<tr><td>比较排序下限</td><td>基于比较的排序时间复杂度下限为 O(n log n)</td></tr>
+<tr><td>Rust <code>sort</code></td><td>稳定排序，基于 Timsort</td></tr>
+<tr><td>Rust <code>sort_unstable</code></td><td>非稳定排序，基于 pdqsort，通常更快</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
+<ol>
+<li><strong>实现优化</strong>：为快速排序添加“三数取中“选基准和尾递归优化。</li>
+<li><strong>混合排序</strong>：实现一个排序函数，对小数组使用插入排序，对大数组使用快速排序。</li>
+<li><strong>链表排序</strong>：尝试对 <code>LinkedList</code> 实现归并排序。</li>
+<li><strong>性能测试</strong>：使用 <code>std::time::Instant</code> 对比不同排序算法在随机数据、有序数据、逆序数据上的性能。</li>
+<li><strong>稳定排序改造</strong>：修改快速排序的实现，使其成为稳定排序（提示：使用额外空间）。</li>
+<li><strong>并行排序</strong>：利用 Rayon 库的 <code>par_sort</code>，体验并行排序带来的性能提升。</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_22.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_24_Lambda.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_22.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_24_Lambda.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

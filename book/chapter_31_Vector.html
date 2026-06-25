@@ -1,0 +1,651 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第三十一 向量 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第三十一-向量vector"><a class="header" href="#第三十一-向量vector">第三十一 向量（Vector）</a></h1>
+<p>向量（Vector）是线性代数的核心概念，也是物理学和工程学中描述方向和大小的基本工具。在计算机科学中，向量是机器学习、计算机图形学、物理模拟等领域的基础数据结构。</p>
+<hr>
+<h2 id="一向量的定义"><a class="header" href="#一向量的定义">一、向量的定义</a></h2>
+<h3 id="11-什么是向量"><a class="header" href="#11-什么是向量">1.1 什么是向量</a></h3>
+<p><strong>n 维向量</strong>：n 个有次序的数 $a_1, a_2, a_3, \ldots, a_n$ 所组成的数组称为 n 维向量。这 n 个数称为向量的 n 个分量，第 i 个分量 $a_i$ 为向量的第 i 个分量。</p>
+<p>分量全为实数的向量称为<strong>实向量</strong>，分量中含有复数则称为<strong>复向量</strong>。</p>
+<p>向量通常用粗体字母或带箭头的字母表示：</p>
+<p>$$\vec{a} = (a_1, a_2, \ldots, a_n)$$</p>
+<h3 id="12-特殊向量"><a class="header" href="#12-特殊向量">1.2 特殊向量</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>向量类型</th><th>定义</th><th>表示</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>零向量</strong></td><td>所有元素都为零</td><td>$\vec{0} = (0, 0, \ldots, 0)$</td></tr>
+<tr><td><strong>单位向量</strong></td><td>长度为 1 的向量</td><td>$|\vec{a}| = 1$</td></tr>
+<tr><td><strong>负向量</strong></td><td>元素为对应元素取负数</td><td>$-\vec{a} = (-a_1, -a_2, \ldots, -a_n)$</td></tr>
+<tr><td><strong>标准基向量</strong></td><td>只有一个分量为 1，其余为 0</td><td>$\vec{e}_i$</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="二向量的基本运算"><a class="header" href="#二向量的基本运算">二、向量的基本运算</a></h2>
+<h3 id="21-向量的加法"><a class="header" href="#21-向量的加法">2.1 向量的加法</a></h3>
+<p>两个同维向量相加，对应分量相加：</p>
+<p>$$\vec{a} + \vec{b} = (a_1 + b_1, a_2 + b_2, \ldots, a_n + b_n)$$</p>
+<h3 id="22-向量的数乘"><a class="header" href="#22-向量的数乘">2.2 向量的数乘</a></h3>
+<p>向量与标量相乘，每个分量都乘以该标量：</p>
+<p>$$k\vec{a} = (ka_1, ka_2, \ldots, ka_n)$$</p>
+<h3 id="23-运算律"><a class="header" href="#23-运算律">2.3 运算律</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>运算律</th><th>公式</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>加法交换律</strong></td><td>$\vec{u} + \vec{v} = \vec{v} + \vec{u}$</td></tr>
+<tr><td><strong>加法结合律</strong></td><td>$(\vec{u} + \vec{v}) + \vec{w} = \vec{u} + (\vec{v} + \vec{w})$</td></tr>
+<tr><td><strong>数乘结合律</strong></td><td>$k(l\vec{u}) = (kl)\vec{u}$</td></tr>
+<tr><td><strong>数乘分配律（对向量）</strong></td><td>$k(\vec{u} + \vec{v}) = k\vec{u} + k\vec{v}$</td></tr>
+<tr><td><strong>数乘分配律（对标量）</strong></td><td>$(k + l)\vec{u} = k\vec{u} + l\vec{u}$</td></tr>
+<tr><td><strong>零向量性质</strong></td><td>$k\vec{u} = \vec{0} \Leftrightarrow k = 0 \text{ 或 } \vec{u} = \vec{0}$</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">fn vector_add(a: &amp;[f64], b: &amp;[f64]) -&gt; Vec&lt;f64&gt; {
+    a.iter().zip(b.iter()).map(|(x, y)| x + y).collect()
+}
+
+fn vector_scale(a: &amp;[f64], k: f64) -&gt; Vec&lt;f64&gt; {
+    a.iter().map(|x| x * k).collect()
+}
+
+fn main() {
+    let a = vec![1.0, 2.0, 3.0];
+    let b = vec![4.0, 5.0, 6.0];
+
+    println!("a + b = {:?}", vector_add(&amp;a, &amp;b));     // [5, 7, 9]
+    println!("2a = {:?}", vector_scale(&amp;a, 2.0));     // [2, 4, 6]
+}</code></pre>
+<hr>
+<h2 id="三向量的内积点积"><a class="header" href="#三向量的内积点积">三、向量的内积（点积）</a></h2>
+<h3 id="31-定义"><a class="header" href="#31-定义">3.1 定义</a></h3>
+<p>两个 n 维向量的内积（点积）定义为：</p>
+<p>$$\vec{a} \cdot \vec{b} = a_1b_1 + a_2b_2 + \cdots + a_nb_n = \sum_{i=1}^{n} a_ib_i$$</p>
+<h3 id="32-几何意义"><a class="header" href="#32-几何意义">3.2 几何意义</a></h3>
+<p>$$\vec{a} \cdot \vec{b} = |\vec{a}| |\vec{b}| \cos\theta$$</p>
+<p>其中 $\theta$ 是两个向量之间的夹角。</p>
+<h3 id="33-内积的性质"><a class="header" href="#33-内积的性质">3.3 内积的性质</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>性质</th><th>公式</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>非负性</strong></td><td>$\vec{a} \cdot \vec{a} \ge 0$，且等于 0 当且仅当 $\vec{a} = \vec{0}$</td></tr>
+<tr><td><strong>对称性</strong></td><td>$\vec{a} \cdot \vec{b} = \vec{b} \cdot \vec{a}$</td></tr>
+<tr><td><strong>线性性</strong></td><td>$\vec{a} \cdot (\vec{b} + \vec{c}) = \vec{a} \cdot \vec{b} + \vec{a} \cdot \vec{c}$</td></tr>
+<tr><td><strong>数乘性</strong></td><td>$(k\vec{a}) \cdot \vec{b} = k(\vec{a} \cdot \vec{b})$</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="34-求向量夹角"><a class="header" href="#34-求向量夹角">3.4 求向量夹角</a></h3>
+<p>$$\cos\theta = \frac{\vec{a} \cdot \vec{b}}{|\vec{a}| |\vec{b}|}$$</p>
+<p>$$\theta = \arccos\left(\frac{\vec{a} \cdot \vec{b}}{|\vec{a}| |\vec{b}|}\right)$$</p>
+<pre class="playground"><code class="language-rust edition2024">fn dot_product(a: &amp;[f64], b: &amp;[f64]) -&gt; f64 {
+    a.iter().zip(b.iter()).map(|(x, y)| x * y).sum()
+}
+
+fn magnitude(a: &amp;[f64]) -&gt; f64 {
+    a.iter().map(|x| x * x).sum::&lt;f64&gt;().sqrt()
+}
+
+fn angle_between(a: &amp;[f64], b: &amp;[f64]) -&gt; f64 {
+    let dot = dot_product(a, b);
+    let mag_a = magnitude(a);
+    let mag_b = magnitude(b);
+    (dot / (mag_a * mag_b)).acos()
+}
+
+fn main() {
+    let a = vec![1.0, 0.0];
+    let b = vec![0.0, 1.0];
+
+    println!("点积: {}", dot_product(&amp;a, &amp;b));           // 0
+    println!("夹角: {:.2} 弧度 = {:.2}°", angle_between(&amp;a, &amp;b), angle_between(&amp;a, &amp;b).to_degrees());
+    // 1.57 弧度 = 90°
+}</code></pre>
+<hr>
+<h2 id="四向量的叉积"><a class="header" href="#四向量的叉积">四、向量的叉积</a></h2>
+<h3 id="41-定义"><a class="header" href="#41-定义">4.1 定义</a></h3>
+<p>两个三维向量的叉积定义为：</p>
+<p>$$\vec{a} \times \vec{b} = \begin{vmatrix} \vec{i} &amp; \vec{j} &amp; \vec{k} \ a_1 &amp; a_2 &amp; a_3 \ b_1 &amp; b_2 &amp; b_3 \end{vmatrix}$$</p>
+<p>$$= (a_2b_3 - a_3b_2, a_3b_1 - a_1b_3, a_1b_2 - a_2b_1)$$</p>
+<h3 id="42-几何意义"><a class="header" href="#42-几何意义">4.2 几何意义</a></h3>
+<p>$$|\vec{a} \times \vec{b}| = |\vec{a}| |\vec{b}| \sin\theta$$</p>
+<p>叉积的结果是一个向量，其方向垂直于 $\vec{a}$ 和 $\vec{b}$ 所在的平面（右手定则），大小等于以 $\vec{a}$ 和 $\vec{b}$ 为邻边的平行四边形的面积。</p>
+<pre class="playground"><code class="language-rust edition2024">fn cross_product(a: &amp;[f64; 3], b: &amp;[f64; 3]) -&gt; [f64; 3] {
+    [
+        a[1] * b[2] - a[2] * b[1],
+        a[2] * b[0] - a[0] * b[2],
+        a[0] * b[1] - a[1] * b[0],
+    ]
+}
+
+fn main() {
+    let a = [1.0, 0.0, 0.0];
+    let b = [0.0, 1.0, 0.0];
+
+    let c = cross_product(&amp;a, &amp;b);
+    println!("a × b = {:?}", c);  // [0, 0, 1]
+}</code></pre>
+<hr>
+<h2 id="五向量的长度模"><a class="header" href="#五向量的长度模">五、向量的长度（模）</a></h2>
+<h3 id="51-定义"><a class="header" href="#51-定义">5.1 定义</a></h3>
+<p>向量 $\vec{a}$ 的长度（模或范数）定义为：</p>
+<p>$$|\vec{a}| = \sqrt{\vec{a} \cdot \vec{a}} = \sqrt{a_1^2 + a_2^2 + \cdots + a_n^2}$$</p>
+<h3 id="52-范数的类型"><a class="header" href="#52-范数的类型">5.2 范数的类型</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>范数类型</th><th>公式</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>L1 范数（曼哈顿范数）</strong></td><td>$|\vec{a}|_1 = \sum</td><td>a_i</td></tr>
+<tr><td><strong>L2 范数（欧几里得范数）</strong></td><td>$|\vec{a}|_2 = \sqrt{\sum a_i^2}$</td><td>最常用的范数</td></tr>
+<tr><td><strong>L∞ 范数（无穷范数）</strong></td><td>$|\vec{a}|_\infty = \max</td><td>a_i</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">fn l1_norm(a: &amp;[f64]) -&gt; f64 {
+    a.iter().map(|x| x.abs()).sum()
+}
+
+fn l2_norm(a: &amp;[f64]) -&gt; f64 {
+    a.iter().map(|x| x * x).sum::&lt;f64&gt;().sqrt()
+}
+
+fn l_inf_norm(a: &amp;[f64]) -&gt; f64 {
+    a.iter().map(|x| x.abs()).fold(0.0, f64::max)
+}
+
+fn main() {
+    let a = vec![3.0, -4.0];
+    println!("L1 范数: {}", l1_norm(&amp;a));      // 7
+    println!("L2 范数: {}", l2_norm(&amp;a));      // 5
+    println!("L∞ 范数: {}", l_inf_norm(&amp;a));  // 4
+}</code></pre>
+<hr>
+<h2 id="六余弦相似度"><a class="header" href="#六余弦相似度">六、余弦相似度</a></h2>
+<p>余弦相似度（Cosine Similarity）衡量两个向量在方向上的相似程度，而不关心它们的大小（长度）。它的值只取决于向量之间的夹角。</p>
+<p>$$\cos(\theta) = \frac{\vec{a} \cdot \vec{b}}{|\vec{a}| \cdot |\vec{b}|}$$</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>余弦相似度</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>方向完全相同</td></tr>
+<tr><td>0</td><td>正交（垂直）</td></tr>
+<tr><td>-1</td><td>方向完全相反</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">fn cosine_similarity(a: &amp;[f64], b: &amp;[f64]) -&gt; f64 {
+    let dot = dot_product(a, b);
+    let mag_a = magnitude(a);
+    let mag_b = magnitude(b);
+    dot / (mag_a * mag_b)
+}
+
+fn main() {
+    let doc1 = vec![1.0, 2.0, 1.0, 0.0];  // 文档1的词频向量
+    let doc2 = vec![1.0, 2.0, 1.0, 0.0];  // 文档2（与文档1相同）
+    let doc3 = vec![0.0, 0.0, 0.0, 1.0];  // 文档3（完全不同）
+
+    println!("doc1 与 doc2 相似度: {:.4}", cosine_similarity(&amp;doc1, &amp;doc2));  // 1.0000
+    println!("doc1 与 doc3 相似度: {:.4}", cosine_similarity(&amp;doc1, &amp;doc3));  // 0.0000
+}</code></pre>
+<blockquote>
+<p><strong>应用：</strong> 余弦相似度在文本检索、推荐系统、图像识别等领域广泛应用，用于衡量两个对象的相似程度。</p>
+</blockquote>
+<hr>
+<h2 id="七线性组合与线性相关性"><a class="header" href="#七线性组合与线性相关性">七、线性组合与线性相关性</a></h2>
+<h3 id="71-线性组合"><a class="header" href="#71-线性组合">7.1 线性组合</a></h3>
+<p>给定向量组 $\vec{a}_1, \vec{a}_2, \ldots, \vec{a}_m$，对于任何一组实数 $k_1, k_2, \ldots, k_m$，表达式：</p>
+<p>$$k_1\vec{a}_1 + k_2\vec{a}_2 + \cdots + k_m\vec{a}_m$$</p>
+<p>称为向量组的<strong>线性组合</strong>。</p>
+<ul>
+<li>零向量是任意向量的线性组合（取所有系数为 0）</li>
+<li>向量组中的任一向量都可以表示为该向量组的线性组合</li>
+</ul>
+<h3 id="72-线性相关与线性无关"><a class="header" href="#72-线性相关与线性无关">7.2 线性相关与线性无关</a></h3>
+<p><strong>线性相关</strong>：如果存在不全为零的数 $k_1, k_2, \ldots, k_m$，使得：</p>
+<p>$$k_1\vec{a}_1 + k_2\vec{a}_2 + \cdots + k_m\vec{a}_m = \vec{0}$$</p>
+<p>则称向量组线性相关。</p>
+<p><strong>线性无关</strong>：只有当 $k_1 = k_2 = \cdots = k_m = 0$ 时上式才成立，则称向量组线性无关。</p>
+<p><strong>判定方法：</strong></p>
+<ul>
+<li>两个非零向量线性相关 $\Leftrightarrow$ 它们的分量对应成比例</li>
+<li>向量组中含有零向量，则该向量组线性相关</li>
+<li>向量组中有两个向量成比例，则该向量组线性相关</li>
+</ul>
+<h3 id="73-极大线性无关组"><a class="header" href="#73-极大线性无关组">7.3 极大线性无关组</a></h3>
+<p><strong>极大线性无关组</strong>是向量组中满足以下条件的子集：</p>
+<ul>
+<li>该子集中的向量线性无关</li>
+<li>向量组中任意其他向量都可以由该子集线性表示</li>
+<li>添加任何其他向量都会使该子集变为线性相关</li>
+</ul>
+<p><strong>性质：</strong></p>
+<ul>
+<li>同一个向量组的不同极大线性无关组所含向量个数相同</li>
+<li>这个个数称为向量组的<strong>秩</strong></li>
+<li>向量组与其极大线性无关组等价</li>
+</ul>
+<hr>
+<h2 id="八正交与标准正交向量组"><a class="header" href="#八正交与标准正交向量组">八、正交与标准正交向量组</a></h2>
+<h3 id="81-正交向量"><a class="header" href="#81-正交向量">8.1 正交向量</a></h3>
+<p>若两个非零向量 $\vec{\alpha}$ 和 $\vec{\beta}$ 的内积为零，即 $(\vec{\alpha}, \vec{\beta}) = 0$，则称它们<strong>正交</strong>。</p>
+<p><strong>性质：</strong></p>
+<ul>
+<li>正交向量组是线性无关的</li>
+<li>正交向量组中不含零向量</li>
+</ul>
+<h3 id="82-标准正交向量组"><a class="header" href="#82-标准正交向量组">8.2 标准正交向量组</a></h3>
+<p>一组向量，其中每个向量都是单位向量（长度为 1），且两两正交（内积为 0），称为<strong>标准正交向量组</strong>（或单位正交向量组）。</p>
+<h3 id="83-施密特正交化"><a class="header" href="#83-施密特正交化">8.3 施密特正交化</a></h3>
+<p>施密特正交化方法可以将一组线性无关的向量转化为一组正交向量：</p>
+<p>$$\vec{\beta}_1 = \vec{\alpha}_1$$</p>
+<p>$$\vec{\beta}_2 = \vec{\alpha}_2 - \frac{(\vec{\alpha}_2, \vec{\beta}_1)}{(\vec{\beta}_1, \vec{\beta}_1)}\vec{\beta}_1$$</p>
+<p>$$\vec{\beta}_3 = \vec{\alpha}_3 - \frac{(\vec{\alpha}_3, \vec{\beta}_1)}{(\vec{\beta}_1, \vec{\beta}_1)}\vec{\beta}_1 - \frac{(\vec{\alpha}_3, \vec{\beta}_2)}{(\vec{\beta}_2, \vec{\beta}_2)}\vec{\beta}_2$$</p>
+<p>一般地：
+$$ \vec{\beta}_k = \vec{\alpha}<em>k - \sum</em>{j=1}^{k-1} \frac{(\vec{\alpha}_k, \vec{\beta}_j)}{(\vec{\beta}_j, \vec{\beta}_j)}\vec{\beta}_j $$</p>
+<pre class="playground"><code class="language-rust edition2024">fn gram_schmidt(vectors: &amp;[Vec&lt;f64&gt;]) -&gt; Vec&lt;Vec&lt;f64&gt;&gt; {
+    let mut result = Vec::new();
+
+    for v in vectors {
+        let mut u = v.clone();
+        for ortho in &amp;result {
+            let proj = dot_product(v, ortho) / dot_product(ortho, ortho);
+            u = u.iter().zip(ortho.iter()).map(|(a, b)| a - proj * b).collect();
+        }
+        result.push(u);
+    }
+
+    result
+}
+
+fn main() {
+    let vectors = vec![
+        vec![1.0, 1.0, 0.0],
+        vec![1.0, 0.0, 1.0],
+        vec![0.0, 1.0, 1.0],
+    ];
+
+    let orthogonal = gram_schmidt(&amp;vectors);
+    println!("正交化结果:");
+    for v in &amp;orthogonal {
+        println!("  {:?}", v);
+    }
+}</code></pre>
+<hr>
+<h2 id="九向量与矩阵的关系"><a class="header" href="#九向量与矩阵的关系">九、向量与矩阵的关系</a></h2>
+<p>矩阵可以对向量进行线性变换，包括拉升、压缩、旋转、剪切、平移等操作。</p>
+<h3 id="91-旋转变换"><a class="header" href="#91-旋转变换">9.1 旋转变换</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use nalgebra::{Rotation2, Vector2};
+
+fn main() {
+    let v = Vector2::new(1.0, 0.0);
+    let angle = std::f64::consts::FRAC_PI_4; // 45°
+
+    let rotation = Rotation2::new(angle);
+    let rotated = rotation * v;
+
+    println!("原向量: {:?}", v);
+    println!("旋转 45° 后: {:?}", rotated);
+    // (0.7071, 0.7071)
+}</code></pre>
+<h3 id="92-缩放变换"><a class="header" href="#92-缩放变换">9.2 缩放变换</a></h3>
+<pre class="playground"><code class="language-rust edition2024">fn scale_vector(v: &amp;[f64], sx: f64, sy: f64) -&gt; Vec&lt;f64&gt; {
+    vec![v[0] * sx, v[1] * sy]
+}
+
+fn main() {
+    let v = vec![1.0, 1.0];
+    let scaled = scale_vector(&amp;v, 2.0, 0.5);
+    println!("缩放后: {:?}", scaled);  // [2.0, 0.5]
+}</code></pre>
+<hr>
+<h2 id="十向量在-rust-中的应用"><a class="header" href="#十向量在-rust-中的应用">十、向量在 Rust 中的应用</a></h2>
+<h3 id="101-使用-nalgebra"><a class="header" href="#101-使用-nalgebra">10.1 使用 nalgebra</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use nalgebra as na;
+use na::{Vector3, Point3};
+
+fn main() {
+    let a = Vector3::new(1.0, 2.0, 3.0);
+    let b = Vector3::new(4.0, 5.0, 6.0);
+
+    // 向量加法
+    let c = a + b;
+    println!("a + b = {:?}", c);
+
+    // 向量数乘
+    let d = a * 2.0;
+    println!("2a = {:?}", d);
+
+    // 点积
+    let dot = a.dot(&amp;b);
+    println!("a · b = {}", dot);  // 32.0
+
+    // 叉积
+    let cross = a.cross(&amp;b);
+    println!("a × b = {:?}", cross);  // (-3, 6, -3)
+
+    // 范数
+    let norm = a.norm();
+    println!("|a| = {}", norm);  // 3.7417
+
+    // 归一化
+    let unit = a.normalize();
+    println!("单位向量 = {:?}", unit);
+
+    // 距离
+    let dist = a.metric_distance(&amp;b);
+    println!("距离 = {}", dist);
+
+    // 点 (Point) 与向量 (Vector) 的区别
+    let p = Point3::new(1.0, 2.0, 3.0);
+    let q = Point3::new(4.0, 5.0, 6.0);
+    let vec = q - p;  // 结果是 Vector3
+    println!("两点间的向量 = {:?}", vec);
+}</code></pre>
+<hr>
+<h2 id="十一总结"><a class="header" href="#十一总结">十一、总结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>要点</th></tr>
+</thead>
+<tbody>
+<tr><td>向量定义</td><td>n 个有次序的数组成的数组</td></tr>
+<tr><td>向量加法</td><td>对应分量相加</td></tr>
+<tr><td>向量数乘</td><td>每个分量乘以标量</td></tr>
+<tr><td>点积</td><td>$ \vec{a} \cdot \vec{b} = \sum a_ib_i = |\vec{a}| |\vec{b}| \cos\theta$</td></tr>
+<tr><td>叉积</td><td>仅定义于三维，结果垂直于原向量所在平面</td></tr>
+<tr><td>向量长度</td><td>$|\vec{a}| = \sqrt{\sum a_i^2}$</td></tr>
+<tr><td>余弦相似度</td><td>$ \cos\theta = \frac{\vec{a} \cdot \vec{b}}{|\vec{a}||\vec{b}|}$</td></tr>
+<tr><td>线性相关</td><td>存在不全为零的系数使线性组合为零向量</td></tr>
+<tr><td>正交</td><td>内积为零，正交向量组线性无关</td></tr>
+<tr><td>施密特正交化</td><td>将线性无关向量组转化为正交向量组</td></tr>
+</tbody>
+</table>
+</div>
+<p>向量是连接代数与几何的桥梁，也是现代计算机科学的基石。从物理中的力和速度，到机器学习中的特征向量，向量的概念无处不在。</p>
+<blockquote>
+<p><strong>练习建议：</strong></p>
+<ol>
+<li>实现向量的各种运算（加法、数乘、点积、叉积）</li>
+<li>用余弦相似度实现简单的文档相似度计算</li>
+<li>实现施密特正交化算法</li>
+</ol>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_30_Matrix.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_32_Function.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_30_Matrix.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_32_Function.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

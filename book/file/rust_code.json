@@ -1,0 +1,6 @@
+{
+    "version": "stable",
+    "optimize": "0",
+    "code": "#![allow(unused)]\nfn main() {\n// \u5341\u8fdb\u5236\nprintln!(\"{}\", i8::MIN);\nprintln!(\"{}\", i8::MAX);\nprintln!(\"{}\", i16::MIN);\nprintln!(\"{}\", i16::MAX);\nprintln!(\"{}\", i32::MIN);\nprintln!(\"{}\", i32::MAX);\nprintln!(\"{}\", i64::MIN);\nprintln!(\"{}\", i64::MAX);\nprintln!(\"{}\", u8::MIN);\nprintln!(\"{}\", u8::MAX);\nprintln!(\"{}\", u16::MIN);\nprintln!(\"{}\", u16::MAX);\nprintln!(\"{}\", u32::MIN);\nprintln!(\"{}\", u32::MAX);\nprintln!(\"{}\", u64::MIN);\nprintln!(\"{}\", u64::MAX);\n\n\n// \u4e8c\u8fdb\u5236 10001\nprintln!(\"0b{:08b}\",17i8);\n// \u516b\u8fdb\u5236 21\nprintln!(\"0o{:08o}\",17i8);\n// \u5341\u516d\u8fdb\u5236 11\nprintln!(\"0x{:08x}\",17i8);\n\nprintln!(\"0b{:08b}\",0i8);\nprintln!(\"0b{:08b}\",1i8);\nprintln!(\"0b{:08b}\",-1i8);\nprintln!(\"0b{:08b}\",i8::MAX);\n\nprintln!(\"0b{:08b}\",-2i8);\nprintln!(\"0b{:08b}\",17u8);\nprintln!(\"0o{:08o}\",17u8);\nprintln!(\"0x{:08x}\",17u8);\n}",
+    "edition": "2015"
+}

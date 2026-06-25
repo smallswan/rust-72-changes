@@ -1,0 +1,866 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第十六 逻辑运算 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第十六-逻辑运算"><a class="header" href="#第十六-逻辑运算">第十六 逻辑运算</a></h1>
+<p>逻辑运算（Logical Operation）是计算机科学和数学中最基础的运算之一，它处理的是布尔值（<code>true</code> 或 <code>false</code>）之间的关系。在 Rust 中，逻辑运算不仅是条件判断的核心，还深刻影响着程序的控制流和性能。</p>
+<hr>
+<h2 id="一布尔代数基础"><a class="header" href="#一布尔代数基础">一、布尔代数基础</a></h2>
+<h3 id="11-什么是布尔代数"><a class="header" href="#11-什么是布尔代数">1.1 什么是布尔代数</a></h3>
+<p>布尔代数（Boolean Algebra）由英国数学家乔治·布尔（George Boole）在 19 世纪中叶创立，是一种用于描述逻辑关系的代数系统。它只有两个值：<code>true</code>（真，记为 1）和 <code>false</code>（假，记为 0）。</p>
+<p>布尔代数是现代数字电路、计算机逻辑设计和编程语言的理论基础。</p>
+<h3 id="12-基本逻辑运算"><a class="header" href="#12-基本逻辑运算">1.2 基本逻辑运算</a></h3>
+<p>布尔代数定义了三种基本运算：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>运算</th><th>符号</th><th>Rust 运算符</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td>与（AND）</td><td>∧ 或 ·</td><td><code>&amp;&amp;</code></td><td>两个条件同时为真，结果才为真</td></tr>
+<tr><td>或（OR）</td><td>∨ 或 +</td><td><code>||</code></td><td>两个条件至少一个为真，结果就为真</td></tr>
+<tr><td>非（NOT）</td><td>¬ 或 ¯</td><td><code>!</code></td><td>条件取反</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="13-真值表"><a class="header" href="#13-真值表">1.3 真值表</a></h3>
+<p>真值表（Truth Table）是表示逻辑运算所有可能输入和对应输出的表格。</p>
+<p><strong>与运算（AND）真值表：</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>p</th><th>q</th><th>p ∧ q（p &amp;&amp; q）</th></tr>
+</thead>
+<tbody>
+<tr><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td>1</td><td>1</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>口诀：“有假则假，全真才真”</p>
+</blockquote>
+<p><strong>或运算（OR）真值表：</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>p</th><th>q</th><th>p ∨ q（p || q）</th></tr>
+</thead>
+<tbody>
+<tr><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>1</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>口诀：“有真则真，全假才假”</p>
+</blockquote>
+<p><strong>非运算（NOT）真值表：</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>p</th><th>¬p（!p）</th></tr>
+</thead>
+<tbody>
+<tr><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>0</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>口诀：“真假互换”</p>
+</blockquote>
+<h3 id="14-复合逻辑运算"><a class="header" href="#14-复合逻辑运算">1.4 复合逻辑运算</a></h3>
+<p>除了三种基本运算，布尔代数还定义了两种常用的复合运算：</p>
+<p><strong>异或（XOR，Exclusive OR）</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>p</th><th>q</th><th>p ⊕ q</th></tr>
+</thead>
+<tbody>
+<tr><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>0</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>口诀：“相同为假，不同为真”</p>
+<p>异或在 Rust 中没有专门的逻辑运算符，但可以用 <code>(p || q) &amp;&amp; !(p &amp;&amp; q)</code> 或位运算符 <code>^</code> 实现。</p>
+</blockquote>
+<p><strong>同或（XNOR，Equivalence）</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>p</th><th>q</th><th>p ↔ q</th></tr>
+</thead>
+<tbody>
+<tr><td>0</td><td>0</td><td>1</td></tr>
+<tr><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td>1</td><td>1</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>口诀：“相同为真，不同为假”（异或的反面）</p>
+</blockquote>
+<h3 id="15-布尔代数的基本定律"><a class="header" href="#15-布尔代数的基本定律">1.5 布尔代数的基本定律</a></h3>
+<p>布尔代数遵循一系列重要的定律，这些定律在简化逻辑表达式和优化程序条件时非常有用。</p>
+<p><strong>交换律（Commutative Laws）</strong></p>
+<pre><code>p ∧ q = q ∧ p
+p ∨ q = q ∨ p
+</code></pre>
+<p><strong>结合律（Associative Laws）</strong></p>
+<pre><code>(p ∧ q) ∧ r = p ∧ (q ∧ r)
+(p ∨ q) ∨ r = p ∨ (q ∨ r)
+</code></pre>
+<p><strong>分配律（Distributive Laws）</strong></p>
+<pre><code>p ∧ (q ∨ r) = (p ∧ q) ∨ (p ∧ r)
+p ∨ (q ∧ r) = (p ∨ q) ∧ (p ∨ r)
+</code></pre>
+<p><strong>同一律（Identity Laws）</strong></p>
+<pre><code>p ∧ true = p
+p ∨ false = p
+</code></pre>
+<p><strong>零律（Domination Laws）</strong></p>
+<pre><code>p ∧ false = false
+p ∨ true = true
+</code></pre>
+<p><strong>幂等律（Idempotent Laws）</strong></p>
+<pre><code>p ∧ p = p
+p ∨ p = p
+</code></pre>
+<p><strong>补律（Complement Laws）</strong></p>
+<pre><code>p ∧ ¬p = false
+p ∨ ¬p = true
+¬(¬p) = p
+</code></pre>
+<p><strong>德摩根定律（De Morgan’s Laws）</strong></p>
+<p>德摩根定律是最重要的布尔代数定律之一，在编程中经常用于简化复杂的条件表达式：</p>
+<pre><code>¬(p ∧ q) = ¬p ∨ ¬q
+¬(p ∨ q) = ¬p ∧ ¬q
+</code></pre>
+<p>用 Rust 代码表示：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 德摩根定律示例
+fn de_morgan_example() {
+    let p = true;
+    let q = false;
+
+    // ¬(p ∧ q) = ¬p ∨ ¬q
+    let left1 = !(p &amp;&amp; q);
+    let right1 = !p || !q;
+    assert_eq!(left1, right1);
+
+    // ¬(p ∨ q) = ¬p ∧ ¬q
+    let left2 = !(p || q);
+    let right2 = !p &amp;&amp; !q;
+    assert_eq!(left2, right2);
+}
+<span class="boring">}</span></code></pre>
+<blockquote>
+<p>德摩根定律的通俗理解：</p>
+<ul>
+<li>“不是（A 且 B）” 等价于 “不是 A 或不是 B”</li>
+<li>“不是（A 或 B）” 等价于 “不是 A 且不是 B”</li>
+</ul>
+</blockquote>
+<p><strong>吸收律（Absorption Laws）</strong></p>
+<pre><code>p ∧ (p ∨ q) = p
+p ∨ (p ∧ q) = p
+</code></pre>
+<hr>
+<h2 id="二rust-中的逻辑运算符"><a class="header" href="#二rust-中的逻辑运算符">二、Rust 中的逻辑运算符</a></h2>
+<h3 id="21-逻辑运算符概览"><a class="header" href="#21-逻辑运算符概览">2.1 逻辑运算符概览</a></h3>
+<p>Rust 提供了三种逻辑运算符，分别对应布尔代数的三种基本运算：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>&amp;&amp;    // 逻辑与（conditional AND）
+||    // 逻辑或（conditional OR）
+!     // 逻辑非（NOT）
+<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let a = true;
+    let b = false;
+
+    println!("a &amp;&amp; b = {}", a &amp;&amp; b);  // false
+    println!("a || b = {}", a || b);  // true
+    println!("!a = {}", !a);          // false
+}</code></pre>
+<h3 id="22-逻辑与"><a class="header" href="#22-逻辑与">2.2 逻辑与（&amp;&amp;）</a></h3>
+<p>逻辑与运算符 <code>&amp;&amp;</code> 要求两边的操作数都为 <code>true</code>，结果才为 <code>true</code>。</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let x = 5;
+    let y = 10;
+
+    // 两个条件都满足
+    if x &gt; 0 &amp;&amp; y &gt; 0 {
+        println!("x 和 y 都是正数");
+    }
+
+    // 一个条件不满足
+    if x &gt; 0 &amp;&amp; y &lt; 0 {
+        println!("这不会被执行");
+    }
+}</code></pre>
+<p><strong>逻辑与的真值表（Rust）：</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>表达式</th><th>结果</th></tr>
+</thead>
+<tbody>
+<tr><td><code>true &amp;&amp; true</code></td><td><code>true</code></td></tr>
+<tr><td><code>true &amp;&amp; false</code></td><td><code>false</code></td></tr>
+<tr><td><code>false &amp;&amp; true</code></td><td><code>false</code></td></tr>
+<tr><td><code>false &amp;&amp; false</code></td><td><code>false</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="23-逻辑或"><a class="header" href="#23-逻辑或">2.3 逻辑或（||）</a></h3>
+<p>逻辑或运算符 <code>||</code> 要求两边的操作数至少有一个为 <code>true</code>，结果就为 <code>true</code>。</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let score = 85;
+
+    // 满足任一条件即可
+    if score &gt;= 90 || score &gt;= 60 &amp;&amp; score &lt; 90 {
+        println!("成绩合格");
+    }
+
+    // 更清晰的写法
+    if score &gt;= 60 {
+        println!("成绩合格");
+    }
+}</code></pre>
+<p><strong>逻辑或的真值表（Rust）：</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>表达式</th><th>结果</th></tr>
+</thead>
+<tbody>
+<tr><td><code>true || true</code></td><td><code>true</code></td></tr>
+<tr><td><code>true || false</code></td><td><code>true</code></td></tr>
+<tr><td><code>false || true</code></td><td><code>true</code></td></tr>
+<tr><td><code>false || false</code></td><td><code>false</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="24-逻辑非"><a class="header" href="#24-逻辑非">2.4 逻辑非（!）</a></h3>
+<p>逻辑非运算符 <code>!</code> 对布尔值取反。</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let is_raining = false;
+
+    if !is_raining {
+        println!("今天不下雨，可以出门");
+    }
+
+    // 双重否定等于肯定
+    assert_eq!(!!is_raining, is_raining);
+}</code></pre>
+<p><strong>逻辑非的真值表（Rust）：</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>表达式</th><th>结果</th></tr>
+</thead>
+<tbody>
+<tr><td><code>!true</code></td><td><code>false</code></td></tr>
+<tr><td><code>!false</code></td><td><code>true</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="25-逻辑运算符与位运算符的区别"><a class="header" href="#25-逻辑运算符与位运算符的区别">2.5 逻辑运算符与位运算符的区别</a></h3>
+<p>Rust 中有两套看似相似但功能不同的运算符，初学者容易混淆：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>运算符</th><th>类型</th><th>操作数</th><th>用途</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><code>&amp;&amp;</code></td><td>逻辑与</td><td>布尔值</td><td>逻辑判断</td><td><code>true &amp;&amp; false</code></td></tr>
+<tr><td><code>||</code></td><td>逻辑或</td><td>布尔值</td><td>逻辑判断</td><td><code>true || false</code></td></tr>
+<tr><td><code>!</code></td><td>逻辑非</td><td>布尔值</td><td>逻辑取反</td><td><code>!true</code></td></tr>
+<tr><td><code>&amp;</code></td><td>位与</td><td>整数</td><td>按位运算</td><td><code>0b1010 &amp; 0b1100</code></td></tr>
+<tr><td><code>|</code></td><td>位或</td><td>整数</td><td>按位运算</td><td><code>0b1010 | 0b1100</code></td></tr>
+<tr><td><code>~</code></td><td>位非</td><td>整数</td><td>按位取反</td><td><code>~0b1010</code></td></tr>
+<tr><td><code>^</code></td><td>位异或</td><td>整数</td><td>按位运算</td><td><code>0b1010 ^ 0b1100</code></td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    // 逻辑运算：操作数和结果都是 bool
+    let logical = true &amp;&amp; false;
+    println!("逻辑与: {}", logical);  // false
+
+    // 位运算：操作数和结果都是整数
+    let bitwise = 0b1010 &amp; 0b1100;
+    println!("位与: {:04b}", bitwise);  // 1000
+
+    // 注意：&amp; 和 | 也可以用于 bool，但不会短路
+    let a = true &amp; false;  // false，但两边都会求值
+    let b = true | false;  // true，但两边都会求值
+}</code></pre>
+<blockquote>
+<p><strong>关键区别：</strong></p>
+<ul>
+<li><code>&amp;&amp;</code> 和 <code>||</code> 是<strong>短路运算符</strong>，只用于 <code>bool</code> 类型</li>
+<li><code>&amp;</code> 和 <code>|</code> 是<strong>非短路运算符</strong>，可用于整数位运算，也可用于 <code>bool</code>（但两边都会求值）</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="三短路求值short-circuit-evaluation"><a class="header" href="#三短路求值short-circuit-evaluation">三、短路求值（Short-Circuit Evaluation）</a></h2>
+<h3 id="31-什么是短路求值"><a class="header" href="#31-什么是短路求值">3.1 什么是短路求值</a></h3>
+<p>短路求值是逻辑运算的一个重要特性：</p>
+<ul>
+<li>对于 <code>&amp;&amp;</code>（逻辑与）：如果左边的表达式为 <code>false</code>，右边的表达式<strong>不会执行</strong>，因为无论右边是什么，结果都一定是 <code>false</code>。</li>
+<li>对于 <code>||</code>（逻辑或）：如果左边的表达式为 <code>true</code>，右边的表达式<strong>不会执行</strong>，因为无论右边是什么，结果都一定是 <code>true</code>。</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let a = false;
+
+    // 由于 a 是 false，expensive_function() 不会被执行
+    if a &amp;&amp; expensive_function() {
+        println!("不会执行到这里");
+    }
+
+    let b = true;
+
+    // 由于 b 是 true，expensive_function() 不会被执行
+    if b || expensive_function() {
+        println!("会执行到这里");
+    }
+}
+
+fn expensive_function() -&gt; bool {
+    println!("执行了耗时操作...");
+    true
+}</code></pre>
+<h3 id="32-短路求值的实际应用"><a class="header" href="#32-短路求值的实际应用">3.2 短路求值的实际应用</a></h3>
+<p><strong>应用一：避免不必要的计算</strong></p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let data: Vec&lt;i32&gt; = vec![];
+
+    // 先检查是否为空，避免对空数组进行索引操作
+    if !data.is_empty() &amp;&amp; data[0] &gt; 0 {
+        println!("第一个元素是正数");
+    }
+
+    // 如果 data 为空，data[0] 不会被执行，避免了 panic
+}</code></pre>
+<p><strong>应用二：安全地进行空值检查</strong></p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let maybe_value: Option&lt;i32&gt; = None;
+
+    // 先检查 Some，再解包
+    if maybe_value.is_some() &amp;&amp; maybe_value.unwrap() &gt; 0 {
+        println!("值是正数");
+    }
+
+    // 更地道的 Rust 写法
+    if let Some(value) = maybe_value {
+        if value &gt; 0 {
+            println!("值是正数: {}", value);
+        }
+    }
+}</code></pre>
+<p><strong>应用三：设置默认值</strong></p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn get_config_value(user_value: Option&lt;i32&gt;) -&gt; i32 {
+    // 如果 user_value 为 None，则使用默认值 42
+    user_value.unwrap_or(42)
+}
+
+// 或者用逻辑运算的思路（虽然 Rust 中更常用 unwrap_or）
+fn get_config_value_alt(user_value: Option&lt;i32&gt;) -&gt; i32 {
+    if user_value.is_some() {
+        user_value.unwrap()
+    } else {
+        42
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="33-短路求值的注意事项"><a class="header" href="#33-短路求值的注意事项">3.3 短路求值的注意事项</a></h3>
+<p>虽然短路求值通常是有益的，但在某些情况下需要注意：</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let mut counter = 0;
+
+    // 由于短路，counter 只增加一次
+    let result = increment(&amp;mut counter) || increment(&amp;mut counter);
+    println!("counter = {}", counter);  // 输出 1，不是 2
+
+    // 如果需要两边都执行，使用非短路运算符 |
+    counter = 0;
+    let result2 = increment(&amp;mut counter) | increment(&amp;mut counter);
+    println!("counter = {}", counter);  // 输出 2
+}
+
+fn increment(counter: &amp;mut i32) -&gt; bool {
+    *counter += 1;
+    true
+}</code></pre>
+<blockquote>
+<p><strong>注意：</strong> 当需要确保所有副作用（如函数调用、变量修改）都执行时，应该使用非短路的 <code>&amp;</code> 和 <code>|</code> 运算符。</p>
+</blockquote>
+<hr>
+<h2 id="四逻辑运算在-rust-中的高级应用"><a class="header" href="#四逻辑运算在-rust-中的高级应用">四、逻辑运算在 Rust 中的高级应用</a></h2>
+<h3 id="41-复杂的条件表达式"><a class="header" href="#41-复杂的条件表达式">4.1 复杂的条件表达式</a></h3>
+<p>在实际编程中，我们经常需要组合多个条件：</p>
+<pre class="playground"><code class="language-rust edition2024">fn can_vote(age: u32, is_citizen: bool, has_criminal_record: bool) -&gt; bool {
+    // 必须成年、是公民、没有犯罪记录
+    age &gt;= 18 &amp;&amp; is_citizen &amp;&amp; !has_criminal_record
+}
+
+fn main() {
+    println!("可以投票: {}", can_vote(20, true, false));   // true
+    println!("可以投票: {}", can_vote(16, true, false));   // false
+    println!("可以投票: {}", can_vote(20, false, false));  // false
+    println!("可以投票: {}", can_vote(20, true, true));    // false
+}</code></pre>
+<h3 id="42-利用德摩根定律简化条件"><a class="header" href="#42-利用德摩根定律简化条件">4.2 利用德摩根定律简化条件</a></h3>
+<p>德摩根定律可以帮助我们简化复杂的否定条件：</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let a = true;
+    let b = false;
+
+    // 原始写法：判断"不是（a 和 b 都为真）"
+    let condition1 = !(a &amp;&amp; b);
+
+    // 用德摩根定律简化："a 为假 或 b 为假"
+    let condition2 = !a || !b;
+
+    assert_eq!(condition1, condition2);
+
+    // 实际应用：检查用户输入是否有效
+    let has_username = true;
+    let has_password = true;
+
+    // 原始写法
+    let is_invalid1 = !(has_username &amp;&amp; has_password);
+
+    // 简化写法（更易读）
+    let is_invalid2 = !has_username || !has_password;
+
+    assert_eq!(is_invalid1, is_invalid2);
+}</code></pre>
+<h3 id="43-逻辑运算与类型系统"><a class="header" href="#43-逻辑运算与类型系统">4.3 逻辑运算与类型系统</a></h3>
+<p>Rust 的类型系统与逻辑运算有深刻的联系：</p>
+<pre class="playground"><code class="language-rust edition2024">// Rust 中没有隐式类型转换，逻辑运算必须作用于 bool
+fn main() {
+    let x = 1;
+    // let result = x &amp;&amp; true;  // 错误！x 是 i32，不是 bool
+
+    // 必须显式转换
+    let result = (x != 0) &amp;&amp; true;
+    println!("{}", result);  // true
+}</code></pre>
+<h3 id="44-逻辑运算与模式匹配"><a class="header" href="#44-逻辑运算与模式匹配">4.4 逻辑运算与模式匹配</a></h3>
+<p>在 Rust 中，模式匹配往往比复杂的逻辑运算更清晰：</p>
+<pre class="playground"><code class="language-rust edition2024">fn describe_number(n: i32) -&gt; &amp;'static str {
+    // 使用逻辑运算
+    if n &gt; 0 &amp;&amp; n % 2 == 0 {
+        "正偶数"
+    } else if n &gt; 0 &amp;&amp; n % 2 != 0 {
+        "正奇数"
+    } else if n &lt; 0 {
+        "负数"
+    } else {
+        "零"
+    }
+}
+
+fn describe_number_match(n: i32) -&gt; &amp;'static str {
+    // 使用模式匹配（更地道）
+    match n {
+        0 =&gt; "零",
+        n if n &gt; 0 &amp;&amp; n % 2 == 0 =&gt; "正偶数",
+        n if n &gt; 0 =&gt; "正奇数",
+        _ =&gt; "负数",
+    }
+}
+
+fn main() {
+    println!("{}", describe_number(4));         // 正偶数
+    println!("{}", describe_number_match(4));   // 正偶数
+}</code></pre>
+<hr>
+<h2 id="五逻辑运算的实际案例"><a class="header" href="#五逻辑运算的实际案例">五、逻辑运算的实际案例</a></h2>
+<h3 id="51-用户权限校验"><a class="header" href="#51-用户权限校验">5.1 用户权限校验</a></h3>
+<pre class="playground"><code class="language-rust edition2024">struct User {
+    name: String,
+    is_active: bool,
+    is_admin: bool,
+    age: u32,
+}
+
+impl User {
+    fn can_access_admin_panel(&amp;self) -&gt; bool {
+        // 必须同时满足：账号活跃、是管理员、已成年
+        self.is_active &amp;&amp; self.is_admin &amp;&amp; self.age &gt;= 18
+    }
+
+    fn can_view_content(&amp;self) -&gt; bool {
+        // 满足任一条件即可：账号活跃 或 是管理员
+        self.is_active || self.is_admin
+    }
+}
+
+fn main() {
+    let user = User {
+        name: String::from("张三"),
+        is_active: true,
+        is_admin: false,
+        age: 25,
+    };
+
+    println!("可以访问管理后台: {}", user.can_access_admin_panel());  // false
+    println!("可以查看内容: {}", user.can_view_content());            // true
+}</code></pre>
+<h3 id="52-数据验证"><a class="header" href="#52-数据验证">5.2 数据验证</a></h3>
+<pre class="playground"><code class="language-rust edition2024">fn is_valid_password(password: &amp;str) -&gt; bool {
+    // 密码必须同时满足：
+    // 1. 长度至少 8 位
+    // 2. 包含至少一个大写字母
+    // 3. 包含至少一个小写字母
+    // 4. 包含至少一个数字
+
+    let has_min_length = password.len() &gt;= 8;
+    let has_uppercase = password.chars().any(|c| c.is_ascii_uppercase());
+    let has_lowercase = password.chars().any(|c| c.is_ascii_lowercase());
+    let has_digit = password.chars().any(|c| c.is_ascii_digit());
+
+    has_min_length &amp;&amp; has_uppercase &amp;&amp; has_lowercase &amp;&amp; has_digit
+}
+
+fn main() {
+    println!("'Hello123' 有效: {}", is_valid_password("Hello123"));     // false（长度不够）
+    println!("'HelloWorld1' 有效: {}", is_valid_password("HelloWorld1")); // true
+    println!("'helloworld1' 有效: {}", is_valid_password("helloworld1")); // false（没有大写）
+}</code></pre>
+<h3 id="53-游戏状态判断"><a class="header" href="#53-游戏状态判断">5.3 游戏状态判断</a></h3>
+<pre class="playground"><code class="language-rust edition2024">struct GameState {
+    player_alive: bool,
+    has_key: bool,
+    door_open: bool,
+    enemies_defeated: bool,
+}
+
+impl GameState {
+    fn can_exit_level(&amp;self) -&gt; bool {
+        // 可以退出关卡的条件：玩家存活，且（门已开 或 所有敌人被击败）
+        self.player_alive &amp;&amp; (self.door_open || self.enemies_defeated)
+    }
+
+    fn game_over(&amp;self) -&gt; bool {
+        // 游戏结束条件：玩家死亡
+        !self.player_alive
+    }
+}
+
+fn main() {
+    let state = GameState {
+        player_alive: true,
+        has_key: true,
+        door_open: false,
+        enemies_defeated: true,
+    };
+
+    println!("可以退出关卡: {}", state.can_exit_level());  // true
+    println!("游戏结束: {}", state.game_over());           // false
+}</code></pre>
+<hr>
+<h2 id="六总结"><a class="header" href="#六总结">六、总结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>要点</th></tr>
+</thead>
+<tbody>
+<tr><td>布尔代数</td><td>只有 <code>true</code> 和 <code>false</code> 两个值，定义了与、或、非三种基本运算</td></tr>
+<tr><td>基本定律</td><td>交换律、结合律、分配律、德摩根定律等</td></tr>
+<tr><td>Rust 逻辑运算符</td><td><code>&amp;&amp;</code>（与）、<code>||</code>（或）、<code>!</code>（非）</td></tr>
+<tr><td>短路求值</td><td><code>&amp;&amp;</code> 左假则短路，<code>||</code> 左真则短路，可提高性能并避免错误</td></tr>
+<tr><td>与位运算区别</td><td>逻辑运算符用于 <code>bool</code>，位运算符用于整数</td></tr>
+</tbody>
+</table>
+</div>
+<p>逻辑运算是编程中最基础也是最重要的概念之一。掌握布尔代数的定律和 Rust 逻辑运算符的短路特性，可以帮助我们写出更简洁、更高效、更安全的代码。</p>
+<blockquote>
+<p><strong>练习建议：</strong></p>
+<ol>
+<li>尝试用德摩根定律简化复杂的条件表达式</li>
+<li>利用短路求值避免不必要的计算和潜在的错误</li>
+<li>在适当的场景下，用模式匹配替代复杂的逻辑判断</li>
+</ol>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_15.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_17.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_15.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_17.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

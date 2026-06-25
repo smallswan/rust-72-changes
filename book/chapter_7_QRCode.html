@@ -1,0 +1,935 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第七 二维码 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第七-二维码"><a class="header" href="#第七-二维码">第七 二维码</a></h1>
+<pre><code class="language-txt">二维码源于日本，在中国发扬光大。
+</code></pre>
+<p>二维码相较于条形码，能够存储的信息更多，同时也能快速完成短信息的识别输入。从移动支付到健康码，从商品溯源到电子名片，二维码已经深入到我们生活的方方面面。</p>
+<h2 id="71-二维码的历史"><a class="header" href="#71-二维码的历史">7.1 二维码的历史</a></h2>
+<h3 id="711-qr码的诞生"><a class="header" href="#711-qr码的诞生">7.1.1 QR码的诞生</a></h3>
+<p>1994年，日本 Denso Wave 公司的工程师<strong>原昌宏</strong>（Masahiro Hara）发明了 QR Code（Quick Response Code）。当时，丰田汽车旗下的零部件供应商需要一种能够快速扫描并存储大量信息的条码系统来追踪汽车零部件。传统的条形码只能存储少量数字信息，且只能单向扫描，无法满足工业需求。</p>
+<p>原昌宏从围棋棋盘的网格结构中获得灵感，设计了这种可以在水平和垂直两个方向同时存储信息的矩阵式二维码。QR Code 的“Quick Response“（快速响应）之名，正是强调了其高速读取的特性。</p>
+<p>QR Code 的关键创新：</p>
+<ul>
+<li><strong>高速读取</strong>：通过定位图案实现 360 度任意方向扫描</li>
+<li><strong>大容量</strong>：相比一维条码，信息容量提升数十倍</li>
+<li><strong>容错能力</strong>：即使部分损坏仍可正确读取</li>
+<li><strong>支持多种数据类型</strong>：数字、字母、汉字、二进制数据</li>
+</ul>
+<h3 id="712-在中国的发扬光大"><a class="header" href="#712-在中国的发扬光大">7.1.2 在中国的发扬光大</a></h3>
+<p>QR Code 在日本发明后，最初主要用于工业领域。然而，真正让二维码“火遍全球“的是中国。</p>
+<ul>
+<li><strong>2011年</strong>：支付宝推出二维码支付，开创了移动支付的先河</li>
+<li><strong>2014年</strong>：微信支付全面接入二维码，“扫码支付“迅速普及</li>
+<li><strong>2020年</strong>：健康码系统使用二维码进行疫情防控，几乎全民使用</li>
+<li>如今，中国已成为全球二维码应用最广泛的国家，日均扫码量超过百亿次</li>
+</ul>
+<h2 id="72-qr码原理详解"><a class="header" href="#72-qr码原理详解">7.2 QR码原理详解</a></h2>
+<h3 id="721-qr码的结构"><a class="header" href="#721-qr码的结构">7.2.1 QR码的结构</a></h3>
+<p>一个标准的 QR 码由以下功能区域组成：</p>
+<pre><code>┌─────────────────────────────┐
+│ ■ ■ ■ ■ ■ ■ ■   ■         │  定位图案（左上）
+│ ■       ■         ■         │
+│ ■       ■         ■         │  定位图案（右上）
+│ ■ ■ ■ ■ ■ ■ ■   ■ ■ ■ ■ ■ ■ ■ ■
+│                     ■       │
+│ ■ ■ ■ ■ ■ ■ ■     ■       │  定位图案（左下）
+│ ■       ■           ■       │
+│ ■       ■           ■       │
+│ ■ ■ ■ ■ ■ ■ ■   ■         │
+│                     ■       │
+│   ■   ■   ■   ■   ■   ■   ■  ← 定时图案（水平和垂直）
+│                     ■       │
+│   [格式信息]  [版本信息]     │
+│   [数据和纠错码字]           │
+│   [剩余位]                  │
+└─────────────────────────────┘
+</code></pre>
+<p><strong>各区域说明</strong>：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">区域</th><th style="text-align: left">位置</th><th style="text-align: left">功能</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">定位图案 (Finder Pattern)</td><td style="text-align: left">三个角落</td><td style="text-align: left">7x7 的嵌套正方形，帮助扫描器定位 QR 码的位置和方向</td></tr>
+<tr><td style="text-align: left">定时图案 (Timing Pattern)</td><td style="text-align: left">连接定位图案</td><td style="text-align: left">交替的黑白模块，帮助确定模块坐标</td></tr>
+<tr><td style="text-align: left">格式信息 (Format Info)</td><td style="text-align: left">定位图案旁</td><td style="text-align: left">纠错等级和掩码图案编号</td></tr>
+<tr><td style="text-align: left">版本信息 (Version Info)</td><td style="text-align: left">较大版本中</td><td style="text-align: left">QR 码版本号（1-40）</td></tr>
+<tr><td style="text-align: left">数据和纠错码字</td><td style="text-align: left">主体区域</td><td style="text-align: left">编码后的数据和纠错码</td></tr>
+<tr><td style="text-align: left">静区 (Quiet Zone)</td><td style="text-align: left">四周</td><td style="text-align: left">空白边框，宽度至少 4 个模块</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="722-编码模式"><a class="header" href="#722-编码模式">7.2.2 编码模式</a></h3>
+<p>QR 码支持四种编码模式，根据数据内容自动或手动选择最优模式：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">模式</th><th style="text-align: center">名称</th><th style="text-align: left">适用字符</th><th style="text-align: center">编码效率</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">0001</td><td style="text-align: center">数字模式 (Numeric)</td><td style="text-align: left">0-9</td><td style="text-align: center">最高（3个数字→10bit）</td></tr>
+<tr><td style="text-align: center">0010</td><td style="text-align: center">字母数字模式 (Alphanumeric)</td><td style="text-align: left">0-9, A-Z, 空格, $%*+-./:</td><td style="text-align: center">较高（2个字符→11bit）</td></tr>
+<tr><td style="text-align: center">0100</td><td style="text-align: center">字节模式 (Byte)</td><td style="text-align: left">ISO 8859-1 字符集（含中文UTF-8）</td><td style="text-align: center">中等（1字节→8bit）</td></tr>
+<tr><td style="text-align: center">1000</td><td style="text-align: center">汉字模式 (Kanji)</td><td style="text-align: left">Shift-JIS 编码的日文汉字</td><td style="text-align: center">较高（1个汉字→13bit）</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>数字模式</strong>的编码方式：将数字分为 3 位一组，每组转换为 10 位二进制数。例如数字 <code>123456</code>：</p>
+<p>$$123 \rightarrow 0001111011_2$$
+$$456 \rightarrow 0111001000_2$$</p>
+<p><strong>字母数字模式</strong>的字符集包含 45 个字符：</p>
+<pre><code>0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:
+</code></pre>
+<p>将字符分为 2 个一组，每组转换为 11 位二进制数：</p>
+<p>$$\text{value} = c_1 \times 45 + c_2$$</p>
+<h3 id="723-纠错等级"><a class="header" href="#723-纠错等级">7.2.3 纠错等级</a></h3>
+<p>QR 码使用 Reed-Solomon 纠错编码，提供四个纠错等级：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">等级</th><th style="text-align: center">代号</th><th style="text-align: center">纠错容量</th><th style="text-align: center">可恢复数据比例</th><th style="text-align: left">适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">L</td><td style="text-align: center">Low</td><td style="text-align: center">约 7%</td><td style="text-align: center">数据的 7% 可被恢复</td><td style="text-align: left">数据密度优先，环境良好</td></tr>
+<tr><td style="text-align: center">M</td><td style="text-align: center">Medium</td><td style="text-align: center">约 15%</td><td style="text-align: center">数据的 15% 可被恢复</td><td style="text-align: left">通用场景（默认）</td></tr>
+<tr><td style="text-align: center">Q</td><td style="text-align: center">Quartile</td><td style="text-align: center">约 25%</td><td style="text-align: center">数据的 25% 可被恢复</td><td style="text-align: left">需要较高容错</td></tr>
+<tr><td style="text-align: center">H</td><td style="text-align: center">High</td><td style="text-align: center">约 30%</td><td style="text-align: center">数据的 30% 可被恢复</td><td style="text-align: left">带Logo的二维码、恶劣环境</td></tr>
+</tbody>
+</table>
+</div>
+<p>纠错等级越高，可用数据容量越小，但容错能力越强。例如，Version 1 的 QR 码在不同纠错等级下的数据容量：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">纠错等级</th><th style="text-align: center">数字</th><th style="text-align: center">字母数字</th><th style="text-align: center">字节</th><th style="text-align: center">汉字</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">L</td><td style="text-align: center">41</td><td style="text-align: center">25</td><td style="text-align: center">17</td><td style="text-align: center">10</td></tr>
+<tr><td style="text-align: center">M</td><td style="text-align: center">32</td><td style="text-align: center">20</td><td style="text-align: center">14</td><td style="text-align: center">8</td></tr>
+<tr><td style="text-align: center">Q</td><td style="text-align: center">27</td><td style="text-align: center">16</td><td style="text-align: center">11</td><td style="text-align: center">7</td></tr>
+<tr><td style="text-align: center">H</td><td style="text-align: center">17</td><td style="text-align: center">10</td><td style="text-align: center">7</td><td style="text-align: center">4</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="724-数据编码流程"><a class="header" href="#724-数据编码流程">7.2.4 数据编码流程</a></h3>
+<p>QR 码的完整编码流程如下：</p>
+<pre><code>┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
+│ 1.数据分析 │ → │ 2.数据编码 │ → │ 3.纠错编码 │ → │ 4.数据排列 │ → │ 5.掩码处理 │
+│          │    │          │    │          │    │          │    │          │
+│ 确定编码  │    │ 将数据转换 │    │ 生成Reed- │    │ 将码字放入 │    │ 应用掩码  │
+│ 模式和版本│    │ 为位流    │    │ Solomon码 │    │ QR码矩阵  │    │ 优化图案  │
+└──────────┘    └──────────┘    └──────────┘    └──────────┘    └──────────┘
+</code></pre>
+<p><strong>步骤详解</strong>：</p>
+<ol>
+<li><strong>数据分析</strong>：确定最优编码模式、版本号和纠错等级</li>
+<li><strong>数据编码</strong>：添加模式指示符和字符计数指示符，将数据转换为位流，添加终止符和填充位</li>
+<li><strong>纠错编码</strong>：将数据分为若干块，对每块生成 Reed-Solomon 纠错码字</li>
+<li><strong>数据排列</strong>：按照蛇形路径将数据码字和纠错码字放入 QR 码矩阵</li>
+<li><strong>掩码处理</strong>：尝试 8 种掩码图案，选择使评分最优的一种</li>
+</ol>
+<h3 id="725-reed-solomon-纠错算法"><a class="header" href="#725-reed-solomon-纠错算法">7.2.5 Reed-Solomon 纠错算法</a></h3>
+<p>Reed-Solomon（RS）编码是 QR 码容错能力的核心。它属于<strong>分组纠错码</strong>，基于有限域（Galois Field, GF）上的多项式运算。</p>
+<p><strong>基本原理</strong>：</p>
+<p>设数据码字为 $d_0, d_1, \ldots, d_{n-1}$，构造数据多项式：</p>
+<p>$$D(x) = d_0 + d_1 x + d_2 x^2 + \cdots + d_{n-1} x^{n-1}$$</p>
+<p>纠错码字通过对 $D(x)$ 在特定点求值得到：</p>
+<p>$$c_i = D(\alpha^i) \mod p(x)$$</p>
+<p>其中 $\alpha$ 是有限域 $GF(2^8)$ 的本原元，$p(x)$ 是不可约多项式：</p>
+<p>$$p(x) = x^8 + x^4 + x^3 + x^2 + 1$$</p>
+<p><strong>解码过程</strong>：</p>
+<p>当 QR 码部分损坏时，接收端通过求解方程组恢复原始数据。设接收到的码字为 $r_0, r_1, \ldots, r_{n+k-1}$（含 $k$ 个纠错码字），定义错误多项式和伴随式（Syndrome），通过 Berlekamp-Massey 算法或 Euclidean 算法求解错误位置和错误值。</p>
+<h3 id="726-版本与容量"><a class="header" href="#726-版本与容量">7.2.6 版本与容量</a></h3>
+<p>QR 码共有 40 个版本（Version 1 到 Version 40），版本号与模块数的关系为：</p>
+<p>$$\text{模块数} = 4 \times \text{版本号} + 17$$</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">版本</th><th style="text-align: center">模块数</th><th style="text-align: center">数据容量（字节模式，纠错等级L）</th><th style="text-align: center">数据容量（数字模式，纠错等级L）</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">1</td><td style="text-align: center">21 x 21</td><td style="text-align: center">17 字节</td><td style="text-align: center">41 位数字</td></tr>
+<tr><td style="text-align: center">5</td><td style="text-align: center">37 x 37</td><td style="text-align: center">77 字节</td><td style="text-align: center">185 位数字</td></tr>
+<tr><td style="text-align: center">10</td><td style="text-align: center">57 x 57</td><td style="text-align: center">174 字节</td><td style="text-align: center">419 位数字</td></tr>
+<tr><td style="text-align: center">20</td><td style="text-align: center">97 x 97</td><td style="text-align: center">589 字节</td><td style="text-align: center">1,423 位数字</td></tr>
+<tr><td style="text-align: center">30</td><td style="text-align: center">137 x 137</td><td style="text-align: center">1,256 字节</td><td style="text-align: center">3,041 位数字</td></tr>
+<tr><td style="text-align: center">40</td><td style="text-align: center">177 x 177</td><td style="text-align: center">2,953 字节</td><td style="text-align: center">7,089 位数字</td></tr>
+</tbody>
+</table>
+</div>
+<p>Version 40 的 QR 码最大可存储 7,089 个数字字符或 2,953 个字节（约 2.9 KB）。</p>
+<h2 id="73-其他二维码标准"><a class="header" href="#73-其他二维码标准">7.3 其他二维码标准</a></h2>
+<p>除了 QR Code，还有多种二维码标准，各有特色：</p>
+<h3 id="731-data-matrix"><a class="header" href="#731-data-matrix">7.3.1 Data Matrix</a></h3>
+<p>Data Matrix 由 International Data Matrix 于 1994 年开发，广泛应用于工业标记和电子元器件标识。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">特性</th><th style="text-align: left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">外观</td><td style="text-align: left">方形或矩形，由黑白模块组成</td></tr>
+<tr><td style="text-align: left">最大容量</td><td style="text-align: left">2,335 个数字字符</td></tr>
+<tr><td style="text-align: left">容错</td><td style="text-align: left">Reed-Solomon 纠错</td></tr>
+<tr><td style="text-align: left">特点</td><td style="text-align: left">无需静区（利用 L 形边界定位）</td></tr>
+<tr><td style="text-align: left">应用</td><td style="text-align: left">电子元器件、医疗器械标记</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="732-pdf417"><a class="header" href="#732-pdf417">7.3.2 PDF417</a></h3>
+<p>PDF417（Portable Data File 417）由 Symbol Technologies 于 1991 年开发，是一种堆叠式二维码。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">特性</th><th style="text-align: left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">外观</td><td style="text-align: left">多行堆叠的一维条码</td></tr>
+<tr><td style="text-align: left">最大容量</td><td style="text-align: left">1,850 个数字字符</td></tr>
+<tr><td style="text-align: left">容错</td><td style="text-align: left">两个纠错等级</td></tr>
+<tr><td style="text-align: left">特点</td><td style="text-align: left">可打印在证件上，美国驾照标准</td></tr>
+<tr><td style="text-align: left">应用</td><td style="text-align: left">身份证件、运输标签、不动产</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="733-aztec-code"><a class="header" href="#733-aztec-code">7.3.3 Aztec Code</a></h3>
+<p>Aztec Code 由 Andrew Longacre 于 1995 年发明，中心有一个定位图案。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">特性</th><th style="text-align: left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">外观</td><td style="text-align: left">方形，中心有定位图案（类似“牛眼“）</td></tr>
+<tr><td style="text-align: left">最大容量</td><td style="text-align: left">3,832 个数字字符</td></tr>
+<tr><td style="text-align: left">容错</td><td style="text-align: left">Reed-Solomon 纠错，可调比例</td></tr>
+<tr><td style="text-align: left">特点</td><td style="text-align: left">不需要静区，尺寸更紧凑</td></tr>
+<tr><td style="text-align: left">应用</td><td style="text-align: left">航空 boarding pass、交通票务</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="734-二维码标准对比"><a class="header" href="#734-二维码标准对比">7.3.4 二维码标准对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">特性</th><th style="text-align: center">QR Code</th><th style="text-align: center">Data Matrix</th><th style="text-align: center">PDF417</th><th style="text-align: center">Aztec Code</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">类型</td><td style="text-align: center">矩阵式</td><td style="text-align: center">矩阵式</td><td style="text-align: center">堆叠式</td><td style="text-align: center">矩阵式</td></tr>
+<tr><td style="text-align: center">最大容量</td><td style="text-align: center">7,089 数字</td><td style="text-align: center">2,335 数字</td><td style="text-align: center">1,850 数字</td><td style="text-align: center">3,832 数字</td></tr>
+<tr><td style="text-align: center">容错等级</td><td style="text-align: center">4级(L/M/Q/H)</td><td style="text-align: center">可调</td><td style="text-align: center">2级</td><td style="text-align: center">可调比例</td></tr>
+<tr><td style="text-align: center">需要静区</td><td style="text-align: center">是</td><td style="text-align: center">否</td><td style="text-align: center">是</td><td style="text-align: center">否</td></tr>
+<tr><td style="text-align: center">读取速度</td><td style="text-align: center">最快</td><td style="text-align: center">快</td><td style="text-align: center">中等</td><td style="text-align: center">快</td></tr>
+<tr><td style="text-align: center">中文支持</td><td style="text-align: center">是</td><td style="text-align: center">是</td><td style="text-align: center">是</td><td style="text-align: center">是</td></tr>
+<tr><td style="text-align: center">主要应用</td><td style="text-align: center">移动支付、广告</td><td style="text-align: center">工业标记</td><td style="text-align: center">证件</td><td style="text-align: center">交通票务</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="74-qr码安全"><a class="header" href="#74-qr码安全">7.4 QR码安全</a></h2>
+<h3 id="741-恶意二维码"><a class="header" href="#741-恶意二维码">7.4.1 恶意二维码</a></h3>
+<p>二维码本身不携带恶意代码，但可以被用来引导用户访问恶意网站。常见的攻击方式：</p>
+<ul>
+<li><strong>钓鱼攻击</strong>：将二维码指向伪造的登录页面，窃取用户账号密码</li>
+<li><strong>恶意软件下载</strong>：扫描后自动下载并安装恶意应用</li>
+<li><strong>中间人攻击</strong>：通过二维码劫持通信会话</li>
+<li><strong>虚假支付</strong>：将收款二维码替换为攻击者的收款码</li>
+</ul>
+<h3 id="742-防护建议"><a class="header" href="#742-防护建议">7.4.2 防护建议</a></h3>
+<ol>
+<li><strong>扫码前预览</strong>：使用支持 URL 预览的扫码工具，查看目标地址后再决定是否访问</li>
+<li><strong>使用安全扫码工具</strong>：选择带有安全检测功能的扫码应用</li>
+<li><strong>注意 URL 来源</strong>：确认链接域名是否为官方域名</li>
+<li><strong>不要随意扫码</strong>：来源不明的二维码不要扫描</li>
+<li><strong>开启支付验证</strong>：移动支付应设置密码或生物识别验证</li>
+</ol>
+<h2 id="75-rust-二维码实战"><a class="header" href="#75-rust-二维码实战">7.5 Rust 二维码实战</a></h2>
+<h3 id="751-环境准备"><a class="header" href="#751-环境准备">7.5.1 环境准备</a></h3>
+<p>在 <code>Cargo.toml</code> 中添加依赖：</p>
+<pre><code class="language-toml">[dependencies]
+qrcode = "0.14"
+image = "0.25"
+</code></pre>
+<h3 id="752-生成基本二维码"><a class="header" href="#752-生成基本二维码">7.5.2 生成基本二维码</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use qrcode::QrCode;
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // 生成二维码
+    let code = QrCode::new("https://www.rust-lang.org")?;
+
+    // 在终端打印二维码（ASCII 形式）
+    println!("{}", code.render::&lt;char&gt;()
+        .quiet_zone(false)
+        .module_dimensions(2, 1)
+        .build());
+
+    // 输出二维码的基本信息
+    println!("版本: {}", code.version());
+    println!("宽度: {} 模块", code.width());
+
+    Ok(())
+}</code></pre>
+<h3 id="753-生成二维码图片"><a class="header" href="#753-生成二维码图片">7.5.3 生成二维码图片</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use image::{GenericImage, ImageBuffer, Rgba};
+use qrcode::QrCode;
+
+fn generate_qr_image(data: &amp;str, size: u32) -&gt; ImageBuffer&lt;Rgba&lt;u8&gt;, Vec&lt;u8&gt;&gt; {
+    // 1. 编码数据生成二维码
+    let code = QrCode::new(data.as_bytes()).unwrap();
+
+    // 2. 设置二维码的模块大小，并添加白色边框
+    let border = 4;
+    let module_size = (size as f32 / (code.width() as f32 + 2.0 * border as f32)).ceil() as u32;
+
+    // 3. 将二维码渲染为图像
+    code.render::&lt;Rgba&lt;u8&gt;&gt;()
+        .min_dimensions(size, size) // 设置最小尺寸，确保清晰
+        .quiet_zone(true) // 添加静区（白色边框）
+        .module_dimensions(module_size, module_size)
+        .build()
+}
+<span class="boring">}</span></code></pre>
+<h3 id="754-自定义颜色的二维码"><a class="header" href="#754-自定义颜色的二维码">7.5.4 自定义颜色的二维码</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use image::{ImageBuffer, Rgba, Rgb};
+use qrcode::{QrCode, Color};
+
+fn generate_colored_qr(
+    data: &amp;str,
+    fg_color: [u8; 3],
+    bg_color: [u8; 3],
+    module_size: u32,
+) -&gt; ImageBuffer&lt;Rgba&lt;u8&gt;, Vec&lt;u8&gt;&gt; {
+    let code = QrCode::new(data).unwrap();
+    let border = 4;
+    let width = code.width();
+    let img_size = (width + border * 2) as u32 * module_size;
+
+    let mut img = ImageBuffer::from_pixel(
+        img_size,
+        img_size,
+        Rgba([bg_color[0], bg_color[1], bg_color[2], 255]),
+    );
+
+    for y in 0..width {
+        for x in 0..width {
+            let color = if code[(x, y)] == Color::Dark {
+                Rgba([fg_color[0], fg_color[1], fg_color[2], 255])
+            } else {
+                Rgba([bg_color[0], bg_color[1], bg_color[2], 255])
+            };
+
+            // 绘制模块
+            for dy in 0..module_size {
+                for dx in 0..module_size {
+                    let px = (x as u32 + border as u32) * module_size + dx;
+                    let py = (y as u32 + border as u32) * module_size + dy;
+                    img.put_pixel(px, py, color);
+                }
+            }
+        }
+    }
+
+    img
+}
+
+fn main() {
+    // 生成蓝色前景、白色背景的二维码
+    let qr = generate_colored_qr(
+        "https://www.rust-lang.org",
+        [0, 100, 200],   // 蓝色前景
+        [255, 255, 255],  // 白色背景
+        10,
+    );
+    qr.save("qr_blue.png").unwrap();
+
+    // 生成红色前景的二维码
+    let qr_red = generate_colored_qr(
+        "Hello, Rust!",
+        [220, 50, 50],   // 红色前景
+        [255, 255, 255],  // 白色背景
+        10,
+    );
+    qr_red.save("qr_red.png").unwrap();
+}</code></pre>
+<h3 id="755-带logo的二维码"><a class="header" href="#755-带logo的二维码">7.5.5 带Logo的二维码</a></h3>
+<p>利用 QR 码的纠错能力，可以在二维码中心放置 Logo 而不影响识别。需要使用较高的纠错等级（H 级，30% 容错）。</p>
+<pre class="playground"><code class="language-rust edition2024">use image::{GenericImage, ImageBuffer, Rgba, imageops};
+use qrcode::{QrCode, EcLevel};
+
+fn generate_qr_with_logo(
+    data: &amp;str,
+    logo_path: &amp;str,
+    size: u32,
+    logo_ratio: f32,  // Logo 占二维码的比例（建议 0.2-0.3）
+) -&gt; Result&lt;ImageBuffer&lt;Rgba&lt;u8&gt;, Vec&lt;u8&gt;&gt;, Box&lt;dyn std::error::Error&gt;&gt; {
+    // 1. 使用 H 级纠错生成二维码
+    let code = QrCode::with_error_correction_level(
+        data.as_bytes(),
+        EcLevel::H,  // 30% 纠错容量
+    )?;
+
+    // 2. 渲染二维码
+    let border = 4;
+    let module_size = (size as f32 / (code.width() as f32 + 2.0 * border as f32)).ceil() as u32;
+    let mut qr_img = code.render::&lt;Rgba&lt;u8&gt;&gt;()
+        .min_dimensions(size, size)
+        .quiet_zone(true)
+        .module_dimensions(module_size, module_size)
+        .build();
+
+    // 3. 加载 Logo
+    let logo = image::open(logo_path)?.to_rgba8();
+    let (qr_w, qr_h) = qr_img.dimensions();
+
+    // 4. 计算 Logo 尺寸和位置（居中）
+    let logo_w = (qr_w as f32 * logo_ratio) as u32;
+    let logo_h = (qr_h as f32 * logo_ratio) as u32;
+    let resized_logo = logo.resize(logo_w, logo_h, imageops::FilterType::Lanczos3);
+
+    // 5. 添加白色背景区域
+    let padding = 10;
+    let bg_w = logo_w + padding * 2;
+    let bg_h = logo_h + padding * 2;
+    let mut bg = ImageBuffer::from_pixel(bg_w, bg_h, Rgba([255, 255, 255, 255]));
+    bg.copy_from(&amp;resized_logo, padding, padding)?;
+
+    // 6. 将 Logo 放置在二维码中心
+    let x = (qr_w - bg_w) / 2;
+    let y = (qr_h - bg_h) / 2;
+    qr_img.copy_from(&amp;bg, x, y)?;
+
+    Ok(qr_img)
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let qr = generate_qr_with_logo(
+        "https://www.rust-lang.org",
+        "images/rust-logo-blk.svg",
+        600,
+        0.25,
+    )?;
+    qr.save("qr_with_logo.png")?;
+    println!("带 Logo 的二维码已生成: qr_with_logo.png");
+    Ok(())
+}</code></pre>
+<h3 id="756-二维码解码识别"><a class="header" href="#756-二维码解码识别">7.5.6 二维码解码/识别</a></h3>
+<p>使用 <code>bardecoder</code> crate 进行二维码解码：</p>
+<pre><code class="language-toml">[dependencies]
+bardecoder = "0.5"
+image = "0.25"
+</code></pre>
+<pre class="playground"><code class="language-rust edition2024">use bardecoder::decode::Decode;
+use image::DynamicImage;
+
+fn decode_qr(image_path: &amp;str) -&gt; Result&lt;String, Box&lt;dyn std::error::Error&gt;&gt; {
+    let img = image::open(image_path)?;
+    let decoder = bardecoder::default_decoder();
+
+    let results = decoder.decode(&amp;img);
+    for result in results {
+        match result {
+            Ok(content) =&gt; {
+                println!("解码结果: {}", content);
+                return Ok(content);
+            }
+            Err(e) =&gt; println!("解码失败: {:?}", e),
+        }
+    }
+
+    Err("无法解码二维码".into())
+}
+
+fn main() {
+    match decode_qr("qr_code.png") {
+        Ok(content) =&gt; println!("二维码内容: {}", content),
+        Err(e) =&gt; println!("错误: {}", e),
+    }
+}</code></pre>
+<h3 id="757-批量生成二维码"><a class="header" href="#757-批量生成二维码">7.5.7 批量生成二维码</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use image::{GenericImage, ImageBuffer, Rgba};
+use qrcode::QrCode;
+use std::fs;
+
+/// 批量生成二维码并保存
+fn batch_generate_qr_codes(
+    data_list: &amp;[(&amp;str, &amp;str)],  // (数据, 输出文件名)
+    size: u32,
+) -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    for (data, filename) in data_list {
+        let code = QrCode::new(data.as_bytes())?;
+        let border = 4;
+        let module_size = (size as f32 / (code.width() as f32 + 2.0 * border as f32)).ceil() as u32;
+
+        let img = code.render::&lt;Rgba&lt;u8&gt;&gt;()
+            .min_dimensions(size, size)
+            .quiet_zone(true)
+            .module_dimensions(module_size, module_size)
+            .build();
+
+        img.save(filename)?;
+        println!("已生成: {} -&gt; {}", data, filename);
+    }
+
+    Ok(())
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let data_list = &amp;[
+        ("https://www.rust-lang.org", "qr_rust.png"),
+        ("https://crates.io", "qr_crates.png"),
+        ("https://docs.rs", "qr_docs.png"),
+        ("https://github.com/rust-lang/rust", "qr_github.png"),
+    ];
+
+    // 创建输出目录
+    fs::create_dir_all("output_qr")?;
+
+    batch_generate_qr_codes(data_list, 300)?;
+
+    Ok(())
+}</code></pre>
+<h3 id="758-合并多个二维码"><a class="header" href="#758-合并多个二维码">7.5.8 合并多个二维码</a></h3>
+<p>以下代码将多个二维码横向合并为一张图片：</p>
+<pre class="playground"><code class="language-rust edition2024">use image::{GenericImage, ImageBuffer, Rgba};
+use qrcode::QrCode;
+
+fn generate_qr_image(data: &amp;str, size: u32) -&gt; ImageBuffer&lt;Rgba&lt;u8&gt;, Vec&lt;u8&gt;&gt; {
+    let code = QrCode::new(data.as_bytes()).unwrap();
+    let border = 4;
+    let module_size = (size as f32 / (code.width() as f32 + 2.0 * border as f32)).ceil() as u32;
+
+    code.render::&lt;Rgba&lt;u8&gt;&gt;()
+        .min_dimensions(size, size)
+        .quiet_zone(true)
+        .module_dimensions(module_size, module_size)
+        .build()
+}
+
+fn combine_qr_codes_horizontally(
+    img1: &amp;ImageBuffer&lt;Rgba&lt;u8&gt;, Vec&lt;u8&gt;&gt;,
+    img2: &amp;ImageBuffer&lt;Rgba&lt;u8&gt;, Vec&lt;u8&gt;&gt;,
+    gap: u32,
+) -&gt; ImageBuffer&lt;Rgba&lt;u8&gt;, Vec&lt;u8&gt;&gt; {
+    // 1. 计算新图片的尺寸
+    let (w1, h1) = img1.dimensions();
+    let (w2, h2) = img2.dimensions();
+    let final_width = w1 + gap + w2;
+    let final_height = h1.max(h2);
+
+    // 2. 创建新画布，并填充白色背景
+    let mut combined =
+        ImageBuffer::from_pixel(final_width, final_height, Rgba([255, 255, 255, 255]));
+
+    // 3. 将第一张图复制到左侧 (0, 0) 位置
+    combined.copy_from(img1, 0, 0).unwrap();
+
+    // 4. 将第二张图复制到右侧 (w1 + gap, 0) 位置
+    combined.copy_from(img2, w1 + gap, 0).unwrap();
+
+    combined
+}
+
+fn main() {
+    // 1. 生成两个二维码图像，尺寸设为 200x200
+    let qr1 = generate_qr_image("https://qr.alipay.com/fkx18203840eqbo648wdo95", 200);
+    let qr2 = generate_qr_image("wxp://f2f0QuWokq-0iWOJrBOVHz7vVLoOhrChnMI28COpdSmFzRs", 200);
+
+    // 2. 横向合并，间隔 20 像素
+    let combined = combine_qr_codes_horizontally(&amp;qr1, &amp;qr2, 20);
+
+    // 3. 保存最终图片
+    combined.save("/tmp/combined_qr_codes.png").unwrap();
+}</code></pre>
+<h2 id="76-二维码的用途"><a class="header" href="#76-二维码的用途">7.6 二维码的用途</a></h2>
+<p>二维码的应用已经渗透到生活的方方面面：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">类别</th><th style="text-align: left">应用场景</th><th style="text-align: left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><strong>移动支付</strong></td><td style="text-align: left">付款码、收款码</td><td style="text-align: left">支付宝、微信支付</td></tr>
+<tr><td style="text-align: left"><strong>身份认证</strong></td><td style="text-align: left">健康码、电子证照</td><td style="text-align: left">疫情防控、电子身份证</td></tr>
+<tr><td style="text-align: left"><strong>商品溯源</strong></td><td style="text-align: left">商品编码、防伪标签</td><td style="text-align: left">食品安全、药品追溯</td></tr>
+<tr><td style="text-align: left"><strong>广告营销</strong></td><td style="text-align: left">链接分享、优惠券</td><td style="text-align: left">扫码领红包、关注公众号</td></tr>
+<tr><td style="text-align: left"><strong>交通出行</strong></td><td style="text-align: left">电子车票、登机牌</td><td style="text-align: left">高铁二维码、Aztec Code 登机牌</td></tr>
+<tr><td style="text-align: left"><strong>社交互动</strong></td><td style="text-align: left">加好友、名片交换</td><td style="text-align: left">微信扫码加好友</td></tr>
+<tr><td style="text-align: left"><strong>文档管理</strong></td><td style="text-align: left">文件分享、会议签到</td><td style="text-align: left">扫码下载文件、签到打卡</td></tr>
+<tr><td style="text-align: left"><strong>物联网</strong></td><td style="text-align: left">设备配对、WiFi连接</td><td style="text-align: left">扫码连接WiFi、IoT设备配网</td></tr>
+</tbody>
+</table>
+</div>
+<img src="images/alipay.jpg" alt="请作者喝杯奶茶呗" width="35%">
+<img src="images/wechat.jpg" alt="请作者喝杯奶茶呗" width="35%">
+<h2 id="77-标准与规范"><a class="header" href="#77-标准与规范">7.7 标准与规范</a></h2>
+<p>QR Code 的国际标准为 <strong>ISO/IEC 18004</strong>，由国际标准化组织（ISO）和国际电工委员会（IEC）联合发布。</p>
+<ul>
+<li><a href="https://www.iso.org/standard/83389.html">ISO/IEC DIS 18004</a> - QR Code 国际标准</li>
+</ul>
+<p>QR Code 的官方信息：</p>
+<ul>
+<li><a href="https://www.qrcode.com/zh/">QR码 官网</a></li>
+<li><a href="https://www.qrcode.com/zh/history/">QR码的成功之路</a></li>
+<li><a href="https://qrcode.show/">qrcode.show</a> - 在线制作二维码</li>
+</ul>
+<p>技术原理参考：</p>
+<ul>
+<li><a href="https://blog.csdn.net/wangguchao/article/details/85328655">基础——二维码的生成细节和原理</a></li>
+<li><a href="https://coolshell.cn/articles/10590.html">二维码的生成细节和原理</a></li>
+</ul>
+<h2 id="78-相关-rust-库"><a class="header" href="#78-相关-rust-库">7.8 相关 Rust 库</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">库名</th><th style="text-align: left">说明</th><th style="text-align: left">链接</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">qrcode</td><td style="text-align: left">QR 码生成库，支持多种输出格式</td><td style="text-align: left"><a href="https://github.com/kennytm/qrcode-rust">GitHub</a></td></tr>
+<tr><td style="text-align: left">bardecoder</td><td style="text-align: left">多格式条码/二维码解码库</td><td style="text-align: left"><a href="https.com/github.com/pacak/bardecoder">GitHub</a></td></tr>
+<tr><td style="text-align: left">rqrr</td><td style="text-align: left">高性能 QR 码解码库</td><td style="text-align: left"><a href="https://github.com/WanderLearner/rqrr">GitHub</a></td></tr>
+<tr><td style="text-align: left">quircs</td><td style="text-align: left">quirc QR 解码器的 Rust 绑定</td><td style="text-align: left"><a href="https://crates.io/crates/quircs">crates.io</a></td></tr>
+<tr><td style="text-align: left">image</td><td style="text-align: left">图像处理库（配合二维码库使用）</td><td style="text-align: left"><a href="https://github.com/image-rs/image">GitHub</a></td></tr>
+<tr><td style="text-align: left">fast_qr</td><td style="text-align: left">高速 QR 码生成库（SIMD 加速）</td><td style="text-align: left"><a href="https://github.com/EvandroLG/fast_qr">GitHub</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="79-总结"><a class="header" href="#79-总结">7.9 总结</a></h2>
+<h3 id="qr码核心参数对比"><a class="header" href="#qr码核心参数对比">QR码核心参数对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">参数</th><th style="text-align: left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">版本范围</td><td style="text-align: left">Version 1 (21x21) 到 Version 40 (177x177)</td></tr>
+<tr><td style="text-align: left">模块数公式</td><td style="text-align: left">$4 \times \text{version} + 17$</td></tr>
+<tr><td style="text-align: left">编码模式</td><td style="text-align: left">数字、字母数字、字节、汉字</td></tr>
+<tr><td style="text-align: left">纠错等级</td><td style="text-align: left">L(7%), M(15%), Q(25%), H(30%)</td></tr>
+<tr><td style="text-align: left">最大容量</td><td style="text-align: left">7,089 数字 / 4,296 字母数字 / 2,953 字节</td></tr>
+<tr><td style="text-align: left">纠错算法</td><td style="text-align: left">Reed-Solomon 编码</td></tr>
+<tr><td style="text-align: left">有限域</td><td style="text-align: left">$GF(2^8)$，不可约多项式 $x^8 + x^4 + x^3 + x^2 + 1$</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="二维码标准对比"><a class="header" href="#二维码标准对比">二维码标准对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">特性</th><th style="text-align: center">QR Code</th><th style="text-align: center">Data Matrix</th><th style="text-align: center">PDF417</th><th style="text-align: center">Aztec Code</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">类型</td><td style="text-align: center">矩阵式</td><td style="text-align: center">矩阵式</td><td style="text-align: center">堆叠式</td><td style="text-align: center">矩阵式</td></tr>
+<tr><td style="text-align: center">最大容量</td><td style="text-align: center">7,089 数字</td><td style="text-align: center">2,335 数字</td><td style="text-align: center">1,850 数字</td><td style="text-align: center">3,832 数字</td></tr>
+<tr><td style="text-align: center">容错等级</td><td style="text-align: center">4级</td><td style="text-align: center">可调</td><td style="text-align: center">2级</td><td style="text-align: center">可调</td></tr>
+<tr><td style="text-align: center">需要静区</td><td style="text-align: center">是</td><td style="text-align: center">否</td><td style="text-align: center">是</td><td style="text-align: center">否</td></tr>
+<tr><td style="text-align: center">读取速度</td><td style="text-align: center">最快</td><td style="text-align: center">快</td><td style="text-align: center">中等</td><td style="text-align: center">快</td></tr>
+<tr><td style="text-align: center">中国普及度</td><td style="text-align: center">最高</td><td style="text-align: center">低</td><td style="text-align: center">低</td><td style="text-align: center">中等</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="关键公式汇总"><a class="header" href="#关键公式汇总">关键公式汇总</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">公式</th><th style="text-align: left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">$\text{模块数} = 4v + 17$</td><td style="text-align: left">QR 码版本 v 对应的模块数</td></tr>
+<tr><td style="text-align: left">$p(x) = x^8 + x^4 + x^3 + x^2 + 1$</td><td style="text-align: left">Reed-Solomon 有限域不可约多项式</td></tr>
+<tr><td style="text-align: left">$\text{数字容量} = \lfloor n/3 \rfloor \times 10 + r$</td><td style="text-align: left">数字模式位流计算</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="710-练习题"><a class="header" href="#710-练习题">7.10 练习题</a></h2>
+<ol>
+<li>
+<p><strong>基础题</strong>：使用 <code>qrcode</code> crate 生成一个包含你名字的二维码，保存为 PNG 格式。</p>
+</li>
+<li>
+<p><strong>纠错等级对比</strong>：分别使用 L、M、Q、H 四种纠错等级生成相同内容的二维码，对比它们的大小差异，并用图像编辑工具遮挡部分区域后测试是否能正确解码。</p>
+</li>
+<li>
+<p><strong>带 Logo 二维码</strong>：选择一张你喜欢的 Logo 图片，使用 H 级纠错生成带 Logo 的二维码，并验证其可扫描性。</p>
+</li>
+<li>
+<p><strong>批量生成</strong>：编写一个 Rust 程序，读取 CSV 文件中的 URL 列表，为每个 URL 生成一个二维码，文件名为 URL 的哈希值。</p>
+</li>
+<li>
+<p><strong>编码模式分析</strong>：对于字符串 <code>"Hello, World! 123"</code>，分析 QR 码会选择哪种编码模式？为什么？如果字符串是 <code>"1234567890"</code> 呢？</p>
+</li>
+<li>
+<p><strong>容量计算</strong>：Version 10 的 QR 码有多少个模块？在纠错等级 M 下，字节模式最多能存储多少个字节？</p>
+</li>
+<li>
+<p><strong>思考题</strong>：为什么二维码在中国如此普及，而在欧美国家的使用率相对较低？从技术、商业模式、社会习惯等角度分析。</p>
+</li>
+<li>
+<p><strong>安全实践</strong>：编写一个 Rust 程序，生成二维码前先验证 URL 的合法性（检查协议、域名等），拒绝生成指向已知恶意域名的二维码。</p>
+</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_6_Barcode.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_8_Audio.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_6_Barcode.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_8_Audio.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

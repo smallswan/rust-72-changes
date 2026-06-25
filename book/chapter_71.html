@@ -1,0 +1,725 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第七十一 无敌密码 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第七十一-无敌密码"><a class="header" href="#第七十一-无敌密码">第七十一 无敌密码</a></h1>
+<h2 id="历史上的无敌密码"><a class="header" href="#历史上的无敌密码">历史上的“无敌密码“</a></h2>
+<p>密码，自古以来就是保护秘密的核心手段。从古罗马的凯撒密码到二战时期的恩尼格码，从纳瓦荷语的“风语者“到中国共产党第一本密码“豪密“，密码战贯穿了整个人类战争史。在信息时代，密码学更是计算机安全、网络通信、金融交易的基石。本章将从历史上的经典密码战出发，深入讲解中国国密（商用密码）算法体系，并使用 Rust 实现完整的国密加密示例。</p>
+<h3 id="风语者纳瓦荷语加密"><a class="header" href="#风语者纳瓦荷语加密">风语者：纳瓦荷语加密</a></h3>
+<p>在电影《风语者》中，美军为了防止无线电通信被日军监听、破译，征召懂得纳瓦荷语的部落士兵入伍，并使用纳瓦荷语加密情报。经过训练的部落士兵成为了“风语者“，通过语言加密传递情报。由于懂得纳瓦荷语的人极少，并且经过进一步加密后，即使是本族部落的人没有经过专门的训练也无法破译。</p>
+<p>纳瓦荷语是一种阿萨巴斯卡语系的语言，语法结构复杂，没有文字，仅靠口耳相传。在二战之前，全世界懂纳瓦荷语的非纳瓦荷人不到30人。美军将军事术语与纳瓦荷语词汇对应起来，例如：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>英文术语</th><th>纳瓦荷语</th><th>直译</th></tr>
+</thead>
+<tbody>
+<tr><td>Fighter plane</td><td>Da-he-tih-hi</td><td>蜂鸟</td></tr>
+<tr><td>Battleship</td><td>Lo-tso</td><td>鲸鱼</td></tr>
+<tr><td>Submarine</td><td>Besh-lo</td><td>铁鱼</td></tr>
+<tr><td>Tank</td><td>Chay-da-gahi-ni</td><td>乌龟</td></tr>
+<tr><td>Grenade</td><td>Ni-ma-si</td><td>土豆</td></tr>
+</tbody>
+</table>
+</div>
+<p>这种密码直到战争结束也没有被破译，堪称“无敌密码“。在硫磺岛战役中，6名风语者在48小时内传递了超过800条消息，无一出错。但要想破译密码最简单的方式就是俘虏“风语者“，逼迫其协助破译密码，这在电影中有比较深刻的描述。由此可见使用极少人使用的语言（“部落语言”、“方言”）加密情报，尽管有一定的局限性，但在特定的场景下仍是十分可靠有效的方式。</p>
+<h3 id="豪密中共第一本密码"><a class="header" href="#豪密中共第一本密码">豪密：中共第一本密码</a></h3>
+<p><a href="https://baike.baidu.com/item/%E8%B1%AA%E5%AF%86/1076450">豪密</a>，是中国共产党和中国工农红军第一本无线电通讯密码的简称。由中国共产党初期领导人之一周恩来（化名：伍豪）编制。</p>
+<p>1928年，周恩来在上海秘密编制了这套密码系统。“豪密“的命名来源于周恩来的化名“伍豪“中的“豪“字。这套密码采用了一种独创的加密方法，将汉字转换为数字编码，再进行二次加密处理。其核心特点包括：</p>
+<ul>
+<li><strong>双层加密</strong>：先将明文转换为数字编码，再对数字序列进行位移和替换加密</li>
+<li><strong>动态密钥</strong>：密钥定期更换，即使截获部分密文也无法推导出完整密钥</li>
+<li><strong>无规律性</strong>：加密后的密文看似随机，没有明显的统计规律</li>
+</ul>
+<p>从1928年编制到1949年国民党垮台，“豪密“在长达21年的使用中从未被破译。这在中国密码史上堪称奇迹，也为中国革命的胜利提供了重要的通信保障。</p>
+<h3 id="恩尼格码被盟军破译的无敌密码"><a class="header" href="#恩尼格码被盟军破译的无敌密码">恩尼格码：被盟军破译的“无敌“密码</a></h3>
+<p><a href="https://baike.baidu.com/item/%E6%81%A9%E6%A0%BC%E5%B0%BC%E7%A0%81/7381798">恩尼格码</a>（Enigma）是二战期间德国使用的最著名的加密机器。恩尼格码机利用转子（rotor）和反射器（reflector）的机械组合，可以产生天文数字般的密钥空间。</p>
+<p>恩尼格码机的加密原理可以用数学描述如下。设 $E_k$ 为密钥 $k$ 下的加密函数，则：</p>
+<p>$$E_k(x) = \pi_3(\pi_2(\pi_1(x \oplus s) \oplus s) \oplus s)$$</p>
+<p>其中 $\pi_1, \pi_2, \pi_3$ 分别代表三个转子的置换，$s$ 为初始设定。每加密一个字符，转子就会步进，使得加密函数动态变化。</p>
+<p>恩尼格码机的密钥空间约为 $10^{158}$，在当时看来几乎不可能被暴力破解。然而，英国布莱切利园的数学家阿兰·图灵（Alan Turing）领导的团队，利用德国操作员的习惯性错误和恩尼格码机的一个设计缺陷（任何字母都不会加密为自身），成功破译了恩尼格码。</p>
+<p>盟军通过破译恩尼格码获得了大量德军情报，据估计这一成就使二战至少缩短了两年，挽救了约1400万人的生命。</p>
+<h3 id="中途岛海战密码决定命运"><a class="header" href="#中途岛海战密码决定命运">中途岛海战：密码决定命运</a></h3>
+<p>1942年的中途岛海战是太平洋战争的转折点。美军能够取得这场决定性胜利，关键在于成功破译了日军的 JN-25 密码系统。</p>
+<p>美国海军的密码破译小组（Station HYPO）在约瑟夫·罗奇福特（Joseph Rochefort）的领导下，通过长期的密码分析和模式识别，成功解读了日军计划攻击目标代号“AF“的含义。为了确认“AF“就是中途岛，美军故意让中途岛基地发出明文报告淡水设备故障，随后截获日军报告“AF“淡水不足的密文，从而确认了目标。</p>
+<p>这场海战的结果：日军损失4艘航空母舰（赤城、加贺、苍龙、飞龙），而美军仅损失1艘（约克城）。密码破译的力量在这场战役中得到了淋漓尽致的展现。</p>
+<h3 id="紫密美国破译日本外交密码"><a class="header" href="#紫密美国破译日本外交密码">紫密：美国破译日本外交密码</a></h3>
+<p>“紫密”（PURPLE）是二战期间日本外交部门使用的高级加密系统。美国陆军信号情报处（SIS）在威廉·弗里德曼（William Friedman）的领导下，经过长达20个月的艰苦努力，于1940年成功破译了紫密。</p>
+<p>通过破译紫密，美国获取了大量日本外交情报，包括日本与德国、意大利之间的秘密通信。这些情报在二战的关键决策中发挥了重要作用。然而，出于保护情报来源的考虑，美国并未在所有情况下都利用这些情报，珍珠港事件前虽然截获了相关情报，但未能及时转化为有效的防御行动。</p>
+<h2 id="密码战的历史意义"><a class="header" href="#密码战的历史意义">密码战的历史意义</a></h2>
+<p>纵观历史，密码战对战争进程的影响是深远的：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>战争/事件</th><th>密码系统</th><th>结果</th><th>影响</th></tr>
+</thead>
+<tbody>
+<tr><td>二战太平洋战场</td><td>纳瓦荷语密码</td><td>未被破译</td><td>保障美军通信安全</td></tr>
+<tr><td>二战欧洲战场</td><td>恩尼格码</td><td>被盟军破译</td><td>二战缩短约两年</td></tr>
+<tr><td>太平洋战争</td><td>JN-25密码</td><td>被美军破译</td><td>中途岛海战胜利</td></tr>
+<tr><td>二战外交战线</td><td>紫密</td><td>被美国破译</td><td>获取大量外交情报</td></tr>
+<tr><td>中国革命</td><td>豪密</td><td>未被破译</td><td>保障中共通信21年</td></tr>
+</tbody>
+</table>
+</div>
+<p>密码是保护秘密的重要手段，其本身编码、破译就是十分重要的秘密。一旦密码被破译，秘密被泄露，其危害也是十分巨大的。</p>
+<h2 id="语言作为密码"><a class="header" href="#语言作为密码">语言作为密码</a></h2>
+<p>使用人类语言作为加密手段，是一种古老但有效的思路。其原理和局限如下：</p>
+<p><strong>原理：</strong></p>
+<ul>
+<li>利用语言的稀有性：使用人数极少的语言天然具有保密性</li>
+<li>利用语言的复杂性：语法结构复杂的语言增加了学习门槛</li>
+<li>利用文化壁垒：不同文化背景的人难以理解特定语言的含义</li>
+</ul>
+<p><strong>局限：</strong></p>
+<ul>
+<li>安全性依赖于语言使用者的稀缺性，一旦敌方掌握了该语言，安全性即丧失</li>
+<li>语言使用者本身就是最大的安全隐患（如俘虏风语者）</li>
+<li>通信效率低，编码解码速度慢</li>
+<li>不适合大规模、标准化的军事通信</li>
+<li>随着语言学研究的深入，稀有语言的神秘面纱逐渐被揭开</li>
+</ul>
+<h2 id="国密中国商用密码算法详解"><a class="header" href="#国密中国商用密码算法详解">国密（中国商用密码）算法详解</a></h2>
+<p>如果说计算机通用的密码算法是“世界通用语言“，那么使用范围有限的<a href="https://baike.baidu.com/item/%E5%95%86%E7%94%A8%E5%AF%86%E7%A0%81/10636778">国密（商用密码）</a>则可以成为“部落语言“。</p>
+<p>世界上本没有路，走的人多了，也便成了路。
+世界上本没有标准，用的人多了，也便成了标准。</p>
+<p>中国商用密码（简称“国密“）是由中国国家密码管理局制定的一系列密码算法标准，旨在保障国家信息安全，减少对国外密码算法的依赖。国密算法主要包括 SM2、SM3、SM4、SM9 等。</p>
+<h3 id="sm2基于ecc的非对称密码算法"><a class="header" href="#sm2基于ecc的非对称密码算法">SM2：基于ECC的非对称密码算法</a></h3>
+<p>SM2 是一种基于椭圆曲线密码学（Elliptic Curve Cryptography, ECC）的非对称加密算法，由国家密码管理局于2010年发布。SM2 可用于数字签名、密钥交换和数据加密。</p>
+<p><strong>数学原理：</strong></p>
+<p>SM2 基于椭圆曲线离散对数问题（Elliptic Curve Discrete Logarithm Problem, ECDLP）。给定椭圆曲线 $E$ 上的一点 $P$ 和整数 $k$，计算 $Q = kP$ 是容易的（点乘运算），但给定 $Q$ 和 $P$，求 $k$ 则是计算上不可行的。</p>
+<p>SM2 使用的推荐椭圆曲线参数如下：</p>
+<p>$$y^2 = x^3 + ax + b \pmod{p}$$</p>
+<p>其中 $p$ 为256位素数，曲线阶 $n$ 也是256位素数。</p>
+<p><strong>SM2 与 RSA 对比：</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th>SM2 (ECC 256)</th><th>RSA 2048</th><th>RSA 3072</th></tr>
+</thead>
+<tbody>
+<tr><td>密钥长度</td><td>256 bit</td><td>2048 bit</td><td>3072 bit</td></tr>
+<tr><td>安全等级</td><td>128 bit</td><td>112 bit</td><td>128 bit</td></tr>
+<tr><td>签名速度</td><td>快</td><td>慢</td><td>更慢</td></tr>
+<tr><td>密钥生成速度</td><td>快</td><td>慢</td><td>更慢</td></tr>
+<tr><td>证书体积</td><td>小</td><td>大</td><td>更大</td></tr>
+<tr><td>计算资源消耗</td><td>低</td><td>高</td><td>更高</td></tr>
+</tbody>
+</table>
+</div>
+<p>可以看到，SM2 在256位密钥长度下就能达到与 RSA 3072 位相当的安全等级，同时密钥更短、计算更快、证书更小，非常适合移动端和物联网设备使用。</p>
+<p><strong>SM2 的主要应用场景：</strong></p>
+<ul>
+<li>数字签名与验签</li>
+<li>密钥交换（类似 ECDH）</li>
+<li>公钥加密（类似 ECIES）</li>
+<li>电子政务、金融支付、身份认证</li>
+</ul>
+<h3 id="sm3密码杂凑算法"><a class="header" href="#sm3密码杂凑算法">SM3：密码杂凑算法</a></h3>
+<p>SM3 是中国国家密码管理局于2010年发布的密码杂凑算法，输出256位（32字节）的杂凑值。SM3 适用于数字签名和验证、消息认证码的生成与验证、随机数的生成等。</p>
+<p><strong>算法原理：</strong></p>
+<p>SM3 采用 Merkle-Damgård 结构，处理流程如下：</p>
+<ol>
+<li><strong>填充</strong>：对消息进行填充，使其长度为512位的整数倍</li>
+<li><strong>迭代压缩</strong>：将填充后的消息分成512位的分组，逐组进行压缩</li>
+<li><strong>输出</strong>：最终输出256位的杂凑值</li>
+</ol>
+<p>SM3 的压缩函数可以形式化表示为：</p>
+<p>$$V^{(i+1)} = CF(V^{(i)}, B^{(i)})$$</p>
+<p>其中 $V^{(0)}$ 为初始值（IV），$B^{(i)}$ 为第 $i$ 个消息分组，$CF$ 为压缩函数。</p>
+<p><strong>SM3 与 SHA-256 对比：</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th>SM3</th><th>SHA-256</th></tr>
+</thead>
+<tbody>
+<tr><td>输出长度</td><td>256 bit</td><td>256 bit</td></tr>
+<tr><td>分组长度</td><td>512 bit</td><td>512 bit</td></tr>
+<tr><td>轮数</td><td>64</td><td>64</td></tr>
+<tr><td>压缩函数结构</td><td>类似SHA-256但有差异</td><td>标准SHA-256</td></tr>
+<tr><td>消息扩展</td><td>更复杂的扩展方式</td><td>标准扩展</td></tr>
+<tr><td>安全性</td><td>抗碰撞、抗原像、抗第二原像</td><td>抗碰撞、抗原像、抗第二原像</td></tr>
+<tr><td>标准来源</td><td>中国GB/T 32905-2016</td><td>NIST FIPS 180-4</td></tr>
+</tbody>
+</table>
+</div>
+<p>SM3 在设计上借鉴了 SHA-256 的基本框架，但在消息扩展和压缩函数的布尔函数设计上做了改进，增强了安全性。</p>
+<h3 id="sm4对称加密算法"><a class="header" href="#sm4对称加密算法">SM4：对称加密算法</a></h3>
+<p>SM4 是中国国家密码管理局于2012年发布的分组密码算法，原名 SMS4。SM4 是一个对称加密算法，密钥长度为128位，分组长度为128位。</p>
+<p><strong>算法原理：</strong></p>
+<p>SM4 采用非平衡 Feistel 结构（类似于 SPN 结构），共进行32轮迭代变换。每轮变换包含以下操作：</p>
+<ol>
+<li><strong>非线性变换 $\tau$</strong>：使用 S 盒进行字节替换</li>
+<li><strong>线性变换 $L$</strong>：对非线性变换的输出进行线性混合</li>
+<li><strong>轮密钥加</strong>：将线性变换的结果与轮密钥进行异或</li>
+</ol>
+<p>SM4 的加密过程可以表示为：</p>
+<p>$$X^{(i+1)} = X^{(i)} \oplus T(X^{(i)} \oplus X^{(i+1)} \oplus X^{(i+2)} \oplus X^{(i+3)} \oplus rk^{(i)})$$</p>
+<p>其中 $T = L \circ \tau$，$rk^{(i)}$ 为第 $i$ 轮的轮密钥。</p>
+<p>SM4 支持多种工作模式，包括 ECB、CBC、CFB、OFB、CTR 等。</p>
+<p><strong>SM4 与 AES 对比：</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th>SM4</th><th>AES</th></tr>
+</thead>
+<tbody>
+<tr><td>分组长度</td><td>128 bit</td><td>128 bit</td></tr>
+<tr><td>密钥长度</td><td>128 bit</td><td>128/192/256 bit</td></tr>
+<tr><td>轮数</td><td>32</td><td>10/12/14</td></tr>
+<tr><td>结构</td><td>非平衡Feistel</td><td>SPN</td></tr>
+<tr><td>S盒大小</td><td>8×8 bit</td><td>8×8 bit</td></tr>
+<tr><td>标准来源</td><td>中国GB/T 32907-2016</td><td>NIST FIPS 197</td></tr>
+<tr><td>安全性</td><td>抗差分、抗线性分析</td><td>抗差分、抗线性分析</td></tr>
+</tbody>
+</table>
+</div>
+<p>SM4 在硬件实现上具有良好的性能，适合在各种嵌入式设备和智能卡上部署。</p>
+<h3 id="sm9基于身份的密码算法"><a class="header" href="#sm9基于身份的密码算法">SM9：基于身份的密码算法</a></h3>
+<p>SM9 是中国国家密码管理局于2016年发布的基于身份的密码（Identity-Based Cryptography, IBC）算法。SM9 不需要传统的公钥证书，而是直接使用用户的身份标识（如手机号、邮箱、身份证号）作为公钥。</p>
+<p><strong>核心原理：</strong></p>
+<p>SM9 基于双线性对（Bilinear Pairing）的数学难题。设 $G_1, G_2, G_T$ 为三个循环群，$e: G_1 \times G_2 \rightarrow G_T$ 为双线性映射，则：</p>
+<p>$$e(aP, bQ) = e(P, Q)^{ab}$$</p>
+<p>SM9 的密钥生成中心（KGC）持有主密钥 $s$，用户使用身份标识 $ID$ 向 KGC 申请私钥。KGC 计算 $d_{ID} = s \cdot H(ID)$ 作为用户私钥，而 $Q_{ID} = H(ID)$ 作为用户公钥。</p>
+<p><strong>SM9 的优势：</strong></p>
+<ul>
+<li>无需公钥基础设施（PKI）和证书管理</li>
+<li>简化密钥管理流程</li>
+<li>支持数字签名、密钥封装、密钥协商</li>
+<li>适合大规模物联网设备的身份认证</li>
+</ul>
+<h2 id="国密标准体系"><a class="header" href="#国密标准体系">国密标准体系</a></h2>
+<p>中国商用密码标准体系由国家密码管理局制定和管理，主要标准编号如下：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>标准编号</th><th>算法</th><th>类型</th><th>发布年份</th></tr>
+</thead>
+<tbody>
+<tr><td>GB/T 32905-2016</td><td>SM3</td><td>密码杂凑算法</td><td>2016</td></tr>
+<tr><td>GB/T 32907-2016</td><td>SM4</td><td>分组密码算法</td><td>2016</td></tr>
+<tr><td>GB/T 32918-2016</td><td>SM2</td><td>椭圆曲线公钥密码算法</td><td>2016</td></tr>
+<tr><td>GB/T 32915-2016</td><td>SM2</td><td>椭圆曲线密码签名技术</td><td>2016</td></tr>
+<tr><td>GB/T 35276-2017</td><td>SM2</td><td>签名算法使用规范</td><td>2017</td></tr>
+<tr><td>GB/T 36622-2018</td><td>SM9</td><td>标识密码算法</td><td>2018</td></tr>
+<tr><td>GM/T 0001-2012</td><td>SM2</td><td>密码算法使用规范</td><td>2012</td></tr>
+<tr><td>GM/T 0002-2012</td><td>SM4</td><td>分组密码算法</td><td>2012</td></tr>
+<tr><td>GM/T 0004-2012</td><td>SM3</td><td>密码杂凑算法</td><td>2012</td></tr>
+<tr><td>GM/T 0009-2012</td><td>SM2</td><td>密码算法使用规范</td><td>2012</td></tr>
+</tbody>
+</table>
+</div>
+<p>注：GB/T 为国家标准，GM/T 为密码行业标准。</p>
+<h2 id="国密在实践中的应用"><a class="header" href="#国密在实践中的应用">国密在实践中的应用</a></h2>
+<p>国密算法在中国各行业得到了广泛应用，尤其在以下领域：</p>
+<p><strong>银行与金融：</strong></p>
+<ul>
+<li>中国人民银行要求所有银行核心系统支持国密算法</li>
+<li>银行卡交易、跨行转账使用 SM2/SM4 保护</li>
+<li>第三方支付（支付宝、微信支付）已全面支持国密</li>
+</ul>
+<p><strong>政务系统：</strong></p>
+<ul>
+<li>电子政务平台使用 SM2 进行数字签名和身份认证</li>
+<li>税务系统、社保系统使用 SM4 加密敏感数据</li>
+<li>政府公文传输使用 SM3 进行完整性校验</li>
+</ul>
+<p><strong>其他领域：</strong></p>
+<ul>
+<li>电力系统：智能电表通信加密</li>
+<li>交通系统：ETC不停车收费系统</li>
+<li>物联网：智能家居设备身份认证</li>
+<li>电子商务：电子发票、电子合同签名</li>
+</ul>
+<h2 id="rust-国密实战"><a class="header" href="#rust-国密实战">Rust 国密实战</a></h2>
+<h3 id="环境准备"><a class="header" href="#环境准备">环境准备</a></h3>
+<p>在 Rust 项目中使用国密算法，需要在 <code>Cargo.toml</code> 中添加依赖：</p>
+<pre><code class="language-toml">[dependencies]
+libsm = "0.5"
+rand = "0.8"
+base64 = "0.21"
+hex = "0.4"
+</code></pre>
+<h3 id="sm3-杂凑算法示例"><a class="header" href="#sm3-杂凑算法示例">SM3 杂凑算法示例</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use libsm::sm3::hash::Sm3Hash;
+use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
+
+fn sm3_demo() {
+    // 对字符串进行 SM3 哈希
+    let string = String::from("abc文心一言&amp;ChatGPT");
+    let mut hash = Sm3Hash::new(string.as_bytes());
+    let digest: [u8; 32] = hash.get_hash();
+
+    // 输出 Base64 编码的哈希值
+    let base64_str = BASE64.encode(&amp;digest);
+    println!("SM3 Hash (Base64): {}", base64_str);
+
+    // 输出十六进制编码的哈希值
+    let hex_str: String = digest.iter().map(|b| format!("{:02x}", b)).collect();
+    println!("SM3 Hash (Hex): {}", hex_str);
+}
+<span class="boring">}</span></code></pre>
+<p>SM3 对输入 “abc” 的标准测试向量输出为：</p>
+<pre><code>66c7f0f462eeedd9d1f2d46bdc10e4e2415c90e068e1e4dda26a45273ee1c7d0
+</code></pre>
+<h3 id="sm4-对称加密示例"><a class="header" href="#sm4-对称加密示例">SM4 对称加密示例</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use libsm::sm4::Cipher;
+use libsm::sm4::Mode;
+use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
+
+fn sm4_demo() {
+    // 128位密钥
+    let key: [u8; 16] = [
+        0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef,
+        0xfe, 0xdc, 0xba, 0x98, 0x76, 0x54, 0x32, 0x10,
+    ];
+
+    // 使用 CBC 模式
+    let cipher = Cipher::new(&amp;key, Mode::Cbc);
+
+    // 生成随机 IV（初始化向量）
+    let iv = rand_block();
+
+    // 加密陈毅元帅的诗
+    let poem = String::from("断头今日意如何？创业艰难百战多。此去泉台招旧部，旌旗十万斩阎罗。");
+    let encrypt_bytes = cipher.encrypt(&amp;poem.as_bytes(), &amp;iv);
+    println!("SM4 Encrypted (Base64): {}", BASE64.encode(&amp;encrypt_bytes));
+
+    // 解密
+    let plaintext_bytes = cipher.decrypt(&amp;encrypt_bytes, &amp;iv);
+    let poem1 = String::from_utf8(plaintext_bytes.to_vec()).unwrap();
+    println!("SM4 Decrypted: {}", poem1);
+}
+
+fn rand_block() -&gt; [u8; 16] {
+    use rand::prelude::*;
+    let mut rng = rand::thread_rng();
+    let mut block: [u8; 16] = [0; 16];
+    rng.fill_bytes(&amp;mut block[..]);
+    block
+}
+<span class="boring">}</span></code></pre>
+<h3 id="sm2-数字签名示例"><a class="header" href="#sm2-数字签名示例">SM2 数字签名示例</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use libsm::sm2::signature::{SigCtx, Signature};
+
+fn sm2_demo() {
+    let poem2 = String::from("南国烽烟正十年，此头须向国门悬。后死诸君多努力，捷报飞来当纸钱。");
+    let msg = poem2.as_bytes();
+
+    // 创建签名上下文并生成密钥对
+    let ctx = SigCtx::new();
+    let (pk, sk) = ctx.new_keypair();
+
+    // 签名：速度快
+    let signature = ctx.sign(msg, &amp;sk, &amp;pk);
+    println!("SM2 Signature created successfully");
+
+    // 验签：速度相对较慢
+    let valid = ctx.verify(msg, &amp;pk, &amp;signature);
+    println!("SM2 Signature valid: {}", valid);
+}
+<span class="boring">}</span></code></pre>
+<h3 id="综合测试示例"><a class="header" href="#综合测试示例">综合测试示例</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>extern crate rand as random;
+use rand::prelude::*;
+
+fn rand_block() -&gt; [u8; 16] {
+    let mut rng = random::thread_rng();
+    let mut block: [u8; 16] = [0; 16];
+    rng.fill_bytes(&amp;mut block[..]);
+    println!("IV:{}", hex::encode(&amp;block));
+    block
+}
+
+use libsm::sm2::signature::{SigCtx, Signature};
+use libsm::sm3::hash::Sm3Hash;
+use libsm::sm4::Cipher;
+use libsm::sm4::Mode;
+
+#[test]
+fn sm() {
+    // SM3 杂凑
+    let string = String::from("abc文心一言&amp;ChatGPT");
+    let mut hash = Sm3Hash::new(string.as_bytes());
+    let digest: [u8; 32] = hash.get_hash();
+
+    let base64_str = base64::encode(&amp;digest);
+    println!("{}", base64_str);
+
+    let key: [u8; 16] = [
+        0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0xfe, 0xdc, 0xba, 0x98, 0x76, 0x54, 0x32,
+        0x10,
+    ];
+    // SM4 对称加密
+    let cipher = Cipher::new(&amp;key, Mode::Cbc);
+
+    let iv = rand_block();
+    let poem = String::from("断头今日意如何？创业艰难百战多。此去泉台招旧部 ，旌旗十万斩阎罗。");
+    let encrypt_bytes = cipher.encrypt(&amp;poem.as_bytes(), &amp;iv);
+    println!("{}", base64::encode(&amp;encrypt_bytes));
+    let plaintext_bytes = cipher.decrypt(&amp;encrypt_bytes, &amp;iv);
+    let poem1 = String::from_utf8(plaintext_bytes.to_vec()).unwrap();
+    println!("{}", poem1);
+
+    let poem2 = String::from("南国烽烟正十年，此头须向国门悬。后死诸君多努力，捷报飞来当纸钱。");
+    let msg = poem2.as_bytes();
+
+    let mut sw = Stopwatch::new();
+    // SM2 签名速度快，验签速度慢
+    let ctx = SigCtx::new();
+    let (pk, sk) = ctx.new_keypair();
+
+    println!("elapsed_ms 0:{:?}", sw.elapsed());
+
+    sw.restart();
+    let signature = ctx.sign(msg, &amp;sk, &amp;pk);
+
+    println!("elapsed_ms 1:{:?}", sw.elapsed());
+
+    sw.restart();
+    let valid = ctx.verify(msg, &amp;pk, &amp;signature);
+
+    println!("valid:{},elapsed_ms:{:?}", valid, sw.elapsed());
+}
+<span class="boring">}</span></code></pre>
+<h3 id="openssl-命令行验证"><a class="header" href="#openssl-命令行验证">OpenSSL 命令行验证</a></h3>
+<pre><code class="language-shell"># 使用 OpenSSL 计算 SM3 哈希
+openssl sm3 Rust实战配套代码.zip
+
+# 使用 OpenSSL 进行 SM4 加密
+openssl enc -e -sm4 -in /tmp/1.txt -out /tmp/2.txt
+</code></pre>
+<h2 id="rust-国密库推荐"><a class="header" href="#rust-国密库推荐">Rust 国密库推荐</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>库名</th><th>说明</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td><code>libsm</code></td><td>纯 Rust 实现的国密算法库</td><td>支持SM2/SM3/SM4，无外部依赖，适合嵌入式</td></tr>
+<tr><td><code>gm-sm2</code></td><td>SM2 算法实现</td><td>专注于SM2，API简洁</td></tr>
+<tr><td><code>rust-sm2</code></td><td>SM2 签名与加密</td><td>支持SM2签名和加密，与标准兼容性好</td></tr>
+<tr><td><code>sm3</code></td><td>SM3 杂凑算法独立实现</td><td>轻量级，仅SM3功能</td></tr>
+<tr><td><code>ring</code> (OpenSSL后端)</td><td>通用加密库</td><td>通过OpenSSL支持国密，功能全面</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="总结"><a class="header" href="#总结">总结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>类型</th><th>密钥长度</th><th>输出长度</th><th>主要用途</th><th>国际对标</th></tr>
+</thead>
+<tbody>
+<tr><td>SM2</td><td>非对称（ECC）</td><td>256 bit</td><td>-</td><td>数字签名、密钥交换、加密</td><td>ECDSA/ECDH</td></tr>
+<tr><td>SM3</td><td>杂凑</td><td>-</td><td>256 bit</td><td>消息摘要、完整性校验</td><td>SHA-256</td></tr>
+<tr><td>SM4</td><td>对称（分组）</td><td>128 bit</td><td>128 bit</td><td>数据加密、通信保密</td><td>AES-128</td></tr>
+<tr><td>SM9</td><td>基于身份</td><td>-</td><td>-</td><td>无证书认证、密钥管理</td><td>IBC标准</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="练习题"><a class="header" href="#练习题">练习题</a></h2>
+<ol>
+<li>
+<p><strong>历史分析</strong>：为什么纳瓦荷语密码在二战中从未被破译？这种方法在现代数字通信中还有应用价值吗？为什么？</p>
+</li>
+<li>
+<p><strong>密码对比</strong>：SM2 使用256位密钥就能达到 RSA 3072位的安全等级，请从数学原理角度解释为什么 ECC 可以用更短的密钥达到更高的安全等级。</p>
+</li>
+<li>
+<p><strong>编程实践</strong>：使用 <code>libsm</code> 库实现一个完整的文件加密工具，要求：</p>
+<ul>
+<li>使用 SM3 计算文件的哈希值</li>
+<li>使用 SM4-CBC 模式加密文件内容</li>
+<li>使用 SM2 对 SM3 哈希值进行数字签名</li>
+<li>将加密文件、IV、签名打包输出</li>
+</ul>
+</li>
+<li>
+<p><strong>思考题</strong>：国密算法与国密标准体系（GB/T、GM/T）之间的关系是什么？如果一个国际软件产品要进入中国市场，是否必须支持国密算法？请分析其中的技术原因和政策原因。</p>
+</li>
+<li>
+<p><strong>扩展阅读</strong>：研究 SM9 基于身份的密码体制，与传统的 PKI 体系（基于证书的公钥基础设施）相比，SM9 在密钥管理方面有哪些优势和劣势？</p>
+</li>
+<li>
+<p><strong>实战挑战</strong>：使用 Rust 实现一个简单的“国密工具箱“命令行程序，支持以下功能：</p>
+<ul>
+<li><code>sm3 hash &lt;file&gt;</code> - 计算文件SM3哈希</li>
+<li><code>sm4 encrypt &lt;input&gt; &lt;output&gt;</code> - SM4加密文件</li>
+<li><code>sm4 decrypt &lt;input&gt; &lt;output&gt;</code> - SM4解密文件</li>
+<li><code>sm2 sign &lt;file&gt;</code> - SM2签名文件</li>
+<li><code>sm2 verify &lt;file&gt; &lt;signature&gt;</code> - SM2验签</li>
+</ul>
+</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_54_quantum_cryptography.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_72.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_54_quantum_cryptography.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_72.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

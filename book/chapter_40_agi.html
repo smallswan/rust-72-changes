@@ -1,0 +1,1234 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第四十 生成式AI - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第四十-生成式aigenerative-ai"><a class="header" href="#第四十-生成式aigenerative-ai">第四十 生成式AI（Generative AI）</a></h1>
+<pre><code class="language-txt">第四十 生成式AI
+├── 什么是生成式AI（Generative AI）
+├── 判别模型 vs 生成模型
+├── 自编码器（Autoencoder）
+│   ├── 编码器与解码器
+│   └── 潜在空间与重构
+├── 变分自编码器（VAE）
+│   ├── ELBO 与证据下界
+│   └── 重参数化技巧
+├── 生成对抗网络（GAN）
+│   ├── 生成器与判别器
+│   └── 对抗训练与纳什均衡
+├── Diffusion 扩散模型
+│   ├── 前向加噪过程
+│   └── 逆向去噪过程
+├── 大语言模型的生成能力
+├── 多模态生成
+│   ├── 文生图（Stable Diffusion / DALL-E）
+│   └── 文生视频（Sora / Kling）
+├── Rust 生成式AI生态
+│   ├── candle 框架
+│   └── burn 框架
+└── 总结与练习
+</code></pre>
+<p>生成式AI（Generative AI）是人工智能领域中最具创造力的分支。如果说判别式AI擅长“判断“——识别猫是猫、判断邮件是否为垃圾邮件——那么生成式AI则擅长“创造“——生成逼真的图像、撰写流畅的文章、谱写动人的旋律。</p>
+<p>$$\text{判别模型：} P(y \mid x) \quad \longleftrightarrow \quad \text{生成模型：} P(x)$$</p>
+<p>从2014年GAN的横空出世，到2022年Stable Diffusion的全民狂欢，再到2024年Sora的震撼发布，生成式AI正在重塑人类与机器的协作边界。</p>
+<hr>
+<h2 id="一什么是生成式ai"><a class="header" href="#一什么是生成式ai">一、什么是生成式AI</a></h2>
+<h3 id="11-定义"><a class="header" href="#11-定义">1.1 定义</a></h3>
+<p>生成式AI是指能够学习数据分布 $P(x)$，并据此生成新的、与训练数据统计特征相似但又不完全相同的样本的人工智能系统。</p>
+<p>$$x_{\text{new}} \sim P_{\theta}(x), \quad x_{\text{new}} \notin {x_1, x_2, \ldots, x_n}$$</p>
+<p>核心思想：模型不仅学习数据的模式，还能“创造“出符合这些模式的新数据。</p>
+<h3 id="12-生成式ai的能力谱系"><a class="header" href="#12-生成式ai的能力谱系">1.2 生成式AI的能力谱系</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>能力层级</th><th>任务</th><th>代表系统</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>文本生成</strong></td><td>文章、代码、对话</td><td>GPT-4, Claude, DeepSeek</td></tr>
+<tr><td><strong>图像生成</strong></td><td>艺术、照片、设计</td><td>Stable Diffusion, DALL-E 3, Midjourney</td></tr>
+<tr><td><strong>音频生成</strong></td><td>语音、音乐、音效</td><td>Whisper, Suno, ElevenLabs</td></tr>
+<tr><td><strong>视频生成</strong></td><td>短片、动画</td><td>Sora, Kling, Runway</td></tr>
+<tr><td><strong>3D生成</strong></td><td>模型、场景</td><td>Point-E, Shap-E</td></tr>
+<tr><td><strong>多模态生成</strong></td><td>跨模态理解与生成</td><td>Gemini, GPT-4o</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="13-发展简史"><a class="header" href="#13-发展简史">1.3 发展简史</a></h3>
+<ul>
+<li><strong>2014</strong>：GAN（生成对抗网络）提出，生成模型进入深度学习时代</li>
+<li><strong>2015</strong>：VAE（变分自编码器）成熟，概率生成模型框架确立</li>
+<li><strong>2020</strong>：GPT-3 展现大规模语言模型的生成能力</li>
+<li><strong>2022</strong>：Stable Diffusion 开源，文生图技术全民化</li>
+<li><strong>2023</strong>：GPT-4、Midjourney V5 多模态生成能力飞跃</li>
+<li><strong>2024</strong>：Sora 文生视频模型发布，Diffusion Transformer 架构兴起</li>
+<li><strong>2025</strong>：多模态统一模型成为主流趋势</li>
+</ul>
+<hr>
+<h2 id="二判别模型-vs-生成模型"><a class="header" href="#二判别模型-vs-生成模型">二、判别模型 vs 生成模型</a></h2>
+<h3 id="21-核心区别"><a class="header" href="#21-核心区别">2.1 核心区别</a></h3>
+<p>机器学习模型按建模目标可分为判别模型和生成模型两大类。</p>
+<p>$$\underbrace{P(y \mid x)}<em>{\text{判别模型}} \quad \text{vs} \quad \underbrace{P(x, y) = P(x \mid y) \cdot P(y)}</em>{\text{生成模型}}$$</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>维度</th><th>判别模型</th><th>生成模型</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>建模目标</strong></td><td>条件概率 $P(y \mid x)$</td><td>联合概率 $P(x, y)$ 或边际概率 $P(x)$</td></tr>
+<tr><td><strong>核心问题</strong></td><td>“这个是什么？”</td><td>“生成一个这样的”</td></tr>
+<tr><td><strong>典型算法</strong></td><td>SVM、逻辑回归、CNN分类器</td><td>GAN、VAE、Diffusion、Flow</td></tr>
+<tr><td><strong>输出</strong></td><td>类别标签 / 决策边界</td><td>新样本</td></tr>
+<tr><td><strong>数据需求</strong></td><td>标注数据</td><td>可无标注（自监督）</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="22-直观理解"><a class="header" href="#22-直观理解">2.2 直观理解</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// 判别模型：给定输入，输出类别
+fn discriminative_model(input: &amp;Input) -&gt; Class {
+    // "这张图是猫还是狗？"
+    if input.features().cat_score() &gt; 0.8 {
+        Class::Cat
+    } else {
+        Class::Dog
+    }
+}
+
+/// 生成模型：给定条件，生成样本
+fn generative_model(condition: &amp;Condition) -&gt; Sample {
+    // "生成一张猫的图片"
+    let noise = random_noise();       // 随机种子
+    let sample = decode(condition, noise); // 解码生成
+    sample
+}
+<span class="boring">}</span></code></pre>
+<h3 id="23-生成模型的统一视角"><a class="header" href="#23-生成模型的统一视角">2.3 生成模型的统一视角</a></h3>
+<p>所有生成模型都可以归结为对数据分布 $P(x)$ 的建模。不同的方法采用了不同的策略：</p>
+<p>$$P_{\theta}(x) \approx P_{\text{data}}(x)$$</p>
+<ul>
+<li><strong>显式密度估计</strong>：直接建模 $P_{\theta}(x)$（VAE、Normalizing Flow）</li>
+<li><strong>隐式密度估计</strong>：不直接建模概率，通过采样来逼近分布（GAN）</li>
+<li><strong>分数匹配</strong>：建模数据的梯度场 $\nabla_x \log P(x)$（Diffusion）</li>
+</ul>
+<hr>
+<h2 id="三自编码器autoencoder"><a class="header" href="#三自编码器autoencoder">三、自编码器（Autoencoder）</a></h2>
+<p>自编码器是最简单的生成模型雏形，通过“压缩-解压“学习数据的紧凑表示。</p>
+<h3 id="31-架构"><a class="header" href="#31-架构">3.1 架构</a></h3>
+<p>自编码器由两部分组成：</p>
+<p>$$\text{输入 } x \xrightarrow{\text{编码器 } f_{\phi}} \text{潜在表示 } z \xrightarrow{\text{解码器 } g_{\theta}} \text{重构 } \hat{x}$$</p>
+<ul>
+<li><strong>编码器（Encoder）</strong>：$z = f_{\phi}(x)$，将高维输入压缩为低维潜在向量</li>
+<li><strong>解码器（Decoder）</strong>：$\hat{x} = g_{\theta}(z)$，从潜在向量重构原始输入</li>
+</ul>
+<h3 id="32-损失函数"><a class="header" href="#32-损失函数">3.2 损失函数</a></h3>
+<p>自编码器的训练目标是最小化重构误差：</p>
+<p>$$\mathcal{L}<em>{\text{AE}} = \frac{1}{N} \sum</em>{i=1}^{N} | x_i - g_{\theta}(f_{\phi}(x_i)) |^2$$</p>
+<h3 id="33-rust-实现"><a class="header" href="#33-rust-实现">3.3 Rust 实现</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use candle_core::{Device, Tensor, DType, Result};
+use candle_nn::{VarMap, Linear, Module, Builder};
+
+/// 简易自编码器
+struct Autoencoder {
+    encoder1: Linear,
+    encoder2: Linear,
+    decoder1: Linear,
+    decoder2: Linear,
+}
+
+impl Autoencoder {
+    fn new(vs: candle_nn::VarBuilder) -&gt; Result&lt;Self&gt; {
+        // 编码器: 784 -&gt; 128 -&gt; 32（MNIST 图像 28x28=784）
+        let encoder1 = candle_nn::linear(784, 128, vs.pp("enc1"))?;
+        let encoder2 = candle_nn::linear(128, 32, vs.pp("enc2"))?;
+        // 解码器: 32 -&gt; 128 -&gt; 784
+        let decoder1 = candle_nn::linear(32, 128, vs.pp("dec1"))?;
+        let decoder2 = candle_nn::linear(128, 784, vs.pp("dec2"))?;
+        Ok(Self { encoder1, encoder2, decoder1, decoder2 })
+    }
+
+    /// 编码：将图像压缩为潜在向量
+    fn encode(&amp;self, x: &amp;Tensor) -&gt; Result&lt;Tensor&gt; {
+        let z = x.apply(&amp;self.encoder1)?.relu()?.apply(&amp;self.encoder2)?;
+        Ok(z)
+    }
+
+    /// 解码：从潜在向量重构图像
+    fn decode(&amp;self, z: &amp;Tensor) -&gt; Result&lt;Tensor&gt; {
+        let x_hat = z.apply(&amp;self.decoder1)?.relu()?.apply(&amp;self.decoder2)?;
+        Ok(x_hat)
+    }
+
+    /// 前向传播：编码 -&gt; 解码
+    fn forward(&amp;self, x: &amp;Tensor) -&gt; Result&lt;Tensor&gt; {
+        let z = self.encode(x)?;
+        self.decode(&amp;z)
+    }
+}
+
+fn main() -&gt; Result&lt;()&gt; {
+    let device = Device::Cpu;
+    let mut varmap = VarMap::new();
+    let vs = candle_nn::VarBuilder::from_varmap(&amp;varmap, DType::F32, &amp;device);
+
+    let ae = Autoencoder::new(vs)?;
+
+    // 模拟输入：batch=4, 每张图 784 像素
+    let input = Tensor::randn(0f32, 1.0, (4, 784), &amp;device)?;
+    let output = ae.forward(&amp;input)?;
+
+    // 计算重构误差 (MSE)
+    let diff = input.sub(&amp;output)?;
+    let mse = (diff.powf(2.0)?.mean_all()? as f32).sqrt();
+    println!("重构误差 (RMSE): {:.6}", mse);
+    println!("输入形状:  {:?}", input.shape());   // [4, 784]
+    println!("输出形状:  {:?}", output.shape());  // [4, 784]
+
+    // 查看潜在空间维度
+    let z = ae.encode(&amp;input)?;
+    println!("潜在向量形状: {:?}", z.shape());    // [4, 32]
+
+    Ok(())
+}</code></pre>
+<h3 id="34-自编码器的局限"><a class="header" href="#34-自编码器的局限">3.4 自编码器的局限</a></h3>
+<p>普通自编码器存在一个关键问题：潜在空间 $z$ 是不连续的。在潜在空间中随机采样一个点，解码后往往得到无意义的输出。这意味着它无法真正“生成“新样本，只能“记忆“和“重构“已有样本。</p>
+<p>$$z \sim \mathcal{U}(\text{latent space}) \quad \Rightarrow \quad g_{\theta}(z) \text{ 可能无意义}$$</p>
+<hr>
+<h2 id="四变分自编码器vae"><a class="header" href="#四变分自编码器vae">四、变分自编码器（VAE）</a></h2>
+<p>VAE 通过引入概率框架，解决了自编码器潜在空间不连续的问题，使其具备了真正的生成能力。</p>
+<h3 id="41-核心思想"><a class="header" href="#41-核心思想">4.1 核心思想</a></h3>
+<p>VAE 不再将输入映射为确定性的潜在向量，而是映射为一个概率分布：</p>
+<p>$$x \xrightarrow{\text{编码器}} (\mu, \sigma^2) \xrightarrow{\text{采样}} z \sim \mathcal{N}(\mu, \sigma^2) \xrightarrow{\text{解码器}} \hat{x}$$</p>
+<p>编码器输出均值 $\mu$ 和方差 $\sigma^2$，从该高斯分布中采样 $z$，再由解码器生成样本。</p>
+<h3 id="42-elbo-与证据下界"><a class="header" href="#42-elbo-与证据下界">4.2 ELBO 与证据下界</a></h3>
+<p>VAE 的训练目标是最大化数据的对数似然 $\log P(x)$。由于真实后验 $P(z|x)$ 不可计算，我们通过变分推断引入证据下界（ELBO, Evidence Lower BOund）：</p>
+<p>$$\log P(x) \geq \mathbb{E}<em>{q</em>{\phi}(z|x)}[\log P_{\theta}(x|z)] - D_{\text{KL}}(q_{\phi}(z|x) | P(z))$$</p>
+<p>等价地，最小化以下损失函数：</p>
+<p>$$\mathcal{L}<em>{\text{VAE}} = \underbrace{\mathbb{E}</em>{q_{\phi}(z|x)}[| x - g_{\theta}(z) |^2]}<em>{\text{重构损失}} + \underbrace{D</em>{\text{KL}}(q_{\phi}(z|x) | \mathcal{N}(0, I))}_{\text{KL 散度（正则项）}}$$</p>
+<p>其中 KL 散度在两个高斯分布之间有闭式解：</p>
+<p>$$D_{\text{KL}}(\mathcal{N}(\mu, \sigma^2) | \mathcal{N}(0, 1)) = \frac{1}{2} \sum_{j=1}^{J} \left( \mu_j^2 + \sigma_j^2 - \ln \sigma_j^2 - 1 \right)$$</p>
+<h3 id="43-重参数化技巧"><a class="header" href="#43-重参数化技巧">4.3 重参数化技巧</a></h3>
+<p>直接从 $q_{\phi}(z|x)$ 采样时，梯度无法通过随机节点反向传播。重参数化技巧将随机性从计算图中分离：</p>
+<p>$$z = \mu + \sigma \odot \epsilon, \quad \epsilon \sim \mathcal{N}(0, I)$$</p>
+<p>这样梯度可以流向 $\mu$ 和 $\sigma$，而 $\epsilon$ 被视为常数。</p>
+<h3 id="44-rust-实现"><a class="header" href="#44-rust-实现">4.4 Rust 实现</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use candle_core::{Device, Tensor, DType, Result};
+use candle_nn::{VarMap, Linear, Module};
+
+/// 变分自编码器
+struct VAE {
+    // 编码器
+    enc1: Linear,
+    enc2: Linear,
+    // 均值和对数方差
+    fc_mu: Linear,
+    fc_logvar: Linear,
+    // 解码器
+    dec1: Linear,
+    dec2: Linear,
+}
+
+impl VAE {
+    fn new(vs: candle_nn::VarBuilder) -&gt; Result&lt;Self&gt; {
+        let enc1 = candle_nn::linear(784, 256, vs.pp("enc1"))?;
+        let enc2 = candle_nn::linear(256, 64, vs.pp("enc2"))?;
+        let fc_mu = candle_nn::linear(64, 32, vs.pp("fc_mu"))?;
+        let fc_logvar = candle_nn::linear(64, 32, vs.pp("fc_logvar"))?;
+        let dec1 = candle_nn::linear(32, 256, vs.pp("dec1"))?;
+        let dec2 = candle_nn::linear(256, 784, vs.pp("dec2"))?;
+        Ok(Self { enc1, enc2, fc_mu, fc_logvar, dec1, dec2 })
+    }
+
+    /// 编码：输出均值和对数方差
+    fn encode(&amp;self, x: &amp;Tensor) -&gt; Result&lt;(Tensor, Tensor)&gt; {
+        let h = x.apply(&amp;self.enc1)?.relu()?.apply(&amp;self.enc2)?.relu()?;
+        let mu = h.apply(&amp;self.fc_mu)?;
+        let logvar = h.apply(&amp;self.fc_logvar)?;
+        Ok((mu, logvar))
+    }
+
+    /// 重参数化技巧：z = mu + sigma * epsilon
+    fn reparameterize(&amp;self, mu: &amp;Tensor, logvar: &amp;Tensor) -&gt; Result&lt;Tensor&gt; {
+        let sigma = (logvar.exp()? * 0.5)?;
+        let epsilon = Tensor::randn(0f32, 1.0, mu.shape(), &amp;mu.device())?;
+        mu.add(&amp;sigma.mul(&amp;epsilon)?)
+    }
+
+    /// 解码
+    fn decode(&amp;self, z: &amp;Tensor) -&gt; Result&lt;Tensor&gt; {
+        let h = z.apply(&amp;self.dec1)?.relu()?;
+        h.apply(&amp;self.dec2)
+    }
+
+    /// 前向传播
+    fn forward(&amp;self, x: &amp;Tensor) -&gt; Result&lt;(Tensor, Tensor, Tensor)&gt; {
+        let (mu, logvar) = self.encode(x)?;
+        let z = self.reparameterize(&amp;mu, &amp;logvar)?;
+        let recon = self.decode(&amp;z)?;
+        Ok((recon, mu, logvar))
+    }
+
+    /// 计算 VAE 损失
+    fn loss(&amp;self, x: &amp;Tensor) -&gt; Result&lt;(Tensor, f32, f32)&gt; {
+        let (recon, mu, logvar) = self.forward(x)?;
+
+        // 重构损失 (MSE)
+        let recon_loss = x.sub(&amp;recon)?.powf(2.0)?.mean_all()?;
+
+        // KL 散度: 0.5 * sum(mu^2 + logvar.exp() - logvar - 1)
+        let kl_loss = (mu.powf(2.0)?
+            + logvar.exp()?
+            - logvar
+            - Tensor::ones_like(&amp;logvar)?
+        )?.mean_all()? * 0.5;
+
+        let total = recon_loss.add(&amp;kl_loss)?;
+        Ok((total, recon_loss.to_scalar::&lt;f32&gt;()?, kl_loss.to_scalar::&lt;f32&gt;()?))
+    }
+}
+
+fn main() -&gt; Result&lt;()&gt; {
+    let device = Device::Cpu;
+    let mut varmap = VarMap::new();
+    let vs = candle_nn::VarBuilder::from_varmap(&amp;varmap, DType::F32, &amp;device);
+
+    let vae = VAE::new(vs)?;
+
+    // 模拟 MNIST 输入
+    let input = Tensor::randn(0f32, 1.0, (8, 784), &amp;device)?;
+    let (total_loss, recon_loss, kl_loss) = vae.loss(&amp;input)?;
+
+    println!("总损失:     {:.6}", total_loss.to_scalar::&lt;f32&gt;()?);
+    println!("重构损失:   {:.6}", recon_loss);
+    println!("KL 散度:    {:.6}", kl_loss);
+
+    // 从潜在空间采样生成新样本
+    let z = Tensor::randn(0f32, 1.0, (4, 32), &amp;device)?;
+    let generated = vae.decode(&amp;z)?;
+    println!("生成样本形状: {:?}", generated.shape()); // [4, 784]
+
+    Ok(())
+}</code></pre>
+<hr>
+<h2 id="五生成对抗网络gan"><a class="header" href="#五生成对抗网络gan">五、生成对抗网络（GAN）</a></h2>
+<p>GAN 是生成式AI的里程碑式工作，由 Ian Goodfellow 于2014年提出。它通过两个网络的对抗博弈来学习数据分布。</p>
+<h3 id="51-核心架构"><a class="header" href="#51-核心架构">5.1 核心架构</a></h3>
+<p>GAN 由两个网络组成：</p>
+<p>$$\min_G \max_D ; \mathbb{E}<em>{x \sim P</em>{\text{data}}}[\log D(x)] + \mathbb{E}_{z \sim P_z}[\log(1 - D(G(z)))]$$</p>
+<ul>
+<li><strong>生成器（Generator, $G$）</strong>：接收随机噪声 $z$，生成伪造样本 $G(z)$</li>
+<li><strong>判别器（Discriminator, $D$）</strong>：判断输入是真实样本还是生成样本</li>
+</ul>
+<p>$$z \sim \mathcal{N}(0, I) \xrightarrow{G} \hat{x} \xrightarrow{D} \text{ 真/假}$$</p>
+<h3 id="52-对抗训练"><a class="header" href="#52-对抗训练">5.2 对抗训练</a></h3>
+<p>训练过程可以类比为“造假者“与“警察“的博弈：</p>
+<ol>
+<li><strong>训练判别器</strong>：使其更好地区分真实样本和生成样本</li>
+<li><strong>训练生成器</strong>：使其生成的样本更逼真，骗过判别器</li>
+</ol>
+<p>理想状态下，达到纳什均衡：$D(x) = 0.5$，判别器无法区分真假，生成器学会了真实数据的分布。</p>
+<p>$$P_G = P_{\text{data}} \quad \Rightarrow \quad D(x) = \frac{1}{2}, ; \forall x$$</p>
+<h3 id="53-rust-实现"><a class="header" href="#53-rust-实现">5.3 Rust 实现</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use candle_core::{Device, Tensor, DType, Result};
+use candle_nn::{VarMap, Linear, Module, Builder};
+
+/// 生成器：将噪声向量映射为图像
+struct Generator {
+    fc1: Linear,
+    fc2: Linear,
+    fc3: Linear,
+}
+
+impl Generator {
+    fn new(vs: candle_nn::VarBuilder) -&gt; Result&lt;Self&gt; {
+        let fc1 = candle_nn::linear(64, 256, vs.pp("g1"))?;
+        let fc2 = candle_nn::linear(256, 256, vs.pp("g2"))?;
+        let fc3 = candle_nn::linear(256, 784, vs.pp("g3"))?;
+        Ok(Self { fc1, fc2, fc3 })
+    }
+
+    fn forward(&amp;self, z: &amp;Tensor) -&gt; Result&lt;Tensor&gt; {
+        // 使用 LeakyReLU 激活（避免梯度消失）
+        let x = z.apply(&amp;self.fc1)?;
+        let x = x.maximum(&amp;x.mul(0.01)?)?; // LeakyReLU(0.01)
+        let x = x.apply(&amp;self.fc2)?;
+        let x = x.maximum(&amp;x.mul(0.01)?)?;
+        let x = x.apply(&amp;self.fc3)?;
+        // 使用 Tanh 将输出限制在 [-1, 1]
+        x.tanh()
+    }
+}
+
+/// 判别器：判断输入是真实图像还是生成图像
+struct Discriminator {
+    fc1: Linear,
+    fc2: Linear,
+    fc3: Linear,
+}
+
+impl Discriminator {
+    fn new(vs: candle_nn::VarBuilder) -&gt; Result&lt;Self&gt; {
+        let fc1 = candle_nn::linear(784, 256, vs.pp("d1"))?;
+        let fc2 = candle_nn::linear(256, 256, vs.pp("d2"))?;
+        let fc3 = candle_nn::linear(256, 1, vs.pp("d3"))?;
+        Ok(Self { fc1, fc2, fc3 })
+    }
+
+    fn forward(&amp;self, x: &amp;Tensor) -&gt; Result&lt;Tensor&gt; {
+        // 使用 LeakyReLU，最后用 Sigmoid 输出概率
+        let x = x.apply(&amp;self.fc1)?;
+        let x = x.maximum(&amp;x.mul(0.01)?)?;
+        let x = x.apply(&amp;self.fc2)?;
+        let x = x.maximum(&amp;x.mul(0.01)?)?;
+        x.apply(&amp;self.fc3)?.sigmoid()
+    }
+}
+
+/// 二元交叉熵损失
+fn binary_cross_entropy(pred: &amp;Tensor, target: &amp;Tensor) -&gt; Result&lt;Tensor&gt; {
+    let eps = 1e-7;
+    let pred = pred.clamp(eps, 1.0 - eps)?;
+    let loss = target.mul(&amp;pred.log()?)?
+        + &amp;(Tensor::ones_like(target)?.sub(target)?.mul(&amp;(Tensor::ones_like(&amp;pred)?.sub(&amp;pred)?.log()?))?)?;
+    loss.neg()?.mean_all()
+}
+
+fn main() -&gt; Result&lt;()&gt; {
+    let device = Device::Cpu;
+
+    // 构建生成器和判别器（使用独立的 VarMap）
+    let mut g_varmap = VarMap::new();
+    let g_vs = candle_nn::VarBuilder::from_varmap(&amp;g_varmap, DType::F32, &amp;device);
+    let generator = Generator::new(g_vs)?;
+
+    let mut d_varmap = VarMap::new();
+    let d_vs = candle_nn::VarBuilder::from_varmap(&amp;d_varmap, DType::F32, &amp;device);
+    let discriminator = Discriminator::new(d_vs)?;
+
+    // 模拟真实数据
+    let real_data = Tensor::randn(0f32, 1.0, (32, 784), &amp;device)?;
+    // 采样噪声
+    let noise = Tensor::randn(0f32, 1.0, (32, 64), &amp;device)?;
+
+    // 生成假数据
+    let fake_data = generator.forward(&amp;noise)?;
+    println!("假数据形状: {:?}", fake_data.shape()); // [32, 784]
+
+    // 判别器对真实数据的评分
+    let real_score = discriminator.forward(&amp;real_data)?;
+    let real_label = Tensor::ones_like(&amp;real_score)?;
+    let d_loss_real = binary_cross_entropy(&amp;real_score, &amp;real_label)?;
+
+    // 判别器对假数据的评分
+    let fake_score = discriminator.forward(&amp;fake_data.detach()?)?;
+    let fake_label = Tensor::zeros_like(&amp;fake_score)?;
+    let d_loss_fake = binary_cross_entropy(&amp;fake_score, &amp;fake_label)?;
+
+    // 判别器总损失
+    let d_loss = (d_loss_real.add(&amp;d_loss_fake)? * 0.5)?;
+    println!("判别器损失: {:.6}", d_loss.to_scalar::&lt;f32&gt;()?);
+
+    // 生成器损失（希望判别器将假数据判断为真）
+    let gen_score = discriminator.forward(&amp;fake_data)?;
+    let gen_label = Tensor::ones_like(&amp;gen_score)?;
+    let g_loss = binary_cross_entropy(&amp;gen_score, &amp;gen_label)?;
+    println!("生成器损失: {:.6}", g_loss.to_scalar::&lt;f32&gt;()?);
+
+    Ok(())
+}</code></pre>
+<h3 id="54-gan-的变体"><a class="header" href="#54-gan-的变体">5.4 GAN 的变体</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>变体</th><th>核心改进</th><th>应用场景</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>DCGAN</strong></td><td>使用卷积层替代全连接层</td><td>图像生成</td></tr>
+<tr><td><strong>WGAN</strong></td><td>使用 Wasserstein 距离替代 JS 散度</td><td>训练稳定性</td></tr>
+<tr><td><strong>StyleGAN</strong></td><td>风格注入、渐进式增长</td><td>高清人脸生成</td></tr>
+<tr><td><strong>CycleGAN</strong></td><td>循环一致性损失</td><td>无配对图像风格迁移</td></tr>
+<tr><td><strong>Pix2Pix</strong></td><td>配对图像翻译</td><td>边缘到照片、素描到彩图</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="六diffusion-扩散模型"><a class="header" href="#六diffusion-扩散模型">六、Diffusion 扩散模型</a></h2>
+<p>Diffusion 模型是当前最主流的生成模型架构，Stable Diffusion、DALL-E、Sora 等明星模型均基于此。</p>
+<h3 id="61-核心思想"><a class="header" href="#61-核心思想">6.1 核心思想</a></h3>
+<p>Diffusion 模型的灵感来自热力学中的扩散过程：向数据中逐步添加噪声，直到变成纯高斯噪声；然后学习一个逆向过程，从噪声中恢复数据。</p>
+<p>$$\text{前向过程：} x_0 \xrightarrow{+\epsilon_1} x_1 \xrightarrow{+\epsilon_2} x_2 \xrightarrow{\cdots} x_T \approx \mathcal{N}(0, I)$$</p>
+<p>$$\text{逆向过程：} x_T \xrightarrow{-\epsilon_T} x_{T-1} \xrightarrow{-\epsilon_{T-1}} \cdots \xrightarrow{-\epsilon_1} x_0$$</p>
+<h3 id="62-前向加噪过程"><a class="header" href="#62-前向加噪过程">6.2 前向加噪过程</a></h3>
+<p>前向过程是一个马尔可夫链，每一步添加少量高斯噪声：</p>
+<p>$$q(x_t \mid x_{t-1}) = \mathcal{N}(x_t; \sqrt{1 - \beta_t} x_{t-1}, \beta_t \mathbf{I})$$</p>
+<p>其中 $\beta_t$ 是预定义的噪声调度（noise schedule），通常从 $\beta_1 = 10^{-4}$ 线性增长到 $\beta_T = 0.02$。</p>
+<p>利用重参数化技巧，可以直接从 $x_0$ 得到任意时刻的 $x_t$：</p>
+<p>$$x_t = \sqrt{\bar{\alpha}_t} x_0 + \sqrt{1 - \bar{\alpha}_t} \epsilon, \quad \epsilon \sim \mathcal{N}(0, I)$$</p>
+<p>其中 $\alpha_t = 1 - \beta_t$，$\bar{\alpha}<em>t = \prod</em>{s=1}^{t} \alpha_s$。</p>
+<h3 id="63-逆向去噪过程"><a class="header" href="#63-逆向去噪过程">6.3 逆向去噪过程</a></h3>
+<p>逆向过程由神经网络 $\epsilon_\theta(x_t, t)$ 预测每一步添加的噪声：</p>
+<p>$$p_{\theta}(x_{t-1} \mid x_t) = \mathcal{N}(x_{t-1}; \mu_\theta(x_t, t), \sigma_t^2 \mathbf{I})$$</p>
+<p>训练目标是让网络预测的噪声与真实噪声尽可能接近：</p>
+<p>$$\mathcal{L}<em>{\text{simple}} = \mathbb{E}</em>{t, x_0, \epsilon} \left[ | \epsilon - \epsilon_\theta(x_t, t) |^2 \right]$$</p>
+<h3 id="64-rust-实现简化的去噪过程"><a class="header" href="#64-rust-实现简化的去噪过程">6.4 Rust 实现（简化的去噪过程）</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use candle_core::{Device, Tensor, DType, Result};
+use candle_nn::{VarMap, Linear, Module};
+
+/// 简化的噪声预测网络
+struct NoisePredictor {
+    fc1: Linear,
+    fc2: Linear,
+    fc3: Linear,
+}
+
+impl NoisePredictor {
+    fn new(vs: candle_nn::VarBuilder) -&gt; Result&lt;Self&gt; {
+        let fc1 = candle_nn::linear(784 + 1, 512, vs.pp("fc1"))?; // +1 为时间步
+        let fc2 = candle_nn::linear(512, 256, vs.pp("fc2"))?;
+        let fc3 = candle_nn::linear(256, 784, vs.pp("fc3"))?;
+        Ok(Self { fc1, fc2, fc3 })
+    }
+
+    /// 预测噪声：输入为 (图像, 时间步)，输出预测的噪声
+    fn predict_noise(&amp;self, x: &amp;Tensor, t: &amp;Tensor) -&gt; Result&lt;Tensor&gt; {
+        // 将时间步 t 广播并拼接到图像特征上
+        let t_expanded = t.reshape((x.shape().dims()[0], 1))?;
+        let t_broadcast = t_expanded.broadcast_as((x.shape().dims()[0], 784))?;
+        let input = Tensor::cat(&amp;[x, &amp;t_broadcast], 1)?;
+
+        let h = input.apply(&amp;self.fc1)?.relu()?;
+        let h = h.apply(&amp;self.fc2)?.relu()?;
+        h.apply(&amp;self.fc3)
+    }
+}
+
+/// 前向加噪：直接从 x_0 得到 x_t
+fn forward_diffusion(x0: &amp;Tensor, t: usize, total_steps: usize) -&gt; Result&lt;Tensor&gt; {
+    // 计算 alpha_bar_t
+    let beta_start = 0.0001f32;
+    let beta_end = 0.02f32;
+    let betas: Vec&lt;f32&gt; = (0..total_steps)
+        .map(|i| beta_start + (beta_end - beta_start) * i as f32 / total_steps as f32)
+        .collect();
+    let alphas: Vec&lt;f32&gt; = betas.iter().map(|b| 1.0 - b).collect();
+    let alpha_bar_t: f32 = alphas[0..t].iter().product();
+
+    let sqrt_alpha_bar = alpha_bar_t.sqrt();
+    let sqrt_one_minus_alpha_bar = (1.0 - alpha_bar_t).sqrt();
+
+    // x_t = sqrt(alpha_bar) * x_0 + sqrt(1 - alpha_bar) * noise
+    let noise = Tensor::randn(0f32, 1.0, x0.shape(), &amp;x0.device())?;
+    let noisy = x0.mul(sqrt_alpha_bar)?.add(&amp;noise.mul(sqrt_one_minus_alpha_bar)?)?;
+    Ok(noisy)
+}
+
+/// 逆向去噪：单步去噪
+fn reverse_step(
+    predictor: &amp;NoisePredictor,
+    xt: &amp;Tensor,
+    t: f32,
+    alpha_bar_t: f32,
+    alpha_bar_prev: f32,
+) -&gt; Result&lt;Tensor&gt; {
+    let device = xt.device();
+    let batch_size = xt.shape().dims()[0];
+
+    // 预测噪声
+    let t_tensor = Tensor::from_vec(vec![t; batch_size], (batch_size,), device)?;
+    let predicted_noise = predictor.predict_noise(xt, &amp;t_tensor)?;
+
+    // 计算 x_{t-1}
+    let mean = (xt.sub(&amp;predicted_noise.mul(1.0 - alpha_bar_t)?)?
+        * (alpha_bar_prev / alpha_bar_t).sqrt())?;
+    Ok(mean)
+}
+
+fn main() -&gt; Result&lt;()&gt; {
+    let device = Device::Cpu;
+    let mut varmap = VarMap::new();
+    let vs = candle_nn::VarBuilder::from_varmap(&amp;varmap, DType::F32, &amp;device);
+    let predictor = NoisePredictor::new(vs)?;
+
+    // 模拟原始图像
+    let x0 = Tensor::randn(0f32, 0.5, (4, 784), &amp;device)?;
+
+    // 前向加噪到第 200 步（共 1000 步）
+    let xt = forward_diffusion(&amp;x0, 200, 1000)?;
+    println!("加噪后形状: {:?}", xt.shape());
+
+    // 逆向去噪（单步演示）
+    let alpha_bar_t = 0.5f32;    // 第 200 步的 alpha_bar（示意值）
+    let alpha_bar_prev = 0.55f32; // 第 199 步的 alpha_bar（示意值）
+    let x_prev = reverse_step(&amp;predictor, &amp;xt, 200.0, alpha_bar_t, alpha_bar_prev)?;
+    println!("去噪后形状: {:?}", x_prev.shape());
+
+    Ok(())
+}</code></pre>
+<h3 id="65-diffusion-模型的优势"><a class="header" href="#65-diffusion-模型的优势">6.5 Diffusion 模型的优势</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>优势</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>训练稳定</strong></td><td>不存在 GAN 的模式崩溃问题</td></tr>
+<tr><td><strong>生成质量高</strong></td><td>在图像生成上超越 GAN</td></tr>
+<tr><td><strong>可控生成</strong></td><td>通过条件引导（classifier-free guidance）精确控制生成内容</td></tr>
+<tr><td><strong>多样性好</strong></td><td>随机采样保证生成样本的多样性</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="七大语言模型的生成能力"><a class="header" href="#七大语言模型的生成能力">七、大语言模型的生成能力</a></h2>
+<p>大语言模型（LLM）本质上是自回归的生成模型，通过预测下一个 token 来生成文本。</p>
+<h3 id="71-自回归生成"><a class="header" href="#71-自回归生成">7.1 自回归生成</a></h3>
+<p>给定上下文 $x_{1}, x_{2}, \ldots, x_{t-1}$，模型预测下一个 token 的概率分布：</p>
+<p>$$P(x_t \mid x_{&lt;t}) = \text{softmax}(W_o \cdot h_t + b_o)$$</p>
+<p>其中 $h_t$ 是 Transformer 最后一层的隐藏状态。</p>
+<p>生成过程是自回归的：</p>
+<p>$$P(x_{1:T}) = \prod_{t=1}^{T} P(x_t \mid x_{&lt;t})$$</p>
+<h3 id="72-采样策略"><a class="header" href="#72-采样策略">7.2 采样策略</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>策略</th><th>公式</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>贪心解码</strong></td><td>$x_t = \arg\max P(x_t \mid x_{&lt;t})$</td><td>确定性，但可能重复</td></tr>
+<tr><td><strong>温度采样</strong></td><td>$P’(x_t) \propto P(x_t \mid x_{&lt;t})^{1/T}$</td><td>$T &lt; 1$ 更确定，$T &gt; 1$ 更随机</td></tr>
+<tr><td><strong>Top-k</strong></td><td>从概率最高的 $k$ 个 token 中采样</td><td>限制候选集</td></tr>
+<tr><td><strong>Top-p (nucleus)</strong></td><td>从累积概率 $\geq p$ 的最小集合中采样</td><td>动态调整候选集</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="73-rust-调用-llm-推理"><a class="header" href="#73-rust-调用-llm-推理">7.3 Rust 调用 LLM 推理</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use candle_core::{Device, Tensor, DType, Result};
+use candle_nn::VarBuilder;
+
+/// 简化的自回归文本生成演示
+fn generate_token(
+    logits: &amp;Tensor,        // [vocab_size] 模型输出的 logits
+    temperature: f32,       // 温度参数
+    top_k: usize,           // top-k 采样
+) -&gt; Result&lt;usize&gt; {
+    // 应用温度
+    let scaled = logits.div(temperature)?;
+
+    // Top-k 过滤
+    let k = top_k.min(logits.dims1()?);
+    let (top_values, top_indices) = scaled.topk(k, 0)?;
+
+    // Softmax 转为概率
+    let probs = candle_nn::ops::softmax(&amp;top_values, 0)?;
+
+    // 从概率分布中采样
+    let probs_vec = probs.to_vec1::&lt;f32&gt;()?;
+    let indices_vec = top_indices.to_vec1::&lt;u32&gt;()?;
+
+    let mut rng = rand::thread_rng();
+    let r: f32 = rand::Rng::gen_range(&amp;mut rng, 0.0..1.0);
+    let mut cumsum = 0.0;
+    for (i, &amp;p) in probs_vec.iter().enumerate() {
+        cumsum += p;
+        if cumsum &gt;= r {
+            return Ok(indices_vec[i] as usize);
+        }
+    }
+    Ok(indices_vec[indices_vec.len() - 1] as usize)
+}
+
+/// 自回归生成循环（伪代码）
+fn autoregressive_generate(
+    model: &amp;dyn Fn(&amp;Tensor) -&gt; Result&lt;Tensor&gt;,  // 语言模型
+    prompt_tokens: &amp;[usize],                     // 输入提示
+    max_new_tokens: usize,                        // 最大生成长度
+    temperature: f32,                            // 温度
+    top_k: usize,                                 // top-k
+) -&gt; Result&lt;Vec&lt;usize&gt;&gt; {
+    let mut tokens = prompt_tokens.to_vec();
+    let device = Device::Cpu;
+
+    for _ in 0..max_new_tokens {
+        // 将当前 token 序列转为张量
+        let input = Tensor::from_vec(
+            tokens.clone(),
+            (1, tokens.len()),
+            &amp;device,
+        )?;
+
+        // 模型前向传播，取最后一个位置的 logits
+        let logits = model(&amp;input)?;  // [1, seq_len, vocab_size]
+        let last_logits = logits.i((.., tokens.len() - 1, ..))?.squeeze(0)?; // [vocab_size]
+
+        // 采样下一个 token
+        let next_token = generate_token(&amp;last_logits, temperature, top_k)?;
+        tokens.push(next_token);
+
+        // 遇到结束符则停止
+        if next_token == EOS_TOKEN {
+            break;
+        }
+    }
+
+    Ok(tokens)
+}
+
+const EOS_TOKEN: usize = 2;
+
+fn main() -&gt; Result&lt;()&gt; {
+    // 模拟 vocab_size=1000 的 logits
+    let device = Device::Cpu;
+    let logits = Tensor::randn(0f32, 1.0, (1000,), &amp;device)?;
+
+    // 使用温度=0.8, top_k=50 采样
+    let token_id = generate_token(&amp;logits, 0.8, 50)?;
+    println!("采样得到的 token ID: {}", token_id);
+
+    // 演示不同温度的效果
+    for temp in [0.3, 0.8, 1.2, 2.0] {
+        let tid = generate_token(&amp;logits, temp, 50)?;
+        println!("温度={:.1} -&gt; token={}", temp, tid);
+    }
+
+    Ok(())
+}</code></pre>
+<hr>
+<h2 id="八多模态生成"><a class="header" href="#八多模态生成">八、多模态生成</a></h2>
+<p>多模态生成是生成式AI的前沿方向，目标是实现跨模态的内容创作。</p>
+<h3 id="81-文生图text-to-image"><a class="header" href="#81-文生图text-to-image">8.1 文生图（Text-to-Image）</a></h3>
+<p>文生图模型将文本描述转化为视觉图像。当前主流方法基于 <strong>Latent Diffusion</strong>：</p>
+<p>$$\text{文本提示} \xrightarrow{\text{CLIP 编码器}} \text{条件向量} \xrightarrow{\text{U-Net 去噪}} \text{潜在图像} \xrightarrow{\text{VAE 解码器}} \text{像素图像}$$</p>
+<p>核心流程：</p>
+<ol>
+<li><strong>文本编码</strong>：CLIP Text Encoder 将提示词编码为条件向量</li>
+<li><strong>扩散去噪</strong>：在潜在空间中，以条件向量为引导，从噪声逐步去噪</li>
+<li><strong>图像解码</strong>：VAE Decoder 将潜在表示解码为像素图像</li>
+</ol>
+<h3 id="82-文生视频text-to-video"><a class="header" href="#82-文生视频text-to-video">8.2 文生视频（Text-to-Video）</a></h3>
+<p>文生视频是文生图的自然扩展，核心挑战在于保持时间一致性：</p>
+<p>$$\text{文本} \xrightarrow{\text{编码}} \text{条件} \xrightarrow{\text{3D 扩散}} \text{潜在视频帧序列} \xrightarrow{\text{解码}} \text{视频}$$</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>模型</th><th>发布方</th><th>关键技术</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Sora</strong></td><td>OpenAI</td><td>Diffusion Transformer (DiT), 时空一致性</td></tr>
+<tr><td><strong>Kling</strong></td><td>快手</td><td>3D VAE, 长视频生成</td></tr>
+<tr><td><strong>Runway Gen-3</strong></td><td>Runway</td><td>时空注意力机制</td></tr>
+<tr><td><strong>Veo</strong></td><td>Google</td><td>潜在扩散 + Transformer</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="83-rust-中的文生图推理"><a class="header" href="#83-rust-中的文生图推理">8.3 Rust 中的文生图推理</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use candle_core::{Device, Tensor, DType, Result};
+use candle_nn::{VarBuilder, Module};
+
+/// 简化的文生图推理流程演示
+struct TextToImagePipeline {
+    text_encoder: TextEncoder,
+    unet: UnetModel,
+    vae_decoder: VAEDecoder,
+}
+
+/// 文本编码器（简化版 CLIP）
+struct TextEncoder {
+    embed: candle_nn::Embedding,
+    layers: Vec&lt;candle_nn::Linear&gt;,
+}
+
+impl TextEncoder {
+    fn encode(&amp;self, token_ids: &amp;[usize]) -&gt; Result&lt;Tensor&gt; {
+        let device = Device::Cpu;
+        let tokens = Tensor::from_vec(
+            token_ids.to_vec(),
+            (1, token_ids.len()),
+            &amp;device,
+        )?;
+        let mut hidden = self.embed.forward(&amp;tokens)?;
+        for layer in &amp;self.layers {
+            hidden = hidden.apply(layer)?.relu()?;
+        }
+        // 返回条件向量 [1, seq_len, dim]
+        Ok(hidden)
+    }
+}
+
+/// U-Net 去噪网络（简化）
+struct UnetModel {
+    input_proj: candle_nn::Linear,
+    cond_proj: candle_nn::Linear,
+    output_proj: candle_nn::Linear,
+}
+
+impl UnetModel {
+    /// 去噪一步：预测噪声
+    fn denoise_step(
+        &amp;self,
+        noisy_latent: &amp;Tensor,  // [1, latent_dim]
+        text_condition: &amp;Tensor, // [1, cond_dim]
+        timestep: f32,
+    ) -&gt; Result&lt;Tensor&gt; {
+        // 将条件信息注入
+        let x = noisy_latent.apply(&amp;self.input_proj)?;
+        let c = text_condition.apply(&amp;self.cond_proj)?;
+        let combined = x.add(&amp;c.broadcast_as(x.shape())?)?;
+        let predicted_noise = combined.apply(&amp;self.output_proj)?;
+        Ok(predicted_noise)
+    }
+}
+
+/// VAE 解码器（简化）
+struct VAEDecoder {
+    fc1: candle_nn::Linear,
+    fc2: candle_nn::Linear,
+}
+
+impl VAEDecoder {
+    /// 将潜在表示解码为像素
+    fn decode(&amp;self, latent: &amp;Tensor) -&gt; Result&lt;Tensor&gt; {
+        let h = latent.apply(&amp;self.fc1)?.relu()?;
+        h.apply(&amp;self.fc2) // [1, height * width * channels]
+    }
+}
+
+fn main() -&gt; Result&lt;()&gt; {
+    println!("=== 文生图推理流程演示 ===");
+    println!("1. 文本编码：将提示词编码为条件向量");
+    println!("2. 扩散去噪：在潜在空间中逐步去噪");
+    println!("3. 图像解码：将潜在表示解码为像素图像");
+    println!();
+    println!("完整实现请参考 candle-transformers 项目中的");
+    println!("stable-diffusion 示例。");
+    println!();
+    println!("相关 crate:");
+    println!("  candle-transformers = \"0.8\"");
+    println!("  tokenizers = \"0.20\"");
+    Ok(())
+}</code></pre>
+<hr>
+<h2 id="九rust-生成式ai生态"><a class="header" href="#九rust-生成式ai生态">九、Rust 生成式AI生态</a></h2>
+<p>Rust 在生成式AI领域的生态正在快速发展，以下介绍两个核心框架。</p>
+<h3 id="91-candle--huggingface-的-rust-ml-框架"><a class="header" href="#91-candle--huggingface-的-rust-ml-框架">9.1 candle — HuggingFace 的 Rust ML 框架</a></h3>
+<p><a href="https://github.com/huggingface/candle"><code>candle</code></a> 是 HuggingFace 推出的纯 Rust 深度学习框架，特点是：</p>
+<ul>
+<li><strong>纯 Rust 实现</strong>：无 Python 依赖，编译为单一二进制</li>
+<li><strong>高性能</strong>：支持 CPU / CUDA / Metal 后端</li>
+<li><strong>模型丰富</strong>：支持 BERT、LLaMA、Stable Diffusion、Whisper 等主流模型</li>
+<li><strong>部署友好</strong>：适合边缘部署和推理服务</li>
+</ul>
+<pre><code class="language-toml"># Cargo.toml
+[dependencies]
+candle-core = "0.8"
+candle-nn = "0.8"
+candle-transformers = "0.8"  # 预置模型
+</code></pre>
+<pre class="playground"><code class="language-rust edition2024">use candle_core::Device;
+use candle_transformers::models::stable_diffusion;
+
+/// 使用 candle 运行 Stable Diffusion 推理
+fn generate_image(prompt: &amp;str) -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let device = Device::new_cuda(0).unwrap_or(Device::Cpu);
+
+    // 加载 Stable Diffusion 模型
+    let config = stable_diffusion::StableDiffusionConfig::v2_1(&amp;device);
+    let model = stable_diffusion::StableDiffusion::new(config)?;
+
+    // 生成图像
+    let generated = model.generate(
+        prompt,          // 提示词
+        25,              // 推理步数
+        7.5,             // CFG 引导强度
+        42,              // 随机种子
+        None::&lt;&amp;str&gt;,    // 负面提示词
+    )?;
+
+    // 保存为 PNG
+    generated.save("generated.png")?;
+    println!("图像已保存到 generated.png");
+
+    Ok(())
+}
+
+fn main() {
+    // candle 支持的生成模型：
+    // - stable_diffusion: 文生图
+    // - whisper: 语音识别与生成
+    // - llama: 大语言模型文本生成
+    // - mistral: Mistral 系列模型
+    // - phi: Phi 系列模型
+    println!("candle 支持的生成模型:");
+    println!("  - Stable Diffusion (文生图)");
+    println!("  - LLaMA / Mistral / Phi (文本生成)");
+    println!("  - Whisper (语音识别)");
+    println!("  - Wuerstchen (文生图, 轻量级)");
+}</code></pre>
+<h3 id="92-burn--rust-深度学习框架"><a class="header" href="#92-burn--rust-深度学习框架">9.2 burn — Rust 深度学习框架</a></h3>
+<p><a href="https://github.com/tracel-ai/burn"><code>burn</code></a> 是另一个活跃的 Rust 深度学习框架，特点是：</p>
+<ul>
+<li><strong>多后端支持</strong>：可切换 Autodiff、LibTorch、NDArray 等后端</li>
+<li><strong>训练支持</strong>：完整的训练循环、数据加载器、学习率调度</li>
+<li><strong>模块化设计</strong>：灵活的组件组合</li>
+</ul>
+<pre><code class="language-toml"># Cargo.toml
+[dependencies]
+burn = "0.15"
+burn-ndarray = "0.15"  # CPU 后端
+</code></pre>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use burn::module::Module;
+use burn::tensor::{Tensor, backend::AutodiffBackend};
+use burn::nn::{Linear, LinearConfig, ReLU, Builder};
+
+/// 使用 burn 构建生成器
+#[derive(Module, Debug)]
+pub struct Generator&lt;B: burn::tensor::backend::Backend&gt; {
+    fc1: Linear,
+    fc2: Linear,
+    fc3: Linear,
+    activation: ReLU,
+}
+
+impl&lt;B: burn::tensor::backend::Backend&gt; Generator&lt;B&gt; {
+    pub fn new(latent_dim: usize, hidden_dim: usize, output_dim: usize, device: &amp;B::Device)
+        -&gt; Result&lt;Self, burn::tensor::TensorError&gt;
+    {
+        let fc1 = LinearConfig::new(latent_dim, hidden_dim).init(device);
+        let fc2 = LinearConfig::new(hidden_dim, hidden_dim).init(device);
+        let fc3 = LinearConfig::new(hidden_dim, output_dim).init(device);
+        Ok(Self { fc1, fc2, fc3, activation: ReLU::new() })
+    }
+
+    pub fn forward(&amp;self, z: Tensor&lt;B, 2&gt;) -&gt; Result&lt;Tensor&lt;B, 2&gt;, burn::tensor::TensorError&gt; {
+        let x = self.fc1.forward(z).apply(&amp;self.activation)?;
+        let x = self.fc2.forward(x).apply(&amp;self.activation)?;
+        self.fc3.forward(x)
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="93-rust-生成式ai-生态总览"><a class="header" href="#93-rust-生成式ai-生态总览">9.3 Rust 生成式AI 生态总览</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>crate/项目</th><th>类型</th><th>功能</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>candle</strong></td><td>框架</td><td>深度学习推理与训练</td><td>模型推理、部署服务</td></tr>
+<tr><td><strong>candle-transformers</strong></td><td>模型库</td><td>预置 Transformer 模型</td><td>LLM、Stable Diffusion</td></tr>
+<tr><td><strong>burn</strong></td><td>框架</td><td>多后端深度学习</td><td>模型训练、研究</td></tr>
+<tr><td><strong>tract</strong></td><td>推理引擎</td><td>ONNX/TFLite 推理</td><td>边缘部署</td></tr>
+<tr><td><strong>tch</strong></td><td>绑定</td><td>PyTorch C++ 绑定</td><td>快速原型验证</td></tr>
+<tr><td><strong>mistral-rs</strong></td><td>服务</td><td>LLM 推理服务</td><td>本地 LLM 部署</td></tr>
+<tr><td><strong>llm-chain</strong></td><td>链式调用</td><td>LLM 应用开发</td><td>AI Agent 构建</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="十总结"><a class="header" href="#十总结">十、总结</a></h2>
+<h3 id="核心知识回顾"><a class="header" href="#核心知识回顾">核心知识回顾</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>主题</th><th>核心要点</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>生成式AI定义</strong></td><td>学习数据分布 $P(x)$，生成新样本</td></tr>
+<tr><td><strong>判别 vs 生成</strong></td><td>$P(y|x)$ vs $P(x)$；“是什么” vs “创造什么”</td></tr>
+<tr><td><strong>自编码器</strong></td><td>编码器-解码器架构，重构误差最小化</td></tr>
+<tr><td><strong>VAE</strong></td><td>ELBO 优化 + 重参数化技巧，概率生成</td></tr>
+<tr><td><strong>GAN</strong></td><td>生成器与判别器对抗训练，纳什均衡</td></tr>
+<tr><td><strong>Diffusion</strong></td><td>前向加噪 + 逆向去噪，当前最主流的生成架构</td></tr>
+<tr><td><strong>LLM 生成</strong></td><td>自回归 token 采样，温度/Top-k/Top-p</td></tr>
+<tr><td><strong>多模态生成</strong></td><td>文生图（Latent Diffusion）、文生视频（DiT）</td></tr>
+<tr><td><strong>Rust 生态</strong></td><td>candle（推理）、burn（训练）、mistral-rs（部署）</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="生成模型演进路线"><a class="header" href="#生成模型演进路线">生成模型演进路线</a></h3>
+<pre><code>自编码器 (AE)
+    │  引入概率框架
+    ▼
+变分自编码器 (VAE) ─── ELBO + 重参数化
+    │
+    ├── 生成对抗网络 (GAN) ─── 对抗训练
+    │       │
+    │       └── StyleGAN, WGAN, CycleGAN ...
+    │
+    └── 扩散模型 (Diffusion) ─── 加噪/去噪
+            │
+            ├── Stable Diffusion (文生图)
+            ├── Sora (文生视频)
+            └── DALL-E 3 (文生图)
+</code></pre>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
+<ol>
+<li><strong>基础练习</strong>：使用 <code>candle</code> 实现一个简单的自编码器，在 MNIST 数据集上训练，观察重构效果。</li>
+<li><strong>VAE 实现</strong>：在自编码器基础上实现 VAE，比较两者的潜在空间结构（对潜在向量做插值，观察生成效果）。</li>
+<li><strong>GAN 训练</strong>：实现一个简单的 GAN，记录生成器和判别器的损失曲线，观察训练稳定性问题。</li>
+<li><strong>Diffusion 理解</strong>：实现前向加噪过程，可视化不同噪声步数下的图像变化；实现单步去噪并观察效果。</li>
+<li><strong>采样策略</strong>：实现温度采样、Top-k 采样和 Top-p 采样，比较不同参数下的文本生成效果。</li>
+<li><strong>candle 实战</strong>：使用 <code>candle-transformers</code> 加载预训练的 Stable Diffusion 模型，尝试不同的提示词生成图像。</li>
+<li><strong>进阶挑战</strong>：使用 <code>burn</code> 框架从头训练一个 VAE，实现 MNIST 手写数字的生成，并实现潜在空间的插值可视化。</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_39_rl.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_secret.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_39_rl.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_secret.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

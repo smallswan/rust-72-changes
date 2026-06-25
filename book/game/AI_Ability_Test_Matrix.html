@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI能力测试（矩阵）</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        matrix: {
+                            dark: '#0d1117',
+                            green: '#00ff41',
+                            blue: '#0088ff',
+                            purple: '#9900ff'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['Consolas', 'Monaco', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .matrix-bg {
+                background-color: #0d1117;
+                background-image: linear-gradient(rgba(0,255,65,0.05) 1px, transparent 1px),
+                                  linear-gradient(90deg, rgba(0,255,65,0.05) 1px, transparent 1px);
+                background-size: 20px 20px;
+            }
+            .matrix-border {
+                border: 1px solid rgba(0,255,65,0.5);
+                box-shadow: 0 0 8px rgba(0,255,65,0.3);
+            }
+            .matrix-border-blue {
+                border: 1px solid rgba(0,136,255,0.5);
+                box-shadow: 0 0 8px rgba(0,136,255,0.3);
+            }
+            .matrix-border-purple {
+                border: 1px solid rgba(153,0,255,0.5);
+                box-shadow: 0 0 8px rgba(153,0,255,0.3);
+            }
+            .matrix-cell {
+                width: 56px;
+                height: 56px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(13,17,23,0.7);
+                border: 1px solid rgba(0,255,65,0.3);
+                color: #00ff41;
+                font-family: monospace;
+                font-size: 18px;
+            }
+            .matrix-input {
+                width: 100%;
+                height: 100%;
+                background: transparent;
+                border: none;
+                color: #00ff41;
+                text-align: center;
+                font-family: monospace;
+                font-size: 20px;
+                outline: none;
+            }
+            .matrix-cell-diag {
+                background: rgba(0,255,65,0.2);
+            }
+            .matrix-cell-highlight {
+                background: rgba(0,136,255,0.2);
+            }
+            .medal-gold { color: #ffd700; text-shadow: 0 0 8px #ffd700; }
+            .medal-silver { color: #c0c0c0; text-shadow: 0 0 8px #c0c0c0; }
+            .medal-bronze { color: #cd7f32; text-shadow: 0 0 8px #cd7f32; }
+            .page { display: none; }
+            .page.active { display: block; }
+        }
+    </style>
+</head>
+<body class="matrix-bg text-white min-h-screen">
+
+<div id="welcome" class="page active container mx-auto px-4 py-8">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-matrix-green mb-4">AI能力测试（矩阵）</h1>
+        <p class="text-gray-400 text-lg">挑战矩阵运算，解锁成就勋章</p>
+    </div>
+
+    <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-6">
+        <div class="matrix-border rounded-xl p-6 bg-matrix-dark/80 hover:scale-105 transition-transform">
+            <div class="text-5xl text-matrix-green text-center mb-4"><i class="fa fa-signal"></i></div>
+            <h3 class="text-xl font-bold text-matrix-green text-center mb-2">简单</h3>
+            <p class="text-gray-400 text-center mb-6">基础矩阵运算、向量、逆序数</p>
+            <button onclick="startGame('easy')" class="w-full py-3 bg-matrix-green/10 hover:bg-matrix-green/20 border border-matrix-green/50 rounded-lg font-medium">
+                开始挑战
+            </button>
+        </div>
+
+        <div class="matrix-border-blue rounded-xl p-6 bg-matrix-dark/80 hover:scale-105 transition-transform">
+            <div class="text-5xl text-matrix-blue text-center mb-4"><i class="fa fa-signal"></i></div>
+            <h3 class="text-xl font-bold text-matrix-blue text-center mb-2">中等</h3>
+            <p class="text-gray-400 text-center mb-6">3×3 行列式、逆矩阵、秩、伴随矩阵</p>
+            <button onclick="startGame('medium')" class="w-full py-3 bg-matrix-blue/10 hover:bg-matrix-blue/20 border border-matrix-blue/50 rounded-lg font-medium">
+                开始挑战
+            </button>
+        </div>
+
+        <div class="matrix-border-purple rounded-xl p-6 bg-matrix-dark/80 hover:scale-105 transition-transform">
+            <div class="text-5xl text-matrix-purple text-center mb-4"><i class="fa fa-signal"></i></div>
+            <h3 class="text-xl font-bold text-matrix-purple text-center mb-2">困难</h3>
+            <p class="text-gray-400 text-center mb-6">矩阵分解、线性方程组</p>
+            <button onclick="startGame('hard')" class="w-full py-3 bg-matrix-purple/10 hover:bg-matrix-purple/20 border border-matrix-purple/50 rounded-lg font-medium">
+                开始挑战
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto mt-12 flex flex-wrap justify-center gap-4">
+        <button onclick="showPage('stats')" class="px-6 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg">
+            <i class="fa fa-bar-chart mr-2"></i>进度统计
+        </button>
+        <button onclick="showPage('wrong')" class="px-6 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg">
+            <i class="fa fa-list-alt mr-2"></i>错题集
+        </button>
+        <button onclick="showPage('medals')" class="px-6 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg">
+            <i class="fa fa-trophy mr-2"></i>勋章馆
+        </button>
+        <button onclick="showPage('help')" class="px-6 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg">
+            <i class="fa fa-question-circle mr-2"></i>帮助
+        </button>
+    </div>
+</div>
+
+<div id="game" class="page container mx-auto px-4 py-4">
+    <div class="flex justify-between items-center mb-4">
+        <div class="flex items-center gap-4">
+            <div id="diff-badge" class="px-3 py-1 rounded-full text-sm font-medium"></div>
+            <div class="px-3 py-1 bg-gray-800 rounded-full text-sm">
+                题目: <span id="q-num">1</span>/<span id="q-total">10</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="px-3 py-1 bg-gray-800 rounded-full text-sm">
+                <i class="fa fa-clock-o mr-1"></i><span id="timer">00:00</span>
+            </div>
+            <div class="px-3 py-1 bg-gray-800 rounded-full text-sm">
+                <i class="fa fa-star mr-1"></i><span id="score">0</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="matrix-border rounded-xl p-6 bg-matrix-dark/80 mb-6">
+        <h2 id="q-title" class="text-xl font-bold text-matrix-green mb-4">矩阵加法</h2>
+        <p id="q-desc" class="text-gray-300 mb-6">计算下列两个矩阵的和</p>
+
+        <div id="q-content" class="flex justify-center items-center gap-4 mb-8"></div>
+
+        <div class="mb-6">
+            <label class="block text-sm text-gray-400 mb-2">你的答案：</label>
+            <div id="answer-area" class="flex gap-4">
+                <div id="matrix-answer" class="hidden"></div>
+                <input id="answer-input" type="text" class="flex-1 px-4 py-3 bg-matrix-dark border border-matrix-green/50 rounded-lg text-matrix-green font-mono" placeholder="输入答案">
+                <button onclick="checkAnswer()" class="px-6 py-3 bg-matrix-green/10 hover:bg-matrix-green/20 border border-matrix-green/50 rounded-lg font-medium">
+                    提交
+                </button>
+            </div>
+        </div>
+
+        <div id="hint-area" class="hidden bg-gray-800/50 p-4 rounded-lg mb-4">
+            <p class="text-sm text-gray-300"><i class="fa fa-lightbulb-o text-yellow-500 mr-2"></i><span id="hint-text"></span></p>
+        </div>
+
+        <div class="flex justify-between">
+            <button onclick="showHint()" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg">
+                <i class="fa fa-lightbulb-o mr-2"></i>提示
+            </button>
+            <div class="flex gap-2">
+                <button onclick="pauseGame()" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg">
+                    <i class="fa fa-pause mr-2"></i>暂停
+                </button>
+                <button onclick="exitGame()" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg">
+                    <i class="fa fa-sign-out mr-2"></i>退出
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="result" class="page container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto matrix-border rounded-xl p-6 bg-matrix-dark/80">
+        <div id="result-header" class="text-center mb-6">
+            <h2 id="result-title" class="text-2xl font-bold mb-2">回答正确！</h2>
+            <p id="result-msg" class="text-gray-400"></p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <p class="text-sm text-gray-400 mb-1">你的答案</p>
+                <p id="user-ans" class="text-lg font-mono"></p>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <p class="text-sm text-gray-400 mb-1">正确答案</p>
+                <p id="correct-ans" class="text-lg font-mono"></p>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 p-4 rounded-lg mb-6">
+            <p class="text-sm text-gray-400 mb-1">解析</p>
+            <p id="explanation" class="text-sm text-gray-300"></p>
+        </div>
+
+        <div class="flex justify-between mb-6">
+            <div class="px-3 py-1 bg-gray-800 rounded-full text-sm">
+                <i class="fa fa-star mr-1"></i>得分: <span id="result-points">0</span>
+            </div>
+            <div class="px-3 py-1 bg-gray-800 rounded-full text-sm">
+                <i class="fa fa-clock-o mr-1"></i>用时: <span id="result-time">00:00</span>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-4">
+            <button id="next-btn" onclick="nextQuestion()" class="px-6 py-3 bg-matrix-green/10 hover:bg-matrix-green/20 border border-matrix-green/50 rounded-lg font-medium">
+                下一题
+            </button>
+            <button id="wrong-btn" onclick="addWrong()" class="hidden px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-lg">
+                加入错题集
+            </button>
+            <button id="finish-btn" onclick="finishGame()" class="hidden px-6 py-3 bg-matrix-green/10 hover:bg-matrix-green/20 border border-matrix-green/50 rounded-lg font-medium">
+                查看结果
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="stats" class="page container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-matrix-green">进度统计</h2>
+            <button onclick="showPage('welcome')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg">
+                <i class="fa fa-home mr-2"></i>返回
+            </button>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-4 mb-8">
+            <div class="matrix-border rounded-xl p-6 bg-matrix-dark/80 text-center">
+                <div class="text-3xl text-matrix-green mb-2"><i class="fa fa-star"></i></div>
+                <p class="text-gray-400 mb-1">总得分</p>
+                <p id="total-score" class="text-2xl font-bold">0</p>
+            </div>
+            <div class="matrix-border-blue rounded-xl p-6 bg-matrix-dark/80 text-center">
+                <div class="text-3xl text-matrix-blue mb-2"><i class="fa fa-check-circle"></i></div>
+                <p class="text-gray-400 mb-1">正确率</p>
+                <p id="accuracy" class="text-2xl font-bold">0%</p>
+            </div>
+            <div class="matrix-border-purple rounded-xl p-6 bg-matrix-dark/80 text-center">
+                <div class="text-3xl text-matrix-purple mb-2"><i class="fa fa-clock-o"></i></div>
+                <p class="text-gray-400 mb-1">总题数</p>
+                <p id="total-qs" class="text-2xl font-bold">0</p>
+            </div>
+        </div>
+
+        <div class="matrix-border rounded-xl p-6 bg-matrix-dark/80 mb-8">
+            <h3 class="text-lg font-bold text-matrix-green mb-4">难度统计</h3>
+            <div class="space-y-4">
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span>简单</span>
+                        <span id="easy-stats">0/0 (0%)</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div id="easy-bar" class="bg-matrix-green h-2 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span>中等</span>
+                        <span id="medium-stats">0/0 (0%)</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div id="medium-bar" class="bg-matrix-blue h-2 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span>困难</span>
+                        <span id="hard-stats">0/0 (0%)</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div id="hard-bar" class="bg-matrix-purple h-2 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="matrix-border rounded-xl p-6 bg-matrix-dark/80">
+            <h3 class="text-lg font-bold text-matrix-green mb-4">最近获得勋章</h3>
+            <div id="recent-medals" class="flex flex-wrap gap-3">
+                <div class="text-center w-full text-gray-500">暂无勋章</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="wrong" class="page container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-matrix-green">错题集</h2>
+            <div class="flex gap-2">
+                <button onclick="practiceWrong()" class="px-4 py-2 bg-matrix-green/10 hover:bg-matrix-green/20 border border-matrix-green/50 rounded-lg">
+                    <i class="fa fa-play mr-2"></i>练习错题
+                </button>
+                <button onclick="clearWrong()" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg">
+                    <i class="fa fa-trash mr-2"></i>清空
+                </button>
+                <button onclick="showPage('welcome')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg">
+                    <i class="fa fa-home mr-2"></i>返回
+                </button>
+            </div>
+        </div>
+
+        <div id="wrong-list" class="space-y-4">
+            <div class="matrix-border rounded-xl p-6 bg-matrix-dark/80 text-center text-gray-500">
+                错题集为空
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="medals" class="page container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-matrix-green">勋章馆</h2>
+            <button onclick="showPage('welcome')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg">
+                <i class="fa fa-home mr-2"></i>返回
+            </button>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        </div>
+    </div>
+</div>
+
+<div id="help" class="page container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-matrix-green">帮助中心</h2>
+            <button onclick="showPage('welcome')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg">
+                <i class="fa fa-home mr-2"></i>返回
+            </button>
+        </div>
+
+        <div class="matrix-border rounded-xl p-6 bg-matrix-dark/80 space-y-6">
+            <div>
+                <h3 class="text-lg font-bold text-matrix-green mb-2">难度说明</h3>
+                <div class="space-y-2 text-gray-300">
+                    <p><span class="text-matrix-green">简单</span>：逆序数、排列奇偶性、矩阵加减乘、转置、迹、向量内积/长度</p>
+                    <p><span class="text-matrix-blue">中等</span>：3×3 行列式、余子式、伴随矩阵、逆矩阵、秩</p>
+                    <p><span class="text-matrix-purple">困难</span>：矩阵分解、齐次/非齐次线性方程组、范德蒙德矩阵</p>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold text-matrix-green mb-2">答题规则</h3>
+                <ul class="list-disc list-inside text-gray-300 space-y-1">
+                    <li>数字答案：直接输入数值（如 5）</li>
+                    <li>矩阵答案：直接在矩阵格子中填写数字</li>
+                    <li>向量答案：输入 (1,2,3) 格式</li>
+                    <li>提示会扣分，连击越多加分越高</li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold text-matrix-green mb-2">常用公式</h3>
+                <div class="font-mono text-sm text-gray-300 space-y-2">
+                    <p>行列式(2阶): |A| = ad - bc</p>
+                    <p>逆矩阵(2阶): A⁻¹ = (1/|A|) × [[d,-b],[-c,a]]</p>
+                    <p>矩阵转置: Aᵀ 行列互换</p>
+                    <p>迹: tr(A) = 主对角线元素和</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="pause" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+    <div class="matrix-border rounded-xl p-6 bg-matrix-dark w-full max-w-md">
+        <h2 class="text-xl font-bold text-matrix-green text-center mb-6">游戏暂停</h2>
+        <div class="space-y-3">
+            <button onclick="resumeGame()" class="w-full py-3 bg-matrix-green/10 hover:bg-matrix-green/20 border border-matrix-green/50 rounded-lg font-medium">
+                继续游戏
+            </button>
+            <button onclick="restartGame()" class="w-full py-3 bg-gray-800 hover:bg-gray-700 rounded-lg">
+                重新开始
+            </button>
+            <button onclick="exitGame()" class="w-full py-3 bg-gray-800 hover:bg-gray-700 rounded-lg">
+                退出游戏
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+const MatrixGenerator = {
+    randInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
+    randMatrix(rows, cols, min=-5, max=9) {
+        let m = [];
+        for(let i=0; i<rows; i++) {
+            let r = [];
+            for(let j=0; j<cols; j++) r.push(this.randInt(min, max));
+            m.push(r);
+        }
+        return m;
+    },
+    randVector(len, min=-5, max=9) {
+        return Array(len).fill().map(()=>this.randInt(min, max));
+    },
+    randPerm(n) {
+        let arr = Array(n).fill().map((_,i)=>i+1);
+        for(let i=arr.length-1; i>0; i--) {
+            let j = this.randInt(0,i);
+            [arr[i],arr[j]] = [arr[j],arr[i]];
+        }
+        return arr;
+    },
+    add(a, b) {
+        return a.map((r,i)=>r.map((v,j)=>v+b[i][j]));
+    },
+    transpose(m) {
+        return m[0].map((_,j)=>m.map(r=>r[j]));
+    },
+    trace(m) {
+        return m.reduce((s,r,i)=>s+r[i], 0);
+    },
+    dot(v1, v2) {
+        return v1.reduce((s,v,i)=>s+v*v2[i], 0);
+    },
+    inversion(p) {
+        let cnt = 0;
+        for(let i=0; i<p.length; i++)
+            for(let j=i+1; j<p.length; j++)
+                if(p[i]>p[j]) cnt++;
+        return cnt;
+    },
+    det2(m) {
+        return m[0][0]*m[1][1] - m[0][1]*m[1][0];
+    },
+    det3(m) {
+        const a = m[0][0], b = m[0][1], c = m[0][2];
+        const d = m[1][0], e = m[1][1], f = m[1][2];
+        const g = m[2][0], h = m[2][1], i = m[2][2];
+        return a*(e*i-f*h) - b*(d*i-f*g) + c*(d*h-e*g);
+    },
+    minor3(m, x, y) {
+        let min = [];
+        for(let i=0; i<3; i++){
+            if(i===x) continue;
+            let row = [];
+            for(let j=0; j<3; j++){
+                if(j===y) continue;
+                row.push(m[i][j]);
+            }
+            min.push(row);
+        }
+        return this.det2(min);
+    },
+    cofactor3(m) {
+        let c = [];
+        for(let i=0; i<3; i++){
+            let row = [];
+            for(let j=0; j<3; j++){
+                let sign = (i+j)%2===0 ? 1 : -1;
+                row.push(sign * this.minor3(m,i,j));
+            }
+            c.push(row);
+        }
+        return c;
+    },
+    adjugate3(m) {
+        return this.transpose(this.cofactor3(m));
+    },
+    inverse3(m) {
+        const det = this.det3(m);
+        if(det === 0) return [[1,0,0],[0,1,0],[0,0,1]];
+        const adj = this.adjugate3(m);
+        return adj.map(row => row.map(v => parseFloat((v/det).toFixed(2))));
+    },
+    rank3(m) {
+        if(this.det3(m) !== 0) return 3;
+        for(let i=0; i<3; i++){
+            for(let j=0; j<3; j++){
+                if(this.minor3(m,i,j) !== 0) return 2;
+            }
+        }
+        for(let i=0; i<3; i++){
+            for(let j=0; j<3; j++){
+                if(m[i][j] !== 0) return 1;
+            }
+        }
+        return 0;
+    },
+    inv2(m) {
+        const d = this.det2(m);
+        if(d===0) return [[1,0],[0,1]];
+        return [
+            [m[1][1]/d, -m[0][1]/d],
+            [-m[1][0]/d, m[0][0]/d]
+        ];
+    },
+    genEasy() {
+        const types = ["matrix_add","matrix_trans","matrix_trace","vector_dot","permutation"];
+        const type = types[Math.floor(Math.random()*types.length)];
+        const g = this;
+        switch(type) {
+            case "matrix_add": {
+                const a = g.randMatrix(2,2);
+                const b = g.randMatrix(2,2);
+                return {type, title:"矩阵加法", desc:"计算矩阵和", a,b, ans:g.add(a,b), hint:"对应元素相加"};
+            }
+            case "matrix_trans": {
+                const m = g.randMatrix(2,3);
+                return {type, title:"矩阵转置", desc:"求转置矩阵", mat:m, ans:g.transpose(m), hint:"行列互换"};
+            }
+            case "matrix_trace": {
+                const m = g.randMatrix(3,3);
+                return {type, title:"矩阵的迹", desc:"求主对角线和", mat:m, ans:g.trace(m), hint:"主对角线相加"};
+            }
+            case "vector_dot": {
+                const v1 = g.randVector(3);
+                const v2 = g.randVector(3);
+                return {type, title:"向量内积", desc:"计算内积", v1,v2, ans:g.dot(v1,v2), hint:"对应相乘再相加"};
+            }
+            case "permutation": {
+                const p = g.randPerm(4);
+                return {type, title:"逆序数", desc:"求排列逆序数", perm:p, ans:g.inversion(p), hint:"大数在前的对数"};
+            }
+        }
+    },
+    genMedium() {
+        const types = ["det_3x3","inv_3x3","rank_3x3","adj_3x3"];
+        const type = types[Math.floor(Math.random()*types.length)];
+        const g = this;
+        const m = g.randMatrix(3,3,1,5);
+        switch(type) {
+            case "det_3x3":
+                return {type, title:"3×3行列式", desc:"计算行列式值", mat:m, ans:g.det3(m), hint:"按第一行展开计算"};
+            case "inv_3x3":
+                return {type, title:"3×3逆矩阵", desc:"求逆矩阵", mat:m, ans:g.inverse3(m), hint:"伴随矩阵 / 行列式"};
+            case "rank_3x3":
+                return {type, title:"矩阵的秩", desc:"求秩", mat:m, ans:g.rank3(m), hint:"非零子式最高阶数"};
+            case "adj_3x3":
+                return {type, title:"伴随矩阵", desc:"求伴随矩阵", mat:m, ans:g.adjugate3(m), hint:"代数余子式转置"};
+        }
+    },
+    genHard() {
+        const m = [[2,1,1],[4,3,3],[8,7,9]];
+        return {type:"lu_decomp", title:"LU分解", desc:"填写U矩阵", mat:m, ans:[[2,1,1],[0,1,1],[0,0,2]], hint:"高斯消元上三角"};
+    }
+};
+
+const medals = [
+    {id:"beginner",name:"初学者",desc:"完成10道简单题",icon:"fa-certificate",color:"medal-bronze"},
+    {id:"intermediate",name:"进阶者",desc:"完成10道中等题",icon:"fa-star",color:"medal-silver"},
+    {id:"expert",name:"专家",desc:"完成10道困难题",icon:"fa-trophy",color:"medal-gold"},
+    {id:"speed",name:"速度之星",desc:"30秒内完成10题",icon:"fa-bolt",color:"medal-silver"},
+    {id:"perfect",name:"完美主义",desc:"正确率100%",icon:"fa-check-circle",color:"medal-gold"},
+    {id:"combo",name:"连击大师",desc:"连续答对15题",icon:"fa-fire",color:"medal-gold"},
+    {id:"master",name:"矩阵大师",desc:"全难度≥90%正确率",icon:"fa-crown",color:"medal-gold"},
+    {id:"all",name:"全能选手",desc:"掌握所有题型",icon:"fa-award",color:"medal-gold"}
+];
+
+const game = {
+    difficulty: "easy",
+    questions: [],
+    current: 0,
+    score: 0,
+    correct: 0,
+    wrong: 0,
+    combo: 0,
+    maxCombo: 0,
+    startTime: 0,
+    timer: null,
+    hints: 0,
+    isMatrixAnswer: false,
+    wrongList: JSON.parse(localStorage.getItem("matrixWrong")) || [],
+    stats: JSON.parse(localStorage.getItem("matrixStats")) || {
+        easy: {total:0, correct:0},
+        medium: {total:0, correct:0},
+        hard: {total:0, correct:0}
+    },
+    earnedMedals: JSON.parse(localStorage.getItem("matrixMedals")) || []
+};
+
+function showPage(pageId) {
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.getElementById(pageId).classList.add("active");
+    if(pageId==="medals") renderMedals();
+    if(pageId==="stats") updateStats();
+    if(pageId==="wrong") renderWrong();
+}
+
+function startGame(diff) {
+    game.difficulty = diff;
+    game.current = game.score = game.correct = game.wrong = game.combo = game.maxCombo = game.hints = 0;
+    game.questions = Array(10).fill().map(()=>{
+        if(diff==="easy") return MatrixGenerator.genEasy();
+        if(diff==="medium") return MatrixGenerator.genMedium();
+        return MatrixGenerator.genHard();
+    });
+    const colors = {easy:"text-matrix-green", medium:"text-matrix-blue", hard:"text-matrix-purple"};
+    const texts = {easy:"简单", medium:"中等", hard:"困难"};
+    const badge = document.getElementById("diff-badge");
+    badge.className = `px-3 py-1 rounded-full text-sm font-medium ${colors[diff]}`;
+    badge.textContent = texts[diff];
+    document.getElementById("q-num").textContent = 1;
+    document.getElementById("q-total").textContent = 10;
+    document.getElementById("score").textContent = 0;
+    document.getElementById("timer").textContent = "00:00";
+    document.getElementById("hint-area").classList.add("hidden");
+    showPage("game");
+    renderQuestion();
+    startTimer();
+}
+
+function renderQuestion() {
+    const q = game.questions[game.current];
+    document.getElementById("q-title").textContent = q.title;
+    document.getElementById("q-desc").textContent = q.desc;
+    document.getElementById("q-num").textContent = game.current + 1;
+    const content = document.getElementById("q-content");
+    content.innerHTML = "";
+    game.isMatrixAnswer = false;
+
+    if (q.type === "matrix_add") {
+        content.innerHTML = `${renderMatrix(q.a)} <span class="text-2xl font-bold mx-2">+</span> ${renderMatrix(q.b)} <span class="text-2xl font-bold mx-2">=</span>`;
+        game.isMatrixAnswer = true;
+        renderMatrixAnswerInput(q.ans.length, q.ans[0].length);
+    }
+    else if (["matrix_trans", "inv_2x2", "inv_3x3", "adj_3x3", "lu_decomp"].includes(q.type)) {
+        content.innerHTML = renderMatrix(q.mat);
+        game.isMatrixAnswer = true;
+        renderMatrixAnswerInput(q.ans.length, q.ans[0].length);
+    }
+    else if (q.type === "vector_dot") {
+        content.innerHTML = `
+            <div class="text-center font-mono text-lg">
+                <span class="text-matrix-green">v₁</span> = (${q.v1.join(", ")})
+                <span class="mx-4 text-gray-400">·</span>
+                <span class="text-matrix-green">v₂</span> = (${q.v2.join(", ")})
+            </div>`;
+        game.isMatrixAnswer = false;
+        document.getElementById("matrix-answer").classList.add("hidden");
+        document.getElementById("answer-input").classList.remove("hidden");
+    }
+    else if (q.type === "permutation") {
+        // 渲染排列元素，突出显示
+        const cells = q.perm.map((v, idx) =>
+            `<div class="matrix-cell text-xl font-bold">${v}</div>`
+        ).join("");
+        content.innerHTML = `
+            <div class="flex flex-col items-center gap-3">
+                <p class="text-gray-400 text-sm">求以下排列的逆序数 τ(${q.perm.join("")})</p>
+                <div class="flex gap-2">${cells}</div>
+            </div>`;
+        game.isMatrixAnswer = false;
+        document.getElementById("matrix-answer").classList.add("hidden");
+        document.getElementById("answer-input").classList.remove("hidden");
+        document.getElementById("answer-input").placeholder = "输入逆序数（整数）";
+    }
+    else if (q.type === "matrix_trace") {
+        content.innerHTML = renderMatrix(q.mat);
+        game.isMatrixAnswer = false;
+        document.getElementById("matrix-answer").classList.add("hidden");
+        document.getElementById("answer-input").classList.remove("hidden");
+        document.getElementById("answer-input").placeholder = "输入迹（整数）";
+    }
+    else {
+        // 通用：矩阵题型回退
+        if (q.mat) {
+            content.innerHTML = renderMatrix(q.mat);
+        }
+        game.isMatrixAnswer = false;
+        document.getElementById("matrix-answer").classList.add("hidden");
+        document.getElementById("answer-input").classList.remove("hidden");
+    }
+
+    document.getElementById("answer-input").value = "";
+    document.getElementById("hint-area").classList.add("hidden");
+}
+
+function renderMatrix(m) {
+    const rows = m.length;
+    const cols = m[0].length;
+    let html = `<div class="matrix-border rounded p-2"><div class="grid grid-cols-${cols} gap-1">`;
+    for(let i=0; i<rows; i++)
+        for(let j=0; j<cols; j++)
+            html += `<div class="matrix-cell ${i===j?'matrix-cell-diag':''}">${m[i][j]}</div>`;
+    html += "</div></div>";
+    return html;
+}
+
+function renderEmptyMatrix(rows, cols) {
+    let html = `<div class="matrix-border rounded p-2"><div class="grid grid-cols-${cols} gap-1">`;
+    for(let i=0; i<rows; i++)
+        for(let j=0; j<cols; j++)
+            html += `<div class="matrix-cell"><input type="text" class="matrix-input" placeholder="?" maxlength="8"></div>`;
+    html += "</div></div>";
+    return html;
+}
+
+function renderMatrixAnswerInput(rows, cols) {
+    const c = document.getElementById("matrix-answer");
+    c.innerHTML = renderEmptyMatrix(rows, cols);
+    c.classList.remove("hidden");
+    document.getElementById("answer-input").classList.add("hidden");
+}
+
+function getMatrixAnswer() {
+    const inputs = document.querySelectorAll("#matrix-answer .matrix-input");
+    const q = game.questions[game.current];
+    const r = q.ans.length, c=q.ans[0].length;
+    let m = [];
+    for(let i=0; i<r; i++) {
+        let row = [];
+        for(let j=0; j<c; j++) row.push(parseFloat(inputs[i*c+j].value)||0);
+        m.push(row);
+    }
+    return m;
+}
+
+function isEqual(a, b) {
+    return Math.abs(a - b) < 0.01;
+}
+
+function matrixEqual(m1, m2) {
+    if(m1.length !== m2.length || m1[0].length !== m2[0].length) return false;
+    for(let i=0; i<m1.length; i++) {
+        for(let j=0; j<m1[0].length; j++) {
+            if(!isEqual(m1[i][j], m2[i][j])) return false;
+        }
+    }
+    return true;
+}
+
+function startTimer() {
+    game.startTime = Date.now();
+    clearInterval(game.timer);
+    game.timer = setInterval(()=>{
+        const s = Math.floor((Date.now()-game.startTime)/1000);
+        document.getElementById("timer").textContent = `${Math.floor(s/60).toString().padStart(2,"0")}:${(s%60).toString().padStart(2,"0")}`;
+    },1000);
+}
+function stopTimer(){clearInterval(game.timer)}
+
+function checkAnswer() {
+    const q = game.questions[game.current];
+    const t = Math.floor((Date.now()-game.startTime)/1000);
+    let user, ok;
+
+    if(game.isMatrixAnswer) {
+        user = getMatrixAnswer();
+        ok = matrixEqual(user, q.ans);
+    } else {
+        user = document.getElementById("answer-input").value.trim();
+        ok = isEqual(parseFloat(user)||0, q.ans);
+    }
+
+    let p=0;
+    if(ok) {
+        game.correct++; game.combo++;
+        p = game.difficulty==="easy"?10:game.difficulty==="medium"?20:30;
+        if(t<10)p+=5; if(game.combo>5)p+=Math.floor(game.combo/5);
+        p=Math.max(1,p-game.hints*5); game.score+=p;
+    } else {game.wrong++; game.combo=0; addWrongItem(q,user);}
+    showResult(ok,p,t,q,user);
+}
+
+function showResult(ok,p,t,q,user) {
+    stopTimer();
+    document.getElementById("result-title").textContent=ok?"回答正确！":"回答错误";
+    document.getElementById("result-title").className=ok?"text-2xl font-bold text-success":"text-2xl font-bold text-danger";
+    document.getElementById("user-ans").textContent=JSON.stringify(user);
+    document.getElementById("user-ans").className=ok?"text-success":"text-danger";
+    document.getElementById("correct-ans").textContent=JSON.stringify(q.ans);
+    document.getElementById("explanation").textContent=q.hint;
+    document.getElementById("result-points").textContent=p;
+    document.getElementById("result-time").textContent=`${Math.floor(t/60)+":00"}`.replace(/:(\d)$/,":0$1");
+    document.getElementById("next-btn").hidden=false;
+    document.getElementById("wrong-btn").hidden=ok;
+    document.getElementById("finish-btn").hidden=game.current!==9;
+    showPage("result");
+}
+
+function nextQuestion(){game.current++;game.hints=0;showPage("game");renderQuestion();startTimer()}
+function finishGame(){game.stats[game.difficulty].total+=10;game.stats[game.difficulty].correct+=game.correct;saveData();checkMedals();showPage("stats")}
+function showHint(){const q=game.questions[game.current];document.getElementById("hint-text").textContent=q.hint;document.getElementById("hint-area").classList.remove("hidden");game.hints++}
+function pauseGame(){stopTimer();document.getElementById("pause").classList.remove("hidden")}
+function resumeGame(){document.getElementById("pause").classList.add("hidden");startTimer()}
+function restartGame(){document.getElementById("pause").classList.add("hidden");startGame(game.difficulty)}
+function exitGame(){stopTimer();document.getElementById("pause").classList.add("hidden");showPage("welcome")}
+
+function addWrong(){const q=game.questions[game.current];const u=game.isMatrixAnswer?getMatrixAnswer():document.getElementById("answer-input").value;addWrongItem(q,u);alert("已加入")}
+function addWrongItem(q,u){game.wrongList.push({q:JSON.parse(JSON.stringify(q)),user:u,diff:game.difficulty});saveData()}
+function renderWrong(){const w=document.getElementById("wrong-list");if(game.wrongList.length===0){w.innerHTML='<div class="text-center p-6">错题集为空</div>';return}w.innerHTML=game.wrongList.map(i=>`<div class="p-4 border rounded"><h3>${i.q.title}</h3><p>你的：${JSON.stringify(i.user)}</p><p>正确：${JSON.stringify(i.q.ans)}</p></div>`).join("")}
+function practiceWrong(){if(game.wrongList.length===0){alert("空");return}game.questions=game.wrongList.map(x=>x.q);game.current=0;showPage("game");renderQuestion();startTimer()}
+function clearWrong(){if(confirm("清空？")){game.wrongList=[];saveData();renderWrong()}}
+
+function checkMedals(){const n=[];if(game.stats.easy.total>=10&&!game.earnedMedals.includes("beginner"))n.push("beginner");game.earnedMedals=[...new Set([...game.earnedMedals,...n])];saveData();if(n.length)alert("获得勋章："+n.map(x=>medals.find(m=>m.id===x).name).join("、"))}
+function renderMedals(){const c=document.querySelector("#medals .grid");c.innerHTML=medals.map(m=>`<div class="p-4 text-center"><i class="fa ${m.icon} text-3xl ${game.earnedMedals.includes(m.id)?m.color:"text-gray-500"}"></i><h3>${m.name}</h3></div>`).join("")}
+
+function updateStats(){const t=game.stats.easy.total+game.stats.medium.total+game.stats.hard.total;const c=game.stats.easy.correct+game.stats.medium.correct+game.stats.hard.correct;document.getElementById("accuracy").textContent=t?Math.round(c/t*100)+"%":"0%";document.getElementById("total-qs").textContent=t;["easy","medium","hard"].forEach(d=>{const s=game.stats[d];const p=s.total?Math.round(s.correct/s.total*100):0;document.getElementById(`${d}-stats`).textContent=`${s.correct}/${s.total} (${p}%)`;document.getElementById(`${d}-bar`).style.width=p+"%"})}
+function saveData(){localStorage.setItem("matrixWrong",JSON.stringify(game.wrongList));localStorage.setItem("matrixStats",JSON.stringify(game.stats));localStorage.setItem("matrixMedals",JSON.stringify(game.earnedMedals))}
+window.onload=()=>{showPage("welcome");updateStats()};
+</script>
+</body>
+</html>

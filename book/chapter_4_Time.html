@@ -1,0 +1,642 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第四 时间 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第四-时间"><a class="header" href="#第四-时间">第四 时间</a></h1>
+<p>时间是什么？不同的人就会有不同的回答。古人根据日月星辰的运行规律，制定了历法。中国的<a href="https://baike.baidu.com/item/%E5%B9%B2%E6%94%AF%E7%BA%AA%E5%B9%B4/3383226">干支纪年</a>，西方的<a href="https://baike.baidu.com/item/%E5%85%AC%E5%85%83/17855">公元纪年</a>。再到近代的<a href="https://baike.baidu.com/item/%E6%A0%BC%E6%9E%97%E5%B0%BC%E6%B2%BB%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4/586530">格林尼治标准时间（Greenwich Mean Time，GMT）</a>，直到现在基于原子钟的<a href="https://baike.baidu.com/item/%E5%8D%8F%E8%B0%83%E4%B8%96%E7%95%8C%E6%97%B6/787659">世界标准时间（世界协调时 UTC）</a>，以及计算机领域著名的<a href="https://baike.baidu.com/item/UNIX%E6%97%B6%E9%97%B4/8932323">UNIX时间</a>。</p>
+<p>在计算机系统中，时间是程序运行、数据记录、网络通信的基础。从日志时间戳到定时任务，从缓存过期到分布式一致性，时间的准确性和一致性至关重要。本章将从计算机时间的本质出发，深入剖析时间戳、日期格式化、时区、时间间隔等核心概念，并通过 Rust 代码实现时间的获取、转换和运算。</p>
+<h2 id="41-计算机时间概述"><a class="header" href="#41-计算机时间概述">4.1 计算机时间概述</a></h2>
+<h3 id="411-时间的历史"><a class="header" href="#411-时间的历史">4.1.1 时间的历史</a></h3>
+<p>人类对时间的计量经历了漫长的演变。古代人们使用圭表、日晷、滴漏等工具计时；近代发展出机械钟表；现代则使用原子钟计时，并可以通过无线电波、卫星、互联网等手段进行授时。</p>
+<ul>
+<li><a href="https://baijiahao.baidu.com/s?id=1704726811030042384&amp;wfr=spider&amp;for=pc">计算机时间到底是怎么来的？程序员必看的时间知识！</a></li>
+</ul>
+<h3 id="412-原子钟与-utc"><a class="header" href="#412-原子钟与-utc">4.1.2 原子钟与 UTC</a></h3>
+<p>1967 年，国际计量大会将秒的定义改为：铯-133 原子基态的两个超精细能级之间跃迁所对应的辐射的 9,192,631,770 个周期的持续时间。这一定义基于原子钟，其精度可达每数百万年误差不超过 1 秒。</p>
+<p>UTC（Coordinated Universal Time，协调世界时）是目前全球最通用的时间标准。它结合了：</p>
+<ul>
+<li><strong>TAI</strong>（International Atomic Time，国际原子时）：基于全球约 400 台原子钟的加权平均，是连续均匀的时间尺度。</li>
+<li><strong>UT1</strong>（Universal Time 1）：基于地球自转，与天文观测相关。</li>
+</ul>
+<p>UTC 通过在 TAI 基础上插入<strong>闰秒</strong>来保持与 UT1 的偏差不超过 0.9 秒。</p>
+<h3 id="413-unix-时间戳原理"><a class="header" href="#413-unix-时间戳原理">4.1.3 UNIX 时间戳原理</a></h3>
+<p>UNIX 时间戳（Unix Timestamp）是计算机系统中最常用的时间表示方式，定义为自 <strong>1970-01-01 00:00:00 UTC</strong> 起经过的秒数（或毫秒数、微秒数、纳秒数）。</p>
+<p>选择 1970 年作为纪元（Epoch）的原因是 UNIX 操作系统诞生于 1969 年，1970-01-01 是 UNIX 的“生日“。</p>
+<p>时间戳的核心优势在于：</p>
+<ul>
+<li><strong>无歧义</strong>：不受时区、夏令时、日期格式影响</li>
+<li><strong>便于计算</strong>：两个时间戳的差值即为时间间隔</li>
+<li><strong>存储高效</strong>：一个整数即可表示任意时刻</li>
+</ul>
+<h3 id="414-闰秒问题"><a class="header" href="#414-闰秒问题">4.1.4 闰秒问题</a></h3>
+<p>由于地球自转速度不均匀（潮汐摩擦等因素导致逐渐变慢），UTC 需要通过插入闰秒来与地球自转保持一致。闰秒的插入规则是：</p>
+<ul>
+<li>当 UTC 与 UT1 的偏差接近 0.9 秒时，在 6 月 30 日或 12 月 31 日的最后一分钟插入一个额外的第 61 秒</li>
+<li>闰秒可以正（增加一秒）也可以负（减少一秒），但历史上只出现过正闰秒</li>
+</ul>
+<p>闰秒给计算机系统带来了挑战：</p>
+<ul>
+<li>一分钟可能有 61 秒或 59 秒</li>
+<li>时间戳在闰秒期间可能出现倒退或重复</li>
+<li>部分系统采用“闰秒抹平“（Leap Second Smearing）策略，将闰秒分散到多个小时中</li>
+</ul>
+<p><a href="https://www.epochconverter.com/">时间戳转换工具</a></p>
+<h2 id="42-时间戳"><a class="header" href="#42-时间戳">4.2 时间戳</a></h2>
+<h3 id="421-时间戳的精度"><a class="header" href="#421-时间戳的精度">4.2.1 时间戳的精度</a></h3>
+<p>根据精度不同，时间戳可分为多个级别：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">精度级别</th><th style="text-align: center">单位</th><th style="text-align: center">示例（2024-01-01 00:00:00 UTC）</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">秒级</td><td style="text-align: center">秒</td><td style="text-align: center"><code>1704067200</code></td></tr>
+<tr><td style="text-align: center">毫秒级</td><td style="text-align: center">毫秒</td><td style="text-align: center"><code>1704067200000</code></td></tr>
+<tr><td style="text-align: center">微秒级</td><td style="text-align: center">微秒</td><td style="text-align: center"><code>1704067200000000</code></td></tr>
+<tr><td style="text-align: center">纳秒级</td><td style="text-align: center">纳秒</td><td style="text-align: center"><code>1704067200000000000</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>秒级时间戳在 32 位有符号整数中的最大值为 $2^{31} - 1 = 2147483647$，对应 <strong>2038-01-19 03:14:07 UTC</strong>，这就是著名的 <strong>Y2K38 问题</strong>（2038 年问题）。使用 64 位整数可以表示到约 2920 亿年后，彻底解决这个问题。</p>
+<h3 id="422-rust-获取时间戳"><a class="header" href="#422-rust-获取时间戳">4.2.2 Rust 获取时间戳</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use chrono::Utc;
+
+fn main() {
+    // 秒级时间戳
+    println!("Utc timestamp: {}", Utc::now().timestamp());
+    
+    // 毫秒级时间戳
+    println!("Utc timestamp_millis: {}", Utc::now().timestamp_millis());
+    
+    // 微秒级时间戳
+    println!("Utc timestamp_micros: {}", Utc::now().timestamp_micros());
+    
+    // 纳秒级时间戳
+    println!("Utc timestamp_nanos: {}", Utc::now().timestamp_nanos_opt().unwrap_or(0));
+}</code></pre>
+<h2 id="43-日期格式化"><a class="header" href="#43-日期格式化">4.3 日期格式化</a></h2>
+<h3 id="431-iso-8601-标准"><a class="header" href="#431-iso-8601-标准">4.3.1 ISO 8601 标准</a></h3>
+<p>ISO 8601 是国际标准化组织制定的日期和时间表示标准，旨在消除不同国家和文化之间的日期表示歧义。</p>
+<p><strong>基本格式</strong>：</p>
+<p>$$\text{YYYY-MM-DDTHH:MM:SS±HH:MM}$$</p>
+<p>其中：</p>
+<ul>
+<li><code>YYYY</code>：四位年份</li>
+<li><code>MM</code>：两位月份（01-12）</li>
+<li><code>DD</code>：两位日期（01-31）</li>
+<li><code>T</code>：日期和时间的分隔符</li>
+<li><code>HH:MM:SS</code>：时:分:秒</li>
+<li><code>±HH:MM</code>：与 UTC 的时区偏移</li>
+</ul>
+<p><strong>示例</strong>：</p>
+<ul>
+<li><code>2024-01-15T09:30:00+08:00</code>（北京时间）</li>
+<li><code>2024-01-15T01:30:00Z</code>（UTC 时间，<code>Z</code> 表示零时区）</li>
+</ul>
+<h3 id="432-rfc-2822-与-rfc-3339"><a class="header" href="#432-rfc-2822-与-rfc-3339">4.3.2 RFC 2822 与 RFC 3339</a></h3>
+<p><strong>RFC 2822</strong> 是电子邮件中使用的日期格式：</p>
+<pre><code>Fri, 28 Nov 2014 12:00:09 +0000
+</code></pre>
+<p><strong>RFC 3339</strong> 是互联网协议中广泛使用的日期格式，基于 ISO 8601 但做了一些限制：</p>
+<pre><code>2014-11-28T12:00:09+00:00
+</code></pre>
+<p>两者的主要区别：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">特性</th><th style="text-align: left">RFC 2822</th><th style="text-align: left">RFC 3339</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">来源</td><td style="text-align: left">电子邮件标准</td><td style="text-align: left">互联网标准</td></tr>
+<tr><td style="text-align: left">星期</td><td style="text-align: left">必须包含</td><td style="text-align: left">不包含</td></tr>
+<tr><td style="text-align: left">时区格式</td><td style="text-align: left"><code>+0000</code> 或 GMT</td><td style="text-align: left"><code>+00:00</code> 或 Z</td></tr>
+<tr><td style="text-align: left">使用场景</td><td style="text-align: left">邮件头、HTTP Date</td><td style="text-align: left">JSON、API、配置文件</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="433-rust-chrono-格式化字符串"><a class="header" href="#433-rust-chrono-格式化字符串">4.3.3 Rust chrono 格式化字符串</a></h3>
+<p><code>chrono</code> crate 提供了丰富的格式化选项：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">占位符</th><th style="text-align: left">含义</th><th style="text-align: left">示例</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><code>%Y</code></td><td style="text-align: left">四位年份</td><td style="text-align: left"><code>2024</code></td></tr>
+<tr><td style="text-align: left"><code>%m</code></td><td style="text-align: left">两位月份</td><td style="text-align: left"><code>01</code></td></tr>
+<tr><td style="text-align: left"><code>%d</code></td><td style="text-align: left">两位日期</td><td style="text-align: left"><code>15</code></td></tr>
+<tr><td style="text-align: left"><code>%H</code></td><td style="text-align: left">24小时制小时</td><td style="text-align: left"><code>09</code></td></tr>
+<tr><td style="text-align: left"><code>%M</code></td><td style="text-align: left">分钟</td><td style="text-align: left"><code>30</code></td></tr>
+<tr><td style="text-align: left"><code>%S</code></td><td style="text-align: left">秒</td><td style="text-align: left"><code>00</code></td></tr>
+<tr><td style="text-align: left"><code>%f</code></td><td style="text-align: left">微秒（6位）</td><td style="text-align: left"><code>000123</code></td></tr>
+<tr><td style="text-align: left"><code>%z</code></td><td style="text-align: left">时区偏移</td><td style="text-align: left"><code>+0800</code></td></tr>
+<tr><td style="text-align: left"><code>%Z</code></td><td style="text-align: left">时区名称</td><td style="text-align: left"><code>CST</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="434-日期与字符串相互转换"><a class="header" href="#434-日期与字符串相互转换">4.3.4 日期与字符串相互转换</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use chrono::{Utc, NaiveDateTime, TimeZone, NaiveDate};
+
+pub fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // 1. DateTime -&gt; &amp;str (格式化输出日期)
+    let dt = Utc.with_ymd_and_hms(2014, 11, 28, 12, 0, 9).unwrap();
+    assert_eq!(
+        dt.format("%Y-%m-%d %H:%M:%S").to_string(),
+        "2014-11-28 12:00:09"
+    );
+
+    assert_eq!(dt.to_string(), "2014-11-28 12:00:09 UTC");
+    assert_eq!(dt.to_rfc2822(), "Fri, 28 Nov 2014 12:00:09 +0000");
+    assert_eq!(dt.to_rfc3339(), "2014-11-28T12:00:09+00:00");
+    assert_eq!(format!("{:?}", dt), "2014-11-28T12:00:09Z");
+
+    // 2. &amp;str -&gt; DateTime
+    let no_timezone = NaiveDateTime::parse_from_str("2015-09-05 23:56:04", "%Y-%m-%d %H:%M:%S");
+    println!("{:?}", no_timezone);
+
+    assert_eq!(
+        NaiveDateTime::parse_from_str("2014-5-17T12:34:56+09:30", "%Y-%m-%dT%H:%M:%S%z"),
+        Ok(NaiveDate::from_ymd_opt(2014, 5, 17).unwrap().and_hms_opt(12, 34, 56).unwrap())
+    );
+    
+    Ok(())
+}</code></pre>
+<h2 id="44-时区"><a class="header" href="#44-时区">4.4 时区</a></h2>
+<h3 id="441-时区概念"><a class="header" href="#441-时区概念">4.4.1 时区概念</a></h3>
+<p>地球自转导致不同经度地区看到太阳的位置不同，因此将地球划分为 24 个时区，每个时区跨 15 度经度。时区用 UTC 偏移量表示：</p>
+<p>$$\text{本地时间} = \text{UTC} + \text{时区偏移}$$</p>
+<p>常见时区：</p>
+<pre><code class="language-text">UTC+5:30   印度新德里时间       （东5.5区时间）
+UTC+8      北京时间             （东八区时间）
+UTC+9      东京时间             （东九区时间）
+UTC-5      东部时间（EST）      （西五区时间）
+UTC-8      太平洋标准时区（PST）（西八区时间）
+</code></pre>
+<h3 id="442-夏令时"><a class="header" href="#442-夏令时">4.4.2 夏令时</a></h3>
+<p>夏令时（Daylight Saving Time，DST）是一种为节约能源而人为调整时间的制度。在夏季将时钟拨快一小时，以充分利用日光。</p>
+<ul>
+<li>并非所有国家/地区都使用夏令时</li>
+<li>中国自 1991 年起不再实行夏令时</li>
+<li>美国、欧洲大部分国家仍在使用</li>
+<li>夏令时的开始和结束日期每年可能不同，给程序处理带来复杂性</li>
+</ul>
+<h3 id="443-rust-时区处理"><a class="header" href="#443-rust-时区处理">4.4.3 Rust 时区处理</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use chrono::{Local, DateTime, Utc, FixedOffset, NaiveDate, TimeZone};
+use chrono::{Datelike, Timelike};
+
+fn main() {
+    // ❌ 旧方法（已弃用）
+    // let utc_time = DateTime::&lt;Utc&gt;::from_utc(local_time.naive_utc(), Utc);
+    
+    // ✅ 新方法：使用 Utc.from_utc_datetime()
+    let local_time = Local::now();
+    let utc_time = Utc.from_utc_datetime(&amp;local_time.naive_utc());
+    
+    // 定义时区（注意：FixedOffset::east() 已弃用，使用 east_opt() 或 from_hours()）
+    let new_delhi_timezone = FixedOffset::east_opt(5 * 3600 + 1800).unwrap();
+    let china_timezone = FixedOffset::east_opt(8 * 3600).unwrap();
+    let japan_timezone = FixedOffset::east_opt(9 * 3600).unwrap();
+    let rio_timezone = FixedOffset::west_opt(2 * 3600).unwrap();
+    let est_timezone = FixedOffset::west_opt(5 * 3600).unwrap();
+    let pst_timezone = FixedOffset::west_opt(8 * 3600).unwrap();
+
+    println!("Local time now is {}", local_time);
+    println!("UTC time now is {}", utc_time);
+
+    // UTC --&gt; 各时区时间
+    println!("Time in Beijing now is {}", utc_time.with_timezone(&amp;china_timezone));
+    println!("Time in Tokyo now is {}", utc_time.with_timezone(&amp;japan_timezone));
+    println!("Time in Rio de Janeiro now is {}", utc_time.with_timezone(&amp;rio_timezone));
+    println!("Time in New Delhi now is {}", utc_time.with_timezone(&amp;new_delhi_timezone));
+    println!("Time in EST now is {}", utc_time.with_timezone(&amp;est_timezone));
+    println!("Time in PST now is {}", utc_time.with_timezone(&amp;pst_timezone));
+    
+    // 格式化输出
+    let local: DateTime&lt;Local&gt; = Local::now();
+    println!("{}", local.format("%Y-%m-%d %H:%M:%S"));
+    println!("当前本地时间: {}", local);
+
+    // NaiveDateTime 构建（需要 NaiveDate 类型）
+    let local_time_now = Local::now();
+    let dt = NaiveDate::from_ymd_opt(
+        local_time_now.year(), 
+        local_time_now.month(), 
+        local_time_now.day()
+    )
+    .unwrap()
+    .and_hms_opt(
+        local_time_now.hour(), 
+        local_time_now.minute(), 
+        local_time_now.second()
+    )
+    .unwrap();
+    
+    println!("NaiveDateTime: {}", dt);
+}</code></pre>
+<h2 id="45-时间间隔-duration"><a class="header" href="#45-时间间隔-duration">4.5 时间间隔 Duration</a></h2>
+<h3 id="451-duration-概念"><a class="header" href="#451-duration-概念">4.5.1 Duration 概念</a></h3>
+<p>Duration 表示两个时间点之间的间隔。在 Rust 的 <code>chrono</code> 库中，<code>Duration</code> 可以表示正负的时间长度，支持多种时间单位：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">方法</th><th style="text-align: left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><code>Duration::days(n)</code></td><td style="text-align: left">n 天</td></tr>
+<tr><td style="text-align: left"><code>Duration::hours(n)</code></td><td style="text-align: left">n 小时</td></tr>
+<tr><td style="text-align: left"><code>Duration::minutes(n)</code></td><td style="text-align: left">n 分钟</td></tr>
+<tr><td style="text-align: left"><code>Duration::seconds(n)</code></td><td style="text-align: left">n 秒</td></tr>
+<tr><td style="text-align: left"><code>Duration::milliseconds(n)</code></td><td style="text-align: left">n 毫秒</td></tr>
+<tr><td style="text-align: left"><code>Duration::microseconds(n)</code></td><td style="text-align: left">n 微秒</td></tr>
+<tr><td style="text-align: left"><code>Duration::nanoseconds(n)</code></td><td style="text-align: left">n 纳秒</td></tr>
+<tr><td style="text-align: left"><code>Duration::weeks(n)</code></td><td style="text-align: left">n 周</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="452-时间运算"><a class="header" href="#452-时间运算">4.5.2 时间运算</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use chrono::{Duration, DateTime, Utc, TimeZone, Local};
+
+fn day_earlier(date_time: DateTime&lt;Utc&gt;) -&gt; Option&lt;DateTime&lt;Utc&gt;&gt; {
+    date_time.checked_sub_signed(Duration::days(1))
+}
+
+fn main() {
+    let now = Utc::now();
+    
+    let almost_three_weeks_from_now = now
+        .checked_add_signed(Duration::weeks(2))
+        .and_then(|in_2weeks| in_2weeks.checked_add_signed(Duration::weeks(1)))
+        .and_then(day_earlier);
+
+    match almost_three_weeks_from_now {
+        Some(x) =&gt; println!("三周前一天: {}", x),
+        None =&gt; eprintln!("Almost three weeks from now overflows!"),
+    }
+
+    // ✅ 新方法：使用 with_ymd_and_hms()
+    let today = Utc::now();
+    let now = Local::now();
+    let founding_date = Utc.with_ymd_and_hms(1949, 10, 1, 0, 0, 0).unwrap();
+    
+    let years_passed = now.signed_duration_since(founding_date).num_days() / 365;
+    println!("今天{}，建国{}年", now, years_passed);
+    
+    // 时间运算示例
+    let tomorrow = now.checked_add_signed(Duration::days(1)).unwrap();
+    let last_week = now.checked_sub_signed(Duration::weeks(1)).unwrap();
+    let ten_minutes_later = now.checked_add_signed(Duration::minutes(10)).unwrap();
+    
+    println!("明天: {}", tomorrow);
+    println!("上周: {}", last_week);
+    println!("十分钟后: {}", ten_minutes_later);
+    
+    // 计算两个时间点的间隔
+    let start = Utc.with_ymd_and_hms(2024, 1, 1, 0, 0, 0).unwrap();
+    let end = Utc.with_ymd_and_hms(2024, 6, 20, 12, 0, 0).unwrap();
+    let diff = end.signed_duration_since(start);
+    
+    println!("从年初到今天的间隔: {} 天", diff.num_days());
+    println!("从年初到今天的间隔: {} 小时", diff.num_hours());
+    println!("从年初到今天的间隔: {} 秒", diff.num_seconds());
+}</code></pre>
+<p><a href="https://github.com/smallswan/rust-by-example/blob/master/src/datetime.rs">更多详细代码</a></p>
+<h2 id="46-时间标准"><a class="header" href="#46-时间标准">4.6 时间标准</a></h2>
+<h3 id="461-ntp-协议"><a class="header" href="#461-ntp-协议">4.6.1 NTP 协议</a></h3>
+<p>NTP（Network Time Protocol，网络时间协议）是用于同步计算机系统时钟的协议。它通过分层的时间服务器架构（Stratum 0-15）将时间从原子钟传播到互联网上的各种设备。</p>
+<ul>
+<li><strong>Stratum 0</strong>：原子钟、GPS 等高精度时间源</li>
+<li><strong>Stratum 1</strong>：直接与 Stratum 0 连接的时间服务器</li>
+<li><strong>Stratum 2</strong>：从 Stratum 1 获取时间的服务器</li>
+<li><strong>…</strong></li>
+</ul>
+<p>NTP 使用 UDP 端口 123，精度可达毫秒级。SNTP（Simple NTP）是 NTP 的简化版本，适用于对精度要求不高的场景。</p>
+<h3 id="462-日期与时间标准"><a class="header" href="#462-日期与时间标准">4.6.2 日期与时间标准</a></h3>
+<ul>
+<li><a href="https://baike.baidu.com/item/%E7%BD%91%E7%BB%9C%E6%97%B6%E9%97%B4%E5%8D%8F%E8%AE%AE/5927826">网络时间协议</a></li>
+<li><a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601 Date and time format</a></li>
+<li><a href="https://www.ietf.org/rfc/rfc2822.txt">rfc2822</a></li>
+<li><a href="https://www.ietf.org/rfc/rfc3339.txt">rfc3339</a></li>
+</ul>
+<h2 id="47-总结"><a class="header" href="#47-总结">4.7 总结</a></h2>
+<h3 id="时间相关概念对比"><a class="header" href="#时间相关概念对比">时间相关概念对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">概念</th><th style="text-align: left">说明</th><th style="text-align: left">示例</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">时间戳</td><td style="text-align: left">自 1970-01-01 00:00:00 UTC 起的秒数</td><td style="text-align: left"><code>1704067200</code></td></tr>
+<tr><td style="text-align: left">UTC</td><td style="text-align: left">协调世界时，基于原子钟的全球标准时间</td><td style="text-align: left"><code>2024-01-01T00:00:00Z</code></td></tr>
+<tr><td style="text-align: left">GMT</td><td style="text-align: left">格林尼治标准时间，基于地球自转（已逐渐被 UTC 取代）</td><td style="text-align: left"><code>Sun, 01 Jan 2024 00:00:00 GMT</code></td></tr>
+<tr><td style="text-align: left">本地时间</td><td style="text-align: left">UTC + 时区偏移</td><td style="text-align: left"><code>2024-01-01T08:00:00+08:00</code></td></tr>
+<tr><td style="text-align: left">ISO 8601</td><td style="text-align: left">国际日期时间表示标准</td><td style="text-align: left"><code>2024-01-01T00:00:00+00:00</code></td></tr>
+<tr><td style="text-align: left">RFC 3339</td><td style="text-align: left">互联网日期时间格式（基于 ISO 8601）</td><td style="text-align: left"><code>2024-01-01T00:00:00Z</code></td></tr>
+<tr><td style="text-align: left">RFC 2822</td><td style="text-align: left">电子邮件日期时间格式</td><td style="text-align: left"><code>Mon, 01 Jan 2024 00:00:00 +0000</code></td></tr>
+<tr><td style="text-align: left">Duration</td><td style="text-align: left">两个时间点之间的间隔</td><td style="text-align: left"><code>Duration::days(7)</code></td></tr>
+<tr><td style="text-align: left">闰秒</td><td style="text-align: left">为保持 UTC 与地球自转同步而插入的额外秒</td><td style="text-align: left">2016-12-31 23:59:60</td></tr>
+<tr><td style="text-align: left">夏令时</td><td style="text-align: left">夏季将时钟拨快一小时的制度</td><td style="text-align: left">UTC-5 → UTC-4</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="关键公式汇总"><a class="header" href="#关键公式汇总">关键公式汇总</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">公式</th><th style="text-align: left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">$\text{本地时间} = \text{UTC} + \text{时区偏移}$</td><td style="text-align: left">时区转换</td></tr>
+<tr><td style="text-align: left">$\text{时间间隔} = t_2 - t_1$</td><td style="text-align: left">Duration 计算</td></tr>
+<tr><td style="text-align: left">$\text{Y2K38 临界点} = 2^{31} - 1 = 2147483647$</td><td style="text-align: left">32 位时间戳最大值</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="48-练习题"><a class="header" href="#48-练习题">4.8 练习题</a></h2>
+<ol>
+<li>
+<p><strong>基础题</strong>：使用 <code>chrono</code> 库获取当前时间的秒级、毫秒级和纳秒级时间戳，并输出到控制台。</p>
+</li>
+<li>
+<p><strong>格式转换</strong>：编写一个 Rust 程序，将当前 UTC 时间分别格式化为 ISO 8601、RFC 2822 和 RFC 3339 格式，并输出对比。</p>
+</li>
+<li>
+<p><strong>时区转换</strong>：给定一个 UTC 时间字符串 <code>"2024-06-20T12:00:00Z"</code>，将其转换为北京时间（UTC+8）、东京时间（UTC+9）和纽约时间（UTC-5）的本地时间。</p>
+</li>
+<li>
+<p><strong>时间运算</strong>：计算从 1949 年 10 月 1 日 00:00:00 UTC 到当前时间经过了多少天、多少小时、多少分钟。</p>
+</li>
+<li>
+<p><strong>闰年判断</strong>：编写一个函数判断给定年份是否为闰年。闰年规则：能被 4 整除但不能被 100 整除，或者能被 400 整除。</p>
+</li>
+<li>
+<p><strong>倒计时程序</strong>：编写一个 Rust 程序，计算距离 2038-01-19 03:14:07 UTC（Y2K38 问题发生时刻）还剩多少天、小时、分钟和秒。</p>
+</li>
+<li>
+<p><strong>时间解析</strong>：编写一个函数，解析各种格式的日期字符串（如 <code>"2024-01-15"</code>、<code>"15/01/2024"</code>、<code>"Jan 15, 2024"</code>），统一返回 <code>DateTime&lt;Utc&gt;</code> 类型。</p>
+</li>
+<li>
+<p><strong>思考题</strong>：为什么计算机系统使用时间戳而不是人类可读的日期字符串来存储时间？时间戳有哪些优势和局限性？</p>
+</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_3_Byte.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_5_Image.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_3_Byte.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_5_Image.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

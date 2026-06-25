@@ -1,0 +1,733 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第二十七 代数 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第二十七-代数algebra"><a class="header" href="#第二十七-代数algebra">第二十七 代数（Algebra）</a></h1>
+<p>代数是数学的一个基础分支，主要研究数、符号、数量关系以及运算结构。它通过用符号（如字母）代替具体数字，抽象地探讨运算规律、方程求解以及数学结构（如群、环、域等）。</p>
+<p>法国数学家弗朗索瓦·韦达（François Viète，1540—1603）第一次有意识地使用系统的代数字母与符号，以辅音字母表示已知量，元音字母表示未知量，推进了方程论的发展，使代数成为一般类型的形式和方程的学问，因其抽象而应用更为广泛，被称为“代数符号之父“。在研究一元二次方程的解法时，他发现了一元二次方程的根与系数之间存在的特殊关系，人们把这个关系称为<strong>韦达定理</strong>。</p>
+<hr>
+<h2 id="一一元二次方程"><a class="header" href="#一一元二次方程">一、一元二次方程</a></h2>
+<h3 id="11-一般形式"><a class="header" href="#11-一般形式">1.1 一般形式</a></h3>
+<p>$$ax^2+bx+c=0 \quad (a\neq0)$$</p>
+<h3 id="12-求根公式"><a class="header" href="#12-求根公式">1.2 求根公式</a></h3>
+<p>$$x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}$$</p>
+<p>其中 $\Delta = b^2 - 4ac$ 称为判别式：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>判别式</th><th>根的情况</th></tr>
+</thead>
+<tbody>
+<tr><td>$\Delta &gt; 0$</td><td>两个不相等的实数根</td></tr>
+<tr><td>$\Delta = 0$</td><td>两个相等的实数根（重根）</td></tr>
+<tr><td>$\Delta &lt; 0$</td><td>无实数根（两个共轭复数根）</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="13-韦达定理"><a class="header" href="#13-韦达定理">1.3 韦达定理</a></h3>
+<p>设方程 $ax^2+bx+c=0$ 的两个根为 $x_1, x_2$，则：</p>
+<p>$$x_1 + x_2 = -\frac{b}{a}$$</p>
+<p>$$x_1 \cdot x_2 = \frac{c}{a}$$</p>
+<h3 id="14-rust-实现"><a class="header" href="#14-rust-实现">1.4 Rust 实现</a></h3>
+<pre class="playground"><code class="language-rust edition2024">fn solve_quadratic(a: f64, b: f64, c: f64) -&gt; (Option&lt;f64&gt;, Option&lt;f64&gt;) {
+    let discriminant = b * b - 4.0 * a * c;
+
+    if discriminant &gt; 0.0 {
+        let sqrt_d = discriminant.sqrt();
+        let x1 = (-b + sqrt_d) / (2.0 * a);
+        let x2 = (-b - sqrt_d) / (2.0 * a);
+        (Some(x1), Some(x2))
+    } else if discriminant == 0.0 {
+        let x = -b / (2.0 * a);
+        (Some(x), Some(x))  // 重根
+    } else {
+        (None, None)  // 无实数根
+    }
+}
+
+fn main() {
+    // x² - 5x + 6 = 0，根为 2 和 3
+    let (x1, x2) = solve_quadratic(1.0, -5.0, 6.0);
+    println!("x² - 5x + 6 = 0 的根: {:?}, {:?}", x1, x2);
+
+    // x² + 2x + 1 = 0，根为 -1（重根）
+    let (x1, x2) = solve_quadratic(1.0, 2.0, 1.0);
+    println!("x² + 2x + 1 = 0 的根: {:?}, {:?}", x1, x2);
+
+    // x² + x + 1 = 0，无实数根
+    let (x1, x2) = solve_quadratic(1.0, 1.0, 1.0);
+    println!("x² + x + 1 = 0 的根: {:?}, {:?}", x1, x2);
+}</code></pre>
+<hr>
+<h2 id="二数列"><a class="header" href="#二数列">二、数列</a></h2>
+<h3 id="21-等差数列"><a class="header" href="#21-等差数列">2.1 等差数列</a></h3>
+<p>等差数列是相邻两项之差为常数的数列，这个常数称为<strong>公差</strong>（$d$）。</p>
+<p><strong>通项公式：</strong> $a_n = a_1 + (n-1)d$</p>
+<p><strong>前 n 项和：</strong> $S_n = \frac{n(a_1 + a_n)}{2} = \frac{n}{2}[2a_1 + (n-1)d]$</p>
+<pre class="playground"><code class="language-rust edition2024">fn arithmetic_sum(a1: f64, d: f64, n: usize) -&gt; f64 {
+    n as f64 * (2.0 * a1 + (n as f64 - 1.0) * d) / 2.0
+}
+
+fn main() {
+    // 1 + 2 + 3 + ... + 100 = 5050
+    println!("1+2+...+100 = {}", arithmetic_sum(1.0, 1.0, 100));  // 5050
+}</code></pre>
+<h3 id="22-等比数列"><a class="header" href="#22-等比数列">2.2 等比数列</a></h3>
+<p>等比数列是相邻两项之比为常数的数列，这个常数称为<strong>公比</strong>（$q$）。</p>
+<p><strong>通项公式：</strong> $a_n = a_1 \cdot q^{n-1}$</p>
+<p><strong>前 n 项和：</strong> $S_n = \frac{a_1(1 - q^n)}{1 - q} \quad (q \neq 1)$</p>
+<pre class="playground"><code class="language-rust edition2024">fn geometric_sum(a1: f64, q: f64, n: usize) -&gt; f64 {
+    if q == 1.0 {
+        a1 * n as f64
+    } else {
+        a1 * (1.0 - q.powi(n as i32)) / (1.0 - q)
+    }
+}
+
+fn main() {
+    // 1 + 2 + 4 + 8 + ... 前 10 项
+    println!("等比求和: {}", geometric_sum(1.0, 2.0, 10));  // 1023.0
+}</code></pre>
+<h3 id="23-斐波那契数列"><a class="header" href="#23-斐波那契数列">2.3 斐波那契数列</a></h3>
+<p>斐波那契数列（Fibonacci Sequence）是递推数列的经典代表：</p>
+<p>$$ F_0 = 0, \quad F_1 = 1, \quad F_n = F_{n-1} + F_{n-2} \quad (n \ge 2) $$</p>
+<pre class="playground"><code class="language-rust edition2024">fn fib_iterative(n: u32) -&gt; u32 {
+    if n == 0 { return 0; }
+    if n == 1 { return 1; }
+
+    let mut prev = 0;  // F(n-2)
+    let mut curr = 1;  // F(n-1)
+
+    for _ in 2..=n {
+        let next = prev + curr;
+        prev = curr;
+        curr = next;
+    }
+    curr
+}
+
+fn main() {
+    for i in 0..=10 {
+        println!("F{} = {}", i, fib_iterative(i));
+    }
+    // F0=0, F1=1, F2=1, F3=2, F4=3, F5=5, F6=8, F7=13, F8=21, F9=34, F10=55
+}</code></pre>
+<p><strong>斐波那契数列通项公式（Binet 公式）：</strong></p>
+<p>$$ F(n) = \frac{1}{\sqrt{5}} \left[\left( \frac{1+\sqrt{5}}{2} \right)^n - \left( \frac{1-\sqrt{5}}{2} \right)^n \right] $$</p>
+<h3 id="24-调和数列"><a class="header" href="#24-调和数列">2.4 调和数列</a></h3>
+<p>调和数列的通项为 $a_n = \frac{1}{n}$，其前 n 项和为：</p>
+<p>$$ H_n = \sum_{k=1}^{n} \frac{1}{k} = 1 + \frac{1}{2} + \frac{1}{3} + \cdots + \frac{1}{n} $$</p>
+<blockquote>
+<p><strong>结论：</strong> 调和级数 $\sum_{n=1}^{\infty} \frac{1}{n}$ 发散（其和趋向于无穷大），尽管增长速度非常缓慢。$H_n$ 的增长速度约为 $\ln(n) + \gamma$，其中 $\gamma \approx 0.5772$ 是欧拉-马歇罗尼常数。</p>
+</blockquote>
+<pre class="playground"><code class="language-rust edition2024">fn harmonic_number(n: u32) -&gt; f64 {
+    (1..=n).map(|k| 1.0 / k as f64).sum()
+}
+
+fn main() {
+    println!("H(10) = {:.6}", harmonic_number(10));    // 2.928968
+    println!("H(100) = {:.6}", harmonic_number(100));  // 5.187378
+    println!("H(1000) = {:.6}", harmonic_number(1000)); // 7.485471
+}</code></pre>
+<hr>
+<h2 id="三黄金分割数"><a class="header" href="#三黄金分割数">三、黄金分割数</a></h2>
+<h3 id="31-定义"><a class="header" href="#31-定义">3.1 定义</a></h3>
+<p>黄金分割数 $\phi$（phi）是满足方程 $\phi^2 = \phi + 1$ 的正根：</p>
+<p>$$ \phi = \frac{1+\sqrt{5}}{2} \approx 1.618033988749895 $$</p>
+<h3 id="32-黄金分割数的性质"><a class="header" href="#32-黄金分割数的性质">3.2 黄金分割数的性质</a></h3>
+<p>黄金分割数满足公式：</p>
+<p>$$ \phi = 1 + \frac{1}{\phi} $$</p>
+<p>上述方程的另一个共轭根为：</p>
+<p>$$ \hat{\phi} = \frac{1-\sqrt{5}}{2} \approx -0.618033988749895 $$</p>
+<h3 id="33-与斐波那契数列的关系"><a class="header" href="#33-与斐波那契数列的关系">3.3 与斐波那契数列的关系</a></h3>
+<p>斐波那契数列相邻项的极限趋向于黄金分割数：</p>
+<p>$$ \lim_{n \to \infty} \frac{F(n+1)}{F(n)} = \phi $$</p>
+<pre class="playground"><code class="language-rust edition2024">fn fib(n: u32) -&gt; u64 {
+    if n == 0 { return 0; }
+    if n == 1 { return 1; }
+    let (mut prev, mut curr) = (0u64, 1u64);
+    for _ in 2..=n {
+        let next = prev + curr;
+        prev = curr;
+        curr = next;
+    }
+    curr
+}
+
+fn main() {
+    let phi = (1.0 + 5.0_f64.sqrt()) / 2.0;
+    println!("黄金分割数 φ = {:.15}", phi);
+
+    // 验证相邻项之比趋近于 φ
+    for n in [10, 15, 20, 25, 30] {
+        let ratio = fib(n + 1) as f64 / fib(n) as f64;
+        println!("F{}/F{} = {:.15}  (误差: {:.2e})",
+            n + 1, n, ratio, (ratio - phi).abs());
+    }
+}</code></pre>
+<h3 id="34-斐波那契数列定理"><a class="header" href="#34-斐波那契数列定理">3.4 斐波那契数列定理</a></h3>
+<p>$$ \gcd(F_n, F_{n-1}) = 1 $$</p>
+<p>$$ \gcd(F_m, F_n) = F_{\gcd(m,n)} $$</p>
+<hr>
+<h2 id="四欧拉数与欧拉恒等式"><a class="header" href="#四欧拉数与欧拉恒等式">四、欧拉数与欧拉恒等式</a></h2>
+<h3 id="41-欧拉数自然常数"><a class="header" href="#41-欧拉数自然常数">4.1 欧拉数（自然常数）</a></h3>
+<p>$$ e = \lim_{n \to \infty} \left(1 + \frac{1}{n}\right)^n \approx 2.718281828459045 $$</p>
+<pre class="playground"><code class="language-rust edition2024">fn compute_e(iterations: u32) -&gt; f64 {
+    (1..=iterations).map(|n| {
+        let n_f = n as f64;
+        (1.0 + 1.0 / n_f).powf(n_f)
+    }).last().unwrap()
+}
+
+fn main() {
+    println!("e (近似) = {:.15}", compute_e(100000));
+    println!("e (标准库) = {:.15}", std::f64::consts::E);
+}</code></pre>
+<h3 id="42-欧拉恒等式"><a class="header" href="#42-欧拉恒等式">4.2 欧拉恒等式</a></h3>
+<p>$$ e^{i\pi} + 1 = 0 $$</p>
+<p>欧拉恒等式将数学中五个最重要的常数联系在一起：$e$（自然常数）、$i$（虚数单位）、$\pi$（圆周率）、1（乘法单位元）、0（加法单位元）。它被誉为“最美的数学公式“。</p>
+<hr>
+<h2 id="五最大公约数与最小公倍数"><a class="header" href="#五最大公约数与最小公倍数">五、最大公约数与最小公倍数</a></h2>
+<h3 id="51-辗转相除法欧几里得算法"><a class="header" href="#51-辗转相除法欧几里得算法">5.1 辗转相除法（欧几里得算法）</a></h3>
+<p>辗转相除法是一种高效求两个正整数最大公约数（GCD, Greatest Common Divisor）的方法。</p>
+<p><strong>核心定理：</strong></p>
+<p>$$ \gcd(a, b) = \gcd(b, a \bmod b) $$</p>
+<p>反复应用这个等式，直到余数为 0，此时的除数就是最大公约数。</p>
+<pre class="playground"><code class="language-rust edition2024">fn gcd(mut a: u64, mut b: u64) -&gt; u64 {
+    while b != 0 {
+        let temp = b;
+        b = a % b;
+        a = temp;
+    }
+    a
+}
+
+fn lcm(a: u64, b: u64) -&gt; u64 {
+    a / gcd(a, b) * b  // 先除后乘，避免溢出
+}
+
+fn main() {
+    println!("gcd(48, 18) = {}", gcd(48, 18));  // 6
+    println!("gcd(100, 75) = {}", gcd(100, 75));  // 25
+    println!("lcm(48, 18) = {}", lcm(48, 18));  // 144
+}</code></pre>
+<hr>
+<h2 id="六重要常数与公式"><a class="header" href="#六重要常数与公式">六、重要常数与公式</a></h2>
+<h3 id="61-圆周率的计算"><a class="header" href="#61-圆周率的计算">6.1 圆周率的计算</a></h3>
+<p>丘德诺夫斯基算法（Chudnovsky Algorithm）是计算圆周率最快的算法之一，由丘德诺夫斯基兄弟在1988年发现，每迭代一次增加约14位精度：</p>
+<p>$$ \frac{1}{\pi} = 12 \sum_{k=0}^{\infty} \frac{(-1)^k (6k)! (13591409 + 545140134k)}{(3k)! (k!)^3 (640320)^{3k + 3/2}} $$</p>
+<pre class="playground"><code class="language-rust edition2024">fn factorial(n: u64) -&gt; u64 {
+    (1..=n).product()
+}
+
+fn chudnovsky_pi(terms: usize) -&gt; f64 {
+    let mut sum = 0.0_f64;
+    for k in 0..terms {
+        let k_f = k as f64;
+        let numerator = (-1.0_f64).powi(k as i32)
+            * factorial(6 * k as u64) as f64
+            * (13591409.0 + 545140134.0 * k_f);
+        let denominator = factorial(3 * k as u64) as f64
+            * (factorial(k as u64) as f64).powi(3)
+            * (640320.0_f64).powf(3.0 * k_f + 1.5);
+        sum += numerator / denominator;
+    }
+    1.0 / (12.0 * sum)
+}
+
+fn main() {
+    let pi = chudnovsky_pi(2);
+    println!("π (Chudnovsky, 2项) = {:.15}", pi);
+    println!("π (标准库) = {:.15}", std::f64::consts::PI);
+}</code></pre>
+<h3 id="62-常用数学函数速查"><a class="header" href="#62-常用数学函数速查">6.2 常用数学函数速查</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>函数</th><th>Rust 方法</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>$\log_{10}$</td><td><code>x.log10()</code></td><td>常用对数</td></tr>
+<tr><td>$\ln$</td><td><code>x.ln()</code></td><td>自然对数</td></tr>
+<tr><td>$e^x$</td><td><code>x.exp()</code> 或 <code>E.powf(x)</code></td><td>指数函数</td></tr>
+<tr><td>$\sin\theta$</td><td><code>x.sin()</code></td><td>正弦</td></tr>
+<tr><td>$\cos\theta$</td><td><code>x.cos()</code></td><td>余弦</td></tr>
+<tr><td>$\tan\theta$</td><td><code>x.tan()</code></td><td>正切</td></tr>
+<tr><td>$\sqrt{x}$</td><td><code>x.sqrt()</code></td><td>平方根</td></tr>
+<tr><td>$</td><td>x</td><td>$</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="七线性代数基础"><a class="header" href="#七线性代数基础">七、线性代数基础</a></h2>
+<p>线性代数是代数的重要分支，研究向量空间、线性变换以及矩阵等概念。</p>
+<h3 id="71-基本概念"><a class="header" href="#71-基本概念">7.1 基本概念</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>说明</th><th>维度</th></tr>
+</thead>
+<tbody>
+<tr><td>标量（Scalar）</td><td>单个数值</td><td>0 维</td></tr>
+<tr><td>向量（Vector）</td><td>有方向和大小的量</td><td>1 维</td></tr>
+<tr><td>矩阵（Matrix）</td><td>数字的矩形排列</td><td>2 维</td></tr>
+<tr><td>张量（Tensor）</td><td>标量、向量、矩阵的推广</td><td>n 维</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="72-向量运算"><a class="header" href="#72-向量运算">7.2 向量运算</a></h3>
+<pre class="playground"><code class="language-rust edition2024">fn dot_product(a: &amp;[f64], b: &amp;[f64]) -&gt; f64 {
+    a.iter().zip(b.iter()).map(|(x, y)| x * y).sum()
+}
+
+fn vector_add(a: &amp;[f64], b: &amp;[f64]) -&gt; Vec&lt;f64&gt; {
+    a.iter().zip(b.iter()).map(|(x, y)| x + y).collect()
+}
+
+fn vector_scale(a: &amp;[f64], scalar: f64) -&gt; Vec&lt;f64&gt; {
+    a.iter().map(|x| x * scalar).collect()
+}
+
+fn magnitude(v: &amp;[f64]) -&gt; f64 {
+    v.iter().map(|x| x * x).sum::&lt;f64&gt;().sqrt()
+}
+
+fn main() {
+    let a = vec![1.0, 2.0, 3.0];
+    let b = vec![4.0, 5.0, 6.0];
+
+    println!("点积: {}", dot_product(&amp;a, &amp;b));           // 32
+    println!("向量加: {:?}", vector_add(&amp;a, &amp;b));        // [5, 7, 9]
+    println!("标量乘: {:?}", vector_scale(&amp;a, 2.0));     // [2, 4, 6]
+    println!("向量 a 的模: {:.4}", magnitude(&amp;a));       // 3.7417
+}</code></pre>
+<h3 id="73-矩阵运算"><a class="header" href="#73-矩阵运算">7.3 矩阵运算</a></h3>
+<pre class="playground"><code class="language-rust edition2024">type Matrix = Vec&lt;Vec&lt;f64&gt;&gt;;
+
+fn matrix_multiply(a: &amp;Matrix, b: &amp;Matrix) -&gt; Option&lt;Matrix&gt; {
+    let rows_a = a.len();
+    let cols_a = a[0].len();
+    let cols_b = b[0].len();
+
+    if cols_a != b.len() {
+        return None;
+    }
+
+    let mut result = vec![vec![0.0; cols_b]; rows_a];
+
+    for i in 0..rows_a {
+        for j in 0..cols_b {
+            for k in 0..cols_a {
+                result[i][j] += a[i][k] * b[k][j];
+            }
+        }
+    }
+
+    Some(result)
+}
+
+fn matrix_transpose(a: &amp;Matrix) -&gt; Matrix {
+    let rows = a.len();
+    let cols = a[0].len();
+    let mut result = vec![vec![0.0; rows]; cols];
+
+    for i in 0..rows {
+        for j in 0..cols {
+            result[j][i] = a[i][j];
+        }
+    }
+
+    result
+}
+
+fn main() {
+    let a = vec![vec![1.0, 2.0], vec![3.0, 4.0]];
+    let b = vec![vec![5.0, 6.0], vec![7.0, 8.0]];
+
+    if let Some(c) = matrix_multiply(&amp;a, &amp;b) {
+        println!("矩阵乘法:");
+        for row in &amp;c {
+            println!("  {:?}", row);
+        }
+        // [19, 22]
+        // [43, 50]
+    }
+
+    let t = matrix_transpose(&amp;a);
+    println!("转置: {:?}", t);
+    // [[1, 3], [2, 4]]
+}</code></pre>
+<hr>
+<h2 id="八抽象代数"><a class="header" href="#八抽象代数">八、抽象代数</a></h2>
+<p>抽象代数（Abstract Algebra）研究代数结构的一般性质，是代数学的最高层次。</p>
+<h3 id="81-重要概念"><a class="header" href="#81-重要概念">8.1 重要概念</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>结构</th><th>定义</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>群（Group）</strong></td><td>一个集合 + 一个满足封闭性、结合律、有单位元、有逆元的运算</td><td>整数加法群 $(\mathbb{Z}, +)$</td></tr>
+<tr><td><strong>环（Ring）</strong></td><td>一个群 + 满足分配律的第二种运算</td><td>整数环 $(\mathbb{Z}, +, \times)$</td></tr>
+<tr><td><strong>域（Field）</strong></td><td>一个环 + 第二种运算有逆元（除零外）</td><td>有理数域 $(\mathbb{Q}, +, \times)$</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="82-群在密码学中的应用"><a class="header" href="#82-群在密码学中的应用">8.2 群在密码学中的应用</a></h3>
+<p>群论是现代密码学的数学基础。许多密码算法的安全性依赖于群上的困难问题：</p>
+<ul>
+<li><strong>RSA 加密</strong>：基于整数乘法群中大整数分解的困难性</li>
+<li><strong>椭圆曲线密码</strong>：基于椭圆曲线群上离散对数问题的困难性</li>
+<li><strong>Diffie-Hellman 密钥交换</strong>：基于有限域中离散对数问题的困难性</li>
+</ul>
+<blockquote>
+<p>抽象代数看似抽象，但它支撑着我们日常使用的加密通信、数字签名等安全技术。</p>
+</blockquote>
+<hr>
+<h2 id="九代数应用实例"><a class="header" href="#九代数应用实例">九、代数应用实例</a></h2>
+<h3 id="91-等额本息贷款计算"><a class="header" href="#91-等额本息贷款计算">9.1 等额本息贷款计算</a></h3>
+<p>问题：贷款 10 万元，年利率 5%，分 60 个月还清，计算每月还款金额。</p>
+<p>等额本息月还款公式：</p>
+<p>$$ A = P \cdot \frac{i(1+i)^n}{(1+i)^n - 1} $$</p>
+<p>其中 $A$ 为每月还款金额，$P$ 为贷款本金，$i$ 为月利率，$n$ 为还款月数。</p>
+<pre class="playground"><code class="language-rust edition2024">fn monthly_payment(principal: f64, annual_rate: f64, months: u32) -&gt; f64 {
+    let monthly_rate = annual_rate / 12.0;
+    let n = months as f64;
+
+    principal * monthly_rate * (1.0 + monthly_rate).powf(n)
+        / ((1.0 + monthly_rate).powf(n) - 1.0)
+}
+
+fn main() {
+    let p = 100_000.0;      // 贷款本金 10 万元
+    let rate = 0.05;        // 年利率 5%
+    let months = 60;        // 60 个月
+
+    let payment = monthly_payment(p, rate, months);
+    println!("每月还款: {:.2} 元", payment);
+    println!("总还款: {:.2} 元", payment * months as f64);
+    println!("总利息: {:.2} 元", payment * months as f64 - p);
+}</code></pre>
+<h3 id="92-楼梯问题"><a class="header" href="#92-楼梯问题">9.2 楼梯问题</a></h3>
+<p>一段楼梯有 10 级，每次只能走 1 级或 2 级，有多少种上楼方法？</p>
+<blockquote>
+<p><strong>答案就是 $F_{11} = 89$ 种</strong>（斐波那契数列的第 11 项）。因为到达第 n 级的方法数等于到达第 n-1 级和第 n-2 级方法数之和。</p>
+</blockquote>
+<pre class="playground"><code class="language-rust edition2024">fn climb_stairs(n: u32) -&gt; u64 {
+    if n &lt;= 2 { return n as u64; }
+
+    let (mut prev, mut curr) = (1u64, 2u64);
+    for _ in 3..=n {
+        let next = prev + curr;
+        prev = curr;
+        curr = next;
+    }
+    curr
+}
+
+fn main() {
+    println!("10 级楼梯的走法: {} 种", climb_stairs(10));  // 89
+}</code></pre>
+<hr>
+<h2 id="十学习资源"><a class="header" href="#十学习资源">十、学习资源</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>资源</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://www.desmos.com/?lang=zh-CN">Desmos</a></td><td>在线图形计算器，直观理解代数函数</td></tr>
+<tr><td><a href="https://www.3blue1brown.com/topics/linear-algebra">3Blue1Brown - 线性代数的本质</a></td><td>线性代数可视化教程</td></tr>
+<tr><td><a href="https://www.khanacademy.org/math/algebra">Khan Academy - 代数</a></td><td>系统的代数学习课程</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="十一总结"><a class="header" href="#十一总结">十一、总结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>主题</th><th>核心内容</th></tr>
+</thead>
+<tbody>
+<tr><td>一元二次方程</td><td>求根公式、判别式、韦达定理</td></tr>
+<tr><td>数列</td><td>等差、等比、斐波那契、调和数列</td></tr>
+<tr><td>黄金分割数</td><td>$\phi \approx 1.618$，与斐波那契数列的关系</td></tr>
+<tr><td>欧拉数</td><td>$e \approx 2.718$，欧拉恒等式</td></tr>
+<tr><td>最大公约数</td><td>辗转相除法（欧几里得算法）</td></tr>
+<tr><td>线性代数</td><td>向量、矩阵运算</td></tr>
+<tr><td>抽象代数</td><td>群、环、域，密码学的数学基础</td></tr>
+</tbody>
+</table>
+</div>
+<p>代数是连接算术与高等数学的桥梁。从简单的一元二次方程到抽象的群论，代数的思想贯穿了计算机科学的方方面面。</p>
+<blockquote>
+<p><strong>练习建议：</strong></p>
+<ol>
+<li>实现一个支持复数运算的一元二次方程求解器</li>
+<li>用 Rust 实现矩阵的行列式计算</li>
+<li>探索椭圆曲线上的点加法运算</li>
+</ol>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_26_Algorithm.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_28_Geometry.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_26_Algorithm.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_28_Geometry.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

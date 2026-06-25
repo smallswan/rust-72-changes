@@ -1,0 +1,933 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第五十一 区块链与加密货币 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第五十一章-区块链与加密货币"><a class="header" href="#第五十一章-区块链与加密货币">第五十一章 区块链与加密货币</a></h1>
+<blockquote>
+<p>去中心化的信任机器：从密码学原语到分布式共识</p>
+</blockquote>
+<p>区块链（Blockchain）是近年来最具影响力的密码学应用之一。它巧妙地组合了哈希函数、数字签名、默克尔树等密码学原语，配合共识机制，构建了一个无需中心化机构即可实现信任传递的分布式系统。本章将从密码学视角剖析区块链的核心原理，并用 Rust 实现一个简化但完整的区块链。</p>
+<h2 id="511-区块链基本原理"><a class="header" href="#511-区块链基本原理">51.1 区块链基本原理</a></h2>
+<h3 id="什么是区块链"><a class="header" href="#什么是区块链">什么是区块链</a></h3>
+<p>区块链本质上是一个<strong>分布式的、不可篡改的、按时间顺序链接的账本</strong>。其核心特征包括：</p>
+<ul>
+<li><strong>去中心化</strong>：没有单一控制方，网络中的节点共同维护账本</li>
+<li><strong>不可篡改</strong>：一旦数据被写入，几乎不可能被修改</li>
+<li><strong>透明性</strong>：所有交易对网络参与者可见（或按权限可见）</li>
+<li><strong>可追溯</strong>：每笔交易都有完整的历史链条</li>
+</ul>
+<h3 id="区块结构"><a class="header" href="#区块结构">区块结构</a></h3>
+<p>每个区块通常包含以下部分：</p>
+<pre><code>+----------------------------------+
+|  区块头（Block Header）           |
+|  - 前一区块哈希（Previous Hash）  |
+|  - 时间戳（Timestamp）            |
+|  - 默克尔根（Merkle Root）        |
+|  - 随机数（Nonce）                |
+|  - 难度目标（Difficulty Target）  |
++----------------------------------+
+|  区块体（Block Body）             |
+|  - 交易列表（Transactions）       |
++----------------------------------+
+</code></pre>
+<p><strong>前一区块哈希</strong>将区块链接成链：修改任何一个区块的数据，其哈希会改变，导致后续所有区块的链接断裂。</p>
+<h3 id="链式结构"><a class="header" href="#链式结构">链式结构</a></h3>
+<pre><code>创世区块（Genesis Block）
+    Hash: 0000a3f2...
+    Previous: 00000000...
+         |
+         v
+区块 1
+    Hash: 0000b8e1...
+    Previous: 0000a3f2...  ← 指向创世区块的哈希
+         |
+         v
+区块 2
+    Hash: 00001c4d...
+    Previous: 0000b8e1...  ← 指向区块 1 的哈希
+         |
+         v
+区块 3
+    Hash: 0000f92a...
+    Previous: 00001c4d...  ← 指向区块 2 的哈希
+</code></pre>
+<p>这种链式结构使得<strong>篡改成本极高</strong>：攻击者不仅要修改目标区块，还要重新计算该区块之后所有区块的工作量证明。</p>
+<h2 id="512-哈希链与默克尔树"><a class="header" href="#512-哈希链与默克尔树">51.2 哈希链与默克尔树</a></h2>
+<h3 id="哈希指针"><a class="header" href="#哈希指针">哈希指针</a></h3>
+<p>区块链使用<strong>哈希指针</strong>（Hash Pointer）替代普通指针。哈希指针不仅指向数据的位置，还包含该数据的哈希值，从而可以验证数据是否被篡改。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct HashPointer&lt;T&gt; {
+    data: T,
+    hash: [u8; 32],  // 数据的 SHA-256 哈希
+}
+
+fn verify_integrity&lt;T: AsRef&lt;[u8]&gt;&gt;(pointer: &amp;HashPointer&lt;T&gt;) -&gt; bool {
+    let computed_hash = sha256(pointer.data.as_ref());
+    computed_hash == pointer.hash
+}
+<span class="boring">}</span></code></pre>
+<h3 id="默克尔树merkle-tree"><a class="header" href="#默克尔树merkle-tree">默克尔树（Merkle Tree）</a></h3>
+<p>默克尔树是一种二叉树结构，用于高效验证大量数据的完整性。</p>
+<pre><code>                    Root Hash
+                   /         \
+              Hash(A+B)    Hash(C+D)
+              /      \      /      \
+            Hash(A) Hash(B) Hash(C) Hash(D)
+              |        |      |        |
+             Tx A    Tx B   Tx C    Tx D
+</code></pre>
+<p><strong>默克尔树的优势</strong>：</p>
+<ul>
+<li><strong>高效验证</strong>：要验证交易 C 是否包含在区块中，只需提供 Hash(D) 和 Hash(A+B)，共 O(log n) 个哈希</li>
+<li><strong>轻节点友好</strong>：SPV（简单支付验证）节点只需存储区块头（80 字节），无需下载完整交易数据</li>
+</ul>
+<h3 id="默克尔证明"><a class="header" href="#默克尔证明">默克尔证明</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 验证交易是否包含在区块中
+fn verify_merkle_proof(
+    tx_hash: &amp;[u8; 32],
+    merkle_root: &amp;[u8; 32],
+    proof: &amp;[(bool, [u8; 32])],  // (is_right_sibling, sibling_hash)
+) -&gt; bool {
+    let mut current_hash = *tx_hash;
+
+    for &amp;(is_right, sibling) in proof {
+        current_hash = if is_right {
+            sha256_concat(&amp;current_hash, &amp;sibling)
+        } else {
+            sha256_concat(&amp;sibling, &amp;current_hash)
+        };
+    }
+
+    current_hash == *merkle_root
+}
+<span class="boring">}</span></code></pre>
+<h2 id="513-共识机制"><a class="header" href="#513-共识机制">51.3 共识机制</a></h2>
+<p>共识机制解决分布式系统中的<strong>拜占庭将军问题</strong>：如何在可能存在恶意节点的网络中达成一致？</p>
+<h3 id="工作量证明proof-of-work-pow"><a class="header" href="#工作量证明proof-of-work-pow">工作量证明（Proof of Work, PoW）</a></h3>
+<p>PoW 是比特币采用的共识机制。节点（矿工）通过计算难题来竞争记账权。</p>
+<p><strong>工作原理</strong>：</p>
+<ol>
+<li>矿工收集待确认交易，构建候选区块</li>
+<li>不断改变随机数（Nonce），计算区块头的哈希</li>
+<li>当哈希值小于难度目标（即哈希前面有足够多的 0）时，找到有效区块</li>
+<li>将区块广播到网络，其他节点验证后接受</li>
+</ol>
+<pre><code>目标：找到 nonce，使得 SHA256(SHA256(block_header)) &lt; target
+
+难度目标示例：
+  00000000 00000000 00000000 00000000 00000000 00000000 0000ffff 00000000
+  
+有效哈希示例：
+  00000000 00000000 00000000 00000000 00000000 00000000 0000a3f2 8b1c4d5e
+</code></pre>
+<p><strong>难度调整</strong>：比特币每 2016 个区块（约 2 周）调整一次难度，使平均出块时间保持在 10 分钟左右。</p>
+<p><strong>PoW 的优缺点</strong>：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>优点</th><th>缺点</th></tr>
+</thead>
+<tbody>
+<tr><td>安全性高，攻击成本巨大</td><td>能源消耗巨大</td></tr>
+<tr><td>去中心化程度高</td><td>交易确认慢（比特币约 10 分钟/区块）</td></tr>
+<tr><td>无需准入许可</td><td>存在算力集中风险</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="权益证明proof-of-stake-pos"><a class="header" href="#权益证明proof-of-stake-pos">权益证明（Proof of Stake, PoS）</a></h3>
+<p>PoS 是以太坊 2.0 等新型区块链采用的共识机制。验证者通过质押代币来获得记账权。</p>
+<p><strong>工作原理</strong>：</p>
+<ol>
+<li>验证者质押一定数量的代币作为“保证金“</li>
+<li>系统根据质押金额、质押时长等因素随机选择出块者</li>
+<li>验证者提议区块，其他验证者投票确认</li>
+<li>作恶者的质押金会被罚没（Slashing）</li>
+</ol>
+<p><strong>PoS 的优缺点</strong>：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>优点</th><th>缺点</th></tr>
+</thead>
+<tbody>
+<tr><td>能耗极低（比 PoW 低 99% 以上）</td><td>可能加剧财富集中</td></tr>
+<tr><td>交易确认快</td><td>安全性理论不如 PoW 成熟</td></tr>
+<tr><td>可扩展性更好</td><td>存在“无利害关系“问题</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="其他共识机制"><a class="header" href="#其他共识机制">其他共识机制</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>机制</th><th>代表项目</th><th>核心思想</th></tr>
+</thead>
+<tbody>
+<tr><td>DPoS</td><td>EOS</td><td>代币持有者投票选举代表节点</td></tr>
+<tr><td>PBFT</td><td>Hyperledger Fabric</td><td>多轮投票达成拜占庭容错共识</td></tr>
+<tr><td>Avalanche</td><td>Avalanche</td><td>随机抽样投票，快速最终确认</td></tr>
+<tr><td>PoH</td><td>Solana</td><td>历史证明，创建可验证的时间序列</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="514-智能合约简介"><a class="header" href="#514-智能合约简介">51.4 智能合约简介</a></h2>
+<h3 id="什么是智能合约"><a class="header" href="#什么是智能合约">什么是智能合约</a></h3>
+<p>智能合约（Smart Contract）是运行在区块链上的<strong>自动执行的程序代码</strong>。它类似于传统合约，但执行不依赖任何第三方，代码即法律（Code is Law）。</p>
+<p><strong>智能合约的特征</strong>：</p>
+<ul>
+<li><strong>自动执行</strong>：满足条件时自动触发，无需人工干预</li>
+<li><strong>不可篡改</strong>：部署后代码不可修改</li>
+<li><strong>透明公开</strong>：代码和执行结果对所有人可见</li>
+<li><strong>确定性</strong>：给定相同输入，所有节点执行结果一致</li>
+</ul>
+<h3 id="智能合约示例概念"><a class="header" href="#智能合约示例概念">智能合约示例（概念）</a></h3>
+<pre><code class="language-solidity">// 简单的以太坊智能合约：众筹
+pragma solidity ^0.8.0;
+
+contract Crowdfunding {
+    address public beneficiary;
+    uint public goal;
+    uint public deadline;
+    mapping(address =&gt; uint) public contributions;
+
+    constructor(address _beneficiary, uint _goal, uint _duration) {
+        beneficiary = _beneficiary;
+        goal = _goal;
+        deadline = block.timestamp + _duration;
+    }
+
+    function contribute() public payable {
+        require(block.timestamp &lt; deadline, "众筹已结束");
+        contributions[msg.sender] += msg.value;
+    }
+
+    function withdraw() public {
+        require(block.timestamp &gt;= deadline, "众筹未结束");
+        require(address(this).balance &gt;= goal, "未达到目标金额");
+        payable(beneficiary).transfer(address(this).balance);
+    }
+}
+</code></pre>
+<h3 id="rust-与智能合约"><a class="header" href="#rust-与智能合约">Rust 与智能合约</a></h3>
+<p>Rust 正成为区块链智能合约开发的重要语言：</p>
+<ul>
+<li><strong>Solana</strong>：使用 Rust 编写智能合约（Program）</li>
+<li><strong>Polkadot/Substrate</strong>：使用 Rust 构建区块链和智能合约</li>
+<li><strong>Near Protocol</strong>：支持 Rust 编写智能合约</li>
+<li><strong>Cosmos</strong>：Rust 是主要开发语言之一</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Solana 智能合约示例（简化概念）
+use solana_program::{
+    account_info::AccountInfo,
+    entrypoint,
+    entrypoint::ProgramResult,
+    pubkey::Pubkey,
+    msg,
+};
+
+entrypoint!(process_instruction);
+
+fn process_instruction(
+    _program_id: &amp;Pubkey,
+    accounts: &amp;[AccountInfo],
+    _instruction_data: &amp;[u8],
+) -&gt; ProgramResult {
+    msg!("Hello, Solana!");
+    msg!("账户数量: {}", accounts.len());
+    Ok(())
+}
+<span class="boring">}</span></code></pre>
+<h2 id="515-rust-实现简单区块链"><a class="header" href="#515-rust-实现简单区块链">51.5 Rust 实现：简单区块链</a></h2>
+<h3 id="区块定义"><a class="header" href="#区块定义">区块定义</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use sha2::{Sha256, Digest};
+use chrono::Utc;
+use serde::{Serialize, Deserialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Block {
+    pub index: u64,
+    pub timestamp: i64,
+    pub data: String,
+    pub previous_hash: String,
+    pub hash: String,
+    pub nonce: u64,
+}
+
+impl Block {
+    pub fn new(index: u64, data: String, previous_hash: String) -&gt; Self {
+        let timestamp = Utc::now().timestamp();
+        let mut block = Block {
+            index,
+            timestamp,
+            data,
+            previous_hash,
+            hash: String::new(),
+            nonce: 0,
+        };
+        block.hash = block.calculate_hash();
+        block
+    }
+
+    pub fn calculate_hash(&amp;self) -&gt; String {
+        let input = format!(
+            "{}{}{}{}{}",
+            self.index, self.timestamp, self.data, self.previous_hash, self.nonce
+        );
+        let mut hasher = Sha256::new();
+        hasher.update(input);
+        format!("{:x}", hasher.finalize())
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="工作量证明挖矿"><a class="header" href="#工作量证明挖矿">工作量证明挖矿</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Block {
+    pub fn mine(&amp;mut self, difficulty: usize) {
+        let target = "0".repeat(difficulty);
+        
+        while !self.hash.starts_with(&amp;target) {
+            self.nonce += 1;
+            self.hash = self.calculate_hash();
+        }
+        
+        println!(
+            "区块 {} 挖矿成功! nonce: {}, hash: {}",
+            self.index, self.nonce, self.hash
+        );
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="区块链结构"><a class="header" href="#区块链结构">区块链结构</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Debug, Serialize, Deserialize)]
+pub struct Blockchain {
+    pub chain: Vec&lt;Block&gt;,
+    pub difficulty: usize,
+    pub pending_transactions: Vec&lt;Transaction&gt;,
+    pub mining_reward: f64,
+}
+
+impl Blockchain {
+    pub fn new(difficulty: usize) -&gt; Self {
+        let genesis_block = Block::new(
+            0,
+            "创世区块".to_string(),
+            "0".repeat(64),
+        );
+
+        Blockchain {
+            chain: vec![genesis_block],
+            difficulty,
+            pending_transactions: Vec::new(),
+            mining_reward: 100.0,
+        }
+    }
+
+    pub fn get_latest_block(&amp;self) -&gt; &amp;Block {
+        self.chain.last().expect("链不应为空")
+    }
+
+    pub fn add_block(&amp;mut self, mut new_block: Block) {
+        new_block.previous_hash = self.get_latest_block().hash.clone();
+        new_block.mine(self.difficulty);
+        self.chain.push(new_block);
+    }
+
+    pub fn is_chain_valid(&amp;self) -&gt; bool {
+        for i in 1..self.chain.len() {
+            let current = &amp;self.chain[i];
+            let previous = &amp;self.chain[i - 1];
+
+            // 验证当前区块哈希
+            if current.hash != current.calculate_hash() {
+                println!("区块 {} 的哈希无效", i);
+                return false;
+            }
+
+            // 验证链的连续性
+            if current.previous_hash != previous.hash {
+                println!("区块 {} 的前一哈希链接断裂", i);
+                return false;
+            }
+
+            // 验证工作量证明
+            let target = "0".repeat(self.difficulty);
+            if !current.hash.starts_with(&amp;target) {
+                println!("区块 {} 的工作量证明无效", i);
+                return false;
+            }
+        }
+        true
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="交易与默克尔树"><a class="header" href="#交易与默克尔树">交易与默克尔树</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Transaction {
+    pub from: String,
+    pub to: String,
+    pub amount: f64,
+    pub timestamp: i64,
+}
+
+impl Transaction {
+    pub fn new(from: String, to: String, amount: f64) -&gt; Self {
+        Transaction {
+            from,
+            to,
+            amount,
+            timestamp: Utc::now().timestamp(),
+        }
+    }
+
+    pub fn hash(&amp;self) -&gt; String {
+        let input = format!("{}{}{}{}", self.from, self.to, self.amount, self.timestamp);
+        let mut hasher = Sha256::new();
+        hasher.update(input);
+        format!("{:x}", hasher.finalize())
+    }
+}
+
+// 计算默克尔根
+pub fn calculate_merkle_root(transactions: &amp;[Transaction]) -&gt; String {
+    if transactions.is_empty() {
+        return "0".repeat(64);
+    }
+
+    let mut hashes: Vec&lt;String&gt; = transactions.iter()
+        .map(|tx| tx.hash())
+        .collect();
+
+    while hashes.len() &gt; 1 {
+        if hashes.len() % 2 != 0 {
+            hashes.push(hashes.last().unwrap().clone());
+        }
+
+        let mut next_level = Vec::new();
+        for i in (0..hashes.len()).step_by(2) {
+            let combined = format!("{}{}", hashes[i], hashes[i + 1]);
+            let mut hasher = Sha256::new();
+            hasher.update(combined);
+            next_level.push(format!("{:x}", hasher.finalize()));
+        }
+        hashes = next_level;
+    }
+
+    hashes[0].clone()
+}
+<span class="boring">}</span></code></pre>
+<h3 id="完整的区块链演示"><a class="header" href="#完整的区块链演示">完整的区块链演示</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use sha2::{Sha256, Digest};
+use chrono::Utc;
+use serde::{Serialize, Deserialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct Transaction {
+    from: String,
+    to: String,
+    amount: f64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct Block {
+    index: u64,
+    timestamp: i64,
+    transactions: Vec&lt;Transaction&gt;,
+    previous_hash: String,
+    merkle_root: String,
+    hash: String,
+    nonce: u64,
+}
+
+impl Block {
+    fn new(index: u64, transactions: Vec&lt;Transaction&gt;, previous_hash: String) -&gt; Self {
+        let timestamp = Utc::now().timestamp();
+        let merkle_root = calculate_merkle_root(&amp;transactions);
+        let mut block = Block {
+            index,
+            timestamp,
+            transactions,
+            previous_hash,
+            merkle_root,
+            hash: String::new(),
+            nonce: 0,
+        };
+        block.hash = block.calculate_hash();
+        block
+    }
+
+    fn calculate_hash(&amp;self) -&gt; String {
+        let input = format!(
+            "{}{}{}{}{}{}",
+            self.index, self.timestamp, self.merkle_root,
+            self.previous_hash, self.nonce,
+            serde_json::to_string(&amp;self.transactions).unwrap_or_default()
+        );
+        let mut hasher = Sha256::new();
+        hasher.update(input);
+        format!("{:x}", hasher.finalize())
+    }
+
+    fn mine(&amp;mut self, difficulty: usize) {
+        let target = "0".repeat(difficulty);
+        while !self.hash.starts_with(&amp;target) {
+            self.nonce += 1;
+            self.hash = self.calculate_hash();
+        }
+    }
+}
+
+fn calculate_merkle_root(transactions: &amp;[Transaction]) -&gt; String {
+    if transactions.is_empty() {
+        return "0".repeat(64);
+    }
+    let mut hashes: Vec&lt;String&gt; = transactions.iter().map(|tx| {
+        let input = format!("{}{}{}", tx.from, tx.to, tx.amount);
+        let mut hasher = Sha256::new();
+        hasher.update(input);
+        format!("{:x}", hasher.finalize())
+    }).collect();
+
+    while hashes.len() &gt; 1 {
+        if hashes.len() % 2 != 0 {
+            hashes.push(hashes.last().unwrap().clone());
+        }
+        let mut next_level = Vec::new();
+        for i in (0..hashes.len()).step_by(2) {
+            let combined = format!("{}{}", hashes[i], hashes[i + 1]);
+            let mut hasher = Sha256::new();
+            hasher.update(combined);
+            next_level.push(format!("{:x}", hasher.finalize()));
+        }
+        hashes = next_level;
+    }
+    hashes[0].clone()
+}
+
+struct Blockchain {
+    chain: Vec&lt;Block&gt;,
+    difficulty: usize,
+    pending_transactions: Vec&lt;Transaction&gt;,
+}
+
+impl Blockchain {
+    fn new() -&gt; Self {
+        let genesis = Block::new(0, vec![], "0".repeat(64));
+        Blockchain {
+            chain: vec![genesis],
+            difficulty: 4,
+            pending_transactions: Vec::new(),
+        }
+    }
+
+    fn add_transaction(&amp;mut self, tx: Transaction) {
+        self.pending_transactions.push(tx);
+    }
+
+    fn mine_pending_transactions(&amp;mut self, miner_address: String) {
+        // 奖励交易
+        let reward_tx = Transaction {
+            from: "network".to_string(),
+            to: miner_address,
+            amount: 50.0,
+        };
+        self.pending_transactions.push(reward_tx);
+
+        let mut block = Block::new(
+            self.chain.len() as u64,
+            self.pending_transactions.clone(),
+            self.chain.last().unwrap().hash.clone(),
+        );
+        block.mine(self.difficulty);
+        self.chain.push(block);
+        self.pending_transactions.clear();
+    }
+
+    fn is_valid(&amp;self) -&gt; bool {
+        for i in 1..self.chain.len() {
+            let current = &amp;self.chain[i];
+            let previous = &amp;self.chain[i - 1];
+
+            if current.hash != current.calculate_hash() {
+                return false;
+            }
+            if current.previous_hash != previous.hash {
+                return false;
+            }
+            if !current.hash.starts_with(&amp;"0".repeat(self.difficulty)) {
+                return false;
+            }
+        }
+        true
+    }
+
+    fn get_balance(&amp;self, address: &amp;str) -&gt; f64 {
+        let mut balance = 0.0;
+        for block in &amp;self.chain {
+            for tx in &amp;block.transactions {
+                if tx.from == address {
+                    balance -= tx.amount;
+                }
+                if tx.to == address {
+                    balance += tx.amount;
+                }
+            }
+        }
+        balance
+    }
+}
+
+fn main() {
+    let mut blockchain = Blockchain::new();
+
+    println!("=== 开始挖矿 ===");
+    blockchain.add_transaction(Transaction {
+        from: "alice".to_string(),
+        to: "bob".to_string(),
+        amount: 10.0,
+    });
+    blockchain.mine_pending_transactions("miner1".to_string());
+
+    blockchain.add_transaction(Transaction {
+        from: "bob".to_string(),
+        to: "charlie".to_string(),
+        amount: 5.0,
+    });
+    blockchain.mine_pending_transactions("miner1".to_string());
+
+    println!("\n=== 区块链状态 ===");
+    for block in &amp;blockchain.chain {
+        println!("区块 {}: {}", block.index, block.hash);
+    }
+
+    println!("\n=== 余额查询 ===");
+    println!("miner1: {}", blockchain.get_balance("miner1"));
+    println!("alice: {}", blockchain.get_balance("alice"));
+    println!("bob: {}", blockchain.get_balance("bob"));
+    println!("charlie: {}", blockchain.get_balance("charlie"));
+
+    println!("\n=== 验证区块链 ===");
+    println!("有效: {}", blockchain.is_valid());
+
+    // 尝试篡改
+    println!("\n=== 篡改测试 ===");
+    if blockchain.chain.len() &gt; 1 {
+        blockchain.chain[1].transactions[0].amount = 1000.0;
+        println!("篡改后有效: {}", blockchain.is_valid());
+    }
+}</code></pre>
+<h3 id="cargotoml-依赖"><a class="header" href="#cargotoml-依赖">Cargo.toml 依赖</a></h3>
+<pre><code class="language-toml">[dependencies]
+sha2 = "0.10"
+chrono = "0.4"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+</code></pre>
+<h2 id="516-本章总结"><a class="header" href="#516-本章总结">51.6 本章总结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>说明</th><th>Rust 应用</th></tr>
+</thead>
+<tbody>
+<tr><td>哈希链</td><td>用前一区块哈希链接区块，保证不可篡改</td><td><code>sha2</code>  crate</td></tr>
+<tr><td>默克尔树</td><td>高效验证交易完整性的二叉树结构</td><td>自定义实现或 <code>rs_merkle</code></td></tr>
+<tr><td>PoW</td><td>通过计算难题竞争记账权</td><td>CPU/GPU 挖矿程序</td></tr>
+<tr><td>PoS</td><td>通过质押代币获得记账权</td><td>验证者节点实现</td></tr>
+<tr><td>智能合约</td><td>区块链上自动执行的代码</td><td>Solana/Substrate 合约</td></tr>
+<tr><td>数字签名</td><td>交易所有权验证</td><td><code>ed25519-dalek</code>, <code>secp256k1</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
+<ol>
+<li>
+<p><strong>基础练习</strong>：运行上述区块链示例，调整 <code>difficulty</code> 参数观察挖矿时间变化。</p>
+</li>
+<li>
+<p><strong>中级练习</strong>：为区块链添加数字签名验证：每笔交易必须由发送方签名，节点验证签名后才接受交易。</p>
+</li>
+<li>
+<p><strong>高级练习</strong>：实现一个简单的 P2P 网络同步：多个节点可以互相广播区块，维护一致的区块链副本。</p>
+</li>
+<li>
+<p><strong>实践项目</strong>：使用 <code>substrate</code> 框架搭建一条自定义区块链，或编写一个 Solana 智能合约实现简单的代币转账。</p>
+</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>密码学箴言</strong>：区块链不是魔法，而是密码学原语的精妙组合。理解哈希、签名和共识，就理解了区块链的本质。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_50_tls.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_52_zkp.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_50_tls.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_52_zkp.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

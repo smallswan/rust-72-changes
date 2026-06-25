@@ -1,0 +1,565 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第八 音频 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第八-音频"><a class="header" href="#第八-音频">第八 音频</a></h1>
+<p>声音是人类最古老的信息载体之一。从口头语言到音乐艺术，从电话通信到语音识别，音频技术贯穿了人类文明的发展历程。在数字时代，音频被编码为二进制数据，在计算机中存储、传输和处理。本章将探讨声音的本质、音频数字化原理、常见编码格式，以及如何使用 Rust 进行音频处理。</p>
+<h2 id="81-声音的本质"><a class="header" href="#81-声音的本质">8.1 声音的本质</a></h2>
+<h3 id="811-声波"><a class="header" href="#811-声波">8.1.1 声波</a></h3>
+<p>声音是一种机械波，由物体振动产生，通过介质（通常是空气）以纵波的形式传播。当声波到达人耳时，引起鼓膜振动，最终被大脑感知为声音。</p>
+<p>声波具有三个基本属性：</p>
+<ul>
+<li><strong>频率（Frequency）</strong>：表示声波每秒振动的次数，单位是赫兹（Hz）。频率决定音调的高低。人耳可听范围约为 20 Hz ~ 20,000 Hz。</li>
+<li><strong>振幅（Amplitude）</strong>：表示声波振动的强度，决定声音的响度。振幅越大，声音越响。</li>
+<li><strong>波形（Waveform）</strong>：表示声波的形状，决定声音的音色。不同乐器演奏同一音高时，音色差异源于波形不同。</li>
+</ul>
+<h3 id="812-纯音与复音"><a class="header" href="#812-纯音与复音">8.1.2 纯音与复音</a></h3>
+<p>纯音是单一频率的正弦波，如音叉发出的声音。复音则由多个不同频率的纯音叠加而成，包含基频和谐波。任何复杂的声音都可以通过傅里叶变换分解为一系列纯音的叠加，这也是音频压缩和合成的基础。</p>
+<h2 id="82-音频采样与量化"><a class="header" href="#82-音频采样与量化">8.2 音频采样与量化</a></h2>
+<p>模拟声波是连续的，而计算机只能处理离散的数字信号。将模拟音频转换为数字音频的过程称为<strong>模数转换（ADC）</strong>，包含两个核心步骤：采样和量化。</p>
+<h3 id="821-采样率"><a class="header" href="#821-采样率">8.2.1 采样率</a></h3>
+<p>采样是在时间轴上对模拟信号进行离散化，每隔固定时间间隔记录一次声波的振幅值。每秒采样的次数称为<strong>采样率（Sample Rate）</strong>。</p>
+<p>根据奈奎斯特-香农采样定理，为了完整还原原始信号，采样率必须至少是信号最高频率的两倍。因此：</p>
+<ul>
+<li><strong>44.1 kHz</strong>：CD 音质标准，可还原最高 22.05 kHz 的频率，覆盖人耳全部可听范围。</li>
+<li><strong>48 kHz</strong>：专业音频和数字视频的标准采样率。</li>
+<li><strong>96 kHz / 192 kHz</strong>：高解析度音频（Hi-Res），用于音乐制作和发烧级播放。</li>
+</ul>
+<h3 id="822-位深度"><a class="header" href="#822-位深度">8.2.2 位深度</a></h3>
+<p>量化是在振幅轴上对采样值进行离散化，用有限位数的二进制数表示每个采样点的振幅。**位深度（Bit Depth）**决定了每个采样点使用的位数。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">位深度</th><th style="text-align: center">动态范围</th><th style="text-align: center">应用场景</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">8 bit</td><td style="text-align: center">48 dB</td><td style="text-align: center">早期游戏音效、电话语音</td></tr>
+<tr><td style="text-align: center">16 bit</td><td style="text-align: center">96 dB</td><td style="text-align: center">CD 音质标准</td></tr>
+<tr><td style="text-align: center">24 bit</td><td style="text-align: center">144 dB</td><td style="text-align: center">专业录音和制作</td></tr>
+<tr><td style="text-align: center">32 bit 浮点</td><td style="text-align: center">超过 150 dB</td><td style="text-align: center">音频后期处理</td></tr>
+</tbody>
+</table>
+</div>
+<p>位深度越大，量化误差越小，动态范围越广，信噪比越高。</p>
+<h3 id="823-声道与音频数据量"><a class="header" href="#823-声道与音频数据量">8.2.3 声道与音频数据量</a></h3>
+<p>音频可以按声道数分为单声道（Mono）、立体声（Stereo，双声道），以及多声道环绕声（5.1、7.1 等）。</p>
+<p>未经压缩的音频数据量计算公式：</p>
+<pre><code>数据量（字节/秒）= 采样率 × 位深度 × 声道数 / 8
+</code></pre>
+<p>以 CD 音质（44.1 kHz、16 bit、立体声）为例：</p>
+<pre><code>44100 × 16 × 2 / 8 = 176,400 字节/秒 ≈ 172 KB/s
+一分钟约 10 MB，一小时约 600 MB
+</code></pre>
+<p>可见未经压缩的音频数据量相当可观，因此音频压缩编码技术至关重要。</p>
+<h2 id="83-音频编码格式"><a class="header" href="#83-音频编码格式">8.3 音频编码格式</a></h2>
+<p>音频编码格式分为无损压缩、有损压缩和不压缩三大类。</p>
+<h3 id="831-wav"><a class="header" href="#831-wav">8.3.1 WAV</a></h3>
+<p>WAV（Waveform Audio File Format）是微软和 IBM 联合开发的一种音频文件格式。它通常使用 PCM（Pulse Code Modulation，脉冲编码调制）编码，不压缩或仅使用无损压缩，完整保留原始音频数据。</p>
+<ul>
+<li><strong>优点</strong>：音质无损、解码简单、兼容性好、适合音频编辑。</li>
+<li><strong>缺点</strong>：文件体积大。</li>
+<li><strong>适用场景</strong>：专业音频制作、音效素材存储、需要反复编辑的音频文件。</li>
+</ul>
+<h3 id="832-mp3"><a class="header" href="#832-mp3">8.3.2 MP3</a></h3>
+<p>MP3（MPEG-1 Audio Layer III）是最广为人知的有损压缩音频格式。它利用人耳的听觉掩蔽效应，去除人耳不易察觉的音频信息，实现大幅压缩。</p>
+<ul>
+<li><strong>压缩比</strong>：通常可达 1:10 ~ 1:12（128 kbps 时约为 CD 音质的 1/11）。</li>
+<li><strong>优点</strong>：兼容性好、文件小、普及度极高。</li>
+<li><strong>缺点</strong>：有损压缩，高频细节有所损失。</li>
+<li><strong>适用场景</strong>：音乐播放、网络流媒体、便携设备存储。</li>
+</ul>
+<h3 id="833-aac"><a class="header" href="#833-aac">8.3.3 AAC</a></h3>
+<p>AAC（Advanced Audio Coding）是 MP3 的后继者，在相同码率下通常比 MP3 提供更好的音质。</p>
+<ul>
+<li><strong>优点</strong>：音质优于 MP3、支持多声道、被苹果生态广泛采用。</li>
+<li><strong>适用场景</strong>：Apple Music、YouTube、数字广播、移动设备。</li>
+</ul>
+<h3 id="834-flac"><a class="header" href="#834-flac">8.3.4 FLAC</a></h3>
+<p>FLAC（Free Lossless Audio Codec）是一种开源的无损压缩音频格式，可将音频文件压缩到原大小的 50%~70%，同时完整保留所有音频信息，解码后可 100% 还原为原始 PCM 数据。</p>
+<ul>
+<li><strong>优点</strong>：无损压缩、开源免费、支持元数据标签。</li>
+<li><strong>缺点</strong>：压缩比不如有损格式，文件仍较大。</li>
+<li><strong>适用场景</strong>：音乐收藏、发烧级音频存储、音频归档。</li>
+</ul>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">格式</th><th style="text-align: center">压缩类型</th><th style="text-align: center">典型码率</th><th style="text-align: center">特点</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">WAV</td><td style="text-align: center">不压缩/无损</td><td style="text-align: center">1411 kbps</td><td style="text-align: center">音质无损，文件最大</td></tr>
+<tr><td style="text-align: center">FLAC</td><td style="text-align: center">无损压缩</td><td style="text-align: center">700~1000 kbps</td><td style="text-align: center">体积减半，音质无损</td></tr>
+<tr><td style="text-align: center">AAC</td><td style="text-align: center">有损压缩</td><td style="text-align: center">128~256 kbps</td><td style="text-align: center">效率高，苹果生态主流</td></tr>
+<tr><td style="text-align: center">MP3</td><td style="text-align: center">有损压缩</td><td style="text-align: center">128~320 kbps</td><td style="text-align: center">最普及，兼容性最好</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="84-rust-音频处理"><a class="header" href="#84-rust-音频处理">8.4 Rust 音频处理</a></h2>
+<p>Rust 生态系统提供了多个优秀的音频处理库，涵盖音频播放、格式解析、WAV 读写等功能。</p>
+<h3 id="841-使用-rodio-播放音频"><a class="header" href="#841-使用-rodio-播放音频">8.4.1 使用 rodio 播放音频</a></h3>
+<p><a href="https://github.com/RustAudio/rodio">rodio</a> 是一个纯 Rust 编写的音频播放库，支持 WAV、MP3、Vorbis、FLAC 等格式，使用简单，适合游戏和应用程序中的音频播放需求。</p>
+<p>在 <code>Cargo.toml</code> 中添加依赖：</p>
+<pre><code class="language-toml">[dependencies]
+rodio = "0.17"
+</code></pre>
+<p>播放本地音频文件：</p>
+<pre class="playground"><code class="language-rust edition2024">use std::fs::File;
+use std::io::BufReader;
+
+fn main() {
+    // 1. 获取默认音频输出设备
+    let (_stream, stream_handle) = rodio::OutputStream::try_default().unwrap();
+
+    // 2. 打开音频文件
+    let file = File::open("music.mp3").unwrap();
+    let source = rodio::Decoder::new(BufReader::new(file)).unwrap();
+
+    // 3. 播放音频
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+
+    // 4. 等待播放完成（示例中休眠 10 秒）
+    std::thread::sleep(std::time::Duration::from_secs(10));
+}</code></pre>
+<p>rodio 还支持音量控制、播放速度调整、音频混合等高级功能：</p>
+<pre class="playground"><code class="language-rust edition2024">use rodio::{Decoder, Source};
+use std::fs::File;
+use std::io::BufReader;
+
+fn main() {
+    let (_stream, stream_handle) = rodio::OutputStream::try_default().unwrap();
+    let file = File::open("music.wav").unwrap();
+    let source = Decoder::new(BufReader::new(file)).unwrap();
+
+    // 调整音量（0.5 表示一半音量）
+    let volume_adjusted = source.amplify(0.5);
+
+    // 调整播放速度（1.5 倍速）
+    let speed_adjusted = volume_adjusted.speed(1.5);
+
+    stream_handle.play_raw(speed_adjusted.convert_samples()).unwrap();
+    std::thread::sleep(std::time::Duration::from_secs(10));
+}</code></pre>
+<h3 id="842-使用-symphonia-解析音频"><a class="header" href="#842-使用-symphonia-解析音频">8.4.2 使用 symphonia 解析音频</a></h3>
+<p><a href="https://github.com/pdeljanov/Symphonia">symphonia</a> 是一个纯 Rust 编写的高性能多媒体格式解析库，支持 MP3、AAC、FLAC、WAV、OGG 等多种格式，设计注重正确性和安全性。</p>
+<p>在 <code>Cargo.toml</code> 中添加依赖：</p>
+<pre><code class="language-toml">[dependencies]
+symphonia = { version = "0.5", features = ["mp3", "flac", "wav"] }
+</code></pre>
+<p>读取音频文件元数据和采样数据：</p>
+<pre class="playground"><code class="language-rust edition2024">use symphonia::core::codecs::DecoderOptions;
+use symphonia::core::formats::FormatOptions;
+use symphonia::core::io::MediaSourceStream;
+use symphonia::core::meta::MetadataOptions;
+use symphonia::core::probe::Hint;
+use std::fs::File;
+
+fn main() {
+    // 1. 打开文件
+    let file = File::open("music.mp3").unwrap();
+    let mss = MediaSourceStream::new(Box::new(file), Default::default());
+
+    // 2. 创建提示和选项
+    let hint = Hint::new();
+    let format_opts: FormatOptions = Default::default();
+    let metadata_opts: MetadataOptions = Default::default();
+    let decoder_opts: DecoderOptions = Default::default();
+
+    // 3. 探测格式
+    let probed = symphonia::default::get_probe()
+        .format(&amp;hint, mss, &amp;format_opts, &amp;metadata_opts)
+        .unwrap();
+
+    let mut format = probed.format;
+
+    // 4. 获取音频流信息
+    let track = format.default_track().unwrap();
+    let codec_params = &amp;track.codec_params;
+
+    println!("采样率: {:?}", codec_params.sample_rate);
+    println!("声道数: {:?}", codec_params.channels);
+
+    // 5. 创建解码器并读取采样数据
+    let mut decoder = symphonia::default::get_codecs()
+        .make(codec_params, &amp;decoder_opts)
+        .unwrap();
+
+    while let Ok(packet) = format.next_packet() {
+        match decoder.decode(&amp;packet) {
+            Ok(decoded) =&gt; {
+                // 处理解码后的音频采样数据
+                let samples = decoded.samples();
+                println!("解码得到 {} 个采样点", samples.len());
+            }
+            Err(_) =&gt; break,
+        }
+    }
+}</code></pre>
+<h3 id="843-使用-hound-读写-wav-文件"><a class="header" href="#843-使用-hound-读写-wav-文件">8.4.3 使用 hound 读写 WAV 文件</a></h3>
+<p><a href="https://github.com/ruuda/hound">hound</a> 是一个轻量级的纯 Rust WAV 文件读写库，无外部依赖，适合需要生成或处理 WAV 音频的场景。</p>
+<p>在 <code>Cargo.toml</code> 中添加依赖：</p>
+<pre><code class="language-toml">[dependencies]
+hound = "3.5"
+</code></pre>
+<p>读取 WAV 文件：</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let reader = hound::WavReader::open("music.wav").unwrap();
+    let spec = reader.spec();
+
+    println!("采样率: {}", spec.sample_rate);
+    println!("声道数: {}", spec.channels);
+    println!("位深度: {}", spec.bits_per_sample);
+    println!("样本格式: {:?}", spec.sample_format);
+
+    // 读取所有采样值（假设为 16 位有符号整数）
+    let samples: Vec&lt;i16&gt; = reader.into_samples::&lt;i16&gt;()
+        .filter_map(|s| s.ok())
+        .collect();
+
+    println!("总采样数: {}", samples.len());
+}</code></pre>
+<p>生成 WAV 文件（生成一个 1 秒的正弦波）：</p>
+<pre class="playground"><code class="language-rust edition2024">use std::f32::consts::PI;
+
+fn main() {
+    let sample_rate = 44100;
+    let frequency = 440.0; // A4 音符
+    let duration = 1; // 1 秒
+    let amplitude = 0.5;
+
+    let spec = hound::WavSpec {
+        channels: 1,
+        sample_rate,
+        bits_per_sample: 16,
+        sample_format: hound::SampleFormat::Int,
+    };
+
+    let mut writer = hound::WavWriter::create("sine.wav", spec).unwrap();
+
+    for t in 0..sample_rate * duration {
+        let sample = (amplitude * (2.0 * PI * frequency * t as f32 / sample_rate as f32).sin())
+            * i16::MAX as f32;
+        writer.write_sample(sample as i16).unwrap();
+    }
+
+    writer.finalize().unwrap();
+    println!("已生成 sine.wav");
+}</code></pre>
+<h3 id="844-音频可视化提取波形数据"><a class="header" href="#844-音频可视化提取波形数据">8.4.4 音频可视化：提取波形数据</a></h3>
+<p>结合 hound 库，我们可以提取音频数据用于可视化分析：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn analyze_audio(path: &amp;str) {
+    let reader = hound::WavReader::open(path).unwrap();
+    let spec = reader.spec();
+
+    let samples: Vec&lt;i16&gt; = reader.into_samples::&lt;i16&gt;()
+        .filter_map(|s| s.ok())
+        .collect();
+
+    // 计算每个声道的采样数
+    let samples_per_channel = samples.len() / spec.channels as usize;
+
+    // 计算平均振幅（响度近似值）
+    let sum: i64 = samples.iter().map(|&amp;s| s.abs() as i64).sum();
+    let avg_amplitude = sum as f64 / samples.len() as f64;
+
+    println!("文件: {}", path);
+    println!("总采样数: {}", samples.len());
+    println!("每声道采样数: {}", samples_per_channel);
+    println!("平均振幅: {:.2}", avg_amplitude);
+
+    // 找出最大振幅
+    let max_amplitude = samples.iter().map(|&amp;s| s.abs()).max().unwrap();
+    println!("最大振幅: {}", max_amplitude);
+}
+<span class="boring">}</span></code></pre>
+<h2 id="85-本章小结"><a class="header" href="#85-本章小结">8.5 本章小结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">概念</th><th style="text-align: left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">声波</td><td style="text-align: left">机械纵波，由频率、振幅、波形三要素描述</td></tr>
+<tr><td style="text-align: left">采样率</td><td style="text-align: left">每秒采样次数，CD 标准为 44.1 kHz</td></tr>
+<tr><td style="text-align: left">位深度</td><td style="text-align: left">每个采样点的位数，CD 标准为 16 bit</td></tr>
+<tr><td style="text-align: left">WAV</td><td style="text-align: left">不压缩/无损，音质最好，文件最大</td></tr>
+<tr><td style="text-align: left">FLAC</td><td style="text-align: left">无损压缩，体积减半，音质无损</td></tr>
+<tr><td style="text-align: left">MP3</td><td style="text-align: left">有损压缩，最普及，兼容性好</td></tr>
+<tr><td style="text-align: left">AAC</td><td style="text-align: left">有损压缩，效率优于 MP3</td></tr>
+<tr><td style="text-align: left">rodio</td><td style="text-align: left">Rust 音频播放库，简单易用</td></tr>
+<tr><td style="text-align: left">symphonia</td><td style="text-align: left">Rust 多媒体格式解析库，功能强大</td></tr>
+<tr><td style="text-align: left">hound</td><td style="text-align: left">Rust WAV 文件读写库，轻量无依赖</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h2>
+<ol>
+<li>使用 hound 库生成不同频率的正弦波，体验频率与音调的关系。</li>
+<li>使用 rodio 播放音频文件，并实现一个简单的播放器（支持暂停、继续、音量调节）。</li>
+<li>编写程序读取 WAV 文件，计算其 RMS（均方根）响度值。</li>
+<li>尝试使用 symphonia 解析 MP3 或 FLAC 文件，提取其元数据（标题、艺术家等）。</li>
+<li>对比同一首音乐的不同格式（WAV、FLAC、MP3）的文件大小，理解压缩率的差异。</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_7_QRCode.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_9_Video.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_7_QRCode.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_9_Video.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

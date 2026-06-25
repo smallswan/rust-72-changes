@@ -1,0 +1,654 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第六 条形码 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第六章-条形码"><a class="header" href="#第六章-条形码">第六章 条形码</a></h1>
+<p>条形码（Barcode）是一种将数据编码为机器可读图形符号的技术。它通过不同宽度的条（bar）和空（space）的组合来表示信息，广泛应用于零售、物流、图书管理、医疗等领域。本章将深入探讨条形码的编码原理、常见标准，并使用 Rust 实现条形码的生成与校验。</p>
+<h2 id="61-条形码的定义与历史"><a class="header" href="#61-条形码的定义与历史">6.1 条形码的定义与历史</a></h2>
+<h3 id="611-什么是条形码"><a class="header" href="#611-什么是条形码">6.1.1 什么是条形码</a></h3>
+<p>条形码是一种光学机器可读的数据表示形式。它将字符集（通常是数字和字母）转换为一系列具有不同反射率的平行线条或图案。扫描设备通过检测条（暗色，低反射率）和空（亮色，高反射率）的宽度差异来解码信息。</p>
+<p>从信息论的角度看，条形码是一种<strong>信道编码</strong>方案，它将源数据映射到适合光学传输的物理信号。编码过程需要满足以下约束：</p>
+<ul>
+<li><strong>自同步性</strong>：扫描器能够从任意位置开始正确解码</li>
+<li><strong>检错能力</strong>：能够检测常见的读取错误</li>
+<li><strong>密度与可靠性平衡</strong>：在有限空间内存储尽可能多的信息，同时保证扫描成功率</li>
+</ul>
+<h3 id="612-发展历程"><a class="header" href="#612-发展历程">6.1.2 发展历程</a></h3>
+<p>条形码的发展可追溯至20世纪中期：</p>
+<ul>
+<li><strong>1948年</strong>：Norman Joseph Woodland 和 Bernard Silver 基于摩尔斯电码发明了最早的条形码概念，使用同心圆图案（牛眼码）</li>
+<li><strong>1973年</strong>：美国统一代码委员会（UCC）采纳了 George Laurer 设计的 <strong>UPC（Universal Product Code）</strong> 标准，标志着现代条形码时代的开始</li>
+<li><strong>1977年</strong>：欧洲成立了欧洲物品编码协会（EAN），推出了与 UPC 兼容的 <strong>EAN</strong> 编码体系</li>
+<li><strong>1994年</strong>：日本 Denso Wave 公司发明了 <strong>QR Code</strong>，将条形码从一维扩展到二维，显著提升了信息容量</li>
+</ul>
+<p>如今，条形码已成为全球供应链和零售行业的基础设施，每天被扫描数十亿次。</p>
+<h2 id="62-常见条形码类型"><a class="header" href="#62-常见条形码类型">6.2 常见条形码类型</a></h2>
+<p>条形码主要分为一维码（线性条形码）和二维码两大类。它们在信息容量、编码字符集和应用场景上各有侧重。</p>
+<h3 id="621-eanupc-系列"><a class="header" href="#621-eanupc-系列">6.2.1 EAN/UPC 系列</a></h3>
+<p><strong>UPC-A</strong> 和 <strong>EAN-13</strong> 是最常见的零售商品条形码。</p>
+<ul>
+<li><strong>UPC-A</strong>：12位数字，主要用于美国和加拿大</li>
+<li><strong>EAN-13</strong>：13位数字，是国际通用的商品条码标准</li>
+<li><strong>EAN-8</strong>：8位数字，用于小型包装</li>
+</ul>
+<p>EAN-13 的结构如下：</p>
+<pre><code>| 前缀码 (2-3位) | 厂商代码 (4-5位) | 产品代码 (5位) | 校验码 (1位) |
+</code></pre>
+<p>例如，中国的前缀码为 <code>690-699</code>。</p>
+<h3 id="622-code-128"><a class="header" href="#622-code-128">6.2.2 Code 128</a></h3>
+<p>Code 128 是一种高密度的一维码，可以编码全部 128 个 ASCII 字符。它通过三种不同的字符集（Code A、Code B、Code C）灵活切换，在物流和工业领域广泛应用。</p>
+<p>Code 128 的特点：</p>
+<ul>
+<li>支持数字、字母、标点符号和控制字符</li>
+<li>编码密度高，相同长度可存储更多字符</li>
+<li>包含校验码，可靠性好</li>
+</ul>
+<h3 id="623-code-39"><a class="header" href="#623-code-39">6.2.3 Code 39</a></h3>
+<p>Code 39（又称 Code 3 of 9）是一种较早的条形码标准，每个字符由 9 个元素组成（5 条 + 4 空），其中 3 个是宽元素。</p>
+<p>特点：</p>
+<ul>
+<li>支持 43 个字符：数字 0-9、大写字母 A-Z 和若干符号</li>
+<li>不需要校验码（但通常添加一位校验字符以增强可靠性）</li>
+<li>编码密度较低，但实现简单</li>
+</ul>
+<h3 id="624-qr-code"><a class="header" href="#624-qr-code">6.2.4 QR Code</a></h3>
+<p>QR Code（Quick Response Code）是一种矩阵式二维码，与一维码有本质区别：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th>一维码</th><th>QR Code</th></tr>
+</thead>
+<tbody>
+<tr><td>信息方向</td><td>水平方向</td><td>水平 + 垂直方向</td></tr>
+<tr><td>容量</td><td>约 20-30 个字符</td><td>数千个字符</td></tr>
+<tr><td>容错能力</td><td>无</td><td>四个等级（L/M/Q/H）</td></tr>
+<tr><td>中文支持</td><td>不支持</td><td>支持</td></tr>
+<tr><td>读取方向</td><td>需对齐</td><td>360° 任意角度</td></tr>
+</tbody>
+</table>
+</div>
+<p>QR Code 通过 Reed-Solomon 纠错码实现了即使部分图案损坏仍可读取的能力。其容量随版本号增加而增大，最高版本（Version 40）可存储约 7,089 个数字或 4,296 个字母数字字符。</p>
+<h2 id="63-条形码编码原理"><a class="header" href="#63-条形码编码原理">6.3 条形码编码原理</a></h2>
+<h3 id="631-条空宽度与二进制的对应"><a class="header" href="#631-条空宽度与二进制的对应">6.3.1 条空宽度与二进制的对应</a></h3>
+<p>一维条形码本质上是一种**脉冲宽度调制（PWM）**信号。条和空的宽度对应不同的二进制序列。以 EAN-13 为例，每个数字由 7 个模块（module）组成，每个模块宽度相同，条表示二进制的 <code>1</code>，空表示二进制的 <code>0</code>。</p>
+<p>每个数字有两种编码模式：</p>
+<ul>
+<li><strong>左侧奇校验（L-code）</strong>：以空开始，以条结束</li>
+<li><strong>左侧偶校验（G-code）</strong>：以空开始，以条结束，但模式与 L-code 不同</li>
+<li><strong>右侧（R-code）</strong>：以条开始，以空结束，是 L-code 的反码</li>
+</ul>
+<p>EAN-13 的数字编码表如下：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>数字</th><th>L-code</th><th>G-code</th><th>R-code</th></tr>
+</thead>
+<tbody>
+<tr><td>0</td><td>0001101</td><td>0100111</td><td>1110010</td></tr>
+<tr><td>1</td><td>0011001</td><td>0110011</td><td>1100110</td></tr>
+<tr><td>2</td><td>0010011</td><td>0011011</td><td>1101100</td></tr>
+<tr><td>3</td><td>0111101</td><td>0100001</td><td>1000010</td></tr>
+<tr><td>4</td><td>0100011</td><td>0011101</td><td>1011100</td></tr>
+<tr><td>5</td><td>0110001</td><td>0111001</td><td>1001110</td></tr>
+<tr><td>6</td><td>0101111</td><td>0000101</td><td>1010000</td></tr>
+<tr><td>7</td><td>0111011</td><td>0010001</td><td>1000100</td></tr>
+<tr><td>8</td><td>0110111</td><td>0001001</td><td>1001000</td></tr>
+<tr><td>9</td><td>0001011</td><td>0010111</td><td>1110100</td></tr>
+</tbody>
+</table>
+</div>
+<p>注意：这里的 <code>1</code> 和 <code>0</code> 分别表示条和空，实际绘制时需要考虑条空交替。</p>
+<p>前缀第一位数字决定了左侧 6 位数字使用 L-code 还是 G-code 的组合，这一设计使得扫描器可以自动判断条码方向。</p>
+<h3 id="632-起始符终止符与中间分隔符"><a class="header" href="#632-起始符终止符与中间分隔符">6.3.2 起始符、终止符与中间分隔符</a></h3>
+<p>EAN-13 条码还包含以下固定模式：</p>
+<ul>
+<li><strong>起始符（Guard Bar）</strong>：<code>101</code>，位于条码左侧</li>
+<li><strong>中间分隔符（Center Guard）</strong>：<code>01010</code>，位于条码中间</li>
+<li><strong>终止符（Guard Bar）</strong>：<code>101</code>，位于条码右侧</li>
+</ul>
+<p>这些守卫条帮助扫描器校准读取位置，确保解码的准确性。</p>
+<h3 id="633-code-128-的编码结构"><a class="header" href="#633-code-128-的编码结构">6.3.3 Code 128 的编码结构</a></h3>
+<p>Code 128 的每个字符由 11 个模块组成（终止符为 13 个），结构为：</p>
+<pre><code>| 起始符 | 数据字符1 | 数据字符2 | ... | 校验字符 | 终止符 |
+</code></pre>
+<p>Code 128 使用三种字符集：</p>
+<ul>
+<li><strong>Code A</strong>：ASCII 控制字符和大写字母</li>
+<li><strong>Code B</strong>：大写、小写字母和标点</li>
+<li><strong>Code C</strong>：仅数字，每两个数字用一个字符编码，密度翻倍</li>
+</ul>
+<p>字符集切换通过特殊的切换字符（如 <code>CODE B</code>、<code>CODE C</code>）实现，这类似于数据压缩中的模式切换。</p>
+<h2 id="64-校验码计算"><a class="header" href="#64-校验码计算">6.4 校验码计算</a></h2>
+<h3 id="641-ean-13-校验码算法"><a class="header" href="#641-ean-13-校验码算法">6.4.1 EAN-13 校验码算法</a></h3>
+<p>EAN-13 的最后一位是校验码，用于检测输入或扫描错误。其计算步骤如下：</p>
+<ol>
+<li>取前 12 位数字</li>
+<li>从右向左，奇数位（第1、3、5…位）数字相加，乘以 3</li>
+<li>从右向左，偶数位（第2、4、6…位）数字相加</li>
+<li>将两个和相加，取结果的个位数</li>
+<li>校验码 = $(10 - \text{个位数}) \bmod 10$</li>
+</ol>
+<p>用数学公式表示：</p>
+<p>$$
+c = \left(10 - \left(\sum_{i=1}^{6} d_{2i-1} \times 3 + \sum_{i=1}^{6} d_{2i}\right) \bmod 10\right) \bmod 10
+$$</p>
+<p>其中 $d_1, d_2, \ldots, d_{12}$ 为前 12 位数字。</p>
+<h3 id="642-rust-实现-ean-13-校验码"><a class="header" href="#642-rust-实现-ean-13-校验码">6.4.2 Rust 实现 EAN-13 校验码</a></h3>
+<pre class="playground"><code class="language-rust edition2024">fn calculate_ean13_check_digit(digits: &amp;[u8; 12]) -&gt; u8 {
+    let mut sum = 0u32;
+    for (i, &amp;d) in digits.iter().enumerate() {
+        // 从右向左，所以索引 0 对应最右边（奇数位）
+        if i % 2 == 0 {
+            sum += (d as u32) * 3;
+        } else {
+            sum += d as u32;
+        }
+    }
+    let remainder = sum % 10;
+    ((10 - remainder) % 10) as u8
+}
+
+fn validate_ean13(code: &amp;str) -&gt; bool {
+    if code.len() != 13 || !code.chars().all(|c| c.is_ascii_digit()) {
+        return false;
+    }
+    let digits: Vec&lt;u8&gt; = code.bytes().map(|b| b - b'0').collect();
+    let input_check = digits[12];
+    let computed = calculate_ean13_check_digit(
+        &amp;digits[..12].try_into().unwrap()
+    );
+    input_check == computed
+}
+
+fn main() {
+    let digits = [6, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    let check = calculate_ean13_check_digit(&amp;digits);
+    println!("校验码: {}", check); // 输出: 校验码: 2
+
+    let full_code = "6901234567892";
+    println!("{} 校验结果: {}", full_code, validate_ean13(full_code));
+}</code></pre>
+<h3 id="643-code-128-校验码算法"><a class="header" href="#643-code-128-校验码算法">6.4.3 Code 128 校验码算法</a></h3>
+<p>Code 128 的校验码计算采用加权求和模 103 的方式：</p>
+<ol>
+<li>起始符有一个数值（Code A = 103, Code B = 104, Code C = 105）</li>
+<li>每个数据字符有一个对应的值（0-102）</li>
+<li>校验码 = $(\text{起始符值} + \sum_{i=1}^{n} i \times \text{字符}_i\text{的值}) \bmod 103$</li>
+</ol>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn calculate_code128_check(start_value: u8, values: &amp;[u8]) -&gt; u8 {
+    let mut sum = start_value as u32;
+    for (i, &amp;v) in values.iter().enumerate() {
+        sum += ((i + 1) as u32) * (v as u32);
+    }
+    (sum % 103) as u8
+}
+<span class="boring">}</span></code></pre>
+<h2 id="65-使用-rust-生成条形码"><a class="header" href="#65-使用-rust-生成条形码">6.5 使用 Rust 生成条形码</a></h2>
+<h3 id="651-使用-barcode-rs-库"><a class="header" href="#651-使用-barcode-rs-库">6.5.1 使用 barcode-rs 库</a></h3>
+<p><code>barcode</code> crate 是 Rust 生态中成熟的条形码生成库，支持多种一维码格式。</p>
+<p>在 <code>Cargo.toml</code> 中添加依赖：</p>
+<pre><code class="language-toml">[dependencies]
+barcode = "0.1"
+image = "0.24"
+</code></pre>
+<p>生成 Code 128 条形码的示例：</p>
+<pre class="playground"><code class="language-rust edition2024">use barcode::sym::code128::Code128;
+use barcode::generators::image::Image;
+use barcode::generators::Generator;
+
+fn main() {
+    let data = "RUST-2024";
+    let barcode = Code128::new(data).unwrap();
+    let generator = Image::png();
+    let bytes = generator.generate(&amp;barcode).unwrap();
+    std::fs::write("rust2024.png", bytes).unwrap();
+    println!("条形码已生成: rust2024.png");
+}</code></pre>
+<h3 id="652-手动生成简单-code-128"><a class="header" href="#652-手动生成简单-code-128">6.5.2 手动生成简单 Code 128</a></h3>
+<p>为了深入理解编码原理，下面手动实现一个简化的 Code 128 编码器，仅支持 Code B 字符集（ASCII 32-127）。</p>
+<pre class="playground"><code class="language-rust edition2024">const CODE128_B_START: u8 = 104;
+const CODE128_STOP: u8 = 106;
+
+// Code B 字符值映射：空格(32) -&gt; 0, '!'(33) -&gt; 1, ..., 'Z'(90) -&gt; 58, ...
+fn char_to_code128_b(c: char) -&gt; Option&lt;u8&gt; {
+    let code = c as u8;
+    if (32..=127).contains(&amp;code) {
+        Some(code - 32)
+    } else {
+        None
+    }
+}
+
+fn code128_checksum(start: u8, values: &amp;[u8]) -&gt; u8 {
+    let mut sum = start as u32;
+    for (i, &amp;v) in values.iter().enumerate() {
+        sum += ((i + 1) as u32) * (v as u32);
+    }
+    (sum % 103) as u8
+}
+
+fn encode_code128_b(text: &amp;str) -&gt; Option&lt;Vec&lt;u8&gt;&gt; {
+    let mut values = vec![CODE128_B_START];
+    for c in text.chars() {
+        values.push(char_to_code128_b(c)?);
+    }
+    let check = code128_checksum(CODE128_B_START, &amp;values[1..]);
+    values.push(check);
+    values.push(CODE128_STOP);
+    Some(values)
+}
+
+fn main() {
+    let text = "HELLO";
+    match encode_code128_b(text) {
+        Some(encoded) =&gt; {
+            println!("'{}' 的 Code 128 编码值: {:?}", text, encoded);
+        }
+        None =&gt; println!("包含不支持的字符"),
+    }
+}</code></pre>
+<h3 id="653-将编码值渲染为位图"><a class="header" href="#653-将编码值渲染为位图">6.5.3 将编码值渲染为位图</a></h3>
+<p>Code 128 每个字符由 11 个模块组成，条和空的模式由查找表确定。以下是将编码值渲染为简单文本表示的示例：</p>
+<pre class="playground"><code class="language-rust edition2024">// Code 128 字符模式表（简化，仅展示部分）
+// 每个字符由 11 个模块组成：1 表示条，0 表示空
+const CODE128_PATTERNS: [&amp;str; 107] = [
+    "11011001100", "11001101100", "11001100110", // 0-2 (空格, !, ")
+    // ... 省略中间条目
+    "1100011101011", // STOP (106)
+];
+
+fn render_code128_bars(values: &amp;[u8]) -&gt; String {
+    let mut result = String::new();
+    for &amp;v in values {
+        let pattern = CODE128_PATTERNS.get(v as usize).unwrap_or(&amp;"");
+        result.push_str(pattern);
+    }
+    result
+}
+
+fn bars_to_ascii(bars: &amp;str) -&gt; String {
+    bars.chars()
+        .map(|c| if c == '1' { '█' } else { ' ' })
+        .collect()
+}
+
+fn main() {
+    let text = "HI";
+    if let Some(values) = encode_code128_b(text) {
+        let bars = render_code128_bars(&amp;values);
+        println!("{}", bars_to_ascii(&amp;bars));
+    }
+}</code></pre>
+<p>实际应用中，应将条空模式渲染为 PNG、SVG 或位图格式，并确保条宽符合打印分辨率要求（通常最小条宽为 0.33mm）。</p>
+<h2 id="66-条形码的校验与识别"><a class="header" href="#66-条形码的校验与识别">6.6 条形码的校验与识别</a></h2>
+<h3 id="661-扫描解码流程"><a class="header" href="#661-扫描解码流程">6.6.1 扫描解码流程</a></h3>
+<p>条形码扫描器的工作流程如下：</p>
+<ol>
+<li><strong>光学采样</strong>：激光或 LED 光源照射条码，光电传感器接收反射光</li>
+<li><strong>模拟-数字转换</strong>：将光强信号转换为电压波形</li>
+<li><strong>边缘检测</strong>：识别条与空之间的跳变沿</li>
+<li><strong>宽度测量</strong>：测量每个条和空的宽度（以模块为单位）</li>
+<li><strong>字符解码</strong>：根据编码表将模块序列映射为字符</li>
+<li><strong>校验验证</strong>：核对校验码，确认数据完整性</li>
+</ol>
+<h3 id="662-rust-实现简单的条码校验"><a class="header" href="#662-rust-实现简单的条码校验">6.6.2 Rust 实现简单的条码校验</a></h3>
+<p>在实际系统中，接收到的条码数据应进行格式和校验码验证：</p>
+<pre class="playground"><code class="language-rust edition2024">#[derive(Debug)]
+enum BarcodeError {
+    InvalidLength,
+    InvalidCharacter,
+    ChecksumMismatch,
+}
+
+struct Ean13(String);
+
+impl Ean13 {
+    fn new(code: &amp;str) -&gt; Result&lt;Self, BarcodeError&gt; {
+        if code.len() != 13 {
+            return Err(BarcodeError::InvalidLength);
+        }
+        if !code.chars().all(|c| c.is_ascii_digit()) {
+            return Err(BarcodeError::InvalidCharacter);
+        }
+        let digits: Vec&lt;u8&gt; = code.bytes().map(|b| b - b'0').collect();
+        let mut sum = 0u32;
+        for (i, &amp;d) in digits[..12].iter().enumerate() {
+            if i % 2 == 0 {
+                sum += (d as u32) * 3;
+            } else {
+                sum += d as u32;
+            }
+        }
+        let check = ((10 - (sum % 10)) % 10) as u8;
+        if digits[12] != check {
+            return Err(BarcodeError::ChecksumMismatch);
+        }
+        Ok(Ean13(code.to_string()))
+    }
+
+    fn country_prefix(&amp;self) -&gt; &amp;str {
+        &amp;self.0[..3]
+    }
+
+    fn as_str(&amp;self) -&gt; &amp;str {
+        &amp;self.0
+    }
+}
+
+fn main() {
+    match Ean13::new("6901234567892") {
+        Ok(ean) =&gt; {
+            println!("有效的 EAN-13: {}", ean.as_str());
+            println!("国家前缀: {}", ean.country_prefix());
+        }
+        Err(e) =&gt; println!("校验失败: {:?}", e),
+    }
+}</code></pre>
+<h3 id="663-纠错与容错"><a class="header" href="#663-纠错与容错">6.6.3 纠错与容错</a></h3>
+<p>一维码（如 EAN、Code 128）本身不具备纠错能力，仅能通过校验码检测错误。若校验失败，扫描器通常会要求重新扫描。</p>
+<p>相比之下，QR Code 采用 <strong>Reed-Solomon 纠错码</strong>，可以在以下情况下恢复数据：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>纠错等级</th><th>最大恢复比例</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td>L (Low)</td><td>7%</td><td>清洁环境</td></tr>
+<tr><td>M (Medium)</td><td>15%</td><td>一般环境</td></tr>
+<tr><td>Q (Quartile)</td><td>25%</td><td>较脏环境</td></tr>
+<tr><td>H (High)</td><td>30%</td><td>极端环境</td></tr>
+</tbody>
+</table>
+</div>
+<p>Reed-Solomon 码的数学基础是有限域（Galois Field）上的多项式运算。对于 QR Code，数据被分割为若干块，每块附加纠错码，使得即使部分模块损坏或遮挡，仍可通过解线性方程组恢复原始数据。</p>
+<h2 id="67-总结"><a class="header" href="#67-总结">6.7 总结</a></h2>
+<p>本章系统介绍了条形码技术的核心概念与 Rust 实现方法。下表总结了各类条形码的关键特性：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th>EAN-13</th><th>UPC-A</th><th>Code 128</th><th>Code 39</th><th>QR Code</th></tr>
+</thead>
+<tbody>
+<tr><td>字符集</td><td>数字</td><td>数字</td><td>全 ASCII</td><td>43字符</td><td>二进制数据</td></tr>
+<tr><td>长度</td><td>13位</td><td>12位</td><td>可变</td><td>可变</td><td>可变</td></tr>
+<tr><td>校验</td><td>模10</td><td>模10</td><td>模103</td><td>可选</td><td>Reed-Solomon</td></tr>
+<tr><td>密度</td><td>中</td><td>中</td><td>高</td><td>低</td><td>极高</td></tr>
+<tr><td>方向敏感</td><td>是</td><td>是</td><td>是</td><td>是</td><td>否</td></tr>
+<tr><td>纠错能力</td><td>检错</td><td>检错</td><td>检错</td><td>检错</td><td>纠错</td></tr>
+<tr><td>典型应用</td><td>零售商品</td><td>零售商品</td><td>物流标签</td><td>资产标签</td><td>移动支付</td></tr>
+</tbody>
+</table>
+</div>
+<p>条形码技术虽然看似简单，但其背后蕴含了信号处理、编码理论和纠错算法的深刻原理。从 UPC 到 QR Code，条形码的演进反映了信息存储密度与可靠性之间持续优化的过程。</p>
+<h2 id="练习"><a class="header" href="#练习">练习</a></h2>
+<ol>
+<li>扩展 <code>Ean13</code> 结构体，添加解析厂商代码和产品代码的方法。</li>
+<li>实现完整的 EAN-13 编码器，将 13 位数字转换为条空模块序列，并输出为 SVG 图形。</li>
+<li>为 Code 128 实现 Code C 字符集支持，使连续数字对的编码密度提升一倍。</li>
+<li>使用 <code>image</code> crate 将条形码模块序列渲染为 PNG 位图，支持配置条宽和高度。</li>
+<li>研究 QR Code 的数据掩码（Data Masking）机制，理解其如何避免大面积同色块导致扫描困难。</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_5_Image.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_7_QRCode.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_5_Image.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_7_QRCode.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

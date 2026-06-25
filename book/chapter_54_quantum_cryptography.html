@@ -1,0 +1,593 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第五十四 量子密码学 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第五十四-量子密码学"><a class="header" href="#第五十四-量子密码学">第五十四 量子密码学</a></h1>
+<blockquote>
+<p>用量子对抗量子：密码学的新战场</p>
+</blockquote>
+<p>量子计算机的出现是21世纪计算领域最具颠覆性的技术变革之一。对于密码学而言，这既是巨大的威胁，也是全新的机遇。一方面，量子计算机有能力破解当前广泛使用的RSA和椭圆曲线密码；另一方面，量子力学原理也为构建理论上不可破解的密码系统提供了全新的工具。</p>
+<p>本章将探讨量子计算对传统密码的威胁、量子密钥分发技术，以及正在兴起的后量子密码学标准。</p>
+<h2 id="541-量子计算对传统密码的威胁"><a class="header" href="#541-量子计算对传统密码的威胁">54.1 量子计算对传统密码的威胁</a></h2>
+<h3 id="量子计算的威力"><a class="header" href="#量子计算的威力">量子计算的威力</a></h3>
+<p>传统计算机使用比特（bit）作为信息的基本单位，每个比特要么是0要么是1。量子计算机使用<strong>量子比特（qubit）</strong>，它可以同时处于0和1的叠加态。这使得量子计算机在处理特定问题上具有指数级加速的潜力。</p>
+<h3 id="shor-算法公钥密码的噩梦"><a class="header" href="#shor-算法公钥密码的噩梦">Shor 算法：公钥密码的噩梦</a></h3>
+<p>1994年，数学家 Peter Shor 提出了<strong>Shor 算法</strong>，证明量子计算机可以在<strong>多项式时间内</strong>解决以下问题：</p>
+<ul>
+<li><strong>大整数分解</strong>：给定大合数 <code>n = p * q</code>，快速找到素因子 <code>p</code> 和 <code>q</code></li>
+<li><strong>离散对数问题</strong>：在有限域或椭圆曲线群上求解离散对数</li>
+</ul>
+<p>这意味着：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>密码算法</th><th>基于的数学难题</th><th>量子威胁</th></tr>
+</thead>
+<tbody>
+<tr><td>RSA</td><td>大整数分解</td><td>可被 Shor 算法破解</td></tr>
+<tr><td>Diffie-Hellman</td><td>离散对数</td><td>可被 Shor 算法破解</td></tr>
+<tr><td>ECC（椭圆曲线）</td><td>椭圆曲线离散对数</td><td>可被 Shor 算法破解</td></tr>
+<tr><td>DSA/ECDSA</td><td>离散对数/椭圆曲线离散对数</td><td>可被 Shor 算法破解</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>实际影响</strong>：一台拥有约4000个逻辑量子比特的量子计算机，就能在合理时间内破解2048位RSA密钥。虽然目前的量子计算机距离这个规模还很远，但密码系统的部署周期往往长达数十年，因此必须提前准备。</p>
+<h3 id="grover-算法对称密码的减半威胁"><a class="header" href="#grover-算法对称密码的减半威胁">Grover 算法：对称密码的减半威胁</a></h3>
+<p>1996年，Lov Grover 提出了<strong>Grover 搜索算法</strong>，它可以将无序数据库的搜索复杂度从 <code>O(N)</code> 降低到 <code>O(√N)</code>。</p>
+<p>对密码学的影响：</p>
+<ul>
+<li><strong>对称加密</strong>：有效密钥长度减半。例如，AES-256 的安全性降低到约128位（仍然安全），但 AES-128 的安全性降低到约64位（不再安全）</li>
+<li><strong>哈希函数</strong>：碰撞攻击的复杂度从 <code>O(2^(n/2))</code> 降低到 <code>O(2^(n/3))</code>， preimage 攻击从 <code>O(2^n)</code> 降低到 <code>O(2^(n/2))</code></li>
+</ul>
+<p><strong>应对策略</strong>：对称加密和哈希函数只需<strong>加倍密钥/输出长度</strong>即可恢复安全性。例如，使用 AES-256 代替 AES-128，使用 SHA-384/512 代替 SHA-256。</p>
+<h2 id="542-量子密钥分发qkd"><a class="header" href="#542-量子密钥分发qkd">54.2 量子密钥分发（QKD）</a></h2>
+<p>量子密钥分发利用量子力学原理，让两个通信方可以生成共享的随机密钥，并确保任何窃听行为都会被发现。与基于数学难题的传统密码不同，QKD 的安全性由<strong>物理定律</strong>保证。</p>
+<h3 id="bb84-协议"><a class="header" href="#bb84-协议">BB84 协议</a></h3>
+<p>1984年，Charles Bennett 和 Gilles Brassard 提出了第一个量子密钥分发协议——<strong>BB84</strong>。其核心思想是利用量子态的不可克隆性和测量坍缩特性来检测窃听。</p>
+<h4 id="基本原理"><a class="header" href="#基本原理">基本原理</a></h4>
+<ol>
+<li>
+<p><strong>量子态编码</strong>：发送方 Alice 使用两种基（ rectilinear <code>+</code> 和 diagonal <code>×</code> ）来编码比特：</p>
+<ul>
+<li><code>+</code> 基：<code>0°</code> = 0，<code>90°</code> = 1</li>
+<li><code>×</code> 基：<code>45°</code> = 0，<code>135°</code> = 1</li>
+</ul>
+</li>
+<li>
+<p><strong>随机选择</strong>：Alice 随机选择基和比特值发送光子。Bob 也随机选择基进行测量。</p>
+</li>
+<li>
+<p><strong>基比对</strong>：通过公开信道，Alice 和 Bob 比较各自使用的基，只保留使用相同基的那些比特。</p>
+</li>
+<li>
+<p><strong>错误检测</strong>：随机抽取部分比特公开比较，计算误码率。如果误码率超过阈值（通常11%），说明存在窃听者 Eve。</p>
+</li>
+</ol>
+<h4 id="为什么能检测窃听"><a class="header" href="#为什么能检测窃听">为什么能检测窃听？</a></h4>
+<p>量子力学的两个核心原理保证了安全性：</p>
+<ul>
+<li><strong>不可克隆定理</strong>：未知量子态不能被完美复制。Eve 无法复制光子留一份给自己。</li>
+<li><strong>测量坍缩</strong>：测量会改变量子态。Eve 的测量会引入可检测的错误。</li>
+</ul>
+<p>如果 Eve 试图窃听：</p>
+<ol>
+<li>她必须选择基来测量光子</li>
+<li>她有50%的概率选错基</li>
+<li>选错基时，她的测量会改变光子状态</li>
+<li>这导致 Bob 接收到的数据中有约25%的错误</li>
+<li>Alice 和 Bob 通过比对可以发现这些异常</li>
+</ol>
+<h3 id="qkd-的局限性"><a class="header" href="#qkd-的局限性">QKD 的局限性</a></h3>
+<p>尽管 QKD 在理论上是完美的，但实际部署面临挑战：</p>
+<ol>
+<li><strong>距离限制</strong>：光纤传输损耗限制了距离，目前最长约400-500公里</li>
+<li><strong>需要认证信道</strong>：经典信道需要认证，防止中间人攻击</li>
+<li><strong>设备安全性</strong>：实际设备可能存在侧信道漏洞</li>
+<li><strong>速率限制</strong>：密钥生成速率远低于传统密钥交换</li>
+</ol>
+<h2 id="543-后量子密码学pqc"><a class="header" href="#543-后量子密码学pqc">54.3 后量子密码学（PQC）</a></h2>
+<p>后量子密码学（Post-Quantum Cryptography）研究的是能够抵抗量子计算机攻击的密码算法。与 QKD 不同，PQC 仍然基于数学难题，只是选择了量子计算机也难以解决的问题。</p>
+<h3 id="量子安全的数学难题"><a class="header" href="#量子安全的数学难题">量子安全的数学难题</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>问题类别</th><th>代表问题</th><th>量子抵抗性</th></tr>
+</thead>
+<tbody>
+<tr><td>基于格的密码</td><td>最短向量问题（SVP）、学习 with 错误（LWE）</td><td>被认为是量子困难的</td></tr>
+<tr><td>基于编码的密码</td><td>随机线性码的译码问题</td><td>被认为是量子困难的</td></tr>
+<tr><td>基于多变量的密码</td><td>多元多项式方程组求解</td><td>被认为是量子困难的</td></tr>
+<tr><td>基于哈希的密码</td><td>哈希函数的安全性</td><td>只需加倍输出长度</td></tr>
+<tr><td>基于同源的密码</td><td>超奇异椭圆曲线同源问题</td><td>新兴方向</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="主要-pqc-方案家族"><a class="header" href="#主要-pqc-方案家族">主要 PQC 方案家族</a></h3>
+<h4 id="基于格的密码lattice-based"><a class="header" href="#基于格的密码lattice-based">基于格的密码（Lattice-based）</a></h4>
+<p>格是 <code>n</code> 维空间中的离散点集。格密码基于以下困难问题：</p>
+<ul>
+<li><strong>最短向量问题（SVP）</strong>：在格中找到最短的非零向量</li>
+<li><strong>最近向量问题（CVP）</strong>：找到格中最接近给定向量的点</li>
+<li><strong>LWE（Learning With Errors）</strong>：从带噪声的线性方程中恢复秘密</li>
+</ul>
+<p>格密码的优势：</p>
+<ul>
+<li>密钥和密文尺寸相对较小</li>
+<li>计算效率高</li>
+<li>功能丰富（支持加密、签名、同态运算）</li>
+</ul>
+<h4 id="基于编码的密码code-based"><a class="header" href="#基于编码的密码code-based">基于编码的密码（Code-based）</a></h4>
+<p>基于纠错码理论，最早由 Robert McEliece 于1978年提出。</p>
+<ul>
+<li><strong>McEliece 密码系统</strong>：使用随机线性码的译码困难性</li>
+<li>优势：历史悠久，安全性研究充分</li>
+<li>劣势：公钥尺寸很大（MB级别）</li>
+</ul>
+<h4 id="基于多变量的密码multivariate-based"><a class="header" href="#基于多变量的密码multivariate-based">基于多变量的密码（Multivariate-based）</a></h4>
+<p>基于有限域上多元多项式方程组的求解困难性。</p>
+<ul>
+<li>优势：签名方案速度快，签名尺寸小</li>
+<li>劣势：密钥尺寸较大，部分方案已被攻破</li>
+</ul>
+<h4 id="基于哈希的密码hash-based"><a class="header" href="#基于哈希的密码hash-based">基于哈希的密码（Hash-based）</a></h4>
+<p>利用哈希函数的安全性构建签名方案。</p>
+<ul>
+<li><strong>Lamport 签名</strong>、<strong>Merkle 签名</strong>：安全性完全依赖于哈希函数</li>
+<li>优势：安全性分析简单直观</li>
+<li>劣势：一次性签名或有状态签名，使用复杂</li>
+</ul>
+<h2 id="544-nist-后量子密码标准"><a class="header" href="#544-nist-后量子密码标准">54.4 NIST 后量子密码标准</a></h2>
+<p>2022年至2024年，美国国家标准与技术研究院（NIST）经过多轮评估，正式发布了首批后量子密码标准算法。</p>
+<h3 id="标准化算法"><a class="header" href="#标准化算法">标准化算法</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>类型</th><th>基于的数学结构</th><th>用途</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>CRYSTALS-Kyber</strong></td><td>KEM（密钥封装机制）</td><td>基于模格（MLWE）</td><td>密钥交换、加密</td></tr>
+<tr><td><strong>CRYSTALS-Dilithium</strong></td><td>数字签名</td><td>基于模格（MLWE/MSIS）</td><td>身份认证、签名</td></tr>
+<tr><td><strong>SPHINCS+</strong></td><td>数字签名</td><td>基于哈希</td><td>高安全性签名</td></tr>
+<tr><td><strong>FALCON</strong></td><td>数字签名</td><td>基于格（NTRU）</td><td>短签名场景</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="crystals-kyber"><a class="header" href="#crystals-kyber">CRYSTALS-Kyber</a></h3>
+<p>Kyber 是一种 IND-CCA2 安全的密钥封装机制（KEM），用于替代 ECDH 密钥交换。</p>
+<p><strong>核心特点</strong>：</p>
+<ul>
+<li>安全性基于模格上的 LWE 问题（Module-LWE）</li>
+<li>密钥尺寸小，计算速度快</li>
+<li>提供三种安全级别：Kyber-512、Kyber-768、Kyber-1024</li>
+</ul>
+<p><strong>工作流程</strong>：</p>
+<pre><code>1. 接收方生成公钥 pk 和私钥 sk
+2. 发送方使用 pk 封装，得到密文 c 和共享密钥 k
+3. 接收方使用 sk 解封装 c，恢复相同的共享密钥 k
+</code></pre>
+<h3 id="crystals-dilithium"><a class="header" href="#crystals-dilithium">CRYSTALS-Dilithium</a></h3>
+<p>Dilithium 是一种数字签名算法，用于替代 ECDSA 和 RSA 签名。</p>
+<p><strong>核心特点</strong>：</p>
+<ul>
+<li>安全性基于模格上的短整数解问题（Module-SIS）和 LWE</li>
+<li>签名尺寸较小，验证速度快</li>
+<li>提供三种安全级别</li>
+</ul>
+<h2 id="545-rust-实现"><a class="header" href="#545-rust-实现">54.5 Rust 实现</a></h2>
+<p>Rust 生态中已有多个后量子密码库实现。下面介绍使用 <code>pqcrypto</code> 的示例。</p>
+<h3 id="cargotoml-依赖"><a class="header" href="#cargotoml-依赖">Cargo.toml 依赖</a></h3>
+<pre><code class="language-toml">[dependencies]
+pqcrypto-traits = "0.3"
+pqcrypto-kyber = "0.7"
+pqcrypto-dilithium = "0.5"
+rand = "0.8"
+</code></pre>
+<h3 id="kyber-密钥封装示例"><a class="header" href="#kyber-密钥封装示例">Kyber 密钥封装示例</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use pqcrypto_kyber::kyber768;
+use pqcrypto_traits::kem::{Ciphertext, PublicKey, SecretKey, SharedSecret};
+
+fn main() {
+    // 1. 接收方（Bob）生成密钥对
+    let (pk, sk) = kyber768::keypair();
+    println!("Bob 生成了 Kyber-768 密钥对");
+    println!("公钥长度: {} bytes", pk.as_bytes().len());
+    println!("私钥长度: {} bytes", sk.as_bytes().len());
+
+    // 2. 发送方（Alice）使用 Bob 的公钥封装密钥
+    let (ciphertext, shared_secret_alice) = kyber768::encapsulate(&amp;pk);
+    println!("\nAlice 封装了共享密钥");
+    println!("密文长度: {} bytes", ciphertext.as_bytes().len());
+    println!("Alice 的共享密钥: {:02x?}", shared_secret_alice.as_bytes());
+
+    // 3. Bob 使用私钥解封装，恢复共享密钥
+    let shared_secret_bob = kyber768::decapsulate(&amp;ciphertext, &amp;sk);
+    println!("\nBob 解封装了共享密钥");
+    println!("Bob 的共享密钥:   {:02x?}", shared_secret_bob.as_bytes());
+
+    // 4. 验证双方密钥一致
+    assert_eq!(
+        shared_secret_alice.as_bytes(),
+        shared_secret_bob.as_bytes(),
+        "共享密钥不一致！"
+    );
+    println!("\n✓ 共享密钥一致，可以开始对称加密通信");
+}</code></pre>
+<h3 id="dilithium-数字签名示例"><a class="header" href="#dilithium-数字签名示例">Dilithium 数字签名示例</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use pqcrypto_dilithium::dilithium3;
+use pqcrypto_traits::sign::{PublicKey, SecretKey, SignedMessage, Signer, Verifier};
+
+fn main() {
+    // 1. 生成签名密钥对
+    let (pk, sk) = dilithium3::keypair();
+    println!("生成了 Dilithium3 签名密钥对");
+    println!("公钥长度: {} bytes", pk.as_bytes().len());
+    println!("私钥长度: {} bytes", sk.as_bytes().len());
+
+    // 2. 待签名的消息
+    let message = b"这是一份需要量子安全保护的重要合同";
+    println!("\n待签名消息: {}", String::from_utf8_lossy(message));
+
+    // 3. 使用私钥签名
+    let signed_msg = sk.sign(message);
+    println!("签名完成");
+    println!("签名长度: {} bytes", signed_msg.as_bytes().len());
+
+    // 4. 使用公钥验证签名
+    let verified = pk.verify(&amp;signed_msg, message);
+    match verified {
+        Ok(()) =&gt; println!("✓ 签名验证通过"),
+        Err(e) =&gt; println!("✗ 签名验证失败: {:?}", e),
+    }
+
+    // 5. 验证篡改检测
+    let mut tampered_msg = message.to_vec();
+    tampered_msg[0] ^= 0xFF; // 篡改第一个字节
+    let tampered_signed = sk.sign(&amp;tampered_msg);
+    
+    match pk.verify(&amp;tampered_signed, message) {
+        Ok(()) =&gt; println!("异常：篡改未被发现"),
+        Err(_) =&gt; println!("✓ 正确检测到消息篡改"),
+    }
+}</code></pre>
+<h3 id="混合加密传统--后量子"><a class="header" href="#混合加密传统--后量子">混合加密：传统 + 后量子</a></h3>
+<p>在量子计算机真正出现之前，一种务实的策略是采用<strong>混合方案</strong>：同时使用传统算法和后量子算法，确保即使其中一种被攻破，整体仍然安全。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use pqcrypto_kyber::kyber768;
+use pqcrypto_traits::kem::{Ciphertext, PublicKey, SecretKey, SharedSecret};
+use rand::thread_rng;
+use x25519_dalek::{EphemeralSecret, PublicKey as X25519PublicKey};
+
+/// 混合密钥交换：X25519 + Kyber768
+fn hybrid_key_exchange() {
+    // ===== 传统部分：X25519 =====
+    let alice_x_secret = EphemeralSecret::random_from_rng(thread_rng());
+    let alice_x_public = X25519PublicKey::from(&amp;alice_x_secret);
+
+    let bob_x_secret = EphemeralSecret::random_from_rng(thread_rng());
+    let bob_x_public = X25519PublicKey::from(&amp;bob_x_secret);
+
+    let alice_x_shared = alice_x_secret.diffie_hellman(&amp;bob_x_public);
+    let bob_x_shared = bob_x_secret.diffie_hellman(&amp;alice_x_public);
+    assert_eq!(alice_x_shared.as_bytes(), bob_x_shared.as_bytes());
+
+    // ===== 后量子部分：Kyber768 =====
+    let (kyber_pk, kyber_sk) = kyber768::keypair();
+    let (kyber_ct, kyber_ss_enc) = kyber768::encapsulate(&amp;kyber_pk);
+    let kyber_ss_dec = kyber768::decapsulate(&amp;kyber_ct, &amp;kyber_sk);
+    assert_eq!(kyber_ss_enc.as_bytes(), kyber_ss_dec.as_bytes());
+
+    // ===== 混合共享密钥 =====
+    // 将两个共享密钥进行哈希混合，即使其中一个被攻破，另一个仍提供安全性
+    use sha2::{Sha256, Digest};
+    let mut hasher = Sha256::new();
+    hasher.update(alice_x_shared.as_bytes());
+    hasher.update(kyber_ss_enc.as_bytes());
+    let hybrid_shared_secret = hasher.finalize();
+
+    println!("混合共享密钥: {:02x?}", hybrid_shared_secret);
+    println!("✓ 同时受 X25519 和 Kyber768 保护");
+}
+<span class="boring">}</span></code></pre>
+<h2 id="546-迁移路线图"><a class="header" href="#546-迁移路线图">54.6 迁移路线图</a></h2>
+<p>向量子安全密码的迁移是一项长期工程，建议采取以下策略：</p>
+<ol>
+<li><strong>密码清单</strong>：梳理系统中所有使用的密码算法和密钥长度</li>
+<li><strong>风险评估</strong>：识别需要优先保护的高价值数据和长期保密数据</li>
+<li><strong>混合部署</strong>：在关键系统中同时部署传统和后量子算法</li>
+<li><strong>算法敏捷性</strong>：设计支持算法替换的架构，避免硬编码特定算法</li>
+<li><strong>持续跟踪</strong>：关注 NIST 等标准化组织的最新进展</li>
+</ol>
+<h2 id="547-本章总结"><a class="header" href="#547-本章总结">54.7 本章总结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>说明</th><th>状态/建议</th></tr>
+</thead>
+<tbody>
+<tr><td>Shor 算法</td><td>量子算法，可破解 RSA/ECC</td><td>威胁已确认，需迁移</td></tr>
+<tr><td>Grover 算法</td><td>量子搜索，对称密钥减半</td><td>使用 AES-256、SHA-384+</td></tr>
+<tr><td>BB84 协议</td><td>量子密钥分发</td><td>已商用，但有距离限制</td></tr>
+<tr><td>基于格的密码</td><td>Kyber、Dilithium 的基础</td><td>NIST 标准化，推荐采用</td></tr>
+<tr><td>基于哈希的签名</td><td>SPHINCS+</td><td>高安全性，签名较大</td></tr>
+<tr><td>混合加密</td><td>传统 + 后量子组合</td><td>当前最佳实践</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
+<ol>
+<li>
+<p><strong>基础练习</strong>：使用 <code>pqcrypto-kyber</code> 实现完整的密钥封装流程，验证封装/解封装的一致性。</p>
+</li>
+<li>
+<p><strong>中级练习</strong>：使用 <code>pqcrypto-dilithium</code> 实现文件签名工具，能够对任意文件进行签名和验证。</p>
+</li>
+<li>
+<p><strong>高级练习</strong>：实现一个混合 TLS 握手模拟：结合 X25519 和 Kyber768 进行密钥交换，比较纯传统方案和混合方案的性能开销。</p>
+</li>
+<li>
+<p><strong>实践项目</strong>：调研你的现有项目（或常用开源项目）中使用的密码算法，制定一份向量子安全密码迁移的评估报告。</p>
+</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_53_homomorphic_encryption.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_71.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_53_homomorphic_encryption.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_71.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

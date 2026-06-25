@@ -1,0 +1,805 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第四十七 认证 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第四十七变-认证"><a class="header" href="#第四十七变-认证">第四十七变 认证</a></h1>
+<blockquote>
+<p>七十二变，变的是形；真身难辨，靠的是证。</p>
+<p>认证之道，在于确认“你是谁“——从古老的口令到现代的生物特征，从单点信任到多因素验证，人类在身份验证的道路上不断探索更安全、更便捷的方案。</p>
+</blockquote>
+<h2 id="471-认证的基本概念"><a class="header" href="#471-认证的基本概念">47.1 认证的基本概念</a></h2>
+<h3 id="4711-身份识别与身份验证"><a class="header" href="#4711-身份识别与身份验证">47.1.1 身份识别与身份验证</a></h3>
+<p>在信息安全领域，<strong>身份识别（Identification）</strong> 和 <strong>身份验证（Authentication）</strong> 是两个密切相关但本质不同的概念：</p>
+<ul>
+<li><strong>身份识别</strong>：用户声称自己是谁，提供标识符（如用户名、邮箱、身份证号）。这是一个单向声明的过程。</li>
+<li><strong>身份验证</strong>：系统验证用户的声明是否属实，确认该用户确实是其所声称的那个人。</li>
+</ul>
+<p>类比现实场景：你走进一栋大楼，对保安说“我是张三“——这是身份识别；保安查看你的工作证并与本人比对——这是身份验证。只有两者结合，才能建立可信的身份确认。</p>
+<h3 id="4712-认证授权与审计"><a class="header" href="#4712-认证授权与审计">47.1.2 认证、授权与审计</a></h3>
+<p>安全领域常提及“AAA“框架：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>缩写</th><th>全称</th><th>含义</th><th>核心问题</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>A</strong></td><td>Authentication（认证）</td><td>验证用户身份</td><td>你是谁？</td></tr>
+<tr><td><strong>A</strong></td><td>Authorization（授权）</td><td>决定用户能做什么</td><td>你能做什么？</td></tr>
+<tr><td><strong>A</strong></td><td>Accounting/Auditing（审计）</td><td>记录用户做了什么</td><td>你做了什么？</td></tr>
+</tbody>
+</table>
+</div>
+<p>这三者构成完整的安全访问控制链条：先确认身份，再分配权限，最后记录行为。本章聚焦认证，下一章将深入授权。</p>
+<h2 id="472-认证因素"><a class="header" href="#472-认证因素">47.2 认证因素</a></h2>
+<p>认证因素（Authentication Factors）是用于验证身份的凭据类别。根据NIST（美国国家标准与技术研究院）的定义，认证因素分为以下几类：</p>
+<h3 id="4721-知识因素something-you-know"><a class="header" href="#4721-知识因素something-you-know">47.2.1 知识因素（Something You Know）</a></h3>
+<p>用户知道的信息，是最传统、最广泛使用的认证方式：</p>
+<ul>
+<li><strong>密码/口令</strong>：字符串形式的秘密</li>
+<li><strong>PIN码</strong>：数字形式的短密码</li>
+<li><strong>安全问题</strong>：如“你的第一只宠物叫什么名字“</li>
+</ul>
+<p>优点：实现简单，无需额外硬件。
+缺点：可被猜测、窃取、社会工程学攻击；用户倾向于选择弱密码或在多站点复用。</p>
+<h3 id="4722-持有因素something-you-have"><a class="header" href="#4722-持有因素something-you-have">47.2.2 持有因素（Something You Have）</a></h3>
+<p>用户拥有的物理设备：</p>
+<ul>
+<li><strong>硬件令牌</strong>：如RSA SecurID、YubiKey</li>
+<li><strong>智能卡</strong>：嵌入芯片的卡片（如银行卡、身份证）</li>
+<li><strong>手机</strong>：接收短信验证码或推送通知</li>
+<li><strong>U2F/FIDO2安全密钥</strong>：基于公钥密码学的硬件设备</li>
+</ul>
+<p>优点：难以远程窃取，与知识因素结合可大幅提升安全性。
+缺点：可能丢失、损坏或被盗；需要携带额外设备。</p>
+<h3 id="4723-生物因素something-you-are"><a class="header" href="#4723-生物因素something-you-are">47.2.3 生物因素（Something You Are）</a></h3>
+<p>用户固有的生理或行为特征：</p>
+<ul>
+<li><strong>生理特征</strong>：指纹、人脸、虹膜、声纹、掌静脉</li>
+<li><strong>行为特征</strong>：打字节奏、鼠标移动模式、签名动态</li>
+</ul>
+<p>优点：难以伪造，用户无需记忆。
+缺点：一旦泄露无法更换（你无法换一根手指）；存在隐私争议；可能受环境因素影响。</p>
+<h3 id="4724-位置因素somewhere-you-are"><a class="header" href="#4724-位置因素somewhere-you-are">47.2.4 位置因素（Somewhere You Are）</a></h3>
+<p>基于用户的地理位置：</p>
+<ul>
+<li><strong>IP地址</strong>：判断请求来源是否可信</li>
+<li><strong>GPS定位</strong>：移动设备的物理位置</li>
+<li><strong>网络环境</strong>：是否来自公司内网</li>
+</ul>
+<p>优点：可检测异常登录（如短时间内跨洲访问）。
+缺点：VPN和代理可伪造位置；移动设备位置变化频繁。</p>
+<h3 id="4725-行为因素something-you-do"><a class="header" href="#4725-行为因素something-you-do">47.2.5 行为因素（Something You Do）</a></h3>
+<p>用户的行为模式：</p>
+<ul>
+<li><strong>设备指纹</strong>：操作系统、浏览器、屏幕分辨率等组合</li>
+<li><strong>操作习惯</strong>：点击模式、滑动轨迹</li>
+<li><strong>时间模式</strong>：通常的登录时间段</li>
+</ul>
+<p>这类因素常用于风险自适应认证（Risk-based Authentication），在不打扰用户的情况下评估登录风险。</p>
+<h2 id="473-密码认证"><a class="header" href="#473-密码认证">47.3 密码认证</a></h2>
+<h3 id="4731-密码存储的演进"><a class="header" href="#4731-密码存储的演进">47.3.1 密码存储的演进</a></h3>
+<p>密码绝不能以明文存储。存储方式的演进反映了安全意识的提升：</p>
+<ol>
+<li><strong>明文存储</strong>：最危险的做法，数据库泄露即全部暴露。</li>
+<li><strong>哈希存储</strong>：存储密码的哈希值，但相同密码产生相同哈希，易被彩虹表攻击。</li>
+<li><strong>加盐哈希</strong>：为每个密码附加随机盐值，再计算哈希，有效防御彩虹表。</li>
+<li><strong>自适应哈希</strong>：计算成本可配置的哈希算法（如bcrypt、scrypt、Argon2），抵抗硬件加速暴力破解。</li>
+</ol>
+<h3 id="4732-盐salt与胡椒pepper"><a class="header" href="#4732-盐salt与胡椒pepper">47.3.2 盐（Salt）与胡椒（Pepper）</a></h3>
+<p><strong>盐（Salt）</strong> 是每个密码独有的随机字符串，与密码拼接后计算哈希：</p>
+<pre><code>hash = H(password || salt)
+</code></pre>
+<ul>
+<li>每个用户有独立的盐值</li>
+<li>盐值与哈希结果一同存储</li>
+<li>即使两个用户密码相同，存储的哈希也不同</li>
+</ul>
+<p><strong>胡椒（Pepper）</strong> 是全局的秘密值，存储在应用配置中而非数据库：</p>
+<pre><code>hash = H(password || salt || pepper)
+</code></pre>
+<ul>
+<li>所有用户共享同一个胡椒值</li>
+<li>胡椒不存储在数据库中</li>
+<li>即使数据库泄露，没有胡椒也无法验证密码</li>
+</ul>
+<h3 id="4733-现代密码哈希算法"><a class="header" href="#4733-现代密码哈希算法">47.3.3 现代密码哈希算法</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>设计目标</th><th>特点</th><th>推荐场景</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>bcrypt</strong></td><td>基于Blowfish密码</td><td>自适应成本因子，广泛支持</td><td>传统应用兼容</td></tr>
+<tr><td><strong>scrypt</strong></td><td>内存困难型</td><td>高内存消耗，抗ASIC</td><td>加密货币、高安全需求</td></tr>
+<tr><td><strong>Argon2</strong></td><td>密码哈希竞赛 winner</td><td>2015年Password Hashing Competition冠军，可配置内存、时间和并行度</td><td><strong>现代应用首选</strong></td></tr>
+</tbody>
+</table>
+</div>
+<p>Argon2有三个变体：</p>
+<ul>
+<li><strong>Argon2d</strong>：抵抗GPU破解，适合加密货币</li>
+<li><strong>Argon2i</strong>：抵抗侧信道攻击，适合密码哈希</li>
+<li><strong>Argon2id</strong>：两者兼顾，<strong>推荐使用</strong></li>
+</ul>
+<h3 id="4734-rust实现argon2密码哈希"><a class="header" href="#4734-rust实现argon2密码哈希">47.3.4 Rust实现：Argon2密码哈希</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use argon2::{
+    password_hash::{
+        rand_core::OsRng,
+        PasswordHash, PasswordHasher, PasswordVerifier, SaltString
+    },
+    Argon2,
+};
+
+/// 生成密码哈希
+fn hash_password(password: &amp;str) -&gt; Result&lt;String, argon2::password_hash::Error&gt; {
+    let salt = SaltString::generate(&amp;mut OsRng);
+    let argon2 = Argon2::default();
+    let password_hash = argon2
+        .hash_password(password.as_bytes(), &amp;salt)?
+        .to_string();
+    Ok(password_hash)
+}
+
+/// 验证密码
+fn verify_password(password: &amp;str, hash: &amp;str) -&gt; Result&lt;bool, argon2::password_hash::Error&gt; {
+    let parsed_hash = PasswordHash::new(hash)?;
+    let argon2 = Argon2::default();
+    match argon2.verify_password(password.as_bytes(), &amp;parsed_hash) {
+        Ok(()) =&gt; Ok(true),
+        Err(argon2::password_hash::Error::Password) =&gt; Ok(false),
+        Err(e) =&gt; Err(e),
+    }
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let password = "my_secure_password_123";
+    
+    // 注册时：生成哈希
+    let hash = hash_password(password)?;
+    println!("密码哈希: {}", hash);
+    // 输出示例: $argon2id$v=19$m=65536,t=3,p=4$...$
+    
+    // 登录时：验证密码
+    let is_valid = verify_password(password, &amp;hash)?;
+    println!("验证结果: {}", is_valid);
+    
+    let is_invalid = verify_password("wrong_password", &amp;hash)?;
+    println!("错误密码验证: {}", is_invalid);
+    
+    Ok(())
+}</code></pre>
+<p><code>Cargo.toml</code> 依赖：</p>
+<pre><code class="language-toml">[dependencies]
+argon2 = "0.5"
+</code></pre>
+<h3 id="4735-密码策略"><a class="header" href="#4735-密码策略">47.3.5 密码策略</a></h3>
+<p>良好的密码策略应平衡安全性与可用性：</p>
+<ul>
+<li><strong>最小长度</strong>：至少12个字符（NIST建议）</li>
+<li><strong>复杂度要求</strong>：大小写字母、数字、符号的组合</li>
+<li><strong>常见密码检查</strong>：拒绝已泄露的密码（如Have I Been Pwned数据库）</li>
+<li><strong>密码历史</strong>：防止近期密码复用</li>
+<li><strong>锁定策略</strong>：多次失败后暂时锁定账户</li>
+<li><strong>密码提示</strong>：不提供可能暴露密码的提示</li>
+</ul>
+<p>现代趋势是鼓励使用<strong>密码短语（Passphrase）</strong> 而非复杂短密码，例如“correct-horse-battery-staple“比“Tr0ub4dor&amp;3“更安全且易记。</p>
+<h2 id="474-多因素认证"><a class="header" href="#474-多因素认证">47.4 多因素认证</a></h2>
+<h3 id="4741-mfa与2fa"><a class="header" href="#4741-mfa与2fa">47.4.1 MFA与2FA</a></h3>
+<p><strong>多因素认证（Multi-Factor Authentication, MFA）</strong> 要求用户提供两种或以上的不同类别认证因素。最常见的组合是：</p>
+<ul>
+<li>知识因素 + 持有因素（密码 + 手机验证码）</li>
+<li>知识因素 + 生物因素（密码 + 指纹）</li>
+</ul>
+<p><strong>双因素认证（Two-Factor Authentication, 2FA）</strong> 是MFA的特例，恰好使用两个因素。</p>
+<p>MFA显著提升了安全性：即使密码泄露，攻击者仍需要第二因素才能通过认证。</p>
+<h3 id="4742-otp一次性密码"><a class="header" href="#4742-otp一次性密码">47.4.2 OTP：一次性密码</a></h3>
+<p><strong>一次性密码（One-Time Password, OTP）</strong> 是MFA中持有因素的常见实现，分为两类：</p>
+<h4 id="hotp基于计数器"><a class="header" href="#hotp基于计数器">HOTP：基于计数器</a></h4>
+<p>HOTP（HMAC-based One-Time Password, RFC 4226）使用计数器生成密码：</p>
+<pre><code>HOTP(K, C) = Truncate(HMAC-SHA-1(K, C))
+</code></pre>
+<p>其中K是共享密钥，C是计数器值。每次验证后计数器递增。</p>
+<p>缺点：需要同步计数器，若用户多次生成未使用验证码，会导致不同步。</p>
+<h4 id="totp基于时间"><a class="header" href="#totp基于时间">TOTP：基于时间</a></h4>
+<p>TOTP（Time-based One-Time Password, RFC 6238）是HOTP的扩展，使用当前时间作为计数器：</p>
+<pre><code>TOTP(K, T) = HOTP(K, T)
+T = (Current Unix time - T0) / X
+</code></pre>
+<ul>
+<li>T0是起始时间（通常为0）</li>
+<li>X是时间步长（通常为30秒）</li>
+</ul>
+<p>TOTP更实用，无需同步计数器，但要求设备时间大致准确。</p>
+<h3 id="4743-totp实现原理"><a class="header" href="#4743-totp实现原理">47.4.3 TOTP实现原理</a></h3>
+<p>TOTP生成过程：</p>
+<ol>
+<li><strong>密钥共享</strong>：服务器生成随机密钥，通过安全通道（如二维码）传递给认证器应用</li>
+<li><strong>时间对齐</strong>：双方使用UTC时间，按30秒窗口对齐</li>
+<li><strong>HMAC计算</strong>：<code>HMAC-SHA-1(key, time_counter)</code></li>
+<li><strong>截断（Truncate）</strong>：从20字节的HMAC结果中提取4字节动态码</li>
+<li><strong>取模</strong>：<code>dynamic_code % 10^digits</code>（通常6位数字）</li>
+</ol>
+<p>验证时，服务器通常检查当前时间窗口及前后各一个窗口（共3个窗口，约90秒），以容纳时间偏差。</p>
+<h3 id="4744-rust实现totp生成与验证"><a class="header" href="#4744-rust实现totp生成与验证">47.4.4 Rust实现：TOTP生成与验证</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use totp_rs::{Algorithm, Secret, TOTP};
+use qrcode::QrCode;
+use qrcode::render::unicode;
+
+fn create_totp(account: &amp;str, issuer: &amp;str) -&gt; Result&lt;TOTP, Box&lt;dyn std::error::Error&gt;&gt; {
+    let secret = Secret::generate_secret().to_bytes()?;
+    
+    let totp = TOTP::new(
+        Algorithm::SHA1,    // HMAC算法
+        6,                   // 验证码位数
+        1,                   // 容错窗口（前后各1个时间步）
+        30,                  // 时间步长（秒）
+        secret,
+    )?;
+    
+    Ok(totp)
+}
+
+fn generate_qr_code(totp: &amp;TOTP, account: &amp;str, issuer: &amp;str) {
+    // 生成符合Google Authenticator格式的URI
+    let uri = totp.get_uri(issuer.to_string(), account.to_string());
+    println!("TOTP URI: {}", uri);
+    
+    // 生成二维码
+    let code = QrCode::new(uri).unwrap();
+    let string = code.render::&lt;unicode::Dense1x2&gt;()
+        .dark_color(unicode::Dense1x2::Light)
+        .light_color(unicode::Dense1x2::Dark)
+        .build();
+    println!("{}", string);
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let account = "user@example.com";
+    let issuer = "RustApp";
+    
+    // 创建TOTP
+    let totp = create_totp(account, issuer)?;
+    
+    // 生成二维码供用户扫描
+    generate_qr_code(&amp;totp, account, issuer);
+    
+    // 生成当前验证码
+    let token = totp.generate_current()?;
+    println!("当前验证码: {}", token);
+    
+    // 验证用户输入的验证码
+    let user_input = "123456"; // 假设用户输入
+    let is_valid = totp.check(user_input, 
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)?
+            .as_secs()
+    );
+    println!("验证结果: {}", is_valid);
+    
+    Ok(())
+}</code></pre>
+<p><code>Cargo.toml</code> 依赖：</p>
+<pre><code class="language-toml">[dependencies]
+totp-rs = { version = "5", features = ["qr"] }
+</code></pre>
+<h3 id="4745-备份码与恢复机制"><a class="header" href="#4745-备份码与恢复机制">47.4.5 备份码与恢复机制</a></h3>
+<p>MFA必须考虑设备丢失的情况：</p>
+<ul>
+<li><strong>备份码</strong>：注册时生成一组一次性使用的备用码</li>
+<li><strong>多设备注册</strong>：允许在多个设备上配置同一TOTP</li>
+<li><strong>替代验证</strong>：通过已验证的邮箱或手机进行身份验证后重置MFA</li>
+</ul>
+<h2 id="475-生物特征认证"><a class="header" href="#475-生物特征认证">47.5 生物特征认证</a></h2>
+<h3 id="4751-指纹认证"><a class="header" href="#4751-指纹认证">47.5.1 指纹认证</a></h3>
+<p>指纹识别是最成熟的生物特征技术：</p>
+<ul>
+<li><strong>采集</strong>：光学、电容、超声波传感器</li>
+<li><strong>特征提取</strong>：识别细节特征点（ridge endings和bifurcations）</li>
+<li><strong>匹配</strong>：将采集的模板与注册模板比对，计算相似度分数</li>
+<li><strong>阈值决策</strong>：分数超过阈值则接受</li>
+</ul>
+<p>安全性考量：指纹模板应加密存储，且不可逆推原始指纹图像。</p>
+<h3 id="4752-人脸识别"><a class="header" href="#4752-人脸识别">47.5.2 人脸识别</a></h3>
+<p>现代人脸识别依赖深度学习：</p>
+<ul>
+<li><strong>人脸检测</strong>：定位图像中的人脸区域</li>
+<li><strong>特征提取</strong>：神经网络生成高维特征向量（如128维或512维）</li>
+<li><strong>相似度计算</strong>：余弦相似度或欧氏距离</li>
+<li><strong>活体检测</strong>：防止照片、视频、面具攻击</li>
+</ul>
+<p>隐私风险：人脸是公开可见的生物特征，且难以更换。欧盟GDPR将其列为敏感个人数据。</p>
+<h3 id="4753-虹膜识别"><a class="header" href="#4753-虹膜识别">47.5.3 虹膜识别</a></h3>
+<p>虹膜模式具有极高的唯一性和稳定性：</p>
+<ul>
+<li><strong>准确性</strong>：错误接受率（FAR）可达10^-7级别</li>
+<li><strong>稳定性</strong>：虹膜模式终身不变</li>
+<li><strong>非接触</strong>：可在1米外采集</li>
+</ul>
+<p>缺点：设备成本高；部分眼疾或手术会影响识别；用户接受度较低。</p>
+<h3 id="4754-生物特征认证的rust生态"><a class="header" href="#4754-生物特征认证的rust生态">47.5.4 生物特征认证的Rust生态</a></h3>
+<p>Rust在生物特征领域的生态尚在发展中。对于Web应用，通常通过操作系统API（如Windows Hello、Apple Touch ID、WebAuthn）间接支持生物特征认证。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// WebAuthn示例（webauthn-rs库）
+use webauthn_rs::prelude::*;
+
+fn setup_webauthn() -&gt; Result&lt;Webauthn, WebauthnError&gt; {
+    let rp_id = "example.com";
+    let rp_origin = Url::parse("https://example.com")?;
+    
+    let builder = WebauthnBuilder::new(rp_id, &amp;rp_origin)?;
+    let webauthn = builder.build()?;
+    Ok(webauthn)
+}
+<span class="boring">}</span></code></pre>
+<h2 id="476-单点登录"><a class="header" href="#476-单点登录">47.6 单点登录</a></h2>
+<h3 id="4761-sso的概念"><a class="header" href="#4761-sso的概念">47.6.1 SSO的概念</a></h3>
+<p><strong>单点登录（Single Sign-On, SSO）</strong> 允许用户使用一组凭据访问多个相互信任的应用系统。其核心优势：</p>
+<ul>
+<li><strong>用户体验</strong>：一次登录，处处通行</li>
+<li><strong>安全管理</strong>：集中管理身份和权限</li>
+<li><strong>审计追踪</strong>：统一的登录日志</li>
+</ul>
+<h3 id="4762-oauth-20"><a class="header" href="#4762-oauth-20">47.6.2 OAuth 2.0</a></h3>
+<p>OAuth 2.0（RFC 6749）是授权框架，常被用于实现SSO：</p>
+<p><strong>角色定义</strong>：</p>
+<ul>
+<li><strong>资源所有者（Resource Owner）</strong>：用户本人</li>
+<li><strong>客户端（Client）</strong>：请求访问的第三方应用</li>
+<li><strong>授权服务器（Authorization Server）</strong>：颁发令牌</li>
+<li><strong>资源服务器（Resource Server）</strong>：托管受保护资源</li>
+</ul>
+<p><strong>授权流程</strong>：</p>
+<ol>
+<li>客户端引导用户到授权服务器</li>
+<li>用户登录并同意授权</li>
+<li>授权服务器重定向回客户端，附带授权码</li>
+<li>客户端用授权码换取访问令牌</li>
+<li>客户端使用访问令牌访问资源</li>
+</ol>
+<p><strong>四种授权模式</strong>：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>模式</th><th>适用场景</th><th>安全性</th></tr>
+</thead>
+<tbody>
+<tr><td>授权码模式（Authorization Code）</td><td>服务器端应用</td><td>高，支持PKCE</td></tr>
+<tr><td>隐式授权（Implicit）</td><td>单页应用（已废弃）</td><td>低</td></tr>
+<tr><td>密码凭证（Password）</td><td>受信任的第一方应用</td><td>中</td></tr>
+<tr><td>客户端凭证（Client Credentials）</td><td>服务间通信</td><td>高</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="4763-openid-connect"><a class="header" href="#4763-openid-connect">47.6.3 OpenID Connect</a></h3>
+<p>OpenID Connect（OIDC）构建于OAuth 2.0之上，专门用于身份认证：</p>
+<ul>
+<li><strong>ID Token</strong>：JWT格式的身份令牌，包含用户声明（claims）</li>
+<li><strong>UserInfo Endpoint</strong>：获取用户详细信息的API</li>
+<li><strong>Discovery</strong>：自动发现配置端点</li>
+</ul>
+<p>OIDC标准化了“用Google/微信/GitHub登录“的实现方式。</p>
+<h3 id="4764-saml"><a class="header" href="#4764-saml">47.6.4 SAML</a></h3>
+<p><strong>安全断言标记语言（Security Assertion Markup Language, SAML）</strong> 是企业级SSO的老牌标准：</p>
+<ul>
+<li>基于XML的断言交换</li>
+<li>身份提供者（IdP）与服务提供者（SP）之间的信任关系</li>
+<li>常用于企业应用（如Office 365、Salesforce的SSO集成）</li>
+</ul>
+<p>相比OIDC，SAML配置更复杂，但在传统企业环境中仍广泛使用。</p>
+<h3 id="4765-rust实现jwt处理"><a class="header" href="#4765-rust实现jwt处理">47.6.5 Rust实现：JWT处理</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
+use serde::{Deserialize, Serialize};
+use std::time::{SystemTime, UNIX_EPOCH};
+
+#[derive(Debug, Serialize, Deserialize)]
+struct Claims {
+    sub: String,        // 主题（用户ID）
+    iss: String,        // 签发者
+    aud: String,        // 受众
+    exp: usize,         // 过期时间
+    iat: usize,         // 签发时间
+    #[serde(skip_serializing_if = "Option::is_none")]
+    name: Option&lt;String&gt;,
+}
+
+fn current_timestamp() -&gt; usize {
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_secs() as usize
+}
+
+fn create_jwt(user_id: &amp;str, secret: &amp;str) -&gt; Result&lt;String, jsonwebtoken::errors::Error&gt; {
+    let now = current_timestamp();
+    let claims = Claims {
+        sub: user_id.to_string(),
+        iss: "rust-app".to_string(),
+        aud: "rust-client".to_string(),
+        iat: now,
+        exp: now + 3600, // 1小时后过期
+        name: Some("张三".to_string()),
+    };
+    
+    encode(
+        &amp;Header::default(),
+        &amp;claims,
+        &amp;EncodingKey::from_secret(secret.as_bytes()),
+    )
+}
+
+fn verify_jwt(token: &amp;str, secret: &amp;str) -&gt; Result&lt;Claims, jsonwebtoken::errors::Error&gt; {
+    let mut validation = Validation::default();
+    validation.set_issuer(&amp;["rust-app"]);
+    validation.set_audience(&amp;["rust-client"]);
+    
+    let token_data = decode::&lt;Claims&gt;(
+        token,
+        &amp;DecodingKey::from_secret(secret.as_bytes()),
+        &amp;validation,
+    )?;
+    
+    Ok(token_data.claims)
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let secret = "your-256-bit-secret-key-here!!!";
+    let user_id = "user_12345";
+    
+    // 生成JWT
+    let token = create_jwt(user_id, secret)?;
+    println!("生成的JWT: {}", token);
+    
+    // 验证JWT
+    let claims = verify_jwt(&amp;token, secret)?;
+    println!("验证通过，用户: {:?}", claims);
+    
+    // 尝试用错误密钥验证
+    let result = verify_jwt(&amp;token, "wrong-secret");
+    match result {
+        Ok(_) =&gt; println!("不应成功"),
+        Err(e) =&gt; println!("验证失败（预期）: {}", e),
+    }
+    
+    Ok(())
+}</code></pre>
+<p><code>Cargo.toml</code> 依赖：</p>
+<pre><code class="language-toml">[dependencies]
+jsonwebtoken = "9"
+serde = { version = "1", features = ["derive"] }
+</code></pre>
+<h2 id="477-认证最佳实践"><a class="header" href="#477-认证最佳实践">47.7 认证最佳实践</a></h2>
+<h3 id="4771-安全设计原则"><a class="header" href="#4771-安全设计原则">47.7.1 安全设计原则</a></h3>
+<ol>
+<li><strong>纵深防御</strong>：不依赖单一安全机制</li>
+<li><strong>最小信任</strong>：验证所有输入，不信任任何来源</li>
+<li><strong>失败安全</strong>：认证失败时默认拒绝访问</li>
+<li><strong>安全默认值</strong>：默认启用最强安全策略</li>
+</ol>
+<h3 id="4772-常见攻击与防御"><a class="header" href="#4772-常见攻击与防御">47.7.2 常见攻击与防御</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>攻击类型</th><th>描述</th><th>防御措施</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>暴力破解</strong></td><td>尝试所有可能的密码组合</td><td>速率限制、账户锁定、CAPTCHA</td></tr>
+<tr><td><strong>字典攻击</strong></td><td>使用常见密码列表尝试</td><td>密码强度策略、泄露密码检查</td></tr>
+<tr><td><strong>彩虹表</strong></td><td>预计算的哈希值查找表</td><td>加盐哈希、自适应哈希</td></tr>
+<tr><td><strong>中间人</strong></td><td>拦截通信窃取凭据</td><td>TLS/HTTPS、证书固定</td></tr>
+<tr><td><strong>重放攻击</strong></td><td>重复发送截获的认证信息</td><td>时间戳、随机数、一次性令牌</td></tr>
+<tr><td><strong>会话劫持</strong></td><td>窃取会话标识符</td><td>HttpOnly Cookie、短过期时间、绑定IP</td></tr>
+<tr><td><strong>钓鱼攻击</strong></td><td>伪造登录页面骗取凭据</td><td>多因素认证、用户教育</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="4773-会话管理"><a class="header" href="#4773-会话管理">47.7.3 会话管理</a></h3>
+<p>认证成功后，系统需要维持会话状态：</p>
+<ul>
+<li><strong>会话标识符</strong>：随机生成的高熵字符串</li>
+<li><strong>存储方式</strong>：服务器端会话存储或客户端JWT</li>
+<li><strong>过期策略</strong>：绝对过期时间 + 空闲超时</li>
+<li><strong>安全传输</strong>：仅通过HTTPS传输</li>
+<li><strong>Cookie属性</strong>：Secure、HttpOnly、SameSite</li>
+</ul>
+<h2 id="478-本章总结"><a class="header" href="#478-本章总结">47.8 本章总结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>主题</th><th>核心要点</th></tr>
+</thead>
+<tbody>
+<tr><td>认证基础</td><td>身份识别是声明，身份验证是确认；认证、授权、审计构成AAA框架</td></tr>
+<tr><td>认证因素</td><td>知识/持有/生物/位置/行为五类因素；多因素组合提升安全性</td></tr>
+<tr><td>密码认证</td><td>使用Argon2id等自适应哈希；盐值防彩虹表，胡椒防数据库泄露</td></tr>
+<tr><td>MFA/2FA</td><td>TOTP基于时间窗口，广泛支持；HOTP基于计数器，需同步</td></tr>
+<tr><td>生物特征</td><td>指纹/人脸/虹膜各有优劣；注意隐私保护和活体检测</td></tr>
+<tr><td>SSO</td><td>OAuth 2.0授权框架，OIDC身份层，SAML企业标准</td></tr>
+<tr><td>Rust实现</td><td><code>argon2</code>密码哈希、<code>totp-rs</code>验证码、<code>jsonwebtoken</code>JWT处理</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="479-练习建议"><a class="header" href="#479-练习建议">47.9 练习建议</a></h2>
+<ol>
+<li>
+<p><strong>密码哈希实践</strong>：实现一个用户注册/登录系统，使用Argon2存储密码，比较不同成本参数对性能的影响。</p>
+</li>
+<li>
+<p><strong>TOTP认证器</strong>：开发命令行TOTP生成器，支持从标准输入读取密钥，每30秒输出新验证码。与Google Authenticator交叉验证。</p>
+</li>
+<li>
+<p><strong>JWT中间件</strong>：为Actix-web或Axum编写JWT认证中间件，实现令牌签发、验证和刷新机制。</p>
+</li>
+<li>
+<p><strong>多因素认证流程</strong>：设计完整的MFA注册和验证流程，包括二维码生成、备份码、设备管理功能。</p>
+</li>
+<li>
+<p><strong>安全审计</strong>：对开源Rust认证库进行代码审计，检查是否遵循OWASP认证安全建议。</p>
+</li>
+</ol>
+<hr>
+<blockquote>
+<p>认证如守门，门后有万千世界。门把守不严，世界便危如累卵；门把守过严， legitimate 访客亦寸步难行。在Rust的内存安全与类型系统之上，构建坚固的认证体系，方能让系统在便捷与安全之间找到最佳平衡。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_46_irreversible_password.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_48_authorization.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_46_irreversible_password.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_48_authorization.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

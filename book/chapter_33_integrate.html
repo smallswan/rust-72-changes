@@ -1,0 +1,618 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第三十三 微积分 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第三十三-微积分calculus"><a class="header" href="#第三十三-微积分calculus">第三十三 微积分（Calculus）</a></h1>
+<p>微积分（Calculus）是数学中最伟大的成就之一，由牛顿和莱布尼茨在 17 世纪独立创立。它的核心思想是<strong>以直代曲、以简代繁</strong>——把复杂问题分解成无数个小的、简单的问题，然后再整合结果。</p>
+<ul>
+<li><strong>微分（求导）</strong>：求变化快慢，比如速度、斜率</li>
+<li><strong>积分</strong>：求累积总量，比如面积、路程</li>
+<li>两者互为逆运算（导数 ↔ 积分）</li>
+</ul>
+<hr>
+<h2 id="一极限与连续"><a class="header" href="#一极限与连续">一、极限与连续</a></h2>
+<h3 id="11-极限的定义"><a class="header" href="#11-极限的定义">1.1 极限的定义</a></h3>
+<p>$$\lim_{x \to a} f(x) = L$$</p>
+<p>表示当 $x$ 无限接近 $a$ 时，$f(x)$ 无限接近 $L$。</p>
+<h3 id="12-重要极限"><a class="header" href="#12-重要极限">1.2 重要极限</a></h3>
+<p>$$\lim_{x \to 0} \frac{\sin x}{x} = 1$$</p>
+<p>$$\lim_{x \to 0} \frac{e^x - 1}{x} = 1$$</p>
+<p>$$\lim_{x \to 0} \frac{a^x - 1}{x} = \ln a \quad (a &gt; 0)$$</p>
+<p>$$\lim_{n \to \infty} \left(1 + \frac{1}{n}\right)^n = e$$</p>
+<h3 id="13-无穷小与无穷大"><a class="header" href="#13-无穷小与无穷大">1.3 无穷小与无穷大</a></h3>
+<ul>
+<li><strong>无穷小</strong>：极限为 0 的量</li>
+<li><strong>无穷大</strong>：趋向于无穷的量</li>
+<li>等价无穷小替换（$x \to 0$ 时）：$\sin x \sim x$，$\tan x \sim x$，$e^x - 1 \sim x$，$\ln(1+x) \sim x$</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    // 验证 lim(x→0) sin(x)/x = 1
+    for &amp;h in &amp;[1e-1_f64, 1e-2_f64, 1e-4_f64, 1e-8_f64] {
+        println!("sin({:.0e})/{:.0e} = {:.10}", h, h, h.sin() / h);
+    }
+    // 越接近 0，结果越接近 1
+}</code></pre>
+<hr>
+<h2 id="二导数微分"><a class="header" href="#二导数微分">二、导数（微分）</a></h2>
+<h3 id="21-导数的定义"><a class="header" href="#21-导数的定义">2.1 导数的定义</a></h3>
+<p>函数 $y = f(x)$ 在某点的导数：</p>
+<p>$$f’(x) = \frac{dy}{dx} = \lim_{\Delta x \to 0} \frac{f(x+\Delta x) - f(x)}{\Delta x}$$</p>
+<p><strong>几何意义：</strong> 曲线在该点的切线斜率。</p>
+<h3 id="22-基本求导公式"><a class="header" href="#22-基本求导公式">2.2 基本求导公式</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>函数</th><th>导数</th></tr>
+</thead>
+<tbody>
+<tr><td>$(C)’$</td><td>$0$（常数函数）</td></tr>
+<tr><td>$(x^n)’$</td><td>$nx^{n-1}$（幂函数）</td></tr>
+<tr><td>$(\frac{1}{x})’$</td><td>$-\frac{1}{x^2}$</td></tr>
+<tr><td>$(\sin x)’$</td><td>$\cos x$</td></tr>
+<tr><td>$(\cos x)’$</td><td>$-\sin x$</td></tr>
+<tr><td>$(\tan x)’$</td><td>$\sec^2 x$</td></tr>
+<tr><td>$(\ln x)’$</td><td>$\frac{1}{x}$</td></tr>
+<tr><td>$(\log_a x)’$</td><td>$\frac{1}{x \ln a}$</td></tr>
+<tr><td>$(e^x)’$</td><td>$e^x$</td></tr>
+<tr><td>$(a^x)’$</td><td>$a^x \ln a$</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="23-微分基本运算法则"><a class="header" href="#23-微分基本运算法则">2.3 微分基本运算法则</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>法则</th><th>公式</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>和</strong></td><td>$(u + v)’ = u’ + v’$</td></tr>
+<tr><td><strong>差</strong></td><td>$(u - v)’ = u’ - v’$</td></tr>
+<tr><td><strong>乘积</strong></td><td>$(uv)’ = u’v + uv’$</td></tr>
+<tr><td><strong>商</strong></td><td>$\left(\frac{u}{v}\right)’ = \frac{u’v - uv’}{v^2}$</td></tr>
+<tr><td><strong>链式法则</strong></td><td>$\frac{dy}{dx} = \frac{dy}{du} \cdot \frac{du}{dx}$</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    // 数值求导：f(x) = sin(x) + x²
+    let f = |x: f64| x.sin() + x * x;
+    let h = 1e-8;
+    let x = 1.0;
+
+    // 数值导数
+    let numerical = (f(x + h) - f(x - h)) / (2.0 * h);
+    // 解析导数: cos(x) + 2x
+    let analytical = x.cos() + 2.0 * x;
+
+    println!("数值导数: {:.10}", numerical);   // 2.5403023059
+    println!("解析导数: {:.10}", analytical);   // 2.5403023059
+}</code></pre>
+<h3 id="24-高阶导数"><a class="header" href="#24-高阶导数">2.4 高阶导数</a></h3>
+<p>高阶导数是导数的导数：</p>
+<ul>
+<li>一阶导数：$f’(x)$（速度）</li>
+<li>二阶导数：$f’’(x)$（加速度）</li>
+<li>三阶导数：$f’‘’(x)$（急动度/Jerk）</li>
+</ul>
+<p>$$f’’(x) = \frac{d}{dx}\left(\frac{d}{dx}f(x)\right) = \frac{d^2 f}{dx^2}$$</p>
+<hr>
+<h2 id="三微分中值定理"><a class="header" href="#三微分中值定理">三、微分中值定理</a></h2>
+<h3 id="31-罗尔定理"><a class="header" href="#31-罗尔定理">3.1 罗尔定理</a></h3>
+<p>若 $f(x)$ 在 $[a,b]$ 上连续，在 $(a,b)$ 内可导，且 $f(a) = f(b)$，则在 $(a,b)$ 内至少存在一点 $\xi$，使得 $f’(\xi) = 0$。</p>
+<h3 id="32-拉格朗日中值定理"><a class="header" href="#32-拉格朗日中值定理">3.2 拉格朗日中值定理</a></h3>
+<p>若 $f(x)$ 在 $[a,b]$ 上连续，在 $(a,b)$ 内可导，则在 $(a,b)$ 内至少存在一点 $\xi$，使得：</p>
+<p>$$f’(\xi) = \frac{f(b) - f(a)}{b - a}$$</p>
+<p><strong>几何意义：</strong> 曲线上至少有一点处的切线平行于连接两端点的弦。</p>
+<p><strong>物理意义：</strong> 至少在某一时刻，瞬时速度等于平均速度。</p>
+<h3 id="33-柯西中值定理"><a class="header" href="#33-柯西中值定理">3.3 柯西中值定理</a></h3>
+<p>若 $f(x)$ 和 $g(x)$ 都在 $[a,b]$ 上连续，在 $(a,b)$ 内可导，且 $g’(x) \neq 0$，则在 $(a,b)$ 内至少存在一点 $\xi$，使得：</p>
+<p>$$\frac{f’(\xi)}{g’(\xi)} = \frac{f(b) - f(a)}{g(b) - g(a)}$$</p>
+<hr>
+<h2 id="四洛必达法则"><a class="header" href="#四洛必达法则">四、洛必达法则</a></h2>
+<p>当 $\lim_{x \to a} \frac{f(x)}{g(x)}$ 为 $\frac{0}{0}$ 或 $\frac{\infty}{\infty}$ 型未定式时：</p>
+<p>$$\lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{f’(x)}{g’(x)}$$</p>
+<p>前提是右边的极限存在。</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    // 求 lim(x→1) sin(πx) / (x² - 1)
+    let f = |x: f64| (std::f64::consts::PI * x).sin();
+    let g = |x: f64| x * x - 1.0;
+
+    let x = 1.0;
+    let h = 1e-8;
+
+    // 直接代入是 0/0 型，使用洛必达法则
+    // f'(x) = πcos(πx), g'(x) = 2x
+    // lim = πcos(π) / 2 = -π/2
+    let limit = (f(x + h) - f(x - h)) / (2.0 * h) / ((g(x + h) - g(x - h)) / (2.0 * h));
+    println!("lim = {:.6}", limit);  // -1.570796 ≈ -π/2
+}</code></pre>
+<hr>
+<h2 id="五泰勒公式"><a class="header" href="#五泰勒公式">五、泰勒公式</a></h2>
+<p>泰勒公式用多项式逼近函数，是“以直代曲“的数学表达：</p>
+<p>$$f(x) \approx f(a) + f’(a)(x-a) + \frac{f’‘(a)}{2!}(x-a)^2 + \frac{f’‘’(a)}{3!}(x-a)^3 + \cdots$$</p>
+<p>当 $a = 0$ 时，称为<strong>麦克劳林公式</strong>：</p>
+<p>$$f(x) \approx \sum_{n=0}^{\infty} \frac{f^{(n)}(0)}{n!} x^n$$</p>
+<p><strong>常用泰勒展开式：</strong></p>
+<p>$$\sin x = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \frac{x^7}{7!} + \cdots$$</p>
+<p>$$\cos x = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \frac{x^6}{6!} + \cdots$$</p>
+<p>$$e^x = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \cdots$$</p>
+<p>$$\ln(1-x) = -\left(x + \frac{x^2}{2} + \frac{x^3}{3} + \frac{x^4}{4} + \cdots\right) \quad (|x| &lt; 1)$$</p>
+<pre class="playground"><code class="language-rust edition2024">fn taylor_sin(x: f64, terms: usize) -&gt; f64 {
+    let mut sum = 0.0;
+    for n in 0..terms {
+        let power = 2 * n + 1;
+        let coeff = if n % 2 == 0 { 1.0 } else { -1.0 };
+        let factorial: f64 = (1..=power).map(|x| x as f64).product();
+        sum += coeff * x.powi(power as i32) / factorial;
+    }
+    sum
+}
+
+fn main() {
+    let x = std::f64::consts::PI / 4.0; // 45°
+
+    println!("标准库 sin(π/4) = {:.10}", x.sin());
+    println!("泰勒 3 项:        {:.10}", taylor_sin(x, 3));
+    println!("泰勒 5 项:        {:.10}", taylor_sin(x, 5));
+    println!("泰勒 10 项:       {:.10}", taylor_sin(x, 10));
+}</code></pre>
+<hr>
+<h2 id="六积分"><a class="header" href="#六积分">六、积分</a></h2>
+<h3 id="61-不定积分"><a class="header" href="#61-不定积分">6.1 不定积分</a></h3>
+<p>导数的逆运算。若 $F’(x) = f(x)$，则：</p>
+<p>$$\int f(x) dx = F(x) + C$$</p>
+<p>其中 $C$ 为积分常数。</p>
+<h3 id="62-定积分"><a class="header" href="#62-定积分">6.2 定积分</a></h3>
+<p>$$\int_a^b f(x) dx = F(b) - F(a)$$</p>
+<p>定积分的几何意义是曲线 $y = f(x)$ 与 $x$ 轴、$x = a$、$x = b$ 所围成区域的<strong>有向面积</strong>。</p>
+<h3 id="63-基本积分公式"><a class="header" href="#63-基本积分公式">6.3 基本积分公式</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>被积函数</th><th>不定积分</th></tr>
+</thead>
+<tbody>
+<tr><td>$\int k , dx$</td><td>$kx + C$</td></tr>
+<tr><td>$\int x^n , dx$</td><td>$\frac{x^{n+1}}{n+1} + C \quad (n \neq -1)$</td></tr>
+<tr><td>$\int \frac{1}{x} , dx$</td><td>$\ln</td></tr>
+<tr><td>$\int \sin x , dx$</td><td>$-\cos x + C$</td></tr>
+<tr><td>$\int \cos x , dx$</td><td>$\sin x + C$</td></tr>
+<tr><td>$\int \sec^2 x , dx$</td><td>$\tan x + C$</td></tr>
+<tr><td>$\int e^x , dx$</td><td>$e^x + C$</td></tr>
+<tr><td>$\int \ln x , dx$</td><td>$x\ln x - x + C$</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="64-换元积分法"><a class="header" href="#64-换元积分法">6.4 换元积分法</a></h3>
+<p>$$\int f(g(x)) \cdot g’(x) , dx = \int f(u) , du \quad (u = g(x))$$</p>
+<h3 id="65-分部积分法"><a class="header" href="#65-分部积分法">6.5 分部积分法</a></h3>
+<p>$$\int u , dv = uv - \int v , du$$</p>
+<hr>
+<h2 id="七微积分基本定理牛顿-莱布尼茨公式"><a class="header" href="#七微积分基本定理牛顿-莱布尼茨公式">七、微积分基本定理（牛顿-莱布尼茨公式）</a></h2>
+<p>若 $F(x)$ 是 $f(x)$ 在 $[a,b]$ 上的一个原函数（即 $F’(x) = f(x)$），则：</p>
+<p>$$\int_a^b f(x) dx = F(b) - F(a)$$</p>
+<h3 id="辛普森积分法"><a class="header" href="#辛普森积分法">辛普森积分法</a></h3>
+<pre class="playground"><code class="language-rust edition2024">fn simpson_integral(f: impl Fn(f64) -&gt; f64, a: f64, b: f64, n: usize) -&gt; f64 {
+    assert!(n % 2 == 0);
+    let h = (b - a) / n as f64;
+    let mut sum = f(a) + f(b);
+
+    for i in 1..n {
+        let x = a + i as f64 * h;
+        if i % 2 == 0 { sum += 2.0 * f(x); }
+        else { sum += 4.0 * f(x); }
+    }
+
+    sum * h / 3.0
+}
+
+fn main() {
+    // ∫₀¹ x² dx = 1/3
+    let result = simpson_integral(|x| x * x, 0.0, 1.0, 100);
+    println!("∫₀¹ x² dx = {:.10} (理论值: 0.3333333333)", result);
+
+    // ∫₀^π sin(x) dx = 2
+    let result2 = simpson_integral(|x| x.sin(), 0.0, std::f64::consts::PI, 100);
+    println!("∫₀π sin(x) dx = {:.10} (理论值: 2)", result2);
+
+    // ∫₀¹ e^x dx = e - 1
+    let result3 = simpson_integral(|x| x.exp(), 0.0, 1.0, 100);
+    println!("∫₀¹ e^x dx = {:.10} (理论值: {:.10})", result3, std::f64::consts::E - 1.0);
+}</code></pre>
+<hr>
+<h2 id="八偏导数与梯度"><a class="header" href="#八偏导数与梯度">八、偏导数与梯度</a></h2>
+<h3 id="81-偏导数"><a class="header" href="#81-偏导数">8.1 偏导数</a></h3>
+<p>对于多元函数 $f(x_1, x_2, \ldots, x_n)$，对某个变量的偏导数是固定其他变量后对该变量的导数：</p>
+<p>$$\frac{\partial f}{\partial x_i} = \lim_{\Delta x_i \to 0} \frac{f(x + \Delta x_i) - f(x)}{\Delta x_i}$$</p>
+<h3 id="82-梯度"><a class="header" href="#82-梯度">8.2 梯度</a></h3>
+<p>梯度是所有偏导数组成的向量：</p>
+<p>$$\nabla f = \left(\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, \ldots, \frac{\partial f}{\partial x_n}\right)$$</p>
+<p>梯度指向函数值增长最快的方向，其大小是最大增长率。</p>
+<blockquote>
+<p><strong>应用：</strong> 偏导数是机器学习模型训练的数学基础。在神经网络中，损失函数 $L$ 对权重 $w$ 的偏导数 $\nabla L(w)$，直接告诉我们应该如何调整权重才能让损失函数下降得最快。</p>
+</blockquote>
+<h3 id="83-反向传播"><a class="header" href="#83-反向传播">8.3 反向传播</a></h3>
+<p>$$\frac{\partial L}{\partial w} = \frac{\partial L}{\partial z} \cdot \frac{\partial z}{\partial w}$$</p>
+<p>反向传播利用链式法则，从输出层向输入层逐层计算梯度。</p>
+<hr>
+<h2 id="九牛顿二项式定理与杨辉三角"><a class="header" href="#九牛顿二项式定理与杨辉三角">九、牛顿二项式定理与杨辉三角</a></h2>
+<h3 id="91-牛顿二项式定理"><a class="header" href="#91-牛顿二项式定理">9.1 牛顿二项式定理</a></h3>
+<p>$$(a+b)^n = \sum_{k=0}^{n} \binom{n}{k} a^k b^{n-k}$$</p>
+<h3 id="92-组合数"><a class="header" href="#92-组合数">9.2 组合数</a></h3>
+<p>$$\binom{n}{k} = \frac{n!}{k!(n-k)!}$$</p>
+<h3 id="93-杨辉三角的性质"><a class="header" href="#93-杨辉三角的性质">9.3 杨辉三角的性质</a></h3>
+<ul>
+<li>每行数字之和为 $2^n$：$\sum_{k=0}^{n} \binom{n}{k} = 2^n$</li>
+<li>对称性：$\binom{n}{k} = \binom{n}{n-k}$</li>
+<li>递推关系：$\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}$</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024">fn binomial(n: u64, k: u64) -&gt; u64 {
+    if k &gt; n { return 0; }
+    if k &gt; n - k { k = n - k; } // 利用对称性优化
+    let mut result = 1u64;
+    for i in 0..k {
+        result = result * (n - i) / (i + 1);
+    }
+    result
+}
+
+fn print_pascal(rows: usize) {
+    for n in 0..rows {
+        for k in 0..=n {
+            print!("{:6}", binomial(n as u64, k as u64));
+        }
+        println!();
+    }
+}
+
+fn main() {
+    print_pascal(10);
+}</code></pre>
+<hr>
+<h2 id="十极值问题"><a class="header" href="#十极值问题">十、极值问题</a></h2>
+<h3 id="101-极值的判定"><a class="header" href="#101-极值的判定">10.1 极值的判定</a></h3>
+<ul>
+<li><strong>必要条件</strong>：若 $f(x)$ 在 $x_0$ 处可导且取得极值，则 $f’(x_0) = 0$</li>
+<li><strong>充分条件（第一判别法）</strong>：$f’(x)$ 在 $x_0$ 两侧变号（左正右负为极大值，左负右正为极小值）</li>
+<li><strong>充分条件（第二判别法）</strong>：$f’(x_0) = 0$ 且 $f’‘(x_0) &lt; 0$ 为极大值，$f’’(x_0) &gt; 0$ 为极小值</li>
+</ul>
+<h3 id="102-拉格朗日乘子法"><a class="header" href="#102-拉格朗日乘子法">10.2 拉格朗日乘子法</a></h3>
+<p>用于求解带约束条件的极值问题：</p>
+<p>$$\mathcal{L}(x, y, \lambda) = f(x, y) - \lambda \cdot g(x, y)$$</p>
+<p>对 $x, y, \lambda$ 分别求偏导并令其为零，解方程组。</p>
+<hr>
+<h2 id="十一蒙特卡洛方法"><a class="header" href="#十一蒙特卡洛方法">十一、蒙特卡洛方法</a></h2>
+<p>蒙特卡洛方法利用随机采样来近似计算确定性的数学问题。</p>
+<p><strong>用蒙特卡洛方法计算圆周率：</strong></p>
+<pre class="playground"><code class="language-rust edition2024">use rand::Rng;
+use rand::RngExt;
+
+fn monte_carlo_pi(samples: usize) -&gt; f64 {
+    let mut rng = rand::rng();          // thread_rng() → rng()
+    let mut inside = 0;
+
+    for _ in 0..samples {
+        let x: f64 = rng.random_range(-1.0..1.0);  // gen_range() → random_range()
+        let y: f64 = rng.random_range(-1.0..1.0);
+        if x * x + y * y &lt;= 1.0 {
+            inside += 1;
+        }
+    }
+
+    4.0 * inside as f64 / samples as f64
+}
+
+fn main() {
+    let sample_sizes = [1000, 10000, 100000, 1000000];
+    
+    for &amp;n in &amp;sample_sizes {
+        let pi_approx = monte_carlo_pi(n);
+        println!("{n:&gt;7} 次采样: π ≈ {pi_approx:.6}");
+    }
+}</code></pre>
+<hr>
+<h2 id="十二总结"><a class="header" href="#十二总结">十二、总结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>要点</th></tr>
+</thead>
+<tbody>
+<tr><td>极限</td><td>函数值无限接近某个值</td></tr>
+<tr><td>导数</td><td>变化率，切线斜率</td></tr>
+<tr><td>求导法则</td><td>和差积商、链式法则</td></tr>
+<tr><td>中值定理</td><td>罗尔、拉格朗日、柯西</td></tr>
+<tr><td>洛必达法则</td><td>0/0 或 ∞/∞ 型未定式</td></tr>
+<tr><td>泰勒公式</td><td>多项式逼近函数</td></tr>
+<tr><td>不定积分</td><td>导数的逆运算</td></tr>
+<tr><td>定积分</td><td>面积，牛顿-莱布尼茨公式</td></tr>
+<tr><td>偏导数</td><td>多元函数对某个变量的导数</td></tr>
+<tr><td>梯度</td><td>偏导数向量，指向增长最快方向</td></tr>
+</tbody>
+</table>
+</div>
+<p>微积分是理解连续变化的数学工具。从物理中的运动分析，到机器学习中的梯度下降，微积分的思想无处不在。</p>
+<blockquote>
+<p><strong>练习建议：</strong></p>
+<ol>
+<li>用数值方法验证泰勒公式的精度</li>
+<li>实现蒙特卡洛方法计算定积分</li>
+<li>用梯度下降法求解函数的极小值</li>
+</ol>
+</blockquote>
+<hr>
+<h2 id="学习资源"><a class="header" href="#学习资源">学习资源</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>资源</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://www.3blue1brown.com/topics/calculus">3Blue1Brown - 微积分的本质</a></td><td>微积分可视化教程</td></tr>
+<tr><td><a href="https://space.bilibili.com/88461692">3Blue1Brown B站</a></td><td>中文字幕版</td></tr>
+<tr><td><a href="https://space.bilibili.com/88461692/lists/1528931?type=series">微积分的本质</a></td><td>B站系列</td></tr>
+</tbody>
+</table>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_32_Function.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_34_probability.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_32_Function.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_34_probability.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

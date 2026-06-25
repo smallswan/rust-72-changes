@@ -1,0 +1,1106 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第十 万物皆可编码 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第十章-万物皆可编码"><a class="header" href="#第十章-万物皆可编码">第十章 万物皆可编码</a></h1>
+<h2 id="101-概述"><a class="header" href="#101-概述">10.1 概述</a></h2>
+<p><strong>“万物皆可编码”</strong>——这并非一句夸张的口号，而是计算机科学的基石。从最底层的电信号高低（0和1），到我们日常使用的文字、图片、音频、视频，再到复杂的文档格式、网络协议、数据库结构，无一不是编码的产物。</p>
+<p>所谓编码，就是将信息从一种形式转换为另一种形式的过程。在计算机的世界里，一切信息最终都会被转换为二进制序列——由0和1组成的比特流。正如香农（Claude Shannon）在1948年的划时代论文《通信的数学理论》中所揭示的：<strong>信息是可以被量化和编码的</strong>。</p>
+<p>编码的层次可以概括为以下递进关系：</p>
+<p>$$
+\text{数据} \xrightarrow{\text{类型化}} \text{类型} \xrightarrow{\text{抽象化}} \text{对象} \xrightarrow{\text{持久化}} \text{文件} \xrightarrow{\text{标准化}} \text{协议}
+$$</p>
+<ul>
+<li><strong>数据</strong>：最原始的比特流，没有语义。</li>
+<li><strong>类型</strong>：赋予数据以语义，如“这是一个整数“或“这是一个字符串“。</li>
+<li><strong>对象</strong>：将类型与行为绑定，形成具有状态和操作的实体。</li>
+<li><strong>文件</strong>：将对象持久化到存储介质中。</li>
+<li><strong>协议</strong>：在文件格式之上建立标准化的交换规则。</li>
+</ul>
+<p>本章将从基本类型出发，逐步深入到面向对象编程、唯一标识符、文件系统、文件格式，最终探讨万物编码的哲学意义。</p>
+<h2 id="102-基本类型与编码"><a class="header" href="#102-基本类型与编码">10.2 基本类型与编码</a></h2>
+<p>正如之前章节的介绍，通过编码技术，我们可以实现对数字、文字、符号、时间等数据进行编码以便在计算机中进行各种处理。因此才有了整型、浮点型、字符串、数组、切片、哈希表、元组等基本类型，这些构成了编程语言的类型系统。</p>
+<h3 id="rust-基本类型一览"><a class="header" href="#rust-基本类型一览">Rust 基本类型一览</a></h3>
+<p><a href="https://doc.rust-lang.org/std/index.html#primitives">Rust基本类型</a>包括：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型分类</th><th>具体类型</th><th>内存大小</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>整数</td><td><code>i8</code>, <code>i16</code>, <code>i32</code>, <code>i64</code>, <code>i128</code></td><td>1/2/4/8/16 字节</td><td>有符号整数</td></tr>
+<tr><td>整数</td><td><code>u8</code>, <code>u16</code>, <code>u32</code>, <code>u64</code>, <code>u128</code></td><td>1/2/4/8/16 字节</td><td>无符号整数</td></tr>
+<tr><td>浮点</td><td><code>f32</code>, <code>f64</code></td><td>4/8 字节</td><td>IEEE 754 浮点数</td></tr>
+<tr><td>布尔</td><td><code>bool</code></td><td>1 字节</td><td><code>true</code> 或 <code>false</code></td></tr>
+<tr><td>字符</td><td><code>char</code></td><td>4 字节</td><td>Unicode 标量值</td></tr>
+<tr><td>元组</td><td><code>(T1, T2, ...)</code></td><td>各元素之和</td><td>固定长度复合类型</td></tr>
+<tr><td>数组</td><td><code>[T; N]</code></td><td><code>size_of::&lt;T&gt;() * N</code></td><td>固定长度同类型集合</td></tr>
+<tr><td>切片</td><td><code>&amp;[T]</code></td><td>胖指针（2个usize）</td><td>动态长度视图</td></tr>
+<tr><td>字符串</td><td><code>String</code> / <code>&amp;str</code></td><td>可变</td><td>UTF-8 编码字节数组</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="类型在内存中的编码方式"><a class="header" href="#类型在内存中的编码方式">类型在内存中的编码方式</a></h3>
+<p><strong>整数的编码</strong>采用补码（Two’s Complement）表示法。对于 $n$ 位有符号整数，其取值范围为：</p>
+<p>$$
+[-2^{n-1},\ 2^{n-1} - 1]
+$$</p>
+<p>例如，<code>i8</code> 的取值范围是 $[-128, 127]$，<code>i32</code> 的取值范围是 $[-2^{31},\ 2^{31}-1]$。</p>
+<p><strong>浮点数的编码</strong>遵循 IEEE 754 标准。以 <code>f32</code> 为例，其 32 位由三部分组成：</p>
+<p>$$
+\text{float} = (-1)^S \times 2^{E-127} \times (1 + M)
+$$</p>
+<p>其中 $S$ 为符号位（1 bit），$E$ 为指数位（8 bits），$M$ 为尾数位（23 bits）。</p>
+<p><strong>字符串的编码</strong>在 Rust 中采用 UTF-8 编码。UTF-8 是一种变长编码方案：</p>
+<ul>
+<li>ASCII 字符（U+0000 ~ U+007F）：1 字节</li>
+<li>拉丁扩展字符（U+0080 ~ U+07FF）：2 字节</li>
+<li>大部分常用汉字（U+0800 ~ U+FFFF）：3 字节</li>
+<li>Emoji 等罕见字符（U+10000 ~ U+10FFFF）：4 字节</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    // 整数在内存中的表示
+    let a: i32 = -1;
+    println!("i32 -1 的内存表示: {:032b}", a as u32); // 补码：全1
+
+    // 浮点数的精度
+    let pi: f64 = std::f64::consts::PI;
+    println!("PI = {:.15}", pi);
+
+    // 字符与字符串的UTF-8编码
+    let ch = '中';
+    println!("字符 '{}' 的Unicode码点: U+{:04X}", ch, ch as u32);
+    println!("字符 '{}' 的UTF-8字节: {:?}", ch, ch.len_utf8()); // 3字节
+
+    let s = String::from("Hello 世界");
+    println!("字符串 '{}' 的字节数: {}", s, s.len());       // 12字节
+    println!("字符串 '{}' 的字符数: {}", s, s.chars().count()); // 7个字符
+}</code></pre>
+<h2 id="103-面向对象与编码"><a class="header" href="#103-面向对象与编码">10.3 面向对象与编码</a></h2>
+<h3 id="类与对象的概念"><a class="header" href="#类与对象的概念">类与对象的概念</a></h3>
+<p><strong>“物以类聚，人以群分。”</strong> 面向对象编程（Object-Oriented Programming, OOP）通过抽象方法，提取同类事物的关键信息，形成“类“（Class）。类是对象的蓝图或模板，而对象是类的具体实例。</p>
+<p>面向对象编程的三大核心特性：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th>英文</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td>封装</td><td>Encapsulation</td><td>将数据与操作绑定，隐藏内部实现细节</td></tr>
+<tr><td>继承</td><td>Inheritance</td><td>子类复用父类的属性和行为</td></tr>
+<tr><td>多态</td><td>Polymorphism</td><td>同一接口，不同实现</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="对象标识符oid"><a class="header" href="#对象标识符oid">对象标识符（OID）</a></h3>
+<p>按照 GB/T 17969.1 (ISO/IEC 9834-1) 的定义，对象是指“通信和信息处理世界中的任何事物，它是可标识（可以命名）的，同时它可被注册“。对象标识符（Object Identifier，OID）是与对象相关联的用来无歧义地标识对象的全局唯一的值，可保证对象在通信与信息处理中正确地定位和管理。通俗地讲，OID 就是网络通信中对象的身份证。</p>
+<p><a href="https://baike.baidu.com/item/%E5%AF%B9%E8%B1%A1%E6%A0%87%E8%AF%86%E7%AC%A6/21125614?fromtitle=OID&amp;fromid=2723970&amp;fr=aladdin">对象标识符 ObjectIdentifier OID</a></p>
+<p>OID 采用点分十进制表示，例如 <code>1.3.6.1.5.5.7.1.1</code> 表示“权威信息访问“（Authority Information Access）证书扩展。</p>
+<h3 id="rust-中的面向对象"><a class="header" href="#rust-中的面向对象">Rust 中的面向对象</a></h3>
+<p>Rust 并非传统的面向对象语言，但通过 <code>struct</code>、<code>enum</code> 和 <code>trait</code> 可以优雅地实现面向对象的核心思想：</p>
+<pre class="playground"><code class="language-rust edition2024">use std::fmt;
+
+// struct 替代"类"——封装数据
+struct Person {
+    name: String,
+    age: u32,
+}
+
+// impl 块——封装行为（方法）
+impl Person {
+    fn new(name: &amp;str, age: u32) -&gt; Self {
+        Person {
+            name: name.to_string(),
+            age,
+        }
+    }
+
+    fn greet(&amp;self) {
+        println!("你好，我是{}，今年{}岁。", self.name, self.age);
+    }
+}
+
+// trait 替代"接口"——实现多态
+trait Describable {
+    fn describe(&amp;self) -&gt; String;
+}
+
+impl Describable for Person {
+    fn describe(&amp;self) -&gt; String {
+        format!("Person(name={}, age={})", self.name, self.age)
+    }
+}
+
+// enum 实现代数数据类型
+enum Shape {
+    Circle { radius: f64 },
+    Rectangle { width: f64, height: f64 },
+    Triangle { base: f64, height: f64 },
+}
+
+impl Shape {
+    fn area(&amp;self) -&gt; f64 {
+        match self {
+            Shape::Circle { radius } =&gt; std::f64::consts::PI * radius * radius,
+            Shape::Rectangle { width, height } =&gt; width * height,
+            Shape::Triangle { base, height } =&gt; 0.5 * base * height,
+        }
+    }
+}
+
+impl fmt::Display for Shape {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        match self {
+            Shape::Circle { radius } =&gt; write!(f, "Circle(r={})", radius),
+            Shape::Rectangle { width, height } =&gt; write!(f, "Rect(w={}, h={})", width, height),
+            Shape::Triangle { base, height } =&gt; write!(f, "Tri(b={}, h={})", base, height),
+        }
+    }
+}
+
+fn main() {
+    let p = Person::new("张三", 30);
+    p.greet();
+    println!("{}", p.describe());
+
+    let shapes = vec![
+        Shape::Circle { radius: 5.0 },
+        Shape::Rectangle { width: 4.0, height: 6.0 },
+        Shape::Triangle { base: 3.0, height: 8.0 },
+    ];
+
+    for s in &amp;shapes {
+        println!("{} 的面积 = {:.2}", s, s.area());
+    }
+}</code></pre>
+<h2 id="104-唯一标识符id"><a class="header" href="#104-唯一标识符id">10.4 唯一标识符（ID）</a></h2>
+<p>同一类型，拥有数以亿计的对象，如何区分这些独一无二的个体呢？其实要做到这一点并不难，只要给这些个体一个全局唯一的“身份“即可。身份证号、手机号、IP地址、统一社会信用代码——这些都是唯一标识符的现实应用。</p>
+<h3 id="1041-身份证号校验"><a class="header" href="#1041-身份证号校验">10.4.1 身份证号校验</a></h3>
+<p>中国居民身份证号码为18位，其中前17位为本体码，最后1位为校验码。校验码的计算基于加权因子取模11的算法：</p>
+<p>$$
+C = \left( \sum_{i=1}^{17} a_i \times w_i \right) \bmod 11
+$$</p>
+<p>其中 $a_i$ 为第 $i$ 位数字，$w_i$ 为对应的加权因子 $[7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]$。校验码映射表为：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>余数</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th></tr>
+</thead>
+<tbody>
+<tr><td>校验码</td><td>1</td><td>0</td><td>X</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use lazy_static::lazy_static;
+use regex::Regex;
+use std::collections::HashMap;
+
+lazy_static! {
+    static ref IDENTIFIER_REGEX: Regex = Regex::new("^([0-9ABCDEFGY]{1})([1239]{1})([0-9ABCDEFGHJKLMNPQRTUWXY]{6})([0-9ABCDEFGHJKLMNPQRTUWXY]{9})([0-9ABCDEFGHJKLMNPQRTUWXY])$").unwrap();
+    static ref REGEX_18_ID_CARD_NO: Regex = Regex::new(r"^[0-9]{17}[0-9X]$").unwrap();
+    static ref ID_CARD_POWER: Vec&lt;usize&gt; = vec![7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+    static ref WEIGHT: Vec&lt;usize&gt; = vec![1, 3, 9, 27, 19, 26, 16, 17, 20, 29, 25, 13, 8, 24, 10, 30, 28];
+    static ref VERIFY_CODE_MAP: HashMap&lt;char,usize&gt; = {
+        let verify_code = "0123456789ABCDEFGHJKLMNPQRTUWXY";
+        let verify_code_vec :Vec&lt;char&gt; = verify_code.chars().collect();
+        let mut verify_code_map = HashMap::new();
+        for (i,item) in verify_code_vec.iter().enumerate().take(verify_code.len()){
+            verify_code_map.insert(*item,i);
+
+        }
+        println!("{:?}",verify_code_map);
+        verify_code_map
+    };
+    // 公司名称需要排除的字符串，不包含中英文括号
+    static ref REGEX_NOT_COMPANY_NAME: Regex = Regex::new(r###"[`~!@#$%^&amp;*+=|{}':;',\\.&lt;&gt;《》/?~！@#￥%……&amp;*——+|\-{}\[\]【】'；：""'。，、？]"###).unwrap();
+    // 金钱（千分位）
+    static ref MONEY_REGEX: Regex = Regex::new(r"^(-)?\d{1,3}(,\d{3})*(.\d+)?$").unwrap();
+}
+
+/// 18位身份证号校验
+fn is_18_id_card(id_card_no: &amp;str) -&gt; bool {
+    if !REGEX_18_ID_CARD_NO.is_match(id_card_no) {
+        println!("{} isn't match regex", id_card_no);
+        return false;
+    }
+
+    let id_card_no_chars: Vec&lt;char&gt; = id_card_no.chars().collect();
+    let mut sum = 0;
+    for i in 0..17 {
+        let ch = id_card_no_chars[i] as usize - 48;
+        sum += ch * ID_CARD_POWER[i];
+    }
+
+    let check_code = match sum % 11 {
+        10 =&gt; '2',
+        9 =&gt; '3',
+        8 =&gt; '4',
+        7 =&gt; '5',
+        6 =&gt; '6',
+        5 =&gt; '7',
+        4 =&gt; '8',
+        3 =&gt; '9',
+        2 =&gt; 'X',
+        1 =&gt; '0',
+        0 =&gt; '1',
+        _ =&gt; 'N',
+    };
+
+    check_code == id_card_no_chars[17]
+}
+
+
+let id_card_no = "450101200012314321";
+if is_18_id_card(id_card_no) {
+    println!("{} is a valid ID card number", id_card_no);
+} else {
+    println!("{} is not a valid ID card number", id_card_no);
+}
+
+
+<span class="boring">}</span></code></pre>
+<p><a href="https://gitee.com/zhiluniao/rust-by-example/blob/master/src/validators.rs">更多代码</a></p>
+<h3 id="1042-统一社会信用代码校验"><a class="header" href="#1042-统一社会信用代码校验">10.4.2 统一社会信用代码校验</a></h3>
+<p>统一社会信用代码是18位的标识代码，同样采用加权因子校验算法。上述代码中的 <code>IDENTIFIER_REGEX</code>、<code>WEIGHT</code> 和 <code>VERIFY_CODE_MAP</code> 即为统一社会信用代码校验所需的核心数据：</p>
+<ul>
+<li><code>IDENTIFIER_REGEX</code>：匹配18位统一社会信用代码的格式</li>
+<li><code>WEIGHT</code>：加权因子数组 $[1, 3, 9, 27, 19, 26, 16, 17, 20, 29, 25, 13, 8, 24, 10, 30, 28]$</li>
+<li><code>VERIFY_CODE_MAP</code>：校验字符映射表（不包含 I、O、Z、S、V）</li>
+</ul>
+<h3 id="1043-uuid"><a class="header" href="#1043-uuid">10.4.3 UUID</a></h3>
+<p><a href="https://baike.baidu.com/item/UUID/5921266">UUID</a>（Universally Unique Identifier，通用唯一识别码）是一个128位的标识符，通常以32个十六进制数字表示，格式为 <code>8-4-4-4-12</code>，例如：</p>
+<pre><code>550e8400-e29b-41d4-a716-446655440000
+</code></pre>
+<p>UUID 的理论空间为 $2^{128} \approx 3.4 \times 10^{38}$，足够为地球上的每一粒沙子分配一个唯一标识符。</p>
+<p><strong>UUID 版本对比：</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>版本</th><th>生成方式</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td>v1</td><td>时间戳 + MAC地址</td><td>基于时间，可排序，但暴露MAC地址</td></tr>
+<tr><td>v3</td><td>MD5 哈希（命名空间+名称）</td><td>确定性生成，相同输入产生相同UUID</td></tr>
+<tr><td>v4</td><td>随机数</td><td>最常用，完全随机</td></tr>
+<tr><td>v5</td><td>SHA-1 哈希（命名空间+名称）</td><td>确定性生成，比v3更安全</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">use uuid::{Uuid, Version, Variant};
+
+fn main() {
+    // 生成 v4 UUID（随机）
+    let uuid_v4 = Uuid::new_v4();
+    println!("UUID v4: {}", uuid_v4);
+    println!("版本: {:?}", uuid_v4.get_version()); // Some(Version::Random)
+    println!("变体: {:?}", uuid_v4.get_variant()); // Some(Variant::RFC4122)
+
+    // 生成 v1 UUID（基于时间戳）
+    let uuid_v1 = Uuid::new_v1(&amp;[1, 2, 3, 4, 5, 6]);
+    println!("UUID v1: {}", uuid_v1);
+
+    // 从字符串解析 UUID
+    let parsed = Uuid::parse_str("550e8400-e29b-41d4-a716-446655440000");
+    match parsed {
+        Ok(u) =&gt; println!("解析成功: {}, 版本: {:?}", u, u.get_version()),
+        Err(e) =&gt; println!("解析失败: {}", e),
+    }
+
+    // 生成 v5 UUID（基于命名空间和名称的确定性UUID）
+    let namespace = Uuid::NAMESPACE_DNS;
+    let uuid_v5 = Uuid::new_v5(namespace, b"example.com");
+    println!("UUID v5 (example.com): {}", uuid_v5);
+    // 相同输入始终产生相同结果
+    let uuid_v5_again = Uuid::new_v5(namespace, b"example.com");
+    assert_eq!(uuid_v5, uuid_v5_again);
+    println!("确定性验证: v5 UUID 相同输入产生相同结果 ✓");
+}</code></pre>
+<p><code>Cargo.toml</code> 依赖：</p>
+<pre><code class="language-toml">[dependencies]
+uuid = { version = "1", features = ["v1", "v4", "v5"] }
+</code></pre>
+<h3 id="1044-雪花算法snowflake"><a class="header" href="#1044-雪花算法snowflake">10.4.4 雪花算法（Snowflake）</a></h3>
+<p>雪花算法是 Twitter 开源的分布式ID生成算法，其核心思想是：<strong>将64位的 <code>i64</code> 划分为多个段，每段代表不同的语义信息</strong>。</p>
+<p>$$
+\text{Snowflake ID} = \underbrace{\text{符号位}}<em>{1\text{bit}} \ | \ \underbrace{\text{时间戳}}</em>{41\text{bits}} \ | \ \underbrace{\text{机器ID}}<em>{10\text{bits}} \ | \ \underbrace{\text{序列号}}</em>{12\text{bits}}
+$$</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>段</th><th>位数</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>符号位</td><td>1 bit</td><td>始终为0，保证ID为正数</td></tr>
+<tr><td>时间戳</td><td>41 bits</td><td>毫秒级时间戳，可用约69年</td></tr>
+<tr><td>机器ID</td><td>10 bits</td><td>最多支持1024台机器</td></tr>
+<tr><td>序列号</td><td>12 bits</td><td>同一毫秒内最多4096个ID</td></tr>
+</tbody>
+</table>
+</div>
+<p>41位时间戳的表示范围：</p>
+<p>$$
+2^{41} - 1 = 2199023255551 \text{ 毫秒} \approx 69.73 \text{ 年}
+$$</p>
+<pre class="playground"><code class="language-rust edition2024">use std::sync::atomic::{AtomicU16, Ordering};
+use std::time::{SystemTime, UNIX_EPOCH};
+
+/// 雪花算法ID生成器
+struct Snowflake {
+    machine_id: u16,          // 机器ID (0 ~ 1023)
+    sequence: AtomicU16,      // 序列号 (0 ~ 4095)
+    last_timestamp: AtomicU64, // 上次生成ID的时间戳
+    epoch: u64,               // 起始时间戳（毫秒）
+}
+
+impl Snowflake {
+    fn new(machine_id: u16) -&gt; Self {
+        // 自定义纪元：2024-01-01 00:00:00 UTC
+        let epoch = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_millis() as u64;
+
+        Snowflake {
+            machine_id: machine_id &amp; 0x3FF, // 确保不超过10位
+            sequence: AtomicU16::new(0),
+            last_timestamp: AtomicU64::new(0),
+            epoch,
+        }
+    }
+
+    fn next_id(&amp;self) -&gt; i64 {
+        let current_timestamp = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_millis() as u64;
+
+        let last = self.last_timestamp.load(Ordering::SeqCst);
+
+        if current_timestamp == last {
+            // 同一毫秒内，递增序列号
+            let seq = self.sequence.fetch_add(1, Ordering::SeqCst);
+            if seq &gt;= 4095 {
+                // 序列号溢出，等待下一毫秒
+                panic!("Sequence overflow: too many IDs in one millisecond");
+            }
+            self.make_id(last, seq)
+        } else {
+            // 新的毫秒，重置序列号
+            self.sequence.store(0, Ordering::SeqCst);
+            self.last_timestamp.store(current_timestamp, Ordering::SeqCst);
+            self.make_id(current_timestamp, 0)
+        }
+    }
+
+    fn make_id(&amp;self, timestamp: u64, sequence: u16) -&gt; i64 {
+        // 时间戳左移22位（10位机器ID + 12位序列号）
+        let ts_part = (timestamp - self.epoch) &lt;&lt; 22;
+        // 机器ID左移12位（12位序列号）
+        let machine_part = (self.machine_id as i64) &lt;&lt; 12;
+        // 序列号
+        let seq_part = sequence as i64;
+
+        ts_part | machine_part | seq_part
+    }
+}
+
+fn main() {
+    let snowflake = Snowflake::new(1); // 机器ID为1
+
+    // 连续生成10个ID
+    for _ in 0..10 {
+        let id = snowflake.next_id();
+        println!("Snowflake ID: {}", id);
+    }
+
+    // 解析ID
+    let id = snowflake.next_id();
+    let timestamp_part = (id &gt;&gt; 22) + snowflake.epoch as i64;
+    let machine_part = ((id &gt;&gt; 12) &amp; 0x3FF) as u16;
+    let sequence_part = (id &amp; 0xFFF) as u16;
+    println!("\n解析 ID = {}", id);
+    println!("  时间戳部分: {}", timestamp_part);
+    println!("  机器ID: {}", machine_part);
+    println!("  序列号: {}", sequence_part);
+}</code></pre>
+<h3 id="1045-nanoid"><a class="header" href="#1045-nanoid">10.4.5 nanoid</a></h3>
+<p><a href="https://github.com/ai/nanoid">nanoid</a> 是一种轻量级、安全、URL友好的唯一ID生成器。与UUID相比，nanoid生成的ID更短（默认21个字符），且使用URL安全的字符集。</p>
+<p>nanoid 的核心思想是：使用密码学安全的随机数生成器，从一个自定义字符集中随机选取字符，组成指定长度的字符串。</p>
+<pre class="playground"><code class="language-rust edition2024">use nanoid::nanoid;
+
+fn main() {
+    // 生成默认21字符的 nanoid
+    let id1 = nanoid!();
+    println!("nanoid (默认21字符): {}", id1);
+
+    // 生成指定长度的 nanoid
+    let id2 = nanoid!(10);
+    println!("nanoid (10字符): {}", id2);
+
+    // 使用自定义字符集
+    let id3 = nanoid!(16, &amp;['a', 'b', 'c', 'd', 'e', 'f', '1', '2', '3']);
+    println!("nanoid (自定义字符集): {}", id3);
+}</code></pre>
+<p><code>Cargo.toml</code> 依赖：</p>
+<pre><code class="language-toml">[dependencies]
+nanoid = "0.4"
+</code></pre>
+<h3 id="1046-各id方案对比"><a class="header" href="#1046-各id方案对比">10.4.6 各ID方案对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方案</th><th>长度</th><th>生成方式</th><th>有序性</th><th>分布式支持</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td>自增ID</td><td>4~8字节</td><td>数据库自增</td><td>严格有序</td><td>需要中心化</td><td>单体数据库主键</td></tr>
+<tr><td>UUID v4</td><td>36字符（含连字符）</td><td>随机数</td><td>无序</td><td>天然支持</td><td>通用唯一标识</td></tr>
+<tr><td>UUID v1</td><td>36字符（含连字符）</td><td>时间戳+MAC</td><td>时间有序</td><td>天然支持</td><td>需要排序的场景</td></tr>
+<tr><td>雪花算法</td><td>8字节（i64）</td><td>时间戳+机器ID+序列号</td><td>趋势递增</td><td>需分配机器ID</td><td>分布式系统主键</td></tr>
+<tr><td>nanoid</td><td>21字符（可配置）</td><td>密码学随机</td><td>无序</td><td>天然支持</td><td>URL、短链接、前端</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="105-一切皆文件"><a class="header" href="#105-一切皆文件">10.5 一切皆文件</a></h2>
+<h3 id="unix-哲学一切皆文件"><a class="header" href="#unix-哲学一切皆文件">Unix 哲学：一切皆文件</a></h3>
+<p>Unix 操作系统有一个优雅的设计哲学——<strong>“一切皆文件”</strong>（Everything is a file）。在 Unix/Linux 系统中，无论是普通文件、目录、设备（如 <code>/dev/null</code>、<code>/dev/tty</code>）、管道、套接字，还是 <code>/proc</code> 下的进程信息，都可以通过统一的文件操作接口（<code>open</code>、<code>read</code>、<code>write</code>、<code>close</code>）来访问。</p>
+<p>这种设计的优势在于：</p>
+<ul>
+<li><strong>统一接口</strong>：所有资源使用相同的 API 操作</li>
+<li><strong>组合性</strong>：通过管道将多个程序串联</li>
+<li><strong>简洁性</strong>：用少量原语解决大量问题</li>
+</ul>
+<h3 id="文件读写"><a class="header" href="#文件读写">文件读写</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::fs::File;
+use std::io::{BufReader, Read, Write};
+
+    // 将文件读取为字节数组
+    if let Ok(cipher_data) = std::fs::read("why-rust.crypto") {
+        let plaintext = cipher
+            .decrypt(nonce, cipher_data.as_ref())
+            .expect("decryption failure!");
+        println!("{}", String::from_utf8(plaintext).unwrap());
+    }
+
+    /// 逐行读取文件
+    #[test]
+    fn read_file_lines() {
+        match File::open("why-rust.txt") {
+            Ok(f) =&gt; {
+                let reader = BufReader::new(f);
+                let lines = reader.lines();
+                for line in lines.map(|x| x.unwrap()) {
+                    println!("{}", line);
+                }
+            }
+            Err(e) =&gt; panic!("can't open this file :{}", e),
+        }
+    }
+
+    ///将文件读取为一个字符串
+    match std::fs::read_to_string("provinces.json") {
+        Ok(data) =&gt; {
+            println!("open provinces.json...");
+            let v: Vec&lt;AdministrativeDivisions&gt; = serde_json::from_str(&amp;data).unwrap();
+
+            for ad in v {
+                println!("{:?}={:?}", ad.code, ad.name);
+            }
+        }
+        Err(e) =&gt; panic!("can't open this file : {}", e),
+    }
+
+    // 将字节数组写入文件
+    let mut all_bytes = Vec::&lt;u8&gt;::with_capacity(128);
+    all_bytes.extend_from_slice(&amp;key);
+    all_bytes.extend_from_slice(&amp;iv);
+    all_bytes.extend_from_slice(&amp;encrypt_bytes);
+
+    std::fs::write("poem.crypto", &amp;all_bytes);
+<span class="boring">}</span></code></pre>
+<h3 id="文件编码文本文件-vs-二进制文件"><a class="header" href="#文件编码文本文件-vs-二进制文件">文件编码：文本文件 vs 二进制文件</a></h3>
+<p>文件从编码角度可分为两大类：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型</th><th>特征</th><th>读取方式</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td>文本文件</td><td>可读字符编码（UTF-8等）</td><td><code>read_to_string()</code></td><td><code>.txt</code>, <code>.csv</code>, <code>.json</code>, <code>.md</code></td></tr>
+<tr><td>二进制文件</td><td>任意字节序列</td><td><code>read()</code></td><td><code>.exe</code>, <code>.png</code>, <code>.pdf</code>, <code>.xlsx</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>文本文件本质上是“对人友好“的二进制文件——它们同样是由字节组成的，只不过这些字节按照特定的字符编码（如 UTF-8、GBK）可以被人类直接阅读。而二进制文件则采用特定格式编码，需要专门的解析器才能理解其内容。</p>
+<h2 id="106-文件格式与编码"><a class="header" href="#106-文件格式与编码">10.6 文件格式与编码</a></h2>
+<h3 id="文件格式本质"><a class="header" href="#文件格式本质">文件格式本质</a></h3>
+<p>文件格式的本质就是<strong>编码规则</strong>——约定如何将特定类型的数据组织为字节序列。不论是简单的 txt、xml、json 等格式的数据还是复杂的 doc、xls、pdf、<a href="https://baike.baidu.com/item/OFD/56227163">OFD</a> 等格式，都是某种编码规则的体现。</p>
+<h3 id="办公三件套wordexcelppt"><a class="header" href="#办公三件套wordexcelppt">办公三件套：Word，Excel，PPT</a></h3>
+<p>微软的 Office 办公三件套：Word，Excel，PowerPoint 成为办公领域的标准，每年为微软创造上百亿美元的收入。国内金山办公经过三十多年的追赶，其产品 <a href="https://www.wps.cn/">WPS</a> 终于在办公软件拥有一席之地、站稳了脚跟。</p>
+<h3 id="excel--csv--json-处理"><a class="header" href="#excel--csv--json-处理">Excel / CSV / JSON 处理</a></h3>
+<h4 id="excel-读取"><a class="header" href="#excel-读取">Excel 读取</a></h4>
+<p><a href="https://github.com/tafia/calamine">calamine</a> 是 Rust 实现的 Excel 工具，目前只支持读操作（不支持写操作）。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use calamine::DataType::{
+    Bool, DateTime, DateTimeIso, Duration, DurationIso, Empty, Error, Float, String,
+};
+use calamine::{
+    open_workbook, open_workbook_auto, Ods, Reader, Sheet, SheetType, SheetVisible, Xls, Xlsb, Xlsx,
+};
+use calamine::{CellErrorType::*, DataType};
+
+#[test]
+fn any_sheets_xlsx() {
+    let path = format!(
+        "{}/examples/file/any_sheets.xlsx",
+        env!("CARGO_MANIFEST_DIR")
+    );
+    println!("{}", &amp;path);
+    let mut workbook: Xlsx&lt;_&gt; = open_workbook(path).unwrap();
+
+    let range = workbook.worksheet_range("Visible").unwrap();
+    let total_cells = range.get_size().0 * range.get_size().1;
+    let non_empty_cells: usize = range.used_cells().count();
+    println!(
+        "Found {} cells in 'Sheet1', including {} non empty cells",
+        total_cells, non_empty_cells
+    );
+    // alternatively, we can manually filter rows
+    assert_eq!(
+        non_empty_cells,
+        range
+            .rows()
+            .flat_map(|r| r.iter().filter(|&amp;c| c != &amp;DataType::Empty))
+            .count()
+    );
+}
+
+<span class="boring">}</span></code></pre>
+<h4 id="csv-读写"><a class="header" href="#csv-读写">CSV 读写</a></h4>
+<p>CSV（Comma-Separated Values）是最简单的结构化文本格式，用逗号分隔各列数据。</p>
+<pre class="playground"><code class="language-rust edition2024">use csv::{Reader, Writer, ReaderBuilder, WriterBuilder};
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Serialize, Deserialize)]
+struct RocketRecord {
+    #[serde(rename = "发射序号")]
+    serial_no: u32,
+    #[serde(rename = "发射日期")]
+    launch_date: String,
+    #[serde(rename = "发射地点")]
+    launch_site: String,
+    #[serde(rename = "运载火箭")]
+    rocket: String,
+    #[serde(rename = "卫星/航天器")]
+    satellite: String,
+}
+
+/// 写入CSV文件
+fn write_csv() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut wtr = WriterBuilder::new()
+        .has_headers(true)
+        .from_path("rocket_records.csv")?;
+
+    let records = vec![
+        RocketRecord {
+            serial_no: 1,
+            launch_date: "2024-01-17".to_string(),
+            launch_site: "酒泉卫星发射中心".to_string(),
+            rocket: "长征二号F".to_string(),
+            satellite: "天舟七号".to_string(),
+        },
+        RocketRecord {
+            serial_no: 2,
+            launch_date: "2024-03-21".to_string(),
+            launch_site: "文昌航天发射场".to_string(),
+            rocket: "长征八号".to_string(),
+            satellite: "鹊桥二号".to_string(),
+        },
+    ];
+
+    for record in &amp;records {
+        wtr.serialize(record)?;
+    }
+    wtr.flush()?;
+    println!("CSV 文件写入成功！");
+    Ok(())
+}
+
+/// 读取CSV文件
+fn read_csv() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut rdr = ReaderBuilder::new()
+        .flexible(true)
+        .from_path("rocket_records.csv")?;
+
+    for result in rdr.deserialize() {
+        let record: RocketRecord = result?;
+        println!("{:?}", record);
+    }
+    Ok(())
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    write_csv()?;
+    println!("--- 读取CSV ---");
+    read_csv()?;
+    Ok(())
+}</code></pre>
+<p><code>Cargo.toml</code> 依赖：</p>
+<pre><code class="language-toml">[dependencies]
+csv = "1.3"
+serde = { version = "1", features = ["derive"] }
+</code></pre>
+<h4 id="json-序列化与反序列化"><a class="header" href="#json-序列化与反序列化">JSON 序列化与反序列化</a></h4>
+<p>JSON（JavaScript Object Notation）是当今最流行的数据交换格式。在 Rust 生态中，<code>serde_json</code> 是处理 JSON 的事实标准。</p>
+<pre class="playground"><code class="language-rust edition2024">use serde::{Deserialize, Serialize};
+use serde_json::{json, Value, from_str, to_string_pretty};
+
+#[derive(Debug, Serialize, Deserialize)]
+struct Province {
+    code: String,
+    name: String,
+    level: u8,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    parent_code: Option&lt;String&gt;,
+}
+
+/// 序列化：Rust 结构体 → JSON 字符串
+fn serialize_example() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let provinces = vec![
+        Province {
+            code: "110000".to_string(),
+            name: "北京市".to_string(),
+            level: 1,
+            parent_code: None,
+        },
+        Province {
+            code: "110101".to_string(),
+            name: "东城区".to_string(),
+            level: 2,
+            parent_code: Some("110000".to_string()),
+        },
+    ];
+
+    // 序列化为紧凑JSON
+    let json_str = serde_json::to_string(&amp;provinces)?;
+    println!("紧凑JSON: {}", json_str);
+
+    // 序列化为美化JSON
+    let json_pretty = serde_json::to_string_pretty(&amp;provinces)?;
+    println!("美化JSON:\n{}", json_pretty);
+
+    // 动态构建JSON
+    let data = json!({
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": { "name": "北京市", "code": "110000" },
+                "geometry": { "type": "Point", "coordinates": [116.4, 39.9] }
+            }
+        ]
+    });
+    println!("动态JSON: {}", data);
+    Ok(())
+}
+
+/// 反序列化：JSON 字符串 → Rust 结构体
+fn deserialize_example() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let json_data = r#"
+    [
+        {"code": "440000", "name": "广东省", "level": 1},
+        {"code": "440100", "name": "广州市", "level": 2, "parent_code": "440000"}
+    ]
+    "#;
+
+    let provinces: Vec&lt;Province&gt; = from_str(json_data)?;
+    for p in &amp;provinces {
+        println!("{} - {} (level: {})", p.code, p.name, p.level);
+    }
+
+    // 反序列化为动态 Value
+    let v: Value = from_str(json_data)?;
+    if let Some(arr) = v.as_array() {
+        for item in arr {
+            println!("名称: {}", item["name"]);
+        }
+    }
+    Ok(())
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    println!("=== 序列化 ===");
+    serialize_example()?;
+    println!("\n=== 反序列化 ===");
+    deserialize_example()?;
+    Ok(())
+}</code></pre>
+<p><code>Cargo.toml</code> 依赖：</p>
+<pre><code class="language-toml">[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+</code></pre>
+<h3 id="pdf--ofd-格式简介"><a class="header" href="#pdf--ofd-格式简介">PDF / OFD 格式简介</a></h3>
+<ul>
+<li><a href="https://baike.baidu.com/item/%E5%8F%AF%E6%90%BA%E5%B8%A6%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/54242682">PDF (Portable Document Format)</a> 可携带文件格式，由 Adobe 公司于1992年发布，已成为全球通用的文档交换标准。</li>
+<li><a href="https://baike.baidu.com/item/OFD/56227163">OFD</a> 版式文档国家标准，是中国自主研发的电子文件格式，旨在替代 PDF 在政务和电子公文领域的应用。</li>
+</ul>
+<h3 id="pandas-vs-polars"><a class="header" href="#pandas-vs-polars">Pandas vs Polars</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th><a href="https://pola.rs/">Polars</a> (Rust)</th><th><a href="https://pandas.pydata.org/">Pandas</a> (Python)</th></tr>
+</thead>
+<tbody>
+<tr><td>语言</td><td>Rust</td><td>Python</td></tr>
+<tr><td>并行执行</td><td>原生多线程</td><td>单线程（部分操作可用并行）</td></tr>
+<tr><td>惰性求值</td><td>支持</td><td>不支持</td></tr>
+<tr><td>内存占用</td><td>较低（Arrow格式）</td><td>较高</td></tr>
+<tr><td>性能</td><td>极高</td><td>中等</td></tr>
+<tr><td>生态成熟度</td><td>快速增长中</td><td>非常成熟</td></tr>
+<tr><td>学习曲线</td><td>较平缓</td><td>中等</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="107-万物编码的哲学"><a class="header" href="#107-万物编码的哲学">10.7 万物编码的哲学</a></h2>
+<h3 id="dikw-金字塔"><a class="header" href="#dikw-金字塔">DIKW 金字塔</a></h3>
+<p>从数据到智慧的递进，可以用 DIKW 金字塔来描述：</p>
+<p>$$
+\text{Data（数据）} \xrightarrow{\text{赋予含义}} \text{Information（信息）} \xrightarrow{\text{总结规律}} \text{Knowledge（知识）} \xrightarrow{\text{洞察本质}} \text{Wisdom（智慧）}
+$$</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>层级</th><th>含义</th><th>编码示例</th></tr>
+</thead>
+<tbody>
+<tr><td>Data</td><td>原始事实，无上下文</td><td><code>42</code>, <code>"hello"</code>, <code>0xFF</code></td></tr>
+<tr><td>Information</td><td>有组织、有意义的数据</td><td><code>{"temp": 42, "unit": "°C"}</code></td></tr>
+<tr><td>Knowledge</td><td>信息之间的关系与模式</td><td><code>if temp &gt; 37 then fever</code></td></tr>
+<tr><td>Wisdom</td><td>运用知识做出判断</td><td><code>该患者需要就医</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>编码贯穿了 DIKW 的每一个层级：</p>
+<ul>
+<li><strong>数据层</strong>：二进制编码（ASCII、UTF-8、IEEE 754）</li>
+<li><strong>信息层</strong>：结构化编码（JSON、XML、CSV）</li>
+<li><strong>知识层</strong>：逻辑编码（规则引擎、知识图谱）</li>
+<li><strong>智慧层</strong>：这一层或许已经超出了“编码“的范畴——智慧涉及直觉、经验和创造力，这些是否可以被编码，至今仍是哲学与人工智能领域的开放问题。</li>
+</ul>
+<h3 id="编码的边界什么不能被编码"><a class="header" href="#编码的边界什么不能被编码">编码的边界：什么不能被编码？</a></h3>
+<p>尽管“万物皆可编码“是一个强大的理念，但编码并非万能。以下是一些编码的边界：</p>
+<ol>
+<li><strong>主观体验（Qualia）</strong>：你看到的“红色“和我看到的“红色“是同一种感觉吗？这种主观体验难以被精确编码。</li>
+<li><strong>情感与直觉</strong>：虽然可以用文字描述情感，但情感的微妙之处（如“淡淡的忧伤“）很难被完全编码。</li>
+<li><strong>无限精度</strong>：实数 $\pi$ 的精确值无法被有限编码完全表示，只能用近似值。</li>
+<li><strong>创造性思维</strong>：编码可以表达规则，但真正的创造力（如贝多芬的交响曲）似乎超越了纯粹的编码。</li>
+<li><strong>意识本身</strong>：意识是否可以被编码为算法？这是心智哲学中最深刻的未解之谜之一。</li>
+</ol>
+<p>正如哲学家维特根斯坦所言：“<strong>对于不可言说之物，必须保持沉默。</strong>“编码的边界，或许正是人类智慧与机器智能的分界线。</p>
+<h2 id="108-总结"><a class="header" href="#108-总结">10.8 总结</a></h2>
+<p>本章从“万物皆可编码“的理念出发，系统介绍了编码的各个层次。</p>
+<h3 id="编码层次对比"><a class="header" href="#编码层次对比">编码层次对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>层次</th><th>核心概念</th><th>编码方式</th><th>Rust 体现</th></tr>
+</thead>
+<tbody>
+<tr><td>数据</td><td>比特流</td><td>二进制 0/1</td><td><code>u8</code>, <code>Vec&lt;u8&gt;</code></td></tr>
+<tr><td>类型</td><td>语义化数据</td><td>IEEE 754, UTF-8, 补码</td><td><code>i32</code>, <code>f64</code>, <code>char</code>, <code>String</code></td></tr>
+<tr><td>对象</td><td>数据+行为</td><td>struct/enum/trait</td><td><code>struct</code>, <code>impl</code>, <code>trait</code></td></tr>
+<tr><td>文件</td><td>持久化存储</td><td>文件格式规范</td><td><code>std::fs</code>, <code>File</code></td></tr>
+<tr><td>协议</td><td>标准化交换</td><td>通信协议规范</td><td>HTTP, TCP, JSON</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="id-方案对比"><a class="header" href="#id-方案对比">ID 方案对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方案</th><th>长度</th><th>有序性</th><th>分布式</th><th>性能</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td>自增ID</td><td>4~8字节</td><td>严格有序</td><td>需中心化</td><td>极高</td><td>单体数据库</td></tr>
+<tr><td>UUID v4</td><td>36字符</td><td>无序</td><td>天然支持</td><td>中等</td><td>通用标识</td></tr>
+<tr><td>雪花算法</td><td>8字节</td><td>趋势递增</td><td>需分配ID</td><td>高</td><td>分布式主键</td></tr>
+<tr><td>nanoid</td><td>21字符</td><td>无序</td><td>天然支持</td><td>高</td><td>URL/前端</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="109-练习题"><a class="header" href="#109-练习题">10.9 练习题</a></h2>
+<p><strong>练习1</strong>：编写一个 Rust 函数，接收一个 <code>u8</code> 值，分别输出其二进制表示、八进制表示和十六进制表示，并解释补码如何表示负数。</p>
+<p><strong>练习2</strong>：使用 <code>struct</code> 和 <code>trait</code> 实现一个简单的“动物“体系：定义 <code>Animal</code> trait（包含 <code>speak</code> 方法），并为 <code>Dog</code>、<code>Cat</code>、<code>Bird</code> 三个结构体分别实现该 trait。</p>
+<p><strong>练习3</strong>：编写一个函数，验证给定的18位身份证号码是否合法。要求支持批量验证，并统计合法与不合法的数量。</p>
+<p><strong>练习4</strong>：使用 <code>uuid</code> crate 生成 1000 个 UUID v4，统计其中以 <code>0</code> 开头的 UUID 数量，并验证其是否接近理论概率 $1/16$。</p>
+<p><strong>练习5</strong>：实现一个简化版的雪花算法 ID 生成器，要求支持自定义机器ID，并验证生成的 ID 是否全局唯一（生成 10000 个 ID 检查是否有重复）。</p>
+<p><strong>练习6</strong>：使用 <code>csv</code> 和 <code>serde</code> crate，读取一个 CSV 文件，筛选出满足特定条件的记录，并将结果写入新的 CSV 文件。</p>
+<p><strong>练习7</strong>：使用 <code>serde_json</code> 实现以下功能：将一个 Rust 结构体序列化为 JSON 字符串，再从 JSON 字符串反序列化为 Rust 结构体，验证数据的完整性。</p>
+<p><strong>练习8</strong>：思考题：有人说“一切皆可编码“，但也有人认为“意识不可编码“。请结合本章内容和 DIKW 金字塔，谈谈你对“编码的边界“的看法。字数不少于300字。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_9_Video.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_11.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_9_Video.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_11.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

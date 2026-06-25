@@ -1,0 +1,1093 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第三十八 计算机视觉 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第三十八-计算机视觉cv-computer-vision"><a class="header" href="#第三十八-计算机视觉cv-computer-vision">第三十八 计算机视觉（CV, Computer Vision）</a></h1>
+<pre><code class="language-txt">第三十八 计算机视觉
+├── 什么是计算机视觉（CV）
+├── 图像基础
+│   ├── 像素、通道、图像表示
+│   └── 图像预处理
+├── 卷积运算
+│   ├── 卷积的定义与数学表达
+│   └── 卷积与图像处理
+├── 卷积神经网络（CNN）
+│   ├── 卷积层、池化层、全连接层
+│   └── 经典模型（LeNet、VGG、ResNet）
+├── 目标检测与图像分割
+│   ├── 目标检测（YOLO、R-CNN）
+│   └── 图像分割（语义分割、实例分割）
+├── Rust CV生态
+│   ├── image crate 图像处理
+│   ├── candle 深度学习推理
+│   └── 其他 CV 相关 crate
+└── 实战：图像分类（CIFAR-10）
+    └── 用Rust + candle实现
+</code></pre>
+<p>计算机视觉（Computer Vision, CV）是人工智能领域中最具感知力的分支之一。人类的视觉系统可以毫不费力地识别物体、理解场景、判断距离，而计算机视觉的目标正是让机器“看懂“世界——从像素矩阵中提取有意义的语义信息。</p>
+<p>$$\text{图像（像素矩阵）} \xrightarrow{\text{计算机视觉}} \text{语义理解（分类、检测、分割）}$$</p>
+<hr>
+<h2 id="一什么是计算机视觉"><a class="header" href="#一什么是计算机视觉">一、什么是计算机视觉</a></h2>
+<h3 id="11-定义"><a class="header" href="#11-定义">1.1 定义</a></h3>
+<p>计算机视觉是研究如何使机器从数字图像或多维数据中获取高层理解的学科。它涵盖了从低层图像处理（滤波、增强）到高层语义理解（识别、推理）的完整链路。</p>
+<h3 id="12-cv-的核心任务层次"><a class="header" href="#12-cv-的核心任务层次">1.2 CV 的核心任务层次</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>层次</th><th>任务</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>低层</strong></td><td>图像预处理、增强</td><td>灰度化、去噪、边缘检测</td></tr>
+<tr><td><strong>中层</strong></td><td>特征提取、描述</td><td>SIFT、HOG、卷积特征</td></tr>
+<tr><td><strong>高层</strong></td><td>语义理解</td><td>分类、检测、分割、生成</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="13-发展简史"><a class="header" href="#13-发展简史">1.3 发展简史</a></h3>
+<ul>
+<li><strong>1960s</strong>：Block World，积木世界识别</li>
+<li><strong>1980s</strong>：David Marr 视觉计算理论，边缘检测</li>
+<li><strong>1990s</strong>：SIFT、HOG 等手工特征</li>
+<li><strong>2012</strong>：AlexNet 在 ImageNet 竞赛中夺冠，深度学习时代开启</li>
+<li><strong>2015+</strong>：ResNet、YOLO、U-Net 等经典模型涌现</li>
+<li><strong>2020s</strong>：Vision Transformer (ViT)、多模态大模型</li>
+</ul>
+<hr>
+<h2 id="二图像基础"><a class="header" href="#二图像基础">二、图像基础</a></h2>
+<h3 id="21-像素与图像表示"><a class="header" href="#21-像素与图像表示">2.1 像素与图像表示</a></h3>
+<p>一幅数字图像可以表示为一个二维矩阵。对于灰度图像，每个像素是一个标量值；对于彩色图像，每个像素是一个向量。</p>
+<p><strong>灰度图像</strong>：$H \times W$ 矩阵，像素值 $I(x, y) \in [0, 255]$</p>
+<p>$$I_{\text{gray}} = \begin{pmatrix} 128 &amp; 64 &amp; 32 \ 200 &amp; 150 &amp; 100 \ 255 &amp; 0 &amp; 128 \end{pmatrix}$$</p>
+<p><strong>彩色图像（RGB）</strong>：$H \times W \times 3$ 张量，三个通道分别为红（R）、绿（G）、蓝（B）</p>
+<p>$$I_{\text{rgb}}(x, y) = \big[ R(x,y),\ G(x,y),\ B(x,y) \big]$$</p>
+<p>其中每个通道的值域为 $[0, 255]$，在深度学习中通常归一化到 $[0, 1]$。</p>
+<h3 id="22-rgb-通道"><a class="header" href="#22-rgb-通道">2.2 RGB 通道</a></h3>
+<p>RGB 三原色通过加色混合可以产生人眼能感知的大部分颜色：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>通道</th><th>颜色</th><th>纯色值 (R, G, B)</th></tr>
+</thead>
+<tbody>
+<tr><td>R</td><td>红色</td><td>(255, 0, 0)</td></tr>
+<tr><td>G</td><td>绿色</td><td>(0, 255, 0)</td></tr>
+<tr><td>B</td><td>蓝色</td><td>(0, 0, 255)</td></tr>
+<tr><td>—</td><td>白色</td><td>(255, 255, 255)</td></tr>
+<tr><td>—</td><td>黑色</td><td>(0, 0, 0)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="23-用-rust-表示图像"><a class="header" href="#23-用-rust-表示图像">2.3 用 Rust 表示图像</a></h3>
+<pre class="playground"><code class="language-rust edition2024">/// 像素结构体
+#[derive(Debug, Clone, Copy)]
+struct Pixel {
+    r: u8,
+    g: u8,
+    b: u8,
+}
+
+/// 简易图像结构
+struct Image {
+    width: usize,
+    height: usize,
+    pixels: Vec&lt;Pixel&gt;,
+}
+
+impl Image {
+    fn new(width: usize, height: usize) -&gt; Self {
+        Image {
+            width,
+            height,
+            pixels: vec![Pixel { r: 0, g: 0, b: 0 }; width * height],
+        }
+    }
+
+    fn get_pixel(&amp;self, x: usize, y: usize) -&gt; &amp;Pixel {
+        &amp;self.pixels[y * self.width + x]
+    }
+
+    fn set_pixel(&amp;mut self, x: usize, y: usize, pixel: Pixel) {
+        self.pixels[y * self.width + x] = pixel;
+    }
+}
+
+fn main() {
+    let mut img = Image::new(3, 2);
+    // 设置一个红色像素
+    img.set_pixel(0, 0, Pixel { r: 255, g: 0, b: 0 });
+    // 设置一个绿色像素
+    img.set_pixel(1, 0, Pixel { r: 0, g: 255, b: 0 });
+
+    println!("图像尺寸: {}x{}", img.width, img.height);
+    println!("像素 (0,0): {:?}", img.get_pixel(0, 0));
+    println!("像素 (1,0): {:?}", img.get_pixel(1, 0));
+}</code></pre>
+<hr>
+<h2 id="三图像预处理"><a class="header" href="#三图像预处理">三、图像预处理</a></h2>
+<p>图像预处理是 CV 流水线的第一步，目的是将原始图像转换为适合后续处理的标准化形式。</p>
+<h3 id="31-缩放resize"><a class="header" href="#31-缩放resize">3.1 缩放（Resize）</a></h3>
+<p>缩放是最基本的预处理操作。常见的插值算法包括最近邻插值、双线性插值和双三次插值。</p>
+<p>$$I’(x’, y’) = \sum_{i} \sum_{j} I(x_i, y_j) \cdot w(x_i - x’) \cdot w(y_j - y’)$$</p>
+<p>其中 $w$ 为插值核函数。</p>
+<pre class="playground"><code class="language-rust edition2024">use image::{imageops, DynamicImage, GenericImageView, ImageFormat};
+
+fn main() {
+    // 加载图像
+    let img = image::open("input.jpg").expect("无法打开图像");
+    println!("原始尺寸: {}x{}", img.width(), img.height());
+
+    // 使用不同滤波器缩放
+    let methods = [
+        ("nearest",  imageops::FilterType::Nearest),
+        ("triangle", imageops::FilterType::Triangle),
+        ("catmull",  imageops::FilterType::CatmullRom),
+        ("gaussian", imageops::FilterType::Gaussian),
+        ("lanczos",  imageops::FilterType::Lanczos3),
+    ];
+
+    for (name, filter) in &amp;methods {
+        let resized = img.resize(224, 224, *filter);
+        resized.save(format!("resized_{}.png", name)).unwrap();
+        println!("已保存 resized_{}.png (224x224)", name);
+    }
+}</code></pre>
+<h3 id="32-灰度化"><a class="header" href="#32-灰度化">3.2 灰度化</a></h3>
+<p>将彩色图像转换为灰度图像，常用加权平均法（ITU-R BT.601 标准）：</p>
+<p>$$I_{\text{gray}} = 0.299 \cdot R + 0.587 \cdot G + 0.114 \cdot B$$</p>
+<p>人眼对绿色最敏感，对蓝色最不敏感，因此权重不同。</p>
+<pre class="playground"><code class="language-rust edition2024">use image::{DynamicImage, GenericImageView, Rgb, Luma};
+
+fn to_grayscale(img: &amp;DynamicImage) -&gt; image::GrayImage {
+    let rgb = img.to_rgb8();
+    let (width, height) = rgb.dimensions();
+    let mut gray = image::GrayImage::new(width, height);
+
+    for y in 0..height {
+        for x in 0..width {
+            let Rgb([r, g, b]) = rgb.get_pixel(x, y);
+            // ITU-R BT.601 加权灰度
+            let gray_val = 0.299 * *r as f32
+                         + 0.587 * *g as f32
+                         + 0.114 * *b as f32;
+            gray.put_pixel(x, y, Luma([gray_val as u8]));
+        }
+    }
+    gray
+}
+
+fn main() {
+    let img = image::open("input.jpg").unwrap();
+    let gray = to_grayscale(&amp;img);
+    gray.save("grayscale.png").unwrap();
+    println!("灰度图像已保存");
+
+    // image crate 也内置了灰度转换
+    let gray2 = img.to_luma8();
+    gray2.save("grayscale_builtin.png").unwrap();
+}</code></pre>
+<h3 id="33-滤波卷积滤波"><a class="header" href="#33-滤波卷积滤波">3.3 滤波（卷积滤波）</a></h3>
+<p>滤波是图像处理的核心操作，通过卷积核（kernel）与图像卷积实现各种效果。</p>
+<p><strong>均值滤波（模糊）</strong>：</p>
+<p>$$K_{\text{mean}} = \frac{1}{9} \begin{pmatrix} 1 &amp; 1 &amp; 1 \ 1 &amp; 1 &amp; 1 \ 1 &amp; 1 &amp; 1 \end{pmatrix}$$</p>
+<p><strong>高斯滤波</strong>：</p>
+<p>$$K_{\text{gauss}} = \frac{1}{16} \begin{pmatrix} 1 &amp; 2 &amp; 1 \ 2 &amp; 4 &amp; 2 \ 1 &amp; 2 &amp; 1 \end{pmatrix}$$</p>
+<p><strong>Sobel 边缘检测</strong>（水平方向）：</p>
+<p>$$K_{\text{sobel_x}} = \begin{pmatrix} -1 &amp; 0 &amp; 1 \ -2 &amp; 0 &amp; 2 \ -1 &amp; 0 &amp; 1 \end{pmatrix}$$</p>
+<pre class="playground"><code class="language-rust edition2024">use image::{GrayImage, GenericImageView, Luma};
+
+/// 手动实现 3x3 卷积
+fn convolve3x3(img: &amp;GrayImage, kernel: &amp;[f32; 9]) -&gt; GrayImage {
+    let (width, height) = img.dimensions();
+    let mut output = GrayImage::new(width, height);
+
+    for y in 1..height - 1 {
+        for x in 1..width - 1 {
+            let mut sum = 0.0f32;
+            let mut ki = 0;
+            for ky in -1..=1 {
+                for kx in -1..=1 {
+                    let px = (x as i32 + kx) as u32;
+                    let py = (y as i32 + ky) as u32;
+                    let Luma([val]) = img.get_pixel(px, py);
+                    sum += val as f32 * kernel[ki];
+                    ki += 1;
+                }
+            }
+            output.put_pixel(x, y, Luma([sum.clamp(0.0, 255.0) as u8]));
+        }
+    }
+    output
+}
+
+fn main() {
+    let img = image::open("input.jpg").unwrap().to_luma8();
+
+    // 均值滤波（模糊）
+    let mean_kernel: [f32; 9] = [1.0/9.0; 9];
+    let blurred = convolve3x3(&amp;img, &amp;mean_kernel);
+    blurred.save("blurred.png").unwrap();
+
+    // 高斯滤波
+    let gauss_kernel: [f32; 9] =
+        [1.0/16.0, 2.0/16.0, 1.0/16.0,
+         2.0/16.0, 4.0/16.0, 2.0/16.0,
+         1.0/16.0, 2.0/16.0, 1.0/16.0];
+    let gaussian = convolve3x3(&amp;img, &amp;gauss_kernel);
+    gaussian.save("gaussian.png").unwrap();
+
+    // Sobel 边缘检测
+    let sobel_x: [f32; 9] = [-1.0, 0.0, 1.0, -2.0, 0.0, 2.0, -1.0, 0.0, 1.0];
+    let edges = convolve3x3(&amp;img, &amp;sobel_x);
+    edges.save("edges.png").unwrap();
+
+    println!("滤波结果已保存");
+}</code></pre>
+<hr>
+<h2 id="四卷积运算"><a class="header" href="#四卷积运算">四、卷积运算</a></h2>
+<h3 id="41-卷积的数学定义"><a class="header" href="#41-卷积的数学定义">4.1 卷积的数学定义</a></h3>
+<p>在信号处理中，两个函数 $f$ 和 $g$ 的卷积定义为：</p>
+<p>$$(f * g)(t) = \int_{-\infty}^{+\infty} f(\tau) \cdot g(t - \tau) , d\tau$$</p>
+<p>在离散情况下：</p>
+<p>$$(f * g)[n] = \sum_{m=-\infty}^{+\infty} f[m] \cdot g[n - m]$$</p>
+<h3 id="42-二维卷积图像卷积"><a class="header" href="#42-二维卷积图像卷积">4.2 二维卷积（图像卷积）</a></h3>
+<p>对于图像 $I$ 和卷积核 $K$，二维卷积运算为：</p>
+<p>$$(I * K)(i, j) = \sum_{m} \sum_{n} I(i + m, j + n) \cdot K(m, n)$$</p>
+<blockquote>
+<p><strong>注意：</strong> 在深度学习中，实际使用的是“互相关“（cross-correlation）而非严格意义上的卷积，区别在于核是否翻转。实践中两者效果等价，因为核的参数是学习得到的。</p>
+</blockquote>
+<h3 id="43-步长与填充"><a class="header" href="#43-步长与填充">4.3 步长与填充</a></h3>
+<ul>
+<li><strong>步长（Stride）</strong>：卷积核每次移动的像素数，记为 $s$</li>
+<li><strong>填充（Padding）</strong>：在图像边缘补零，记为 $p$</li>
+<li><strong>输出尺寸公式</strong>：</li>
+</ul>
+<p>$$O = \left\lfloor \frac{W - K + 2P}{S} \right\rfloor + 1$$</p>
+<p>其中 $W$ 为输入尺寸，$K$ 为核大小，$P$ 为填充大小，$S$ 为步长。</p>
+<pre class="playground"><code class="language-rust edition2024">/// 二维卷积实现（互相关）
+fn conv2d(
+    input: &amp;[Vec&lt;f32&gt;],
+    kernel: &amp;[Vec&lt;f32&gt;],
+    stride: usize,
+    padding: usize,
+) -&gt; Vec&lt;Vec&lt;f32&gt;&gt; {
+    let h_in = input.len();
+    let w_in = input[0].len();
+    let k_h = kernel.len();
+    let k_w = kernel[0].len();
+
+    // 填充输入
+    let h_pad = h_in + 2 * padding;
+    let w_pad = w_in + 2 * padding;
+    let mut padded = vec![vec![0.0f32; w_pad]; h_pad];
+    for i in 0..h_in {
+        for j in 0..w_in {
+            padded[i + padding][j + padding] = input[i][j];
+        }
+    }
+
+    // 计算输出尺寸
+    let h_out = (h_pad - k_h) / stride + 1;
+    let w_out = (w_pad - k_w) / stride + 1;
+    let mut output = vec![vec![0.0f32; w_out]; h_out];
+
+    for i in 0..h_out {
+        for j in 0..w_out {
+            let mut sum = 0.0f32;
+            for ki in 0..k_h {
+                for kj in 0..k_w {
+                    let pi = i * stride + ki;
+                    let pj = j * stride + kj;
+                    sum += padded[pi][pj] * kernel[ki][kj];
+                }
+            }
+            output[i][j] = sum;
+        }
+    }
+    output
+}
+
+fn main() {
+    // 5x5 输入
+    let input: Vec&lt;Vec&lt;f32&gt;&gt; = (0..5)
+        .map(|i| (0..5).map(|j| (i * 5 + j) as f32).collect())
+        .collect();
+
+    // 3x3 卷积核（边缘检测）
+    let kernel: Vec&lt;Vec&lt;f32&gt;&gt; = vec![
+        vec![-1.0, -1.0, -1.0],
+        vec![-1.0,  8.0, -1.0],
+        vec![-1.0, -1.0, -1.0],
+    ];
+
+    let output = conv2d(&amp;input, &amp;kernel, 1, 1);
+    println!("卷积输出 (3x3):");
+    for row in &amp;output {
+        println!("  {:?}", row.iter().map(|v| format!("{:6.1}", v)).collect::&lt;Vec&lt;_&gt;&gt;());
+    }
+}</code></pre>
+<hr>
+<h2 id="五卷积神经网络cnn"><a class="header" href="#五卷积神经网络cnn">五、卷积神经网络（CNN）</a></h2>
+<h3 id="51-为什么需要-cnn"><a class="header" href="#51-为什么需要-cnn">5.1 为什么需要 CNN</a></h3>
+<p>传统图像处理依赖手工设计的特征（如 SIFT、HOG），而 CNN 能够自动从数据中学习特征层次结构：</p>
+<p>$$\text{像素} \rightarrow \text{边缘} \rightarrow \text{纹理} \rightarrow \text{部件} \rightarrow \text{物体}$$</p>
+<p>CNN 的三大核心特性：</p>
+<ul>
+<li><strong>局部连接</strong>：每个神经元只与局部区域连接</li>
+<li><strong>权值共享</strong>：同一卷积核在整幅图像上滑动共享参数</li>
+<li><strong>平移不变性</strong>：物体出现在图像不同位置，仍能被识别</li>
+</ul>
+<h3 id="52-卷积层"><a class="header" href="#52-卷积层">5.2 卷积层</a></h3>
+<p>卷积层是 CNN 的核心，通过多个卷积核提取不同特征：</p>
+<p>$$Y^{(l)} = \sigma\left( W^{(l)} * X^{(l-1)} + b^{(l)} \right)$$</p>
+<p>其中 $\sigma$ 为激活函数（通常为 ReLU），$W^{(l)}$ 为第 $l$ 层的卷积核权重，$b^{(l)}$ 为偏置。</p>
+<p><strong>ReLU 激活函数</strong>：</p>
+<p>$$\text{ReLU}(x) = \max(0, x)$$</p>
+<p>ReLU 的优势：计算简单、缓解梯度消失问题。</p>
+<h3 id="53-池化层"><a class="header" href="#53-池化层">5.3 池化层</a></h3>
+<p>池化层用于降低特征图的空间维度，减少计算量和参数量。</p>
+<p><strong>最大池化（Max Pooling）</strong>：</p>
+<p>$$Y(i, j) = \max_{(m,n) \in \mathcal{R}_{ij}} X(m, n)$$</p>
+<p><strong>平均池化（Average Pooling）</strong>：</p>
+<p>$$Y(i, j) = \frac{1}{|\mathcal{R}<em>{ij}|} \sum</em>{(m,n) \in \mathcal{R}_{ij}} X(m, n)$$</p>
+<p>其中 $\mathcal{R}_{ij}$ 为池化窗口覆盖的区域。</p>
+<pre class="playground"><code class="language-rust edition2024">/// 最大池化 2x2, stride=2
+fn max_pool2x2(input: &amp;[Vec&lt;f32&gt;]) -&gt; Vec&lt;Vec&lt;f32&gt;&gt; {
+    let h = input.len() / 2;
+    let w = input[0].len() / 2;
+    let mut output = vec![vec![0.0f32; w]; h];
+
+    for i in 0..h {
+        for j in 0..w {
+            let r = i * 2;
+            let c = j * 2;
+            output[i][j] = input[r][c]
+                .max(input[r][c + 1])
+                .max(input[r + 1][c])
+                .max(input[r + 1][c + 1]);
+        }
+    }
+    output
+}
+
+/// 平均池化 2x2, stride=2
+fn avg_pool2x2(input: &amp;[Vec&lt;f32&gt;]) -&gt; Vec&lt;Vec&lt;f32&gt;&gt; {
+    let h = input.len() / 2;
+    let w = input[0].len() / 2;
+    let mut output = vec![vec![0.0f32; w]; h];
+
+    for i in 0..h {
+        for j in 0..w {
+            let r = i * 2;
+            let c = j * 2;
+            let sum = input[r][c] + input[r][c + 1]
+                    + input[r + 1][c] + input[r + 1][c + 1];
+            output[i][j] = sum / 4.0;
+        }
+    }
+    output
+}
+
+fn main() {
+    let input: Vec&lt;Vec&lt;f32&gt;&gt; = vec![
+        vec![1.0, 2.0, 3.0, 4.0],
+        vec![5.0, 6.0, 7.0, 8.0],
+        vec![9.0, 10.0, 11.0, 12.0],
+        vec![13.0, 14.0, 15.0, 16.0],
+    ];
+
+    let max_pooled = max_pool2x2(&amp;input);
+    println!("最大池化: {:?}", max_pooled);
+    // [[6.0, 8.0], [14.0, 16.0]]
+
+    let avg_pooled = avg_pool2x2(&amp;input);
+    println!("平均池化: {:?}", avg_pooled);
+    // [[3.5, 5.5], [11.5, 13.5]]
+}</code></pre>
+<h3 id="54-全连接层"><a class="header" href="#54-全连接层">5.4 全连接层</a></h3>
+<p>全连接层将卷积层提取的高层特征展平后映射到输出空间：</p>
+<p>$$\mathbf{y} = \sigma(W \cdot \mathbf{x} + \mathbf{b})$$</p>
+<p>其中 $\mathbf{x}$ 是展平后的特征向量，$W$ 是权重矩阵，$\mathbf{b}$ 是偏置向量。</p>
+<p>对于 $K$ 分类问题，输出层使用 Softmax：</p>
+<p>$$\text{Softmax}(z_i) = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}}$$</p>
+<h3 id="55-经典-cnn-模型"><a class="header" href="#55-经典-cnn-模型">5.5 经典 CNN 模型</a></h3>
+<h4 id="lenet-51998"><a class="header" href="#lenet-51998">LeNet-5（1998）</a></h4>
+<p>LeNet-5 是 Yann LeCun 提出的最早的成功 CNN 之一，用于手写数字识别。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>层</th><th>类型</th><th>输出尺寸</th><th>参数量</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>卷积层 (6@5x5)</td><td>28x28x6</td><td>156</td></tr>
+<tr><td>2</td><td>池化层 (2x2)</td><td>14x14x6</td><td>0</td></tr>
+<tr><td>3</td><td>卷积层 (16@5x5)</td><td>10x10x16</td><td>2,416</td></tr>
+<tr><td>4</td><td>池化层 (2x2)</td><td>5x5x16</td><td>0</td></tr>
+<tr><td>5</td><td>全连接层 (120)</td><td>120</td><td>48,120</td></tr>
+<tr><td>6</td><td>全连接层 (84)</td><td>84</td><td>10,164</td></tr>
+<tr><td>7</td><td>输出层 (10)</td><td>10</td><td>850</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="vgg-162014"><a class="header" href="#vgg-162014">VGG-16（2014）</a></h4>
+<p>VGG 的核心思想是使用小卷积核（3x3）和深层堆叠：</p>
+<p>$$\text{两个 } 3 \times 3 \text{ 卷积的感受野} = \text{一个 } 5 \times 5 \text{ 卷积的感受野}$$</p>
+<p>但参数更少：$2 \times (3 \times 3 \times C^2) = 18C^2 &lt; 25C^2 = 5 \times 5 \times C^2$</p>
+<p>VGG-16 共 16 个权重层，约 1.38 亿参数。</p>
+<h4 id="resnet2015"><a class="header" href="#resnet2015">ResNet（2015）</a></h4>
+<p>ResNet 引入了<strong>残差连接（Skip Connection）</strong>，解决了深层网络的退化问题：</p>
+<p>$$\mathcal{F}(x) = \mathcal{H}(x) - x \quad \Rightarrow \quad \mathcal{H}(x) = \mathcal{F}(x) + x$$</p>
+<p>网络学习的是残差 $\mathcal{F}(x) = \mathcal{H}(x) - x$，而非直接学习映射 $\mathcal{H}(x)$。</p>
+<pre class="playground"><code class="language-rust edition2024">/// 简化的残差块概念演示
+fn residual_block(input: &amp;[f32], weights: &amp;[f32], bias: &amp;[f32]) -&gt; Vec&lt;f32&gt; {
+    // F(x) = W * x + b （简化为逐元素运算）
+    let f_x: Vec&lt;f32&gt; = input
+        .iter()
+        .zip(weights.iter())
+        .zip(bias.iter())
+        .map(|((&amp;x, &amp;w), &amp;b)| (x * w + b).max(0.0)) // ReLU
+        .collect();
+
+    // H(x) = F(x) + x （残差连接）
+    let h_x: Vec&lt;f32&gt; = input.iter().zip(f_x.iter()).map(|(&amp;x, &amp;f)| x + f).collect();
+
+    h_x
+}
+
+fn main() {
+    let input = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+    let weights = vec![0.5, 0.8, 0.3, 0.6, 0.4];
+    let bias = vec![0.1, -0.1, 0.2, -0.2, 0.1];
+
+    let output = residual_block(&amp;input, &amp;weights, &amp;bias);
+    println!("残差块输出: {:?}", output);
+    // [1.6, 2.5, 2.9, 4.4, 5.3]
+}</code></pre>
+<hr>
+<h2 id="六目标检测"><a class="header" href="#六目标检测">六、目标检测</a></h2>
+<h3 id="61-目标检测概述"><a class="header" href="#61-目标检测概述">6.1 目标检测概述</a></h3>
+<p>目标检测不仅要识别图像中有什么物体，还要定位它们的位置。输出为边界框（Bounding Box）和类别标签。</p>
+<p>$$\text{目标检测输出} = {(x_{\min}, y_{\min}, x_{\max}, y_{\max}, \text{class}, \text{confidence})}$$</p>
+<h3 id="62-两阶段检测器r-cnn-系列"><a class="header" href="#62-两阶段检测器r-cnn-系列">6.2 两阶段检测器：R-CNN 系列</a></h3>
+<p>R-CNN（Region-based CNN）系列采用“先选区域，再分类“的策略：</p>
+<ol>
+<li><strong>R-CNN</strong>：Selective Search 生成候选区域 -&gt; CNN 提取特征 -&gt; SVM 分类</li>
+<li><strong>Fast R-CNN</strong>：引入 RoI Pooling，共享卷积特征</li>
+<li><strong>Faster R-CNN</strong>：用 RPN（Region Proposal Network）替代 Selective Search</li>
+</ol>
+<h3 id="63-单阶段检测器yolo"><a class="header" href="#63-单阶段检测器yolo">6.3 单阶段检测器：YOLO</a></h3>
+<p>YOLO（You Only Look Once）将检测视为回归问题，一次前向传播完成检测：</p>
+<p>$$\text{YOLO 输出} = S \times S \times (B \times 5 + C)$$</p>
+<p>其中 $S \times S$ 为网格数，$B$ 为每个网格的边界框数，$C$ 为类别数。</p>
+<p>YOLO 的优势：速度快，适合实时检测。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>模型</th><th>速度 (FPS)</th><th>mAP</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td>R-CNN</td><td>~0.07</td><td>58.4</td><td>精度高，速度慢</td></tr>
+<tr><td>Faster R-CNN</td><td>~7</td><td>73.2</td><td>精度与速度平衡</td></tr>
+<tr><td>YOLOv3</td><td>~45</td><td>57.9</td><td>实时检测</td></tr>
+<tr><td>YOLOv8</td><td>~100+</td><td>53.9</td><td>最新架构，多任务</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="七图像分割"><a class="header" href="#七图像分割">七、图像分割</a></h2>
+<h3 id="71-语义分割"><a class="header" href="#71-语义分割">7.1 语义分割</a></h3>
+<p>语义分割为图像中的每个像素分配一个类别标签，不区分同类的不同实例。</p>
+<p>$$f: H \times W \rightarrow {1, 2, \ldots, K}$$</p>
+<p>经典模型：FCN（全卷积网络）、U-Net。</p>
+<p><strong>U-Net</strong> 采用编码器-解码器结构，通过跳跃连接（skip connection）保留空间细节：</p>
+<pre><code>编码器（下采样）          解码器（上采样）
+64  -&gt; 128  -&gt; 256  -&gt; 512  -&gt; 1024
+ |      |      |      |        |
+ +------+------+------+--------+ (跳跃连接)
+</code></pre>
+<h3 id="72-实例分割"><a class="header" href="#72-实例分割">7.2 实例分割</a></h3>
+<p>实例分割不仅为每个像素分类，还要区分同类的不同实例。</p>
+<p>$$f: H \times W \rightarrow {(c_i, m_i)}_{i=1}^{N}$$</p>
+<p>其中 $c_i$ 为类别，$m_i$ 为实例掩码。</p>
+<p>经典模型：Mask R-CNN。</p>
+<h3 id="73-分割与检测对比"><a class="header" href="#73-分割与检测对比">7.3 分割与检测对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>任务</th><th>输出粒度</th><th>是否区分实例</th><th>典型模型</th></tr>
+</thead>
+<tbody>
+<tr><td>图像分类</td><td>整幅图像</td><td>否</td><td>ResNet</td></tr>
+<tr><td>目标检测</td><td>边界框</td><td>是</td><td>YOLO</td></tr>
+<tr><td>语义分割</td><td>像素级</td><td>否</td><td>U-Net</td></tr>
+<tr><td>实例分割</td><td>像素级掩码</td><td>是</td><td>Mask R-CNN</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="八rust-cv-生态"><a class="header" href="#八rust-cv-生态">八、Rust CV 生态</a></h2>
+<h3 id="81-image-crate"><a class="header" href="#81-image-crate">8.1 image crate</a></h3>
+<p><a href="https://github.com/image-rs/image"><code>image</code></a> 是 Rust 生态中最核心的图像处理库，支持多种格式的编解码和基本图像操作。</p>
+<pre><code class="language-toml"># Cargo.toml
+[dependencies]
+image = "0.25"
+</code></pre>
+<pre class="playground"><code class="language-rust edition2024">use image::{DynamicImage, GenericImageView, ImageFormat, imageops};
+
+fn main() {
+    // 1. 读取图像（支持 JPEG, PNG, WebP, GIF, BMP, TIFF 等）
+    let img = image::open("photo.jpg").expect("打开图像失败");
+    println!("尺寸: {}x{}", img.width(), img.height());
+
+    // 2. 裁剪
+    let cropped = img.crop_imm(100, 100, 300, 300);
+    cropped.save("cropped.png").unwrap();
+
+    // 3. 旋转
+    let rotated = img.rotate90();
+    rotated.save("rotated.png").unwrap();
+
+    // 4. 翻转
+    let flipped = imageops::flip_horizontal(&amp;img);
+    flipped.save("flipped_h.png").unwrap();
+
+    // 5. 调整亮度/对比度
+    let adjusted = img.adjust_contrast(1.5);
+    adjusted.save("contrast.png").unwrap();
+
+    // 6. 格式转换
+    let rgb = img.to_rgb8();
+    let gray = img.to_luma8();
+
+    // 7. 保存为不同格式
+    img.save("output.webp").unwrap(); // 自动推断格式
+    let mut out = std::fs::File::create("output.bmp").unwrap();
+    img.write_to(&amp;mut out, ImageFormat::Bmp).unwrap();
+
+    println!("图像处理完成");
+}</code></pre>
+<h3 id="82-candle-深度学习推理"><a class="header" href="#82-candle-深度学习推理">8.2 candle 深度学习推理</a></h3>
+<p><a href="https://github.com/huggingface/candle"><code>candle</code></a> 是 HuggingFace 开发的 Rust 深度学习框架，支持模型推理和训练。</p>
+<pre><code class="language-toml"># Cargo.toml
+[dependencies]
+candle-core = "0.8"
+candle-nn = "0.8"
+</code></pre>
+<pre class="playground"><code class="language-rust edition2024">use candle_core::{Tensor, Device};
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let device = Device::Cpu;
+
+    // 创建一个 4 维张量，模拟一批图像 (batch, channels, height, width)
+    // 形状: [2, 3, 224, 224]，模拟 2 张 RGB 图像
+    let images = Tensor::randn(0f32, 1.0, (2, 3, 224, 224), &amp;device)?;
+
+    println!("输入张量形状: {:?}", images.shape());
+
+    // 模拟卷积层权重: 16 个 3x3 卷积核，输入 3 通道
+    let weight = Tensor::randn(0f32, 0.02, (16, 3, 3, 3), &amp;device)?;
+    let bias = Tensor::zeros(16, &amp;device)?;
+
+    // 执行卷积运算 (padding=1)
+    let conv = images.conv2d(&amp;weight, &amp;bias, 1, 1)?;
+    println!("卷积后形状: {:?}", conv.shape()); // [2, 16, 224, 224]
+
+    // ReLU 激活
+    let activated = conv.relu()?;
+    println!("ReLU 后形状: {:?}", activated.shape());
+
+    // 最大池化 2x2
+    let pooled = activated.max_pool2d(2)?;
+    println!("池化后形状: {:?}", pooled.shape()); // [2, 16, 112, 112]
+
+    Ok(())
+}</code></pre>
+<h3 id="83-其他-cv-相关-crate"><a class="header" href="#83-其他-cv-相关-crate">8.3 其他 CV 相关 crate</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>crate</th><th>功能</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><code>image</code></td><td>图像编解码与处理</td><td>Rust CV 基础库</td></tr>
+<tr><td><code>candle</code></td><td>深度学习框架</td><td>HuggingFace 出品，支持推理与训练</td></tr>
+<tr><td><code>burn</code></td><td>深度学习框架</td><td>纯 Rust，支持多后端</td></tr>
+<tr><td><code>nalgebra</code></td><td>线性代数</td><td>矩阵运算、变换</td></tr>
+<tr><td><code>imageproc</code></td><td>图像处理算法</td><td>形态学、阈值分割等</td></tr>
+<tr><td><code>opencv-rust</code></td><td>OpenCV 绑定</td><td>完整的 OpenCV 功能</td></tr>
+<tr><td><code>tract</code></td><td>ONNX/TFLite 推理</td><td>轻量级推理引擎</td></tr>
+<tr><td><code>tch</code></td><td>PyTorch 绑定</td><td>C++ torch 的 Rust 封装</td></tr>
+<tr><td><code>qr2term</code></td><td>QR 码终端显示</td><td>将 QR 码渲染到终端</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="84-用-candle-加载预训练模型进行图像分类"><a class="header" href="#84-用-candle-加载预训练模型进行图像分类">8.4 用 candle 加载预训练模型进行图像分类</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use candle_core::{Device, Tensor};
+use candle_nn::{VarMap, Module, Conv2d, Conv2dConfig, Linear};
+use candle_nn::init;
+
+/// 构建简易 CNN 模型（用于演示，非预训练）
+fn build_simple_cnn(vs: &amp;candle_nn::VarBuilder) -&gt; Result&lt;Box&lt;dyn Module&gt;, Box&lt;dyn std::error::Error&gt;&gt; {
+    // Conv1: 3 -&gt; 32, 3x3
+    let conv1 = candle_nn::conv2d(3, 32, 3, Conv2dConfig::default(), vs.pp("conv1"))?;
+    // Conv2: 32 -&gt; 64, 3x3
+    let conv2 = candle_nn::conv2d(32, 64, 3, Conv2dConfig::default(), vs.pp("conv2"))?;
+    // FC: 64*6*6 -&gt; 128
+    let fc1 = candle_nn::linear(64 * 6 * 6, 128, vs.pp("fc1"))?;
+    // FC: 128 -&gt; 10 (CIFAR-10 的 10 个类别)
+    let fc2 = candle_nn::linear(128, 10, vs.pp("fc2"))?;
+
+    Ok(Box::new(move |xs: &amp;Tensor| -&gt; Result&lt;Tensor, candle_core::Error&gt; {
+        let xs = xs.apply(&amp;conv1)?.relu()?.max_pool2d(2)?;
+        let xs = xs.apply(&amp;conv2)?.relu()?.max_pool2d(2)?;
+        let xs = xs.flatten_from(1)?;
+        let xs = xs.apply(&amp;fc1)?.relu()?;
+        xs.apply(&amp;fc2)
+    }))
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let device = Device::Cpu;
+    let mut varmap = VarMap::new();
+    let vs = candle_nn::VarBuilder::from_varmap(&amp;varmap, candle_core::DType::F32, &amp;device);
+
+    let model = build_simple_cnn(&amp;vs)?;
+
+    // 模拟输入: batch=1, channels=3, height=32, width=32 (CIFAR-10 尺寸)
+    let input = Tensor::randn(0f32, 1.0, (1, 3, 32, 32), &amp;device)?;
+    let output = model.forward(&amp;input)?;
+
+    println!("模型输出形状: {:?}", output.shape()); // [1, 10]
+    println!("原始输出: {}", output.to_vec2::&lt;f32&gt;()?);
+
+    // Softmax 获取概率分布
+    let probs = candle_nn::ops::softmax(&amp;output, 1)?;
+    println!("概率分布: {:?}", probs.to_vec2::&lt;f32&gt;()?);
+
+    // 获取预测类别
+    let pred = probs.argmax(1)?;
+    println!("预测类别: {:?}", pred.to_vec1::&lt;u32&gt;()?);
+
+    Ok(())
+}</code></pre>
+<hr>
+<h2 id="九实战图像分类cifar-10"><a class="header" href="#九实战图像分类cifar-10">九、实战：图像分类（CIFAR-10）</a></h2>
+<p>CIFAR-10 是经典的图像分类数据集，包含 10 个类别、60000 张 32x32 彩色图像。</p>
+<h3 id="91-数据集概览"><a class="header" href="#91-数据集概览">9.1 数据集概览</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类别</th><th>示例内容</th></tr>
+</thead>
+<tbody>
+<tr><td>airplane</td><td>飞机</td></tr>
+<tr><td>automobile</td><td>汽车</td></tr>
+<tr><td>bird</td><td>鸟</td></tr>
+<tr><td>cat</td><td>猫</td></tr>
+<tr><td>deer</td><td>鹿</td></tr>
+<tr><td>dog</td><td>狗</td></tr>
+<tr><td>frog</td><td>蛙</td></tr>
+<tr><td>horse</td><td>马</td></tr>
+<tr><td>ship</td><td>船</td></tr>
+<tr><td>truck</td><td>卡车</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="92-完整训练流程"><a class="header" href="#92-完整训练流程">9.2 完整训练流程</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use candle_core::{Device, Tensor, DType};
+use candle_nn::{VarMap, Module, Conv2d, Conv2dConfig, Linear, AdamW, Optimizer, loss};
+use candle_datasets::cifar10;
+
+/// 简易 CNN 用于 CIFAR-10 分类
+struct CifarNet {
+    conv1: Conv2d,
+    conv2: Conv2d,
+    conv3: Conv2d,
+    fc1: Linear,
+    fc2: Linear,
+}
+
+impl CifarNet {
+    fn new(vs: candle_nn::VarBuilder) -&gt; Result&lt;Self, candle_core::Error&gt; {
+        let conv1 = candle_nn::conv2d(3, 32, 3, Conv2dConfig::with_padding(1), vs.pp("c1"))?;
+        let conv2 = candle_nn::conv2d(32, 64, 3, Conv2dConfig::with_padding(1), vs.pp("c2"))?;
+        let conv3 = candle_nn::conv2d(64, 64, 3, Conv2dConfig::with_padding(1), vs.pp("c3"))?;
+        let fc1 = candle_nn::linear(64 * 4 * 4, 64, vs.pp("fc1"))?;
+        let fc2 = candle_nn::linear(64, 10, vs.pp("fc2"))?;
+        Ok(Self { conv1, conv2, conv3, fc1, fc2 })
+    }
+
+    fn forward(&amp;self, xs: &amp;Tensor) -&gt; Result&lt;Tensor, candle_core::Error&gt; {
+        let xs = xs.apply(&amp;self.conv1)?.relu()?.max_pool2d(2)?;  // [B, 32, 16, 16]
+        let xs = xs.apply(&amp;self.conv2)?.relu()?.max_pool2d(2)?;  // [B, 64, 8, 8]
+        let xs = xs.apply(&amp;self.conv3)?.relu()?.max_pool2d(2)?;  // [B, 64, 4, 4]
+        let xs = xs.flatten_from(1)?;                            // [B, 1024]
+        let xs = xs.apply(&amp;self.fc1)?.relu()?;
+        xs.apply(&amp;self.fc2)
+    }
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let device = Device::Cpu;
+
+    // 加载 CIFAR-10 数据集
+    let (train_images, train_labels) = cifar10::load_train()?;
+    let (test_images, test_labels) = cifar10::load_test()?;
+
+    println!("训练集: {} 张图像", train_images.len());
+    println!("测试集: {} 张图像", test_images.len());
+
+    // 构建模型
+    let mut varmap = VarMap::new();
+    let vs = candle_nn::VarBuilder::from_varmap(&amp;varmap, DType::F32, &amp;device);
+    let model = CifarNet::new(vs)?;
+
+    // 优化器
+    let mut optimizer = candle_nn::AdamW::new(&amp;varmap, 0.001f64)?;
+
+    // 训练循环
+    let epochs = 10;
+    let batch_size = 64;
+
+    for epoch in 1..=epochs {
+        let mut total_loss = 0.0f32;
+        let mut correct = 0usize;
+        let mut total = 0usize;
+
+        // 遍历 mini-batch
+        for i in (0..train_images.len()).step_by(batch_size) {
+            let end = (i + batch_size).min(train_images.len());
+            let batch_images: Vec&lt;Tensor&gt; = train_images[i..end]
+                .iter()
+                .map(|img| Tensor::from_data(img.clone(), &amp;device).unwrap())
+                .collect();
+            let batch_labels = Tensor::from_vec(
+                train_labels[i..end].to_vec(),
+                (end - i,) as usize,
+                &amp;device,
+            )?;
+
+            let images = Tensor::stack(&amp;batch_images, 0)?;
+            let logits = model.forward(&amp;images)?;
+            let loss = loss::cross_entropy(&amp;logits, &amp;batch_labels)?;
+
+            optimizer.backward_step(&amp;loss)?;
+            total_loss += loss.to_scalar::&lt;f32&gt;()?;
+
+            // 计算准确率
+            let preds = logits.argmax(1)?;
+            let labels = batch_labels;
+            correct += preds.eq(&amp;labels)?.to_scalar::&lt;u32&gt;()? as usize;
+            total += end - i;
+        }
+
+        println!(
+            "Epoch {}/{} - Loss: {:.4} - Acc: {:.2}%",
+            epoch, epochs,
+            total_loss / (train_images.len() / batch_size) as f32,
+            100.0 * correct as f32 / total as f32
+        );
+    }
+
+    Ok(())
+}</code></pre>
+<hr>
+<h2 id="十总结"><a class="header" href="#十总结">十、总结</a></h2>
+<h3 id="核心知识回顾"><a class="header" href="#核心知识回顾">核心知识回顾</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>主题</th><th>核心要点</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>图像基础</strong></td><td>像素、RGB 通道、$H \times W \times C$ 张量表示</td></tr>
+<tr><td><strong>图像预处理</strong></td><td>缩放（插值）、灰度化（加权平均）、滤波（卷积核）</td></tr>
+<tr><td><strong>卷积运算</strong></td><td>二维卷积、步长、填充、输出尺寸公式</td></tr>
+<tr><td><strong>CNN 核心</strong></td><td>卷积层（特征提取）、池化层（降维）、全连接层（分类）</td></tr>
+<tr><td><strong>经典模型</strong></td><td>LeNet-5（奠基）、VGG（深层堆叠）、ResNet（残差连接）</td></tr>
+<tr><td><strong>目标检测</strong></td><td>R-CNN（两阶段）、YOLO（单阶段实时检测）</td></tr>
+<tr><td><strong>图像分割</strong></td><td>语义分割（FCN/U-Net）、实例分割（Mask R-CNN）</td></tr>
+<tr><td><strong>Rust 生态</strong></td><td>image（图像处理）、candle（深度学习）、tract（推理）</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="cv-任务层次总览"><a class="header" href="#cv-任务层次总览">CV 任务层次总览</a></h3>
+<pre><code>图像分类 ──── "这是什么？"
+    │
+目标检测 ──── "在哪里？是什么？"（边界框 + 类别）
+    │
+语义分割 ──── "每个像素属于什么类别？"
+    │
+实例分割 ──── "每个像素属于哪个实例？"
+</code></pre>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
+<ol>
+<li><strong>基础练习</strong>：使用 <code>image</code> crate 读取一张彩色图片，分别提取 R、G、B 三个通道并保存为灰度图。</li>
+<li><strong>卷积实现</strong>：手动实现 5x5 高斯卷积核，对灰度图像进行平滑处理，并与 <code>imageproc</code> 库的结果对比。</li>
+<li><strong>CNN 构建</strong>：使用 <code>candle</code> 构建一个包含 3 个卷积层 + 2 个全连接层的 CNN，在 CIFAR-10 上训练并记录准确率。</li>
+<li><strong>模型对比</strong>：分别实现 LeNet 和 VGG 风格的网络，比较在相同数据集上的参数量和训练效果。</li>
+<li><strong>进阶挑战</strong>：使用 <code>tract</code> crate 加载一个 ONNX 格式的预训练 ResNet 模型，对本地图片进行推理分类。</li>
+<li><strong>边缘检测</strong>：实现 Sobel 算子（水平和垂直方向），计算梯度幅值，观察不同图像的边缘检测效果。</li>
+<li><strong>图像分割</strong>：基于阈值分割实现一个简单的二值化分割器，将前景与背景分离。</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_37_nlp.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_39_rl.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_37_nlp.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_39_rl.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

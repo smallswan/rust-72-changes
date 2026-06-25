@@ -1,0 +1,734 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第二 字符与编码 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第二-字符与编码"><a class="header" href="#第二-字符与编码">第二 字符与编码</a></h1>
+<p>二进制能够表示数字，那能不能表示数字之外的各种文字，如英文、中文、俄语、法语等世界各个国家的文字？答案是肯定的，不仅可以表示各种文字，还能表示各种符号、图形（包括表情包）等。其中就使用到一种古老而又充满活力的技术——<a href="https://baike.baidu.com/item/%E7%BC%96%E7%A0%81/80092?fr=aladdin">编码（coding）技术</a>。</p>
+<p>计算机中的编码技术，简单而言就是建立数字与字符之间一一对应的关系。比如用数字0到9分别表示其本身，10表示A，11表示B，12表示C，以此类推，就能解决所有字符的编码问题。很显然实际上存在无数种编码的方式。正所谓“无规矩不成方圆“，没有统一的编码规则是不行的。本章将系统介绍计算机中主流的字符编码方案，从经典的ASCII到现代的Unicode，以及Rust中的字符串处理。</p>
+<hr>
+<h2 id="21-ascii编码"><a class="header" href="#21-ascii编码">2.1 ASCII编码</a></h2>
+<p>美国作为计算机的发明地，最先提出了一套编码方案——<a href="https://baike.baidu.com/item/ASCII">ASCII（American Standard Code for Information Interchange，美国信息交换标准代码）</a>，即<strong>ASCII码</strong>。</p>
+<h3 id="211-ascii编码原理"><a class="header" href="#211-ascii编码原理">2.1.1 ASCII编码原理</a></h3>
+<p>ASCII码使用7位二进制数（共128个码位）来表示字符，其编码空间为：</p>
+<p>$$
+0 \leq \text{ASCII码} \leq 127 \quad (0\text{x}00 \sim 0\text{x}7F)
+$$</p>
+<p><img src="https://pic2.zhimg.com/v2-a8c58c9e1c63e23613d69316334505a9_r.jpg" alt="ASCII表"></p>
+<p>ASCII码是计算机历史上最著名的编码方案之一，它最初是美国国家标准，供不同计算机在相互通信时用作共同遵守的西文字符编码标准，后来它被国际标准化组织（International Organization for Standardization, ISO）定为国际标准，称为ISO 646标准。</p>
+<h3 id="212-ascii控制字符"><a class="header" href="#212-ascii控制字符">2.1.2 ASCII控制字符</a></h3>
+<p>ASCII码中，0~31和127为控制字符，用于控制设备的操作：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">十进制</th><th style="text-align: center">十六进制</th><th style="text-align: center">缩写</th><th style="text-align: left">含义</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">0</td><td style="text-align: center">0x00</td><td style="text-align: center">NUL</td><td style="text-align: left">空字符</td></tr>
+<tr><td style="text-align: center">7</td><td style="text-align: center">0x07</td><td style="text-align: center">BEL</td><td style="text-align: left">响铃</td></tr>
+<tr><td style="text-align: center">8</td><td style="text-align: center">0x08</td><td style="text-align: center">BS</td><td style="text-align: left">退格</td></tr>
+<tr><td style="text-align: center">9</td><td style="text-align: center">0x09</td><td style="text-align: center">HT</td><td style="text-align: left">水平制表符</td></tr>
+<tr><td style="text-align: center">10</td><td style="text-align: center">0x0A</td><td style="text-align: center">LF</td><td style="text-align: left">换行</td></tr>
+<tr><td style="text-align: center">13</td><td style="text-align: center">0x0D</td><td style="text-align: center">CR</td><td style="text-align: left">回车</td></tr>
+<tr><td style="text-align: center">27</td><td style="text-align: center">0x1B</td><td style="text-align: center">ESC</td><td style="text-align: left">转义</td></tr>
+<tr><td style="text-align: center">127</td><td style="text-align: center">0x7F</td><td style="text-align: center">DEL</td><td style="text-align: left">删除</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="213-ascii可打印字符"><a class="header" href="#213-ascii可打印字符">2.1.3 ASCII可打印字符</a></h3>
+<p>32~126为可打印字符，包括数字、英文字母、标点符号等：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">范围</th><th style="text-align: left">内容</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">48~57 (0x30~0x39)</td><td style="text-align: left">数字 0~9</td></tr>
+<tr><td style="text-align: center">65~90 (0x41~0x5A)</td><td style="text-align: left">大写英文字母 A~Z</td></tr>
+<tr><td style="text-align: center">97~122 (0x61~0x7A)</td><td style="text-align: left">小写英文字母 a~z</td></tr>
+<tr><td style="text-align: center">32~47, 58~64, 91~96, 123~126</td><td style="text-align: left">空格、标点及特殊符号</td></tr>
+</tbody>
+</table>
+</div>
+<p>ASCII码的局限性也是显而易见的，它仅能表示128个字符，对于数以万计的中国汉字就显得十分无力了。</p>
+<hr>
+<h2 id="22-ansi编码各国方言"><a class="header" href="#22-ansi编码各国方言">2.2 ANSI编码——各国方言</a></h2>
+<p><a href="https://baike.baidu.com/item/ANSI/10401940">ANSI</a>编码并非一个具体的编码标准，而是对不同国家和地区各自制定的多字节字符编码标准的统称。不同的国家和地区制定了不同的标准，由此产生了 GB2312、GBK、GB18030、Big5、Shift_JIS 等各自的编码标准。这些使用多个字节来代表一个字符的各种汉字延伸编码方式，统称为 <strong>ANSI 编码</strong>。</p>
+<h3 id="221-各国主要编码标准"><a class="header" href="#221-各国主要编码标准">2.2.1 各国主要编码标准</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">编码标准</th><th style="text-align: center">国家/地区</th><th style="text-align: center">字节数</th><th style="text-align: center">收录字符数</th><th style="text-align: left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">GB2312</td><td style="text-align: center">中国大陆</td><td style="text-align: center">1~2字节</td><td style="text-align: center">~7,000</td><td style="text-align: left">最早的中文编码标准</td></tr>
+<tr><td style="text-align: center">GBK</td><td style="text-align: center">中国大陆</td><td style="text-align: center">1~2字节</td><td style="text-align: center">~21,000</td><td style="text-align: left">GB2312的扩展</td></tr>
+<tr><td style="text-align: center">GB18030</td><td style="text-align: center">中国大陆</td><td style="text-align: center">1~4字节</td><td style="text-align: center">~160万</td><td style="text-align: left">国家标准，兼容Unicode</td></tr>
+<tr><td style="text-align: center">Big5</td><td style="text-align: center">中国台湾</td><td style="text-align: center">1~2字节</td><td style="text-align: center">~13,000</td><td style="text-align: left">繁体中文编码</td></tr>
+<tr><td style="text-align: center">Shift_JIS</td><td style="text-align: center">日本</td><td style="text-align: center">1~2字节</td><td style="text-align: center">~12,000</td><td style="text-align: left">日文编码</td></tr>
+<tr><td style="text-align: center">EUC-KR</td><td style="text-align: center">韩国</td><td style="text-align: center">1~2字节</td><td style="text-align: center">~11,000</td><td style="text-align: left">韩文编码</td></tr>
+<tr><td style="text-align: center">ISO-8859-1</td><td style="text-align: center">西欧</td><td style="text-align: center">1字节</td><td style="text-align: center">256</td><td style="text-align: left">Latin-1，西欧语言</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="222-ansi编码的局限"><a class="header" href="#222-ansi编码的局限">2.2.2 ANSI编码的局限</a></h3>
+<p>ANSI编码的核心问题是：<strong>相同的字节序列在不同编码下可能表示不同的字符</strong>。例如，在简体中文Windows系统中，字节<code>0xD6 0xD0</code>表示“中“字（GB2312编码）；而在日语系统中，相同的字节序列可能表示完全不同的字符。这种“方言“式的编码体系是产生乱码的根本原因。</p>
+<hr>
+<h2 id="23-unicode编码计算机世界中的书同文"><a class="header" href="#23-unicode编码计算机世界中的书同文">2.3 Unicode编码——计算机世界中的“书同文“</a></h2>
+<p>秦始皇统一六国后，为了便于管理庞大的帝国，保证政令通畅，于是推行统一的文字和度量衡——“书同文，车同轨“不仅是秦始皇一项重要的历史贡献，也深刻影响和促成中国之后两千多年大一统的政治格局的形成。如今世界那么大，各国的文字、符号的数量是相当惊人的，并且随着社会的发展，新的字符不断涌现。字符的编码也需要与时俱进。<a href="https://baike.baidu.com/item/%E7%BB%9F%E4%B8%80%E7%A0%81/2985798">Unicode（统一码，也叫万国码、单一码）</a>应运而生，彻底解决全世界所有国家的文字、符号的编码问题。</p>
+<h3 id="231-unicode编码空间"><a class="header" href="#231-unicode编码空间">2.3.1 Unicode编码空间</a></h3>
+<p>Unicode编码系统可分为编码方式和实现方式两个层次。Unicode是国际组织制定的可以容纳世界上所有文字和符号的字符编码方案。Unicode用数字0~0x10FFFF来映射这些字符，最多可以容纳1114112个字符，或者说有1114112个码位。码位（Code Point）就是可以分配给字符的数字，通常表示为 <code>U+XXXX</code> 的形式。</p>
+<p>Unicode编码空间划分为若干平面（Plane）：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">平面</th><th style="text-align: center">范围</th><th style="text-align: center">名称</th><th style="text-align: left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">第0平面</td><td style="text-align: center">U+0000 ~ U+FFFF</td><td style="text-align: center">BMP（基本多文种平面）</td><td style="text-align: left">最常用的字符，包括基本拉丁字母、CJK统一表意文字等</td></tr>
+<tr><td style="text-align: center">第1平面</td><td style="text-align: center">U+10000 ~ U+1FFFF</td><td style="text-align: center">SMP（多文种补充平面）</td><td style="text-align: left">古文字、音乐符号等</td></tr>
+<tr><td style="text-align: center">第2平面</td><td style="text-align: center">U+20000 ~ U+2FFFF</td><td style="text-align: center">SIP（表意文字补充平面）</td><td style="text-align: left">罕用汉字</td></tr>
+<tr><td style="text-align: center">第3~13平面</td><td style="text-align: center">U+30000 ~ U+DFFFF</td><td style="text-align: center">保留</td><td style="text-align: left">未分配</td></tr>
+<tr><td style="text-align: center">第14平面</td><td style="text-align: center">U+E0000 ~ U+EFFFF</td><td style="text-align: center">SSP（特殊用途补充平面）</td><td style="text-align: left">格式控制字符</td></tr>
+<tr><td style="text-align: center">第15~16平面</td><td style="text-align: center">U+F0000 ~ U+10FFFF</td><td style="text-align: center">PUA（私人使用区）</td><td style="text-align: left">用户自定义字符</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="232-utf-8编码原理"><a class="header" href="#232-utf-8编码原理">2.3.2 UTF-8编码原理</a></h3>
+<p>UTF-8（Unicode Transformation Format - 8-bit）是一种变长编码方案，使用1~4个字节表示一个Unicode字符：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">Unicode码位范围</th><th style="text-align: left">UTF-8字节序列</th><th style="text-align: center">字节数</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">U+0000 ~ U+007F</td><td style="text-align: left"><code>0xxxxxxx</code></td><td style="text-align: center">1</td></tr>
+<tr><td style="text-align: center">U+0080 ~ U+07FF</td><td style="text-align: left"><code>110xxxxx 10xxxxxx</code></td><td style="text-align: center">2</td></tr>
+<tr><td style="text-align: center">U+0800 ~ U+FFFF</td><td style="text-align: left"><code>1110xxxx 10xxxxxx 10xxxxxx</code></td><td style="text-align: center">3</td></tr>
+<tr><td style="text-align: center">U+10000 ~ U+10FFFF</td><td style="text-align: left"><code>11110xxx 10xxxxxx 10xxxxxx 10xxxxxx</code></td><td style="text-align: center">4</td></tr>
+</tbody>
+</table>
+</div>
+<p>UTF-8的编码规则可以用以下方式理解：</p>
+<p>$$
+\text{UTF-8字节数} = \begin{cases}
+1 &amp; \text{if } 0 \leq U \leq 0\text{x}7F \
+2 &amp; \text{if } 0\text{x}80 \leq U \leq 0\text{x}7FF \
+3 &amp; \text{if } 0\text{x}800 \leq U \leq 0\text{x}FFFF \
+4 &amp; \text{if } 0\text{x}10000 \leq U \leq 0\text{x}10FFFF
+\end{cases}
+$$</p>
+<p><strong>编码示例</strong>：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">字符</th><th style="text-align: center">Unicode码位</th><th style="text-align: left">UTF-8字节序列（十六进制）</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">‘A’</td><td style="text-align: center">U+0041</td><td style="text-align: left"><code>41</code></td></tr>
+<tr><td style="text-align: center">‘中’</td><td style="text-align: center">U+4E2D</td><td style="text-align: left"><code>E4 B8 AD</code></td></tr>
+<tr><td style="text-align: center">‘𠮷’（吉的异体字）</td><td style="text-align: center">U+20BB7</td><td style="text-align: left"><code>F0 A0 AE B7</code></td></tr>
+<tr><td style="text-align: center">‘💖’</td><td style="text-align: center">U+1F496</td><td style="text-align: left"><code>F0 9F 92 96</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>UTF-8的优势在于：</p>
+<ul>
+<li><strong>向后兼容ASCII</strong>：纯ASCII文本在UTF-8下完全不变</li>
+<li><strong>无字节序问题</strong>：不需要BOM（虽然可以添加）</li>
+<li><strong>自同步</strong>：可以从任意字节位置开始解析</li>
+</ul>
+<h3 id="233-utf-16编码原理"><a class="header" href="#233-utf-16编码原理">2.3.3 UTF-16编码原理</a></h3>
+<p>UTF-16使用2或4个字节表示一个Unicode字符：</p>
+<ul>
+<li><strong>BMP内字符（U+0000 ~ U+FFFF）</strong>：直接使用2字节表示</li>
+<li><strong>辅助平面字符（U+10000 ~ U+10FFFF）</strong>：使用4字节（代理对）表示</li>
+</ul>
+<p>代理对编码方式：</p>
+<p>$$
+\text{辅助平面字符编码} = \begin{cases}
+\text{高位代理} = \frac{U - 0\text{x}10000}{0\text{x}400} + 0\text{x}D800 \
+\text{低位代理} = (U - 0\text{x}10000) \bmod 0\text{x}400 + 0\text{x}DC00
+\end{cases}
+$$</p>
+<p>其中，高位代理范围：0xD800~0xDBFF，低位代理范围：0xDC00~0xDFFF。</p>
+<h3 id="234-utf-32编码原理"><a class="header" href="#234-utf-32编码原理">2.3.4 UTF-32编码原理</a></h3>
+<p>UTF-32使用固定4个字节表示所有Unicode字符，是最简单的编码方式：</p>
+<p>$$
+\text{UTF-32编码} = \text{Unicode码位值}
+$$</p>
+<p>虽然UTF-32在字符定位上效率最高（O(1)随机访问），但由于每个字符固定占用4字节，对于以ASCII为主的文本，空间效率较低。</p>
+<h3 id="235-三种utf编码对比"><a class="header" href="#235-三种utf编码对比">2.3.5 三种UTF编码对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">特性</th><th style="text-align: center">UTF-8</th><th style="text-align: center">UTF-16</th><th style="text-align: center">UTF-32</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">编码长度</td><td style="text-align: center">变长（1~4字节）</td><td style="text-align: center">变长（2或4字节）</td><td style="text-align: center">定长（4字节）</td></tr>
+<tr><td style="text-align: center">空间效率（ASCII文本）</td><td style="text-align: center">最优</td><td style="text-align: center">较差（2倍）</td><td style="text-align: center">最差（4倍）</td></tr>
+<tr><td style="text-align: center">空间效率（CJK文本）</td><td style="text-align: center">一般（3字节/字）</td><td style="text-align: center">较好（2字节/字）</td><td style="text-align: center">较差</td></tr>
+<tr><td style="text-align: center">随机访问</td><td style="text-align: center">O(n)</td><td style="text-align: center">O(n)</td><td style="text-align: center">O(1)</td></tr>
+<tr><td style="text-align: center">字节序</td><td style="text-align: center">无关</td><td style="text-align: center">需要BOM</td><td style="text-align: center">需要BOM</td></tr>
+<tr><td style="text-align: center">自同步</td><td style="text-align: center">是</td><td style="text-align: center">否</td><td style="text-align: center">是</td></tr>
+<tr><td style="text-align: center">主要使用场景</td><td style="text-align: center">网络传输、Linux/macOS</td><td style="text-align: center">Windows、Java、JavaScript</td><td style="text-align: center">内部处理</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="236-bom字节顺序标记"><a class="header" href="#236-bom字节顺序标记">2.3.6 BOM（字节顺序标记）</a></h3>
+<p>BOM（Byte Order Mark）是放在文本文件开头的特殊字符（U+FEFF），用于标识字节序：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">编码</th><th style="text-align: left">BOM字节序列</th><th style="text-align: left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">UTF-8</td><td style="text-align: left"><code>EF BB BF</code></td><td style="text-align: left">可选，通常不推荐</td></tr>
+<tr><td style="text-align: center">UTF-16 BE</td><td style="text-align: left"><code>FE FF</code></td><td style="text-align: left">大端序</td></tr>
+<tr><td style="text-align: center">UTF-16 LE</td><td style="text-align: left"><code>FF FE</code></td><td style="text-align: left">小端序（Windows默认）</td></tr>
+<tr><td style="text-align: center">UTF-32 BE</td><td style="text-align: left"><code>00 00 FE FF</code></td><td style="text-align: left">大端序</td></tr>
+<tr><td style="text-align: center">UTF-32 LE</td><td style="text-align: left"><code>FF FE 00 00</code></td><td style="text-align: left">小端序</td></tr>
+</tbody>
+</table>
+</div>
+<p>访问如下网站查看所有Unicode符号：</p>
+<ul>
+<li><a href="https://home.unicode.org/">Unicode – The World Standard for Text and Emoji</a></li>
+<li><a href="https://emojipedia.org/">emojipedia</a></li>
+</ul>
+<hr>
+<h2 id="24-中文编码"><a class="header" href="#24-中文编码">2.4 中文编码</a></h2>
+<p>中国程序员在职业生涯中，一定会遇到的一个问题就是中文乱码问题。操作系统、数据库、网络传输都有可能出现中文乱码问题，其本质就是使用了不恰当的编码对中文数据进行编码、解码。因此非常有必要了解各种场景下系统正在使用的编码方式。</p>
+<h3 id="241-中文编码标准演进"><a class="header" href="#241-中文编码标准演进">2.4.1 中文编码标准演进</a></h3>
+<p>为了解决汉字的编码问题，中国制定了GB2312、GBK、GB18030等编码标准。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">编码标准</th><th style="text-align: center">发布时间</th><th style="text-align: center">字节数</th><th style="text-align: center">收录汉字数</th><th style="text-align: left">特点</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">GB2312</td><td style="text-align: center">1980年</td><td style="text-align: center">1~2字节</td><td style="text-align: center">6,763</td><td style="text-align: left">覆盖常用简体字，兼容ASCII</td></tr>
+<tr><td style="text-align: center">GBK</td><td style="text-align: center">1995年</td><td style="text-align: center">1~2字节</td><td style="text-align: center">21,003</td><td style="text-align: left">扩展GB2312，含繁体字</td></tr>
+<tr><td style="text-align: center">GB18030</td><td style="text-align: center">2000年</td><td style="text-align: center">1~4字节</td><td style="text-align: center">160万+</td><td style="text-align: left">国家标准，与Unicode完全映射</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="242-编码转换-iconv"><a class="header" href="#242-编码转换-iconv">2.4.2 编码转换 iconv</a></h3>
+<p><a href="./file/生僻字.txt">生僻字</a> GB2312、GBK两种编码基本解决中文常用字符的编码，但中文中还有大量生僻字，需要GB18030才能编码。因此需要视具体情况采用恰当的编码。</p>
+<pre><code class="language-shell"># 查看文件编码
+file -bi example.txt
+
+# UTF-8转为GBK
+iconv -f UTF-8 -t GBK 沁园春·雪.txt &gt; snow.txt
+
+# 忽略无法转换的字符
+iconv -c UTF-8 -t GBK 沁园春·雪.txt &gt; snow.txt
+
+# GBK转为UTF-8
+iconv -f GBK -t UTF-8 abc.txt &gt; abc_1.txt
+
+# UTF-8转为GB18030
+iconv -f UTF-8 -t GB18030 生僻字.txt &gt; gb18030.txt
+</code></pre>
+<h3 id="243-操作系统的编码"><a class="header" href="#243-操作系统的编码">2.4.3 操作系统的编码</a></h3>
+<p>Windows下中文常用支持中文编码有：简体中文(GB2312)、繁体中文(Big5)、UTF-8。</p>
+<pre><code class="language-shell"># Windows PowerShell
+PS C:\Users\huang&gt; chcp
+活动代码页: 936
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">代码页</th><th style="text-align: left">国家(地区)或语言</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">437</td><td style="text-align: left">美国</td></tr>
+<tr><td style="text-align: center">932</td><td style="text-align: left">日文(Shift-JIS)</td></tr>
+<tr><td style="text-align: center">936</td><td style="text-align: left">中国 - 简体中文(GB2312)</td></tr>
+<tr><td style="text-align: center">949</td><td style="text-align: left">韩文</td></tr>
+<tr><td style="text-align: center">950</td><td style="text-align: left">繁体中文(Big5)</td></tr>
+<tr><td style="text-align: center">1200</td><td style="text-align: left">Unicode</td></tr>
+<tr><td style="text-align: center">1252</td><td style="text-align: left">西欧(Windows)</td></tr>
+<tr><td style="text-align: center">65001</td><td style="text-align: left">Unicode (UTF-8)</td></tr>
+</tbody>
+</table>
+</div>
+<p><a href="https://baike.baidu.com/item/ISO-8859-1/7878872?fr=aladdin">ISO-8859-1（Latin-1）</a> 是MySQL数据库默认编码，也是网络传输默认编码之一。</p>
+<hr>
+<h2 id="25-rust中的字符串处理"><a class="header" href="#25-rust中的字符串处理">2.5 Rust中的字符串处理</a></h2>
+<p>Rust中默认使用的是UTF-8编码。这一设计决策与Rust的内存安全和零成本抽象理念高度一致。</p>
+<h3 id="251-rust中的stringstr与vecu8"><a class="header" href="#251-rust中的stringstr与vecu8">2.5.1 Rust中的String、&amp;str与<code>Vec&lt;u8&gt;</code></a></h3>
+<p>Rust中的字符串类型设计体现了所有权和借用的核心概念：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">类型</th><th style="text-align: left">内存布局</th><th style="text-align: center">所有权</th><th style="text-align: left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center"><code>String</code></td><td style="text-align: left"><code>Vec&lt;u8&gt;</code> 的包装</td><td style="text-align: center">拥有</td><td style="text-align: left">堆分配的UTF-8字符串，可增长</td></tr>
+<tr><td style="text-align: center"><code>&amp;str</code></td><td style="text-align: left">指向UTF-8字节序列的引用</td><td style="text-align: center">借用</td><td style="text-align: left">字符串切片，不可变引用</td></tr>
+<tr><td style="text-align: center"><code>Vec&lt;u8&gt;</code></td><td style="text-align: left">字节数组</td><td style="text-align: center">拥有</td><td style="text-align: left">原始字节序列，不保证UTF-8合法性</td></tr>
+<tr><td style="text-align: center"><code>char</code></td><td style="text-align: left">4字节（Unicode标量值）</td><td style="text-align: center">值类型</td><td style="text-align: left">单个Unicode字符</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    // String：拥有所有权的UTF-8字符串
+    let mut s = String::from("hello");
+    s.push_str(" world");
+    println!("String: {}", s);
+
+    // &amp;str：字符串切片（借用）
+    let slice: &amp;str = &amp;s;
+    println!("&amp;str: {}", slice);
+
+    // String 与 &amp;str 的关系
+    let owned: String = slice.to_string();  // &amp;str -&gt; String（拷贝）
+    let borrowed: &amp;str = &amp;owned;             // String -&gt; &amp;str（借用）
+
+    // `Vec&lt;u8&gt;`：原始字节
+    let bytes: Vec&lt;u8&gt; = owned.into_bytes();
+    println!("`Vec&lt;u8&gt;`: {:?}", bytes);
+
+    // `Vec&lt;u8&gt;` -&gt; String（需要验证UTF-8）
+    let s2 = String::from_utf8(bytes).unwrap();
+    println!("String from bytes: {}", s2);
+}</code></pre>
+<h3 id="252-rust中的unicode操作"><a class="header" href="#252-rust中的unicode操作">2.5.2 Rust中的Unicode操作</a></h3>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    // 从UTF-8字节构造字符串
+    let sparkle_heart_vec = vec![240, 159, 146, 150];
+    let sparkle_heart = String::from_utf8(sparkle_heart_vec).unwrap();
+    assert_eq!("💖", sparkle_heart);
+
+    let bytes = sparkle_heart.into_bytes();
+    assert_eq!(bytes, [240, 159, 146, 150]);
+
+    // Unicode转义序列
+    println!("\u{65b0}\u{534e}\u{793e}\u{5feb}\u{8baf}\u{ff1a}\u{0033}\u{6708}\u{0032}\u{0036}\u{65e5}\u{ff0c}\u{4e2d}\u{56fd}\u{548c}\u{6d2a}\u{90fd}\u{62c9}\u{65af}\u{5efa}\u{4ea4}\u{3002}");
+    println!("\u{5b78}\u{7fd2}\u{5f37}\u{570b} 伟大复兴");
+
+    // 字符转Unicode码位
+    println!("{:X} {:X}", '华' as u32, '夏' as u32);
+
+    // Emoji
+    println!("Rust常见emoji（表情符号）：\u{1F1E8}\u{1F1F3}🦀💖🚀😂\u{1F980}\u{1F602}");
+    println!("常见emoji（国旗）：\u{1F1E8}\u{1F1F3} 🇨🇳 🇺🇸 🇷🇺");
+
+    // ASCII转义
+    println!("ASCII常见字符：\u{0020}\u{0040}\u{0021}\u{0041}");
+
+    // 数学符号
+    println!("数学符号：∂∆∮\u{2211}\u{2200}\u{2208}\u{2209}\u{222b}");
+}</code></pre>
+<h3 id="253-stringstrvecu8转换关系与第十九章呼应"><a class="header" href="#253-stringstrvecu8转换关系与第十九章呼应">2.5.3 String/&amp;str/<code>Vec&lt;u8&gt;</code>转换关系（与第十九章呼应）</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use std::str;
+
+fn main() {
+    // &amp;str -&gt; String
+    let s: &amp;str = "hello";
+    let owned: String = String::from(s);
+    let owned2: String = s.to_string();
+    assert_eq!(owned, owned2);
+
+    // &amp;str -&gt; &amp;[u8]
+    let bytes: &amp;[u8] = s.as_bytes();
+    println!("bytes: {:?}", bytes); // [104, 101, 108, 108, 111]
+
+    // String -&gt; &amp;str
+    let hello = String::from("hello");
+    let slice: &amp;str = &amp;hello;
+    let slice2: &amp;str = hello.as_str();
+    assert_eq!(slice, slice2);
+
+    // String -&gt; `Vec&lt;u8&gt;`
+    let hello = String::from("hello");
+    let bytes_vec: Vec&lt;u8&gt; = hello.into_bytes();
+    println!("into_bytes: {:?}", bytes_vec);
+
+    // &amp;[u8] -&gt; &amp;str（可能失败）
+    let valid: &amp;[u8] = b"hello";
+    let s: &amp;str = str::from_utf8(valid).unwrap();
+    println!("from_utf8: {}", s);
+
+    let invalid: &amp;[u8] = &amp;[0xff, 0xfe]; // 非UTF-8
+    let result = str::from_utf8(invalid);
+    println!("invalid utf8: {:?}", result); // Err(Utf8Error)
+
+    // `Vec&lt;u8&gt;` -&gt; String（可能失败）
+    let bytes = vec![104, 101, 108, 108, 111]; // "hello"的ASCII
+    let s = String::from_utf8(bytes).unwrap();
+    println!("from_utf8(Vec): {}", s);
+}</code></pre>
+<hr>
+<h2 id="26-数据库编码"><a class="header" href="#26-数据库编码">2.6 数据库编码</a></h2>
+<p>数据库编码是中文乱码问题的另一个重灾区。MySQL数据库的历史遗留问题尤其值得关注。</p>
+<h3 id="261-mysql字符集设置"><a class="header" href="#261-mysql字符集设置">2.6.1 MySQL字符集设置</a></h3>
+<pre><code class="language-sql">-- 查看当前数据库字符集设置
+show variables like 'character%';
+</code></pre>
+<h3 id="262-utf8-vs-utf8mb4"><a class="header" href="#262-utf8-vs-utf8mb4">2.6.2 utf8 vs utf8mb4</a></h3>
+<p>MySQL中的<code>utf8</code>实际上是<code>utf8mb3</code>的别名，只使用最多3个字节，无法存储4字节的Unicode字符（如Emoji、部分生僻字）。</p>
+<pre><code class="language-sql">-- utf8mb4：支持完整的Unicode，包括Emoji
+UPDATE bakeries_db.user SET wx_nickname = 'abc🚀🎵✨' WHERE id = 5;
+
+-- utf8mb3（旧版MySQL默认utf8）
+-- Error Code: 1366. Incorrect string value: '\xF0\x9F\x9A\x80\xF0\x9F...' for column 'wx_nickname' at row 1
+UPDATE uic.user SET wx_nickname = 'abc🚀🎵✨' WHERE id = 5;
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">字符集</th><th style="text-align: center">最大字节数</th><th style="text-align: center">支持范围</th><th style="text-align: left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">utf8mb3</td><td style="text-align: center">3字节</td><td style="text-align: center">BMP平面</td><td style="text-align: left">MySQL旧版默认，不支持Emoji</td></tr>
+<tr><td style="text-align: center">utf8mb4</td><td style="text-align: center">4字节</td><td style="text-align: center">全部Unicode</td><td style="text-align: left">推荐使用，完整支持</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>建议</strong>：新项目务必使用 <code>utf8mb4</code>，并设置 <code>character_set_server=utf8mb4</code>。</p>
+</blockquote>
+<hr>
+<h2 id="27-编码检测与转换"><a class="header" href="#27-编码检测与转换">2.7 编码检测与转换</a></h2>
+<h3 id="271-常见编码检测方法"><a class="header" href="#271-常见编码检测方法">2.7.1 常见编码检测方法</a></h3>
+<pre class="playground"><code class="language-rust edition2024">// Rust中使用 encoding_rs 库进行编码检测和转换
+use encoding_rs::{GBK, UTF_8};
+
+fn main() {
+    // GBK编码的字节
+    let gbk_bytes: Vec&lt;u8&gt; = vec![0xD6, 0xD0, 0xCE, 0xC4]; // "中文"的GBK编码
+
+    // GBK -&gt; UTF-8
+    let (cow, _, had_errors) = GBK.decode(&amp;gbk_bytes);
+    if !had_errors {
+        let utf8_string = cow.into_owned();
+        println!("转换结果: {}", utf8_string); // 输出: 中文
+    }
+
+    // UTF-8 -&gt; GBK
+    let utf8_str = "中文";
+    let (gbk_result, _, _) = UTF_8.encode(utf8_str);
+    println!("GBK字节: {:?}", gbk_result);
+}</code></pre>
+<h3 id="272-编码转换注意事项"><a class="header" href="#272-编码转换注意事项">2.7.2 编码转换注意事项</a></h3>
+<ol>
+<li><strong>有损转换</strong>：当目标编码无法表示源编码中的某些字符时，转换可能失败或产生替换字符</li>
+<li><strong>BOM处理</strong>：UTF-8文件有时包含BOM，读取时需要注意跳过前3个字节</li>
+<li><strong>编码推断</strong>：没有绝对可靠的编码自动检测方法，最好明确指定编码</li>
+</ol>
+<hr>
+<h2 id="总结"><a class="header" href="#总结">总结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">编码方案</th><th style="text-align: center">字节数</th><th style="text-align: center">收录字符数</th><th style="text-align: center">兼容性</th><th style="text-align: left">主要使用场景</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">ASCII</td><td style="text-align: center">1字节</td><td style="text-align: center">128</td><td style="text-align: center">所有编码兼容</td><td style="text-align: left">英文文本、程序代码</td></tr>
+<tr><td style="text-align: center">GB2312</td><td style="text-align: center">1~2字节</td><td style="text-align: center">~7,000</td><td style="text-align: center">兼容ASCII</td><td style="text-align: left">早期中文系统</td></tr>
+<tr><td style="text-align: center">GBK</td><td style="text-align: center">1~2字节</td><td style="text-align: center">~21,000</td><td style="text-align: center">兼容GB2312</td><td style="text-align: left">Windows中文系统</td></tr>
+<tr><td style="text-align: center">GB18030</td><td style="text-align: center">1~4字节</td><td style="text-align: center">~160万</td><td style="text-align: center">兼容GBK，映射Unicode</td><td style="text-align: left">中国政府标准</td></tr>
+<tr><td style="text-align: center">UTF-8</td><td style="text-align: center">1~4字节</td><td style="text-align: center">111万+</td><td style="text-align: center">兼容ASCII</td><td style="text-align: left">Web、Linux、Rust</td></tr>
+<tr><td style="text-align: center">UTF-16</td><td style="text-align: center">2或4字节</td><td style="text-align: center">111万+</td><td style="text-align: center">不兼容ASCII</td><td style="text-align: left">Windows、Java</td></tr>
+<tr><td style="text-align: center">UTF-32</td><td style="text-align: center">4字节</td><td style="text-align: center">111万+</td><td style="text-align: center">不兼容ASCII</td><td style="text-align: left">内部处理</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="练习题"><a class="header" href="#练习题">练习题</a></h2>
+<ol>
+<li>
+<p><strong>ASCII编码范围</strong>：写出字符 ‘A’、‘a’、‘0’ 的ASCII码十进制值，并说明大小写字母ASCII码之间的关系。</p>
+</li>
+<li>
+<p><strong>UTF-8编码计算</strong>：手动计算汉字“中“（Unicode码位 U+4E2D）的UTF-8编码字节序列，并与 <code>"中".as_bytes()</code> 的Rust输出进行对比。</p>
+</li>
+<li>
+<p><strong>Rust字符串操作</strong>：编写Rust代码，创建一个包含Emoji “🦀”（Unicode U+1F980）的 <code>String</code>，然后将其转换为 <code>Vec&lt;u8&gt;</code>，打印每个字节的十六进制值，并验证其符合UTF-8编码规则。</p>
+</li>
+<li>
+<p><strong>编码转换陷阱</strong>：解释为什么以下Rust代码可能产生非预期结果，并给出修复方案：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = "中文";
+let bytes: Vec&lt;u8&gt; = s.bytes().collect();
+let recovered = String::from_utf8(bytes).unwrap();
+println!("{}", recovered);
+<span class="boring">}</span></code></pre>
+</li>
+<li>
+<p><strong>BOM处理</strong>：编写一个Rust函数 <code>read_file_without_bom(path: &amp;str) -&gt; Result&lt;String, std::io::Error&gt;</code>，读取UTF-8文本文件并自动跳过可能存在的BOM头。</p>
+</li>
+<li>
+<p><strong>编码检测</strong>：使用 <code>encoding_rs</code> 库编写程序，读取一个未知编码的文本文件，尝试用GBK和UTF-8分别解码，输出两种解码结果供人工判断。</p>
+</li>
+<li>
+<p><strong>MySQL编码配置</strong>：写出创建数据库时指定 <code>utf8mb4</code> 字符集的完整SQL语句，包括数据库、表和连接字符集的设置。</p>
+</li>
+<li>
+<p><strong>String/&amp;str/<code>Vec&lt;u8&gt;</code>关系图</strong>：画出Rust中 <code>String</code>、<code>&amp;str</code>、<code>Vec&lt;u8&gt;</code>、<code>&amp;[u8]</code> 之间的转换关系图，标注每个转换方法名称及其可能的失败情况。</p>
+</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_1_Number.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_3_Byte.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_1_Number.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_3_Byte.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

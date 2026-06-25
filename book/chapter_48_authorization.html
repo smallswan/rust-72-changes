@@ -1,0 +1,1158 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第四十八 授权 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第四十八变-授权"><a class="header" href="#第四十八变-授权">第四十八变 授权</a></h1>
+<blockquote>
+<p>知其为谁，方能定其可为。认证辨明身份，授权划定边界。</p>
+<p>授权之道，在于回答“你能做什么“——从简单的访问控制列表到复杂的属性策略引擎，从单一系统的权限管理到分布式服务的统一授权，授权机制决定了资源的安全边界。</p>
+</blockquote>
+<h2 id="481-授权的基本概念"><a class="header" href="#481-授权的基本概念">48.1 授权的基本概念</a></h2>
+<h3 id="4811-认证与授权的区别"><a class="header" href="#4811-认证与授权的区别">48.1.1 认证与授权的区别</a></h3>
+<p>认证和授权是安全体系中紧密相连却截然不同的两个环节：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>维度</th><th>认证（Authentication）</th><th>授权（Authorization）</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>核心问题</strong></td><td>你是谁？</td><td>你能做什么？</td></tr>
+<tr><td><strong>发生时机</strong></td><td>访问前，确认身份</td><td>认证后，决定权限</td></tr>
+<tr><td><strong>依赖关系</strong></td><td>不依赖授权</td><td>依赖认证结果</td></tr>
+<tr><td><strong>类比</strong></td><td>机场安检核实身份证</td><td>登机牌决定你能进入哪个舱位</td></tr>
+<tr><td><strong>失败表现</strong></td><td>“无法确认你的身份”</td><td>“你没有权限执行此操作”</td></tr>
+</tbody>
+</table>
+</div>
+<p>一个经典的安全反模式是：系统仅完成认证，却将授权决策交给前端控制。攻击者可以轻易绕过前端限制，直接调用后端API。因此，<strong>授权检查必须在服务端强制执行</strong>。</p>
+<h3 id="4812-授权的核心要素"><a class="header" href="#4812-授权的核心要素">48.1.2 授权的核心要素</a></h3>
+<p>授权决策通常涉及三个核心要素：</p>
+<ul>
+<li><strong>主体（Subject）</strong>：请求访问的实体，通常是已认证的用户或服务</li>
+<li><strong>资源（Resource）</strong>：被访问的对象，如文件、数据库记录、API端点</li>
+<li><strong>操作（Action）</strong>：主体希望对资源执行的动作，如读、写、删除、执行</li>
+</ul>
+<p>授权系统回答的问题是：“主体是否可以对资源执行操作？”</p>
+<h2 id="482-访问控制模型"><a class="header" href="#482-访问控制模型">48.2 访问控制模型</a></h2>
+<p>访问控制模型定义了如何管理和执行授权决策。从简单到复杂，主要有四种经典模型。</p>
+<h3 id="4821-dac自主访问控制"><a class="header" href="#4821-dac自主访问控制">48.2.1 DAC：自主访问控制</a></h3>
+<p><strong>自主访问控制（Discretionary Access Control, DAC）</strong> 允许资源的所有者自主决定谁可以访问其资源。</p>
+<p><strong>核心特征</strong>：</p>
+<ul>
+<li>资源拥有者具有完全控制权</li>
+<li>可以授予或撤销其他主体的访问权限</li>
+<li>权限可以传递（如Linux文件系统中的ACL）</li>
+</ul>
+<p><strong>典型实现</strong>：</p>
+<ul>
+<li>Unix/Linux文件权限（rwx/UGO模型）</li>
+<li>Windows文件共享权限</li>
+<li>云存储的分享链接</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 简化的DAC权限检查示例
+struct File {
+    owner: String,
+    permissions: u16, // rwxrwxrwx
+}
+
+impl File {
+    fn can_access(&amp;self, user: &amp;User, action: Action) -&gt; bool {
+        if user.id == self.owner {
+            return self.check_owner_perm(action);
+        }
+        if user.groups.iter().any(|g| self.group_has_access(g)) {
+            return self.check_group_perm(action);
+        }
+        self.check_other_perm(action)
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>优点</strong>：灵活，符合直觉。
+<strong>缺点</strong>：权限分散，难以审计；权限传递可能导致意外泄露（特洛伊木马问题）。</p>
+<h3 id="4822-mac强制访问控制"><a class="header" href="#4822-mac强制访问控制">48.2.2 MAC：强制访问控制</a></h3>
+<p><strong>强制访问控制（Mandatory Access Control, MAC）</strong> 由系统管理员统一制定访问策略，资源所有者无权修改。</p>
+<p><strong>核心特征</strong>：</p>
+<ul>
+<li>系统全局安全策略强制执行</li>
+<li>每个主体和资源都有安全标签</li>
+<li>访问决策基于标签比较，而非用户意愿</li>
+</ul>
+<p><strong>典型实现</strong>：</p>
+<ul>
+<li><strong>SELinux</strong>：为Linux进程和文件添加安全上下文</li>
+<li><strong>AppArmor</strong>：基于路径的强制访问控制</li>
+<li><strong>军事分级系统</strong>：绝密 &gt; 机密 &gt; 秘密 &gt; 公开</li>
+</ul>
+<p><strong>Bell-LaPadula模型</strong>（保密性）：</p>
+<ul>
+<li>不上读（No Read Up）：主体不能读取更高安全级别的资源</li>
+<li>不下写（No Write Down）：主体不能向更低安全级别写入</li>
+</ul>
+<p><strong>Biba模型</strong>（完整性）：</p>
+<ul>
+<li>不下读（No Read Down）：防止低完整性数据污染高完整性主体</li>
+<li>不上写（No Write Up）：防止高完整性主体被低完整性数据影响</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 简化的MAC标签检查
+#[derive(PartialEq, Eq, PartialOrd, Ord)]
+enum SecurityLevel {
+    Public,
+    Internal,
+    Confidential,
+    Secret,
+}
+
+struct MacSubject {
+    clearance: SecurityLevel,
+}
+
+struct MacResource {
+    classification: SecurityLevel,
+}
+
+fn can_read(subject: &amp;MacSubject, resource: &amp;MacResource) -&gt; bool {
+    subject.clearance &gt;= resource.classification // 不上读
+}
+
+fn can_write(subject: &amp;MacSubject, resource: &amp;MacResource) -&gt; bool {
+    subject.clearance &lt;= resource.classification // 不下写
+}
+<span class="boring">}</span></code></pre>
+<p><strong>优点</strong>：安全性高，适合高安全需求环境。
+<strong>缺点</strong>：灵活性差，配置复杂，可能影响正常业务。</p>
+<h3 id="4823-rbac基于角色的访问控制"><a class="header" href="#4823-rbac基于角色的访问控制">48.2.3 RBAC：基于角色的访问控制</a></h3>
+<p><strong>基于角色的访问控制（Role-Based Access Control, RBAC）</strong> 是目前企业应用中最广泛使用的模型。</p>
+<p><strong>核心概念</strong>：</p>
+<ul>
+<li><strong>用户（User）</strong>：系统的使用者</li>
+<li><strong>角色（Role）</strong>：一组权限的集合，代表组织中的职位或职责</li>
+<li><strong>权限（Permission）</strong>：对资源执行操作的能力</li>
+<li><strong>会话（Session）</strong>：用户激活的一组角色</li>
+</ul>
+<p><strong>RBAC层级</strong>：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>层级</th><th>名称</th><th>新增特性</th></tr>
+</thead>
+<tbody>
+<tr><td>RBAC0</td><td>核心RBAC</td><td>用户-角色-权限基本关联</td></tr>
+<tr><td>RBAC1</td><td>层级RBAC</td><td>角色继承（Senior Role继承Junior Role的权限）</td></tr>
+<tr><td>RBAC2</td><td>约束RBAC</td><td>职责分离约束（互斥角色、基数约束）</td></tr>
+<tr><td>RBAC3</td><td>统一RBAC</td><td>RBAC1 + RBAC2的完整组合</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>职责分离（Separation of Duties, SoD）</strong>：</p>
+<ul>
+<li><strong>静态SoD</strong>：用户不能同时被分配互斥角色（如会计和审计）</li>
+<li><strong>动态SoD</strong>：用户可同时拥有互斥角色，但不能在同一会话中同时激活</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// RBAC核心数据结构
+use std::collections::{HashMap, HashSet};
+
+struct RbacSystem {
+    user_roles: HashMap&lt;String, HashSet&lt;String&gt;&gt;,      // user -&gt; roles
+    role_permissions: HashMap&lt;String, HashSet&lt;String&gt;&gt;, // role -&gt; permissions
+    role_hierarchy: HashMap&lt;String, HashSet&lt;String&gt;&gt;,   // role -&gt; parent roles
+}
+
+impl RbacSystem {
+    fn user_permissions(&amp;self, user: &amp;str) -&gt; HashSet&lt;String&gt; {
+        let mut perms = HashSet::new();
+        if let Some(roles) = self.user_roles.get(user) {
+            for role in roles {
+                self.collect_role_permissions(role, &amp;mut perms);
+            }
+        }
+        perms
+    }
+    
+    fn collect_role_permissions(&amp;self, role: &amp;str, perms: &amp;mut HashSet&lt;String&gt;) {
+        if let Some(direct) = self.role_permissions.get(role) {
+            perms.extend(direct.iter().cloned());
+        }
+        if let Some(parents) = self.role_hierarchy.get(role) {
+            for parent in parents {
+                self.collect_role_permissions(parent, perms);
+            }
+        }
+    }
+    
+    fn check_permission(&amp;self, user: &amp;str, permission: &amp;str) -&gt; bool {
+        self.user_permissions(user).contains(permission)
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>优点</strong>：简化权限管理，角色与组织结构对齐，易于审计。
+<strong>缺点</strong>：角色爆炸（大量细粒度角色）；难以表达基于资源属性的复杂策略。</p>
+<h3 id="4824-abac基于属性的访问控制"><a class="header" href="#4824-abac基于属性的访问控制">48.2.4 ABAC：基于属性的访问控制</a></h3>
+<p><strong>基于属性的访问控制（Attribute-Based Access Control, ABAC）</strong> 是最灵活、最强大的访问控制模型。</p>
+<p><strong>核心思想</strong>：访问决策基于主体、资源、操作和环境的属性，而非预定义的角色或标签。</p>
+<p><strong>四类属性</strong>：</p>
+<ul>
+<li><strong>主体属性</strong>：用户部门、职级、认证方式、信任等级</li>
+<li><strong>资源属性</strong>：文件分类、所有者、创建时间、敏感等级</li>
+<li><strong>操作属性</strong>：读、写、删除、分享</li>
+<li><strong>环境属性</strong>：当前时间、访问位置、网络环境、设备类型</li>
+</ul>
+<p><strong>策略表达式示例</strong>：</p>
+<pre><code>允许 如果：
+  主体.部门 == "财务部"
+  且 资源.类型 == "财务报表"
+  且 操作 == "读取"
+  且 环境.时间在 "09:00" 到 "18:00" 之间
+  且 环境.位置 == "公司内网"
+</code></pre>
+<p><strong>XACML（eXtensible Access Control Markup Language）</strong> 是ABAC的标准实现，使用XML定义策略。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 简化的ABAC策略评估
+struct AbacContext {
+    subject: HashMap&lt;String, String&gt;,
+    resource: HashMap&lt;String, String&gt;,
+    action: String,
+    environment: HashMap&lt;String, String&gt;,
+}
+
+struct AbacPolicy {
+    rules: Vec&lt;AbacRule&gt;,
+}
+
+struct AbacRule {
+    conditions: Vec&lt;Box&lt;dyn Fn(&amp;AbacContext) -&gt; bool&gt;&gt;,
+    effect: Effect,
+}
+
+enum Effect {
+    Permit,
+    Deny,
+}
+
+impl AbacPolicy {
+    fn evaluate(&amp;self, ctx: &amp;AbacContext) -&gt; Effect {
+        for rule in &amp;self.rules {
+            if rule.conditions.iter().all(|c| c(ctx)) {
+                return rule.effect;
+            }
+        }
+        Effect::Deny // 默认拒绝
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>优点</strong>：极度灵活，可表达复杂业务规则；细粒度控制。
+<strong>缺点</strong>：策略复杂，性能开销大，难以直观理解和审计。</p>
+<h3 id="4825-模型对比"><a class="header" href="#4825-模型对比">48.2.5 模型对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th>DAC</th><th>MAC</th><th>RBAC</th><th>ABAC</th></tr>
+</thead>
+<tbody>
+<tr><td>灵活性</td><td>高</td><td>低</td><td>中</td><td>极高</td></tr>
+<tr><td>安全性</td><td>低</td><td>极高</td><td>高</td><td>高</td></tr>
+<tr><td>管理复杂度</td><td>低</td><td>高</td><td>中</td><td>高</td></tr>
+<tr><td>审计难度</td><td>高</td><td>低</td><td>低</td><td>高</td></tr>
+<tr><td>适用场景</td><td>个人系统</td><td>军事/政府</td><td>企业应用</td><td>云原生/微服务</td></tr>
+<tr><td>性能</td><td>高</td><td>高</td><td>高</td><td>中</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="483-权限设计原则"><a class="header" href="#483-权限设计原则">48.3 权限设计原则</a></h2>
+<h3 id="4831-最小权限原则"><a class="header" href="#4831-最小权限原则">48.3.1 最小权限原则</a></h3>
+<p><strong>最小权限原则（Principle of Least Privilege, PoLP）</strong> 要求每个主体仅拥有完成其工作所必需的最小权限集合。</p>
+<p><strong>实践要点</strong>：</p>
+<ul>
+<li>默认拒绝所有访问，显式授予所需权限</li>
+<li>定期审查和回收不再需要的权限</li>
+<li>使用临时权限提升机制（如sudo），而非长期高权限</li>
+<li>服务账户按功能拆分，避免“万能账户“</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 最小权限原则示例：数据库连接按功能分离
+struct ReadOnlyDbPool;
+struct ReadWriteDbPool;
+struct AdminDbPool;
+
+impl ReadOnlyDbPool {
+    async fn query&lt;T&gt;(&amp;self, sql: &amp;str) -&gt; Result&lt;Vec&lt;T&gt;, Error&gt; { 
+        // 只读操作
+        todo!()
+    }
+}
+
+impl ReadWriteDbPool {
+    async fn execute(&amp;self, sql: &amp;str) -&gt; Result&lt;u64, Error&gt; {
+        // 读写操作
+        todo!()
+    }
+}
+
+// 普通服务只能访问只读池
+struct UserService {
+    db: ReadOnlyDbPool,
+}
+
+// 订单服务需要读写
+struct OrderService {
+    db: ReadWriteDbPool,
+}
+<span class="boring">}</span></code></pre>
+<h3 id="4832-职责分离"><a class="header" href="#4832-职责分离">48.3.2 职责分离</a></h3>
+<p><strong>职责分离（Separation of Duties, SoD）</strong> 要求关键操作由多个主体协作完成，防止单点滥用权限。</p>
+<p><strong>经典场景</strong>：</p>
+<ul>
+<li>采购审批：申请人、审批人、验收人不能为同一人</li>
+<li>金融交易：录入员和复核员分离</li>
+<li>代码发布：开发提交、测试验证、运维部署分离</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 职责分离检查
+struct SoDConstraint {
+    mutually_exclusive_roles: Vec&lt;(String, String)&gt;,
+}
+
+impl SoDConstraint {
+    fn check_assignment(&amp;self, user_roles: &amp;HashSet&lt;String&gt;) -&gt; Result&lt;(), String&gt; {
+        for (r1, r2) in &amp;self.mutually_exclusive_roles {
+            if user_roles.contains(r1) &amp;&amp; user_roles.contains(r2) {
+                return Err(format!("违反职责分离: {} 与 {} 不能同时拥有", r1, r2));
+            }
+        }
+        Ok(())
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="4833-权限设计模式"><a class="header" href="#4833-权限设计模式">48.3.3 权限设计模式</a></h3>
+<p><strong>ACL（访问控制列表）</strong>：直接在资源上维护允许访问的主体列表。</p>
+<p><strong>能力列表（Capability List）</strong>：主体持有可访问资源的令牌（如文件描述符、API密钥）。</p>
+<p><strong>策略即代码（Policy as Code）</strong>：将授权策略以代码形式版本化管理，支持代码审查和自动化测试。</p>
+<h2 id="484-oauth-20-授权框架"><a class="header" href="#484-oauth-20-授权框架">48.4 OAuth 2.0 授权框架</a></h2>
+<h3 id="4841-oauth-20-概述"><a class="header" href="#4841-oauth-20-概述">48.4.1 OAuth 2.0 概述</a></h3>
+<p>OAuth 2.0 是业界标准的授权协议，允许第三方应用代表用户访问资源，而无需获取用户密码。</p>
+<p><strong>核心解决的问题</strong>：</p>
+<ul>
+<li>用户不希望将密码交给第三方应用</li>
+<li>用户希望细粒度控制第三方应用的访问范围</li>
+<li>用户希望随时撤销第三方应用的访问权限</li>
+</ul>
+<h3 id="4842-四种授权模式"><a class="header" href="#4842-四种授权模式">48.4.2 四种授权模式</a></h3>
+<h4 id="授权码模式authorization-code"><a class="header" href="#授权码模式authorization-code">授权码模式（Authorization Code）</a></h4>
+<p>最安全、最常用的模式，适用于服务器端应用：</p>
+<pre><code>+----------+
+| 资源所有者 |
+|   (用户)   |
++----------+
+     |
+     | 1. 浏览器重定向到授权服务器
+     v
++----------+                                   +---------------+
+|          |--(2) 用户登录并授权---------------&gt;|               |
+|   用户    |                                   |   授权服务器   |
+|   代理    |&lt;-(3) 返回授权码（重定向到客户端）--|               |
+| (浏览器)  |                                   +---------------+
++----------+                                          |
+     |                                                |
+     | 4. 授权码通过浏览器传递给客户端                 |
+     v                                                |
++----------+                                   +---------------+
+|          |--(5) 用授权码换取访问令牌------------&gt;|               |
+|   客户端   |         (直接后端通信，保密)          |   授权服务器   |
+| (服务器)  |&lt;-(6) 返回访问令牌和刷新令牌------------|               |
++----------+                                   +---------------+
+     |
+     | 7. 用访问令牌访问资源
+     v
++---------------+
+|   资源服务器   |
++---------------+
+</code></pre>
+<p><strong>PKCE扩展（Proof Key for Code Exchange, RFC 7636）</strong>：
+为授权码模式增加保护层，防止授权码拦截攻击。公共客户端（如移动应用、单页应用）必须使用PKCE。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// PKCE参数生成
+use rand::{distributions::Alphanumeric, Rng};
+use sha2::{Sha256, Digest};
+use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
+
+fn generate_pkce() -&gt; (String, String) {
+    // 生成随机code_verifier
+    let verifier: String = rand::thread_rng()
+        .sample_iter(&amp;Alphanumeric)
+        .take(128)
+        .map(char::from)
+        .collect();
+    
+    // 计算code_challenge = BASE64URL(SHA256(code_verifier))
+    let mut hasher = Sha256::new();
+    hasher.update(&amp;verifier);
+    let challenge = URL_SAFE_NO_PAD.encode(hasher.finalize());
+    
+    (verifier, challenge)
+}
+<span class="boring">}</span></code></pre>
+<h4 id="简化模式implicit"><a class="header" href="#简化模式implicit">简化模式（Implicit）</a></h4>
+<p>直接从授权端点获取访问令牌，不经过授权码交换。因安全性问题，<strong>已被OAuth 2.1废弃</strong>。</p>
+<h4 id="密码凭证模式resource-owner-password-credentials"><a class="header" href="#密码凭证模式resource-owner-password-credentials">密码凭证模式（Resource Owner Password Credentials）</a></h4>
+<p>用户直接向客户端提供用户名和密码，客户端用其换取令牌。仅适用于受信任的第一方应用。</p>
+<h4 id="客户端凭证模式client-credentials"><a class="header" href="#客户端凭证模式client-credentials">客户端凭证模式（Client Credentials）</a></h4>
+<p>客户端以自己的身份（而非用户身份）请求访问资源。适用于服务间通信、后台任务。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 客户端凭证模式示例
+async fn client_credentials_flow(
+    token_endpoint: &amp;str,
+    client_id: &amp;str,
+    client_secret: &amp;str,
+    scope: &amp;str,
+) -&gt; Result&lt;TokenResponse, reqwest::Error&gt; {
+    let client = reqwest::Client::new();
+    let params = [
+        ("grant_type", "client_credentials"),
+        ("client_id", client_id),
+        ("client_secret", client_secret),
+        ("scope", scope),
+    ];
+    
+    let response = client
+        .post(token_endpoint)
+        .form(&amp;params)
+        .send()
+        .await?
+        .json::&lt;TokenResponse&gt;()
+        .await?;
+    
+    Ok(response)
+}
+
+#[derive(Debug, serde::Deserialize)]
+struct TokenResponse {
+    access_token: String,
+    token_type: String,
+    expires_in: u64,
+    scope: Option&lt;String&gt;,
+}
+<span class="boring">}</span></code></pre>
+<h3 id="4843-令牌类型"><a class="header" href="#4843-令牌类型">48.4.3 令牌类型</a></h3>
+<ul>
+<li><strong>访问令牌（Access Token）</strong>：用于访问受保护资源，通常短期有效（分钟到小时级）</li>
+<li><strong>刷新令牌（Refresh Token）</strong>：用于获取新的访问令牌，长期有效但可撤销</li>
+<li><strong>授权码（Authorization Code）</strong>：一次性凭证，用于交换访问令牌</li>
+</ul>
+<h3 id="4844-范围scope"><a class="header" href="#4844-范围scope">48.4.4 范围（Scope）</a></h3>
+<p>Scope定义了访问令牌的权限边界：</p>
+<pre><code>scope = "read:users write:orders admin:settings"
+</code></pre>
+<p>客户端请求时声明所需scope，用户授权时可以看到并选择性同意。资源服务器验证令牌时检查scope是否包含所需权限。</p>
+<h2 id="485-jwt-令牌"><a class="header" href="#485-jwt-令牌">48.5 JWT 令牌</a></h2>
+<h3 id="4851-jwt-结构"><a class="header" href="#4851-jwt-结构">48.5.1 JWT 结构</a></h3>
+<p><strong>JSON Web Token（JWT, RFC 7519）</strong> 是一种紧凑、自包含的方式，用于在各方之间安全地传输信息。</p>
+<p>JWT由三部分组成，用点号分隔：</p>
+<pre><code>xxxxx.yyyyy.zzzzz
+  |      |      |
+Header Payload Signature
+</code></pre>
+<p><strong>Header（头部）</strong>：</p>
+<pre><code class="language-json">{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+</code></pre>
+<p><strong>Payload（载荷）</strong>：声明（claims）的集合：</p>
+<pre><code class="language-json">{
+  "sub": "user_12345",
+  "iss": "auth.example.com",
+  "aud": "api.example.com",
+  "exp": 1700000000,
+  "iat": 1699996400,
+  "scope": "read:users write:orders",
+  "role": "admin"
+}
+</code></pre>
+<p><strong>Signature（签名）</strong>：</p>
+<pre><code>HMACSHA256(
+  base64UrlEncode(header) + "." +
+  base64UrlEncode(payload),
+  secret
+)
+</code></pre>
+<h3 id="4852-jwt-签名算法"><a class="header" href="#4852-jwt-签名算法">48.5.2 JWT 签名算法</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>类型</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>HS256/384/512</td><td>对称</td><td>HMAC with SHA，密钥共享</td></tr>
+<tr><td>RS256/384/512</td><td>非对称</td><td>RSA with SHA，私钥签名、公钥验证</td></tr>
+<tr><td>ES256/384/512</td><td>非对称</td><td>ECDSA with SHA，更短的密钥</td></tr>
+<tr><td>EdDSA</td><td>非对称</td><td>Ed25519，现代推荐算法</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>对称 vs 非对称</strong>：</p>
+<ul>
+<li>对称（HMAC）：签发和验证使用同一密钥，适合单一服务</li>
+<li>非对称（RSA/ECDSA）：签发用私钥，验证用公钥，适合分布式系统（授权服务器签发，各资源服务器验证）</li>
+</ul>
+<h3 id="4853-jwt-验证要点"><a class="header" href="#4853-jwt-验证要点">48.5.3 JWT 验证要点</a></h3>
+<p>验证JWT时，必须检查以下声明：</p>
+<ul>
+<li><strong>exp（过期时间）</strong>：当前时间必须小于过期时间</li>
+<li><strong>nbf（生效时间）</strong>：当前时间必须大于生效时间</li>
+<li><strong>iat（签发时间）</strong>：用于检测令牌重放</li>
+<li><strong>iss（签发者）</strong>：必须是信任的签发者</li>
+<li><strong>aud（受众）</strong>：必须包含当前服务标识</li>
+<li><strong>签名</strong>：必须使用正确的算法和密钥验证</li>
+</ul>
+<p><strong>安全警告</strong>：</p>
+<ul>
+<li>永远不要信任客户端提供的JWT头部算法（alg: none攻击）</li>
+<li>密钥强度要足够（HS256至少256位密钥）</li>
+<li>敏感信息不要放入JWT payload（仅Base64编码，未加密）</li>
+<li>使用短过期时间，配合刷新令牌机制</li>
+</ul>
+<h3 id="4854-rust实现jwt签发与验证"><a class="header" href="#4854-rust实现jwt签发与验证">48.5.4 Rust实现：JWT签发与验证</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use jsonwebtoken::{
+    decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation,
+};
+use serde::{Deserialize, Serialize};
+use std::time::{SystemTime, UNIX_EPOCH};
+
+#[derive(Debug, Serialize, Deserialize)]
+struct Claims {
+    sub: String,           // 用户ID
+    iss: String,           // 签发者
+    aud: String,           // 受众
+    exp: usize,            // 过期时间
+    iat: usize,            // 签发时间
+    scope: String,         // 权限范围
+    #[serde(skip_serializing_if = "Option::is_none")]
+    role: Option&lt;String&gt;,  // 角色
+}
+
+fn now() -&gt; usize {
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_secs() as usize
+}
+
+// 使用非对称密钥（RS256）签发JWT
+fn create_jwt_rs256(
+    user_id: &amp;str,
+    private_key_pem: &amp;str,
+) -&gt; Result&lt;String, jsonwebtoken::errors::Error&gt; {
+    let now_ts = now();
+    let claims = Claims {
+        sub: user_id.to_string(),
+        iss: "auth-server".to_string(),
+        aud: "resource-api".to_string(),
+        iat: now_ts,
+        exp: now_ts + 3600,
+        scope: "read:users read:orders".to_string(),
+        role: Some("user".to_string()),
+    };
+    
+    let header = Header::new(Algorithm::RS256);
+    let encoding_key = EncodingKey::from_rsa_pem(private_key_pem.as_bytes())?;
+    
+    encode(&amp;header, &amp;claims, &amp;encoding_key)
+}
+
+// 使用公钥验证JWT
+fn verify_jwt_rs256(
+    token: &amp;str,
+    public_key_pem: &amp;str,
+) -&gt; Result&lt;Claims, jsonwebtoken::errors::Error&gt; {
+    let mut validation = Validation::new(Algorithm::RS256);
+    validation.set_issuer(&amp;["auth-server"]);
+    validation.set_audience(&amp;["resource-api"]);
+    validation.set_required_spec_claims(&amp;["exp", "iss", "aud"]);
+    
+    let decoding_key = DecodingKey::from_rsa_pem(public_key_pem.as_bytes())?;
+    let token_data = decode::&lt;Claims&gt;(token, &amp;decoding_key, &amp;validation)?;
+    
+    Ok(token_data.claims)
+}
+
+// 检查特定权限
+fn has_scope(claims: &amp;Claims, required: &amp;str) -&gt; bool {
+    claims.scope.split_whitespace().any(|s| s == required)
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // 注意：实际项目中应从安全存储读取密钥
+    let private_key = include_str!("private_key.pem");
+    let public_key = include_str!("public_key.pem");
+    
+    // 签发
+    let token = create_jwt_rs256("user_123", private_key)?;
+    println!("JWT: {}", token);
+    
+    // 验证
+    let claims = verify_jwt_rs256(&amp;token, public_key)?;
+    println!("验证通过: {:?}", claims);
+    
+    // 权限检查
+    println!("可读取用户: {}", has_scope(&amp;claims, "read:users"));
+    println!("可写入订单: {}", has_scope(&amp;claims, "write:orders"));
+    
+    Ok(())
+}</code></pre>
+<h2 id="486-rust授权生态"><a class="header" href="#486-rust授权生态">48.6 Rust授权生态</a></h2>
+<h3 id="4861-casbin通用授权库"><a class="header" href="#4861-casbin通用授权库">48.6.1 Casbin：通用授权库</a></h3>
+<p><strong>Casbin</strong> 是一个强大的、开源的访问控制库，支持多种访问控制模型（ACL、RBAC、ABAC）。</p>
+<p><strong>核心概念</strong>：</p>
+<ul>
+<li><strong>Model</strong>：定义访问控制模型的配置文件</li>
+<li><strong>Policy</strong>：具体的权限策略数据</li>
+<li><strong>Adapter</strong>：策略数据的持久化适配器（内存、文件、数据库）</li>
+<li><strong>Enforcer</strong>：执行授权决策的核心引擎</li>
+</ul>
+<p><strong>RBAC模型配置（model.conf）</strong>：</p>
+<pre><code class="language-ini">[request_definition]
+r = sub, obj, act
+
+[policy_definition]
+p = sub, obj, act
+
+[role_definition]
+g = _, _
+
+[policy_effect]
+e = some(where (p.eft == allow))
+
+[matchers]
+m = g(r.sub, p.sub) &amp;&amp; r.obj == p.obj &amp;&amp; r.act == p.act
+</code></pre>
+<p><strong>策略数据（policy.csv）</strong>：</p>
+<pre><code class="language-csv">p, admin, /users, GET
+p, admin, /users, POST
+p, user, /profile, GET
+g, alice, admin
+g, bob, user
+</code></pre>
+<h3 id="4862-rust实现casbin-rbac"><a class="header" href="#4862-rust实现casbin-rbac">48.6.2 Rust实现：Casbin RBAC</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use casbin::{CoreApi, DefaultModel, Enforcer, FileAdapter, Result};
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    // 加载模型和策略
+    let model = DefaultModel::from_file("model.conf").await?;
+    let adapter = FileAdapter::new("policy.csv");
+    let enforcer = Enforcer::new(model, adapter).await?;
+    
+    // 检查权限
+    let checks = vec![
+        ("alice", "/users", "GET"),    // admin角色，允许
+        ("alice", "/users", "POST"),   // admin角色，允许
+        ("bob", "/profile", "GET"),    // user角色，允许
+        ("bob", "/users", "GET"),      // user角色，拒绝
+        ("charlie", "/users", "GET"),  // 无角色，拒绝
+    ];
+    
+    for (sub, obj, act) in &amp;checks {
+        let allowed = enforcer.enforce((sub.to_string(), obj.to_string(), act.to_string()))?;
+        println!("{} 能否 {} {}? {}", sub, act, obj, allowed);
+    }
+    
+    // 动态添加策略
+    enforcer.add_policy(vec!["user".to_string(), "/orders".to_string(), "GET".to_string()]).await?;
+    
+    // 动态添加角色
+    enforcer.add_grouping_policy(vec!["charlie".to_string(), "user".to_string()]).await?;
+    
+    let allowed = enforcer.enforce(("charlie", "/orders", "GET"))?;
+    println!("添加角色后，charlie 能否 GET /orders? {}", allowed);
+    
+    Ok(())
+}</code></pre>
+<p><code>Cargo.toml</code> 依赖：</p>
+<pre><code class="language-toml">[dependencies]
+casbin = "2"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+</code></pre>
+<h3 id="4863-oauth2-rsoauth-20客户端"><a class="header" href="#4863-oauth2-rsoauth-20客户端">48.6.3 OAuth2-rs：OAuth 2.0客户端</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use oauth2::{
+    AuthUrl, ClientId, ClientSecret, CsrfToken, PkceCodeChallenge, RedirectUrl,
+    Scope, TokenUrl, AuthorizationCode, TokenResponse,
+};
+use oauth2::basic::BasicClient;
+use oauth2::reqwest::async_http_client;
+
+fn create_oauth_client() -&gt; BasicClient {
+    let client_id = ClientId::new("your-client-id".to_string());
+    let client_secret = ClientSecret::new("your-client-secret".to_string());
+    let auth_url = AuthUrl::new("https://auth.example.com/authorize".to_string()).unwrap();
+    let token_url = TokenUrl::new("https://auth.example.com/token".to_string()).unwrap();
+    
+    BasicClient::new(client_id, Some(client_secret), auth_url, Some(token_url))
+        .set_redirect_uri(RedirectUrl::new("http://localhost:8080/callback".to_string()).unwrap())
+}
+
+async fn authorization_code_flow() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let client = create_oauth_client();
+    
+    // 生成PKCE参数
+    let (pkce_challenge, pkce_verifier) = PkceCodeChallenge::new_random_sha256();
+    
+    // 生成授权URL
+    let (auth_url, csrf_token) = client
+        .authorize_url(CsrfToken::new_random)
+        .add_scope(Scope::new("read:users".to_string()))
+        .add_scope(Scope::new("write:orders".to_string()))
+        .set_pkce_challenge(pkce_challenge)
+        .url();
+    
+    println!("请访问以下URL授权: {}", auth_url);
+    println!("CSRF Token: {}", csrf_token.secret());
+    
+    // 用户授权后，从回调URL获取授权码
+    let authorization_code = AuthorizationCode::new("code-from-callback".to_string());
+    
+    // 用授权码换取令牌
+    let token_response = client
+        .exchange_code(authorization_code)
+        .set_pkce_verifier(pkce_verifier)
+        .request_async(async_http_client)
+        .await?;
+    
+    println!("访问令牌: {}", token_response.access_token().secret());
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre>
+<p><code>Cargo.toml</code> 依赖：</p>
+<pre><code class="language-toml">[dependencies]
+oauth2 = "4"
+reqwest = "0.11"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+</code></pre>
+<h3 id="4864-actix-web中的授权中间件"><a class="header" href="#4864-actix-web中的授权中间件">48.6.4 Actix-web中的授权中间件</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use actix_web::{dev::ServiceRequest, error::ErrorUnauthorized, web, App, Error, HttpServer};
+use actix_web_httpauth::extractors::bearer::{BearerAuth, Config};
+use actix_web_httpauth::extractors::AuthenticationError;
+use jsonwebtoken::{decode, DecodingKey, Validation, Algorithm};
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+struct Claims {
+    sub: String,
+    role: String,
+    scope: String,
+}
+
+async fn validator(
+    req: ServiceRequest,
+    credentials: BearerAuth,
+) -&gt; Result&lt;ServiceRequest, (Error, ServiceRequest)&gt; {
+    let token = credentials.token();
+    let secret = req.app_data::&lt;web::Data&lt;String&gt;&gt;()
+        .map(|d| d.get_ref().clone())
+        .unwrap_or_default();
+    
+    let validation = Validation::new(Algorithm::HS256);
+    match decode::&lt;Claims&gt;(token, &amp;DecodingKey::from_secret(secret.as_bytes()), &amp;validation) {
+        Ok(token_data) =&gt; {
+            req.extensions_mut().insert(token_data.claims);
+            Ok(req)
+        }
+        Err(_) =&gt; {
+            let config = req.app_data::&lt;Config&gt;()
+                .map(|data| data.clone())
+                .unwrap_or_default();
+            Err((AuthenticationError::from(config).into(), req))
+        }
+    }
+}
+
+// 角色检查守卫
+fn require_role(req: &amp;actix_web::HttpRequest, role: &amp;str) -&gt; Result&lt;Claims, Error&gt; {
+    let claims = req.extensions()
+        .get::&lt;Claims&gt;()
+        .cloned()
+        .ok_or_else(|| ErrorUnauthorized("未认证"))?;
+    
+    if claims.role != role {
+        return Err(ErrorUnauthorized("权限不足"));
+    }
+    
+    Ok(claims)
+}
+
+async fn admin_endpoint(req: actix_web::HttpRequest) -&gt; Result&lt;String, Error&gt; {
+    require_role(&amp;req, "admin")?;
+    Ok("管理员数据".to_string())
+}
+
+async fn user_endpoint(req: actix_web::HttpRequest) -&gt; Result&lt;String, Error&gt; {
+    let _claims = require_role(&amp;req, "user")?;
+    Ok("用户数据".to_string())
+}
+<span class="boring">}</span></code></pre>
+<h2 id="487-授权架构模式"><a class="header" href="#487-授权架构模式">48.7 授权架构模式</a></h2>
+<h3 id="4871-集中式授权"><a class="header" href="#4871-集中式授权">48.7.1 集中式授权</a></h3>
+<p>所有授权决策由专门的授权服务处理：</p>
+<ul>
+<li><strong>优点</strong>：策略统一管理，易于变更和审计</li>
+<li><strong>缺点</strong>：单点故障风险，网络延迟</li>
+<li><strong>适用</strong>：策略复杂、合规要求高的场景</li>
+</ul>
+<h3 id="4872-分布式授权"><a class="header" href="#4872-分布式授权">48.7.2 分布式授权</a></h3>
+<p>各服务本地执行授权决策：</p>
+<ul>
+<li><strong>优点</strong>：低延迟，高可用</li>
+<li><strong>缺点</strong>：策略同步困难，一致性挑战</li>
+<li><strong>适用</strong>：微服务架构，性能敏感场景</li>
+</ul>
+<h3 id="4873-混合模式"><a class="header" href="#4873-混合模式">48.7.3 混合模式</a></h3>
+<ul>
+<li><strong>策略管理集中</strong>：统一的服务管理策略定义</li>
+<li><strong>策略执行分布</strong>：策略下发到各服务本地执行（如通过JWT携带权限声明）</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 混合模式：JWT携带权限声明，本地验证
+#[derive(Debug, Clone)]
+struct UserContext {
+    user_id: String,
+    roles: Vec&lt;String&gt;,
+    permissions: Vec&lt;String&gt;,
+}
+
+impl UserContext {
+    fn can(&amp;self, permission: &amp;str) -&gt; bool {
+        self.permissions.contains(&amp;permission.to_string())
+    }
+    
+    fn has_role(&amp;self, role: &amp;str) -&gt; bool {
+        self.roles.contains(&amp;role.to_string())
+    }
+}
+
+// 中间件解析JWT并注入UserContext
+// 处理器本地进行权限检查，无需远程调用
+async fn create_order(ctx: UserContext) -&gt; Result&lt;String, Error&gt; {
+    if !ctx.can("order:create") {
+        return Err(ErrorUnauthorized("无创建订单权限"));
+    }
+    // 执行业务逻辑
+    Ok("订单创建成功".to_string())
+}
+<span class="boring">}</span></code></pre>
+<h2 id="488-本章总结"><a class="header" href="#488-本章总结">48.8 本章总结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>主题</th><th>核心要点</th></tr>
+</thead>
+<tbody>
+<tr><td>授权基础</td><td>认证回答“你是谁“，授权回答“你能做什么“；授权检查必须在服务端强制执行</td></tr>
+<tr><td>DAC</td><td>资源所有者自主控制权限，灵活但难以审计</td></tr>
+<tr><td>MAC</td><td>系统强制策略，安全性最高，适合高安全环境</td></tr>
+<tr><td>RBAC</td><td>通过角色管理权限，企业应用首选；支持角色继承和职责分离</td></tr>
+<tr><td>ABAC</td><td>基于属性决策，最灵活但复杂；适合云原生和动态环境</td></tr>
+<tr><td>OAuth 2.0</td><td>授权码模式最安全，PKCE保护公共客户端；scope定义权限边界</td></tr>
+<tr><td>JWT</td><td>自包含令牌，支持对称/非对称签名；必须验证exp/iss/aud等声明</td></tr>
+<tr><td>Rust生态</td><td><code>casbin</code>通用授权、<code>oauth2</code>客户端、<code>jsonwebtoken</code>JWT处理</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="489-练习建议"><a class="header" href="#489-练习建议">48.9 练习建议</a></h2>
+<ol>
+<li>
+<p><strong>RBAC系统实现</strong>：使用Casbin实现一个完整的RBAC系统，包含用户管理、角色管理、权限分配和层级继承功能。</p>
+</li>
+<li>
+<p><strong>OAuth 2.0服务端</strong>：基于<code>oxide-auth</code>或自建实现一个简化版OAuth 2.0授权服务器，支持授权码模式和PKCE。</p>
+</li>
+<li>
+<p><strong>ABAC策略引擎</strong>：设计一个基于资源属性的访问控制系统，实现时间、位置、设备类型等环境属性的策略评估。</p>
+</li>
+<li>
+<p><strong>JWT安全中间件</strong>：为Axum框架编写JWT认证和授权中间件，支持角色检查和scope验证，并实现自动令牌刷新。</p>
+</li>
+<li>
+<p><strong>权限审计系统</strong>：实现一个权限变更审计日志系统，记录所有策略变更、角色分配和访问拒绝事件，支持合规报告生成。</p>
+</li>
+</ol>
+<hr>
+<blockquote>
+<p>授权如划界，界内可自由驰骋，界外则寸步难行。好的授权系统，既不因过度限制而束缚业务创新，也不因放任自流而埋下安全隐患。在Rust的类型系统和所有权模型之上，我们可以构建出既高效又可靠的授权机制，让每一行代码都在明确的权限边界内安全运行。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_47_authentication.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_49_pki.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_47_authentication.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_49_pki.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

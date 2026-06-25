@@ -1,0 +1,1011 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第二十四 λ演算 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第二十四-λ演算"><a class="header" href="#第二十四-λ演算">第二十四 λ演算</a></h1>
+<p><a href="https://www.liaoxuefeng.com/wiki/1252599548343744/1255943847278976">函数式编程 廖雪峰</a></p>
+<p><a href="https://baike.baidu.com/item/%CE%BB%E6%BC%94%E7%AE%97/8019133?fr=aladdin">λ演算</a></p>
+<p>函数式编程的一个特点就是，允许把函数本身作为参数传入另一个函数，还允许返回一个函数！</p>
+<p>优点：抽象程度高，代码简洁，代码可读性好。</p>
+<hr>
+<h2 id="241-概述"><a class="header" href="#241-概述">24.1 概述</a></h2>
+<p>λ演算（Lambda Calculus）是由美国数学家 <strong>Alonzo Church</strong> 于 1930 年代提出的一种数学形式系统。它是函数式编程的理论基础，也是计算机科学中最重要的理论模型之一。</p>
+<p>λ演算的核心思想极其简单：一切皆为函数。在λ演算中，没有变量赋值、没有循环、没有状态——只有函数的定义和应用。然而，正是这种极简的系统，被证明是<strong>图灵完备</strong>的，即它能够表达任何可计算的函数。</p>
+<p>λ演算对现代编程语言产生了深远的影响：</p>
+<ul>
+<li><strong>Lisp</strong>（1958年）直接受到λ演算的启发</li>
+<li><strong>ML</strong> 家族语言（OCaml、Standard ML）将λ演算与类型系统结合</li>
+<li><strong>Haskell</strong> 是纯函数式编程语言的典范</li>
+<li><strong>Rust</strong> 吸收了函数式编程的许多特性，尤其是闭包和迭代器</li>
+<li><strong>Java</strong> 从 8 开始引入 Lambda 表达式和 Stream API</li>
+<li><strong>JavaScript</strong>、<strong>Python</strong>、<strong>C++</strong> 等主流语言都支持 Lambda/闭包</li>
+</ul>
+<hr>
+<h2 id="242-λ演算的核心概念"><a class="header" href="#242-λ演算的核心概念">24.2 λ演算的核心概念</a></h2>
+<h3 id="2421-λ表达式的语法"><a class="header" href="#2421-λ表达式的语法">24.2.1 λ表达式的语法</a></h3>
+<p>λ演算中只有三种基本构造：</p>
+<ol>
+<li><strong>变量</strong>（Variable）：如 $x$、$y$、$z$</li>
+<li><strong>抽象</strong>（Abstraction）：$\lambda x . M$，表示一个匿名函数，接受参数 $x$，返回表达式 $M$</li>
+<li><strong>应用</strong>（Application）：$(M , N)$，表示将函数 $M$ 应用到参数 $N$ 上</li>
+</ol>
+<p>一个λ表达式的完整语法可以定义为：</p>
+<p>$$
+E ::= x \mid \lambda x . E \mid (E_1 , E_2)
+$$</p>
+<p>其中：</p>
+<ul>
+<li>$x$ 是变量</li>
+<li>$\lambda x . E$ 是函数抽象</li>
+<li>$(E_1 , E_2)$ 是函数应用</li>
+</ul>
+<h3 id="2422-基本示例"><a class="header" href="#2422-基本示例">24.2.2 基本示例</a></h3>
+<p><strong>恒等函数</strong>（Identity Function）：</p>
+<p>$$
+I = \lambda x . x
+$$</p>
+<p>它将任何输入原样返回。例如：$(I , 5) = (\lambda x . x) , 5 = 5$。</p>
+<p><strong>常量函数</strong>（Constant Function）：</p>
+<p>$$
+K = \lambda x . \lambda y . x
+$$</p>
+<p>它接受两个参数，总是返回第一个参数。例如：$((K , a) , b) = a$。</p>
+<p><strong>应用示例</strong>：</p>
+<p>$$
+(\lambda x . x + 1) , 5 = 5 + 1 = 6
+$$</p>
+<h3 id="2423-三种基本转换规则"><a class="header" href="#2423-三种基本转换规则">24.2.3 三种基本转换规则</a></h3>
+<h4 id="α转换alpha-conversion"><a class="header" href="#α转换alpha-conversion">α转换（Alpha Conversion）</a></h4>
+<p>α转换是指对绑定变量进行重命名，而不改变表达式的含义。</p>
+<p>$$
+\lambda x . M \equiv_\alpha \lambda y . M[x := y]
+$$</p>
+<p>其中 $y$ 不在 $M$ 中自由出现。</p>
+<p>例如：</p>
+<p>$$
+\lambda x . x + 1 \equiv_\alpha \lambda y . y + 1
+$$</p>
+<h4 id="β归约beta-reduction"><a class="header" href="#β归约beta-reduction">β归约（Beta Reduction）</a></h4>
+<p>β归约是λ演算中最核心的计算规则，表示函数应用：</p>
+<p>$$
+(\lambda x . M) , N \to_\beta M[x := N]
+$$</p>
+<p>意思是：将函数体 $M$ 中所有自由出现的 $x$ 替换为参数 $N$。</p>
+<p>例如：</p>
+<p>$$
+(\lambda x . x \times x) , 3 \to_\beta 3 \times 3 = 9
+$$</p>
+<p>另一个例子：</p>
+<p>$$
+(\lambda x . \lambda y . x + y) , 2 \to_\beta \lambda y . 2 + y
+$$</p>
+<h4 id="η转换eta-conversion"><a class="header" href="#η转换eta-conversion">η转换（Eta Conversion）</a></h4>
+<p>η转换表示一个函数如果对所有输入都产生与另一个函数相同的结果，那么这两个函数相等：</p>
+<p>$$
+\lambda x . (f , x) =_\eta f \quad \text{（当 } x \text{ 不在 } f \text{ 中自由出现时）}
+$$</p>
+<p>例如：</p>
+<p>$$
+\lambda x . (\sin , x) =_\eta \sin
+$$</p>
+<hr>
+<h2 id="243-λ演算与编程"><a class="header" href="#243-λ演算与编程">24.3 λ演算与编程</a></h2>
+<h3 id="2431-图灵完备性"><a class="header" href="#2431-图灵完备性">24.3.1 图灵完备性</a></h3>
+<p>1936年，Alonzo Church 和 Alan Turing 分别独立证明了λ演算与图灵机在计算能力上是等价的。这意味着：</p>
+<ul>
+<li>任何图灵机可以计算的函数，λ演算也可以计算</li>
+<li>任何λ演算可以计算的函数，图灵机也可以计算</li>
+<li>这一结论被称为 <strong>Church-Turing 论题</strong></li>
+</ul>
+<h3 id="2432-church-编码"><a class="header" href="#2432-church-编码">24.3.2 Church 编码</a></h3>
+<p>Church 编码是一种用λ演算表示数据的方法。在纯λ演算中没有数字、布尔值等原生类型，但可以用函数来编码它们。</p>
+<h4 id="church-数church-numerals"><a class="header" href="#church-数church-numerals">Church 数（Church Numerals）</a></h4>
+<p>Church 数将自然数 $n$ 编码为将函数 $f$ 应用 $n$ 次的高阶函数：</p>
+<p>$$
+0 = \lambda f . \lambda x . x
+$$</p>
+<p>$$
+1 = \lambda f . \lambda x . f , x
+$$</p>
+<p>$$
+2 = \lambda f . \lambda x . f , (f , x)
+$$</p>
+<p>$$
+3 = \lambda f . \lambda x . f , (f , (f , x))
+$$</p>
+<p>一般形式：</p>
+<p>$$
+n = \lambda f . \lambda x . f^n , x
+$$</p>
+<p>其中 $f^n$ 表示将 $f$ 应用 $n$ 次。</p>
+<p><strong>Successor 函数</strong>（后继函数）：</p>
+<p>$$
+\text{SUCC} = \lambda n . \lambda f . \lambda x . f , (n , f , x)
+$$</p>
+<p>例如，计算 $\text{SUCC} , 1$：</p>
+<p>$$
+\begin{aligned}
+\text{SUCC} , 1 &amp;= (\lambda n . \lambda f . \lambda x . f , (n , f , x)) , (\lambda f . \lambda x . f , x) \
+&amp;\to_\beta \lambda f . \lambda x . f , ((\lambda f . \lambda x . f , x) , f , x) \
+&amp;\to_\beta \lambda f . \lambda x . f , (f , x) \
+&amp;= 2
+\end{aligned}
+$$</p>
+<h4 id="church-布尔值church-booleans"><a class="header" href="#church-布尔值church-booleans">Church 布尔值（Church Booleans）</a></h4>
+<p>布尔值可以编码为在两个选项之间做选择的函数：</p>
+<p>$$
+\text{TRUE} = \lambda x . \lambda y . x
+$$</p>
+<p>$$
+\text{FALSE} = \lambda x . \lambda y . y
+$$</p>
+<p><strong>条件表达式</strong>：</p>
+<p>$$
+\text{IF} = \lambda b . \lambda x . \lambda y . b , x , y
+$$</p>
+<p>验证：</p>
+<p>$$
+\text{IF} , \text{TRUE} , a , b = (\lambda b . \lambda x . \lambda y . b , x , y) , (\lambda x . \lambda y . x) , a , b \to_\beta a
+$$</p>
+<p>$$
+\text{IF} , \text{FALSE} , a , b = (\lambda b . \lambda x . \lambda y . b , x , y) , (\lambda x . \lambda y . y) , a , b \to_\beta b
+$$</p>
+<p><strong>逻辑运算</strong>：</p>
+<p>$$
+\text{AND} = \lambda p . \lambda q . p , q , p
+$$</p>
+<p>$$
+\text{OR} = \lambda p . \lambda q . p , p , q
+$$</p>
+<p>$$
+\text{NOT} = \lambda p . p , \text{FALSE} , \text{TRUE}
+$$</p>
+<h3 id="2433-y-组合子"><a class="header" href="#2433-y-组合子">24.3.3 Y 组合子</a></h3>
+<p>在λ演算中，函数是匿名的，那么如何实现递归呢？Y 组合子（Y Combinator）解决了这个问题：</p>
+<p>$$
+Y = \lambda f . (\lambda x . f , (x , x)) , (\lambda x . f , (x , x))
+$$</p>
+<p>Y 组合子的关键性质是：</p>
+<p>$$
+Y , f = f , (Y , f)
+$$</p>
+<p>这意味着 $Y , f$ 是 $f$ 的不动点，从而可以实现递归。</p>
+<p>例如，定义阶乘函数的高阶版本：</p>
+<p>$$
+F = \lambda f . \lambda n . \text{IF} , (n = 0) , 1 , (n \times f , (n - 1))
+$$</p>
+<p>那么 $Y , F$ 就是真正的阶乘函数。</p>
+<h3 id="2434-rust-中的-λ-表达式闭包"><a class="header" href="#2434-rust-中的-λ-表达式闭包">24.3.4 Rust 中的 λ 表达式（闭包）</a></h3>
+<p>Rust 通过闭包（Closure）支持λ表达式：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 恒等函数
+let identity = |x| x;
+
+// 加一函数
+let add_one = |x| x + 1;
+
+// 应用函数：将函数 f 应用到参数 x
+let apply = |f, x| f(x);
+
+// 使用
+let result = apply(add_one, 5); // result = 6
+<span class="boring">}</span></code></pre>
+<p>Rust 的闭包语法 <code>|参数| 表达式</code> 直接对应于λ演算的 $\lambda$ 抽象。</p>
+<hr>
+<h2 id="244-函数式编程范式"><a class="header" href="#244-函数式编程范式">24.4 函数式编程范式</a></h2>
+<h3 id="2441-纯函数"><a class="header" href="#2441-纯函数">24.4.1 纯函数</a></h3>
+<p>纯函数（Pure Function）是指满足以下两个条件的函数：</p>
+<ol>
+<li><strong>无副作用</strong>：函数的执行不会修改外部状态（不修改全局变量、不执行 I/O 操作等）</li>
+<li><strong>引用透明</strong>：相同的输入总是产生相同的输出</li>
+</ol>
+<p>数学上，纯函数就是一个从定义域到值域的映射：</p>
+<p>$$
+f: A \to B
+$$</p>
+<p>Rust 示例：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 纯函数
+fn add(a: i32, b: i32) -&gt; i32 {
+    a + b
+}
+
+// 非纯函数（有副作用）
+fn impure_add(a: i32, b: i32) -&gt; i32 {
+    println!("Adding..."); // 副作用：I/O 操作
+    a + b
+}
+
+// 非纯函数（依赖外部状态）
+static mut COUNTER: i32 = 0;
+
+fn impure_increment(x: i32) -&gt; i32 {
+    unsafe {
+        COUNTER += 1; // 副作用：修改全局状态
+        x + COUNTER
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="2442-不可变性"><a class="header" href="#2442-不可变性">24.4.2 不可变性</a></h3>
+<p>函数式编程强调数据的不可变性（Immutability）。一旦数据被创建，就不能被修改。如果需要“修改“，则创建一个新的数据副本。</p>
+<p>Rust 中默认变量绑定是不可变的：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let x = 5;
+// x = 6; // 编译错误！
+
+let mut y = 5;
+y = 6; // 可以，因为 y 是可变的
+<span class="boring">}</span></code></pre>
+<p>函数式数据结构（如持久化数据结构）通过结构共享来高效地实现不可变性。</p>
+<h3 id="2443-高阶函数"><a class="header" href="#2443-高阶函数">24.4.3 高阶函数</a></h3>
+<p>高阶函数（Higher-Order Function）是指接受函数作为参数或返回函数作为结果的函数。</p>
+<p>数学表示：</p>
+<p>$$
+\text{map}: (A \to B) \to [A] \to [B]
+$$</p>
+<p>$$
+\text{filter}: (A \to \text{Bool}) \to [A] \to [A]
+$$</p>
+<p>$$
+\text{fold}: (B \to A \to B) \to B \to [A] \to B
+$$</p>
+<p>Rust 示例：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn apply_twice&lt;F&gt;(f: F, x: i32) -&gt; i32
+where
+    F: Fn(i32) -&gt; i32,
+{
+    f(f(x))
+}
+
+let result = apply_twice(|x| x + 1, 5); // result = 7
+<span class="boring">}</span></code></pre>
+<h3 id="2444-惰性求值与严格求值"><a class="header" href="#2444-惰性求值与严格求值">24.4.4 惰性求值与严格求值</a></h3>
+<p><strong>严格求值</strong>（Strict Evaluation / Eager Evaluation）：表达式在绑定到变量时立即求值。Rust 默认使用严格求值。</p>
+<p><strong>惰性求值</strong>（Lazy Evaluation）：表达式只在需要时才求值。Haskell 使用惰性求值。</p>
+<p>Rust 中可以通过迭代器和闭包模拟惰性求值：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 惰性求值：在调用 collect() 之前，map 和 filter 不会执行
+let result: Vec&lt;i32&gt; = (1..100)
+    .map(|x| {
+        println!("mapping {}", x); // 不会立即打印
+        x * x
+    })
+    .filter(|x| {
+        println!("filtering {}", x); // 不会立即打印
+        *x &gt; 10
+    })
+    .collect(); // 这里才会触发实际计算
+<span class="boring">}</span></code></pre>
+<h3 id="2445-函数式编程语言"><a class="header" href="#2445-函数式编程语言">24.4.5 函数式编程语言</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>语言</th><th>类型系统</th><th>求值策略</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Haskell</strong></td><td>静态类型，强类型</td><td>惰性求值</td><td>纯函数式，类型类，Monad</td></tr>
+<tr><td><strong>Lisp</strong></td><td>动态类型</td><td>严格求值</td><td>宏系统，S-表达式，代码即数据</td></tr>
+<tr><td><strong>OCaml</strong></td><td>静态类型，类型推断</td><td>严格求值</td><td>模块系统，代数数据类型</td></tr>
+<tr><td><strong>Erlang</strong></td><td>动态类型</td><td>严格求值</td><td>并发模型，容错设计</td></tr>
+<tr><td><strong>Elm</strong></td><td>静态类型</td><td>惰性求值</td><td>前端函数式，无运行时异常</td></tr>
+<tr><td><strong>Rust</strong></td><td>静态类型，所有权系统</td><td>严格求值</td><td>零成本抽象，内存安全</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="245-rust-中的闭包与迭代器"><a class="header" href="#245-rust-中的闭包与迭代器">24.5 Rust 中的闭包与迭代器</a></h2>
+<h3 id="2451-闭包的三种捕获方式"><a class="header" href="#2451-闭包的三种捕获方式">24.5.1 闭包的三种捕获方式</a></h3>
+<p>Rust 的闭包根据它们如何捕获环境中的变量，分为三种 trait：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Trait</th><th>捕获方式</th><th>调用次数</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Fn</code></td><td>不可变借用（<code>&amp;T</code>）</td><td>多次</td><td><code>|x| x + *env</code></td></tr>
+<tr><td><code>FnMut</code></td><td>可变借用（<code>&amp;mut T</code>）</td><td>多次（需可变上下文）</td><td><code>|x| { *env += x; }</code></td></tr>
+<tr><td><code>FnOnce</code></td><td>移动所有权（<code>T</code>）</td><td>一次</td><td><code>|x| x + env</code>（<code>env</code> 被移动）</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut counter = 0;
+
+// Fn：不可变借用
+let fn_closure = |x: i32| x + counter;
+println!("{}", fn_closure(5)); // 可以多次调用
+println!("{}", fn_closure(5));
+
+// FnMut：可变借用
+let fn_mut_closure = |x: i32| {
+    counter += x;
+    counter
+};
+// fn_mut_closure(5); // 需要在可变上下文中调用
+
+// FnOnce：移动所有权
+let data = vec![1, 2, 3];
+let fn_once_closure = || data; // data 被移动到闭包中
+// let result = fn_once_closure(); // 只能调用一次
+<span class="boring">}</span></code></pre>
+<h3 id="2452-迭代器适配器"><a class="header" href="#2452-迭代器适配器">24.5.2 迭代器适配器</a></h3>
+<p>Rust 的迭代器是惰性的，只有在调用消耗型方法（如 <code>collect</code>、<code>for_each</code>、<code>fold</code>）时才会实际执行。</p>
+<p><a href="https://github.com/Dhghomon/easy_rust#helpful-methods-for-closures-and-iterators">helpful-methods-for-closures-and-iterators</a></p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>std::iter::DoubleEndedIterator
+
+iter()
+iter_mut()
+into_iter()
+
+next()
+next_back()
+nth()
+
+flatten
+filter() where P: FnMut(&amp;Self::Item) -&gt; bool  // 返回 true 时，元素将保留下来
+filter_map() where P: FnMut(Self::Item) -&gt; Option&lt;B&gt;
+for_each()
+zip()
+
+ok()
+ok_or()
+ok_or_else()
+
+any()
+all()
+find()
+position()
+
+rev()    // 翻转
+cycle()
+
+fold()   // "累加"操作
+try_fold() // 累加，是短路的：一旦闭包返回 Try::Output 的失败变体，立即停止
+take()
+take_while()
+skip()
+skip_while()
+
+chunks()
+window()
+
+matches_indices()
+
+peekable()
+
+# std::iter::Extend trait
+extend()
+<span class="boring">}</span></code></pre>
+<h3 id="2453-常用迭代器模式"><a class="header" href="#2453-常用迭代器模式">24.5.3 常用迭代器模式</a></h3>
+<p><strong>map / filter / reduce 模式</strong>：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let numbers = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// map + filter + fold（reduce）
+let sum_of_squares_of_evens: i32 = numbers
+    .iter()
+    .filter(|&amp;&amp;x| x % 2 == 0)      // 筛选偶数
+    .map(|&amp;x| x * x)                // 平方
+    .fold(0, |acc, x| acc + x);     // 求和
+
+println!("{}", sum_of_squares_of_evens); // 220
+<span class="boring">}</span></code></pre>
+<p><strong>函数组合</strong>：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn compose&lt;F, G, A, B, C&gt;(f: F, g: G) -&gt; impl Fn(A) -&gt; C
+where
+    F: Fn(B) -&gt; C,
+    G: Fn(A) -&gt; B,
+{
+    move |x| f(g(x))
+}
+
+let add_one = |x: i32| x + 1;
+let double = |x: i32| x * 2;
+let add_one_then_double = compose(double, add_one);
+
+println!("{}", add_one_then_double(5)); // (5 + 1) * 2 = 12
+<span class="boring">}</span></code></pre>
+<p><strong>惰性无限序列</strong>：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 使用迭代器生成无限斐波那契数列
+fn fibonacci() -&gt; impl Iterator&lt;Item = u64&gt; {
+    let mut a = 0;
+    let mut b = 1;
+    std::iter::from_fn(move || {
+        let current = a;
+        a = b;
+        b = current + b;
+        Some(current)
+    })
+}
+
+let first_10: Vec&lt;u64&gt; = fibonacci().take(10).collect();
+println!("{:?}", first_10);
+// [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="246-从-λ-演算看-streamiterator"><a class="header" href="#246-从-λ-演算看-streamiterator">24.6 从 λ 演算看 Stream/Iterator</a></h2>
+<h3 id="2461-java-stream-api"><a class="header" href="#2461-java-stream-api">24.6.1 Java Stream API</a></h3>
+<p>Java 从 8 开始引入 Stream API，受函数式编程启发，提供了一种声明式处理集合数据的方式。</p>
+<p><strong>创建 Stream 的四种方式</strong>：</p>
+<ol>
+<li>基于数组或 Collection：<code>Arrays.stream(int[] array)</code>、<code>collection.stream()</code></li>
+<li><code>Stream.of</code>：由一系列值构造</li>
+<li><code>Stream.generate(Supplier&lt;T&gt; s)</code>：生成无限流</li>
+<li><code>Stream.iterate(seed, f)</code>：迭代生成</li>
+</ol>
+<p><strong>常用操作</strong>：</p>
+<ul>
+<li>转换操作：<code>map()</code>、<code>filter()</code>、<code>sorted()</code>、<code>distinct()</code></li>
+<li>合并操作：<code>concat()</code>、<code>flatMap()</code></li>
+<li>并行处理：<code>parallel()</code></li>
+<li>聚合操作：<code>reduce()</code>、<code>collect()</code>、<code>count()</code>、<code>max()</code>、<code>min()</code>、<code>sum()</code>、<code>average()</code></li>
+<li>其他操作：<code>allMatch()</code>、<code>anyMatch()</code>、<code>forEach()</code></li>
+</ul>
+<p><strong>Stream 转为其他类型</strong>：</p>
+<ul>
+<li><code>Collectors.toList()</code></li>
+<li><code>Collectors.toMap()</code></li>
+<li><code>stream().toArray(String[]::new)</code></li>
+<li><code>Collectors.groupingBy()</code></li>
+</ul>
+<h3 id="2462-rust-iterator-trait"><a class="header" href="#2462-rust-iterator-trait">24.6.2 Rust Iterator trait</a></h3>
+<p>Rust 的 <code>Iterator</code> trait 是所有迭代器的核心：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait Iterator {
+    type Item;
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;;
+    // ... 大量默认方法
+}
+<span class="boring">}</span></code></pre>
+<p>任何实现了 <code>Iterator</code> trait 的类型都可以使用所有迭代器适配器方法。</p>
+<h3 id="2463-java-stream-vs-rust-iterator-对比"><a class="header" href="#2463-java-stream-vs-rust-iterator-对比">24.6.3 Java Stream vs Rust Iterator 对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th>Java Stream</th><th>Rust Iterator</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>核心接口</strong></td><td><code>Stream&lt;T&gt;</code></td><td><code>Iterator&lt;Item = T&gt;</code></td></tr>
+<tr><td><strong>惰性求值</strong></td><td>中间操作惰性，终端操作触发</td><td>完全惰性，消耗方法触发</td></tr>
+<tr><td><strong>并行处理</strong></td><td><code>parallel()</code> 方法</td><td><code>rayon</code> crate 的 <code>par_iter()</code></td></tr>
+<tr><td><strong>类型安全</strong></td><td>运行时泛型擦除</td><td>编译时零成本泛型</td></tr>
+<tr><td><strong>空值处理</strong></td><td>可能抛出 NullPointerException</td><td><code>Option&lt;T&gt;</code> 强制处理</td></tr>
+<tr><td><strong>错误处理</strong></td><td>异常</td><td><code>Result&lt;T, E&gt;</code></td></tr>
+<tr><td><strong>map 操作</strong></td><td><code>stream.map(Function&lt;T, R&gt;)</code></td><td><code>iter.map(|x| ...)</code></td></tr>
+<tr><td><strong>filter 操作</strong></td><td><code>stream.filter(Predicate&lt;T&gt;)</code></td><td><code>iter.filter(|x| ...)</code></td></tr>
+<tr><td><strong>reduce 操作</strong></td><td><code>stream.reduce(identity, op)</code></td><td><code>iter.fold(init, op)</code></td></tr>
+<tr><td><strong>collect 操作</strong></td><td><code>stream.collect(Collectors.toList())</code></td><td><code>iter.collect::&lt;Vec&lt;_&gt;&gt;()</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="2464-常见操作对比示例"><a class="header" href="#2464-常见操作对比示例">24.6.4 常见操作对比示例</a></h3>
+<p><strong>map / filter / collect</strong>：</p>
+<pre><code class="language-java">// Java
+List&lt;Integer&gt; result = numbers.stream()
+    .filter(n -&gt; n % 2 == 0)
+    .map(n -&gt; n * n)
+    .collect(Collectors.toList());
+</code></pre>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust
+let result: Vec&lt;i32&gt; = numbers
+    .iter()
+    .filter(|&amp;&amp;n| n % 2 == 0)
+    .map(|&amp;n| n * n)
+    .collect();
+<span class="boring">}</span></code></pre>
+<p><strong>reduce / fold</strong>：</p>
+<pre><code class="language-java">// Java
+int sum = numbers.stream()
+    .reduce(0, (a, b) -&gt; a + b);
+</code></pre>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust
+let sum: i32 = numbers
+    .iter()
+    .fold(0, |a, b| a + b);
+<span class="boring">}</span></code></pre>
+<p><strong>flatMap / flatten</strong>：</p>
+<pre><code class="language-java">// Java
+List&lt;Integer&gt; flat = lists.stream()
+    .flatMap(List::stream)
+    .collect(Collectors.toList());
+</code></pre>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rust
+let flat: Vec&lt;i32&gt; = lists
+    .iter()
+    .flatten()
+    .copied()
+    .collect();
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="247-实战1brc-挑战"><a class="header" href="#247-实战1brc-挑战">24.7 实战：1BRC 挑战</a></h2>
+<h3 id="2471-问题描述"><a class="header" href="#2471-问题描述">24.7.1 问题描述</a></h3>
+<p><strong>1BRC</strong>（The One Billion Row Challenge）是一个编程挑战：处理一个包含 10 亿行气象数据的文本文件，计算每个城市的最低温度、平均温度和最高温度。</p>
+<p>每行数据的格式为：<code>城市名;温度值</code>，例如：</p>
+<pre><code>Hamburg;12.0
+Bulawayo;8.9
+Palembang;38.8
+</code></pre>
+<h3 id="2472-rust-实现"><a class="header" href="#2472-rust-实现">24.7.2 Rust 实现</a></h3>
+<p>下面的实现展示了 Rust 中函数式编程思想的实际应用，包括迭代器链式调用、HashMap 的 <code>entry</code> API 等。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// The One Billion Row Challenge(1BRC)
+/// https://github.com/gunnarmorling/1brc/blob/main/src/main/java/dev/morling/onebrc/CalculateAverage_thomaswue.java
+
+use std::collections::hash_map::Entry;
+use std::collections::HashMap;
+use std::io::prelude::*;
+use std::io::BufReader;
+use std::fs::File;
+use std::path::Path;
+
+fn one_billion_row_challenge() {
+    // let records = String::from("");
+
+    #[derive(Debug, Clone, Copy)]
+    struct WeatherResult {
+        min: f32,
+        max: f32,
+        sum: u64,
+        count: u32,
+    }
+
+    let mut words: HashMap&lt;String, WeatherResult&gt; = HashMap::with_capacity(42000);
+    // let mut words: HashMap&lt;String, i32&gt; = HashMap::with_capacity(300);
+    match File::open("file/measurements.txt") {
+        Ok(f) =&gt; {
+            let reader = BufReader::new(f);
+            let lines = reader.lines();
+            for line in lines.map(|x| x.unwrap()) {
+                // let pair: Vec&lt;&amp;str&gt; = line.split(';').collect();
+                // let pair = line.split_once(';').unwrap();
+                let pair = line.rsplit_once(';').unwrap();
+
+                let city_name = pair.0.to_string();
+                let weather_temp = pair.1.to_string();
+
+                match words.entry(city_name.clone()) {
+                    Entry::Occupied(entry) =&gt; {
+                        let mut value = entry.into_mut();
+                        value.count += 1;
+
+                        let temp: f32 = weather_temp.parse().unwrap();
+
+                        let sum: u64 = (temp * 10000.0) as u64;
+                        value.sum += sum;
+
+                        if value.min &gt; temp {
+                            value.min = temp;
+                        } else if value.max &lt; temp {
+                            value.max = temp;
+                        }
+                    }
+                    Entry::Vacant(entry) =&gt; {
+                        let temp: f32 = weather_temp.parse().unwrap();
+                        let sum: u64 = (temp * 10000.0) as u64;
+
+                        let wr = WeatherResult {
+                            min: temp,
+                            max: temp,
+                            sum,
+                            count: 1u32,
+                        };
+
+                        // println!("insert value {}", city_name.clone());
+                        let _ = *entry.insert(wr);
+                    }
+                }
+            }
+        }
+        Err(e) =&gt; println!("{}", e),
+    }
+
+    let mut rank: Vec&lt;(String, WeatherResult)&gt; = words.into_iter().collect();
+    rank.sort_by_key(|pair| pair.0.clone());
+    rank.iter().for_each(|(key, value)| {
+        println!(
+            "{} {}/{:.4}/{}",
+            key,
+            value.min,
+            value.sum as f64 / (10000f64 * (value.count as f64)),
+            value.max
+        );
+    });
+}
+
+let path = Path::new("src/file/measurements.txt");
+println!("尝试读取文件: {:?}", path.canonicalize());
+
+one_billion_row_challenge();
+<span class="boring">}</span></code></pre>
+<h3 id="2473-代码中的函数式编程思想"><a class="header" href="#2473-代码中的函数式编程思想">24.7.3 代码中的函数式编程思想</a></h3>
+<ol>
+<li><strong>迭代器链式调用</strong>：<code>reader.lines()</code> 返回一个迭代器，<code>map(|x| x.unwrap())</code> 对每个元素进行转换</li>
+<li><strong>HashMap 的 <code>entry</code> API</strong>：<code>words.entry(city_name.clone())</code> 提供了一种函数式的方式来处理“键存在“和“键不存在“两种情况，避免了重复的哈希查找</li>
+<li><strong>不可变与可变的平衡</strong>：<code>WeatherResult</code> 结构体用 <code>Copy</code> trait 实现值语义，而 <code>HashMap</code> 用可变引用来更新状态</li>
+<li><strong>消费迭代器</strong>：<code>words.into_iter().collect()</code> 消费 HashMap，将其转换为 <code>Vec</code> 进行排序</li>
+<li><strong>声明式输出</strong>：<code>rank.iter().for_each(...)</code> 用声明式方式遍历并打印结果</li>
+</ol>
+<hr>
+<h2 id="248-总结"><a class="header" href="#248-总结">24.8 总结</a></h2>
+<h3 id="2481-λ演算核心概念对比"><a class="header" href="#2481-λ演算核心概念对比">24.8.1 λ演算核心概念对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>数学表示</th><th>含义</th><th>Rust 对应</th></tr>
+</thead>
+<tbody>
+<tr><td>变量</td><td>$x$</td><td>符号占位</td><td>变量绑定</td></tr>
+<tr><td>抽象</td><td>$\lambda x . M$</td><td>匿名函数定义</td><td>闭包 <code>|x| ...</code></td></tr>
+<tr><td>应用</td><td>$(M , N)$</td><td>函数调用</td><td><code>f(x)</code></td></tr>
+<tr><td>α转换</td><td>$\lambda x . M \equiv_\alpha \lambda y . M[x:=y]$</td><td>变量重命名</td><td>无直接对应</td></tr>
+<tr><td>β归约</td><td>$(\lambda x . M) , N \to_\beta M[x:=N]$</td><td>函数求值</td><td>闭包调用</td></tr>
+<tr><td>η转换</td><td>$\lambda x . (f , x) = f$</td><td>函数等价</td><td>无直接对应</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="2482-函数式编程特性"><a class="header" href="#2482-函数式编程特性">24.8.2 函数式编程特性</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th>描述</th><th>Rust 支持程度</th></tr>
+</thead>
+<tbody>
+<tr><td>纯函数</td><td>无副作用，引用透明</td><td>语言鼓励，但不强制</td></tr>
+<tr><td>不可变性</td><td>默认不可变</td><td><code>let</code> 默认不可变，<code>let mut</code> 可变</td></tr>
+<tr><td>高阶函数</td><td>函数作为参数/返回值</td><td>完全支持（闭包 + trait）</td></tr>
+<tr><td>惰性求值</td><td>按需计算</td><td>迭代器惰性，表达式严格求值</td></tr>
+<tr><td>递归</td><td>函数调用自身</td><td>支持，但需注意栈溢出</td></tr>
+<tr><td>模式匹配</td><td>解构数据结构</td><td>强大的 <code>match</code> 表达式</td></tr>
+<tr><td>类型推断</td><td>编译器推断类型</td><td>局部类型推断</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="2483-rust-闭包类型对比"><a class="header" href="#2483-rust-闭包类型对比">24.8.3 Rust 闭包类型对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Trait</th><th>捕获方式</th><th>调用次数</th><th>使用场景</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Fn</code></td><td><code>&amp;self</code>（不可变借用）</td><td>多次</td><td>只读取环境变量</td></tr>
+<tr><td><code>FnMut</code></td><td><code>&amp;mut self</code>（可变借用）</td><td>多次</td><td>需要修改环境变量</td></tr>
+<tr><td><code>FnOnce</code></td><td><code>self</code>（移动所有权）</td><td>一次</td><td>消费环境变量</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="249-练习题"><a class="header" href="#249-练习题">24.9 练习题</a></h2>
+<h3 id="练习-241"><a class="header" href="#练习-241">练习 24.1</a></h3>
+<p>将以下数学函数写成λ表达式：</p>
+<ol>
+<li>$f(x) = x^2$</li>
+<li>$f(x, y) = x + y$</li>
+<li>一个函数，接受两个参数，返回较大的那个</li>
+</ol>
+<h3 id="练习-242"><a class="header" href="#练习-242">练习 24.2</a></h3>
+<p>对以下λ表达式进行 β 归约，写出每一步：</p>
+<ol>
+<li>$(\lambda x . x , x) , (\lambda y . y)$</li>
+<li>$(\lambda x . \lambda y . x , y) , a , b$</li>
+<li>$(\lambda f . \lambda x . f , (f , x)) , (\lambda y . y + 1) , 3$</li>
+</ol>
+<h3 id="练习-243"><a class="header" href="#练习-243">练习 24.3</a></h3>
+<p>验证 Church 布尔值的 <code>AND</code> 运算：证明 $\text{AND} , \text{TRUE} , \text{FALSE} = \text{FALSE}$，其中 $\text{AND} = \lambda p . \lambda q . p , q , p$。</p>
+<h3 id="练习-244"><a class="header" href="#练习-244">练习 24.4</a></h3>
+<p>用 Church 编码定义乘法运算 $\text{MULT} = \lambda m . \lambda n . \lambda f . m , (n , f)$，并验证 $\text{MULT} , 2 , 3 = 6$。</p>
+<h3 id="练习-245"><a class="header" href="#练习-245">练习 24.5</a></h3>
+<p>编写一个 Rust 闭包，实现 Church 数的后继函数（Successor）的功能：接受一个 <code>u32</code>，返回其加一的结果。然后使用 <code>fold</code> 将该闭包应用 5 次到初始值 0 上。</p>
+<h3 id="练习-246"><a class="header" href="#练习-246">练习 24.6</a></h3>
+<p>给定一个 <code>Vec&lt;String&gt;</code>，使用迭代器方法链完成以下操作（每个操作一行代码）：</p>
+<ol>
+<li>筛选出长度大于 3 的字符串</li>
+<li>将所有字符串转换为大写</li>
+<li>按字典序排序</li>
+<li>去重</li>
+<li>收集为 <code>Vec&lt;String&gt;</code></li>
+</ol>
+<h3 id="练习-247"><a class="header" href="#练习-247">练习 24.7</a></h3>
+<p>实现一个 Rust 函数 <code>compose_three</code>，它接受三个函数 <code>f</code>、<code>g</code>、<code>h</code>，返回它们的组合 $f \circ g \circ h$（即先应用 $h$，再应用 $g$，最后应用 $f$）。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn compose_three&lt;F, G, H, A, B, C, D&gt;(f: F, g: G, h: H) -&gt; impl Fn(A) -&gt; D
+where
+    F: Fn(C) -&gt; D,
+    G: Fn(B) -&gt; C,
+    H: Fn(A) -&gt; B,
+{
+    // 你的实现
+}
+<span class="boring">}</span></code></pre>
+<h3 id="练习-248"><a class="header" href="#练习-248">练习 24.8</a></h3>
+<p>阅读 1BRC 代码，回答以下问题：</p>
+<ol>
+<li>为什么使用 <code>rsplit_once(';')</code> 而不是 <code>split_once(';')</code>？</li>
+<li>为什么温度值要乘以 <code>10000.0</code> 后转为 <code>u64</code> 存储？</li>
+<li>如果将代码中的 <code>for line in lines.map(|x| x.unwrap())</code> 改为 <code>lines.for_each(...)</code>，需要做哪些修改？</li>
+<li>（挑战）尝试使用 <code>rayon</code> crate 将 1BRC 代码并行化，使用 <code>par_iter()</code> 处理文件行。</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_23_Sort.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_25_AI.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_23_Sort.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_25_AI.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

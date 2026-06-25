@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电费查询系统</title>
+    <script src="https://assets.pyecharts.org/assets/v6/echarts.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', Arial, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #1a6fc4 0%, #0d4b8e 100%);
+            color: #fff;
+            padding: 0 24px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar .icon { font-size: 24px; }
+        .navbar h1 { font-size: 20px; font-weight: 700; letter-spacing: 1px; }
+        .navbar .sub { font-size: 13px; opacity: 0.75; margin-left: auto; }
+
+        .tab-bar {
+            display: flex;
+            background: #fff;
+            border-bottom: 2px solid #e8ecf0;
+            padding: 0 24px;
+        }
+        .tab-btn {
+            padding: 14px 28px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 15px;
+            color: #666;
+            font-family: inherit;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .tab-btn:hover { color: #1a6fc4; }
+        .tab-btn.active { color: #1a6fc4; border-bottom-color: #1a6fc4; }
+
+        .main { padding: 24px; max-width: 1400px; margin: 0 auto; }
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            padding: 20px 24px;
+            margin-bottom: 20px;
+        }
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a6fc4;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 16px;
+            background: #1a6fc4;
+            border-radius: 2px;
+        }
+
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: flex-end;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .filter-group label {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+        .filter-group input,
+        .filter-group select {
+            height: 36px;
+            padding: 0 10px;
+            border: 1px solid #d0d7e0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #333;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .filter-group input:focus,
+        .filter-group select:focus { border-color: #1a6fc4; box-shadow: 0 0 0 2px rgba(26,111,196,0.1); }
+        .filter-group select { min-width: 140px; }
+        .filter-group input[type=month] { min-width: 150px; }
+
+        .btn {
+            height: 36px;
+            padding: 0 22px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: inherit;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1a6fc4, #0d4b8e);
+            color: #fff;
+        }
+        .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+        .btn-reset {
+            background: #f0f2f5;
+            color: #555;
+            border: 1px solid #d0d7e0;
+        }
+        .btn-reset:hover { background: #e4e8ef; }
+
+        .stats-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            background: #f7f9fc;
+            border: 1px solid #e0e8f0;
+            border-radius: 8px;
+            padding: 10px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 150px;
+        }
+        .stat-label { font-size: 12px; color: #888; }
+        .stat-value { font-size: 18px; font-weight: 700; color: #1a6fc4; }
+        .stat-value.warn { color: #e85d04; }
+
+        .table-wrap { overflow-x: auto; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        thead th {
+            background: #eef3fb;
+            color: #1a6fc4;
+            font-weight: 600;
+            padding: 11px 14px;
+            text-align: center;
+            border-bottom: 2px solid #c8d8ee;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+        }
+        thead th:hover { background: #dce8f5; }
+        thead th .sort-icon { font-size: 11px; margin-left: 4px; opacity: 0.6; }
+        tbody tr { transition: background 0.15s; }
+        tbody tr:hover { background: #f0f6ff; }
+        tbody tr:nth-child(even) { background: #f8fafd; }
+        tbody tr:nth-child(even):hover { background: #f0f6ff; }
+        tbody td {
+            padding: 10px 14px;
+            text-align: center;
+            border-bottom: 1px solid #eef0f4;
+        }
+        td.room { font-weight: 600; color: #1a6fc4; }
+        td.payable { color: #c0392b; font-weight: 600; }
+        td.paid { color: #27ae60; font-weight: 600; }
+        td.null-val { color: #bbb; font-size: 12px; }
+        .no-data {
+            text-align: center;
+            padding: 48px;
+            color: #aaa;
+            font-size: 15px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .page-info { font-size: 13px; color: #888; }
+        .page-btns { display: flex; gap: 6px; align-items: center; }
+        .page-btn {
+            height: 32px;
+            min-width: 32px;
+            padding: 0 10px;
+            border: 1px solid #d0d7e0;
+            border-radius: 5px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 13px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .page-btn:hover { border-color: #1a6fc4; color: #1a6fc4; }
+        .page-btn.active { background: #1a6fc4; color: #fff; border-color: #1a6fc4; }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .page-size-select { height: 32px; border: 1px solid #d0d7e0; border-radius: 5px; padding: 0 6px; font-size: 13px; }
+
+        .chart-container { width: 100%; height: 480px; }
+        .chart-info {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .chart-info-item {
+            flex: 1;
+            min-width: 160px;
+            background: #f7f9fc;
+            border-radius: 8px;
+            padding: 14px 18px;
+            border: 1px solid #e0e8f0;
+        }
+        .chart-info-item .ci-label { font-size: 12px; color: #888; margin-bottom: 4px; }
+        .chart-info-item .ci-value { font-size: 22px; font-weight: 700; }
+        .ci-value.red { color: #c0392b; }
+        .ci-value.green { color: #27ae60; }
+        .ci-value.blue { color: #1a6fc4; }
+
+        @media (max-width: 700px) {
+            .main { padding: 12px; }
+            .filter-row { gap: 10px; }
+            .tab-btn { padding: 12px 14px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <span class="icon">&#9889;</span>
+    <h1>电费查询系统</h1>
+    <span class="sub">数据来源：AB.xlsx &nbsp;|&nbsp; 2016年 ~ 2025年 &nbsp;|&nbsp; 共 129 户</span>
+</div>
+
+<div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('list')">&#128203; 电费明细查询</button>
+    <button class="tab-btn" onclick="switchTab('chart')">&#128200; 累计费用图表</button>
+</div>
+
+<div class="main">
+    <!-- ===== 列表查询面板 ===== -->
+    <div id="panel-list" class="panel active">
+        <div class="card">
+            <div class="card-title">查询条件</div>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>开始日期</label>
+                    <input type="month" id="startDate" value="2016-01">
+                </div>
+                <div class="filter-group">
+                    <label>结束日期</label>
+                    <input type="month" id="endDate" value="2025-04">
+                </div>
+                <div class="filter-group">
+                    <label>房号</label>
+                    <select id="roomFilter">
+                        <option value="">全部房号</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>应交筛选</label>
+                    <select id="payableFilter">
+                        <option value="">全部</option>
+                        <option value="has">有应交金额</option>
+                        <option value="null">无应交记录</option>
+                        <option value="gt0">应交 &gt; 0</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>已交筛选</label>
+                    <select id="paidFilter">
+                        <option value="">全部</option>
+                        <option value="has">有已交金额</option>
+                        <option value="null">无已交记录</option>
+                        <option value="gt0">已交 &gt; 0</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>&nbsp;</label>
+                    <div style="display:flex;gap:8px;">
+                        <button class="btn btn-primary" onclick="doSearch()">&#128269; 查询</button>
+                        <button class="btn btn-reset" onclick="resetFilters()">&#8635; 重置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-label">查询结果</span>
+                    <span class="stat-value" id="statTotal">-</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">应交合计（元）</span>
+                    <span class="stat-value warn" id="statPayable">-</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">已交合计（元）</span>
+                    <span class="stat-value" id="statPaid">-</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">涉及房号数</span>
+                    <span class="stat-value" id="statRooms">-</span>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table id="resultTable">
+                    <thead>
+                        <tr>
+                            <th onclick="sortBy('d')">日期 <span class="sort-icon" id="sort-d">&#9660;</span></th>
+                            <th onclick="sortBy('r')">房号 <span class="sort-icon" id="sort-r"></span></th>
+                            <th onclick="sortBy('p')">应交（元）<span class="sort-icon" id="sort-p"></span></th>
+                            <th onclick="sortBy('a')">已交（元）<span class="sort-icon" id="sort-a"></span></th>
+                            <th>差额（元）</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr><td colspan="5" class="no-data">请点击【查询】按钮加载数据</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <div class="page-info" id="pageInfo"></div>
+                <div class="page-btns">
+                    <span style="font-size:13px;color:#888;">每页</span>
+                    <select class="page-size-select" id="pageSizeSelect" onchange="changePageSize()">
+                        <option value="20">20</option>
+                        <option value="50" selected>50</option>
+                        <option value="100">100</option>
+                        <option value="200">200</option>
+                    </select>
+                    <span style="font-size:13px;color:#888;">条</span>
+                    <button class="page-btn" id="btnFirst" onclick="goPage(1)">&#171;</button>
+                    <button class="page-btn" id="btnPrev" onclick="goPage(curPage-1)">&#8249;</button>
+                    <span id="pageNums"></span>
+                    <button class="page-btn" id="btnNext" onclick="goPage(curPage+1)">&#8250;</button>
+                    <button class="page-btn" id="btnLast" onclick="goPage(totalPages)">&#187;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 图表面板 ===== -->
+    <div id="panel-chart" class="panel">
+        <div class="card">
+            <div class="card-title">查询条件</div>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>选择房号 <span style="color:#e85d04">*</span></label>
+                    <select id="chartRoom" style="min-width:180px;">
+                        <option value="">请选择房号</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>开始日期</label>
+                    <input type="month" id="chartStart" value="2016-01">
+                </div>
+                <div class="filter-group">
+                    <label>结束日期</label>
+                    <input type="month" id="chartEnd" value="2025-04">
+                </div>
+                <div class="filter-group">
+                    <label>图表类型</label>
+                    <select id="chartType">
+                        <option value="cumulative">累计应交 vs 已交</option>
+                        <option value="monthly">每月应交 vs 已交</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-primary" onclick="drawChart()">&#128202; 生成图表</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="chart-info" id="chartStats" style="display:none;">
+                <div class="chart-info-item">
+                    <div class="ci-label">房号</div>
+                    <div class="ci-value blue" id="ciRoom">-</div>
+                </div>
+                <div class="chart-info-item">
+                    <div class="ci-label">累计应交（元）</div>
+                    <div class="ci-value red" id="ciPayable">-</div>
+                </div>
+                <div class="chart-info-item">
+                    <div class="ci-label">累计已交（元）</div>
+                    <div class="ci-value green" id="ciPaid">-</div>
+                </div>
+                <div class="chart-info-item">
+                    <div class="ci-label">差额（元）</div>
+                    <div class="ci-value" id="ciDiff">-</div>
+                </div>
+                <div class="chart-info-item">
+                    <div class="ci-label">统计月份数</div>
+                    <div class="ci-value blue" id="ciMonths">-</div>
+                </div>
+            </div>
+            <div id="chartContainer" class="chart-container"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+const RAW_DATA = __DATA_JSON__;
+const ALL_ROOMS = __ROOMS_JSON__;
+
+let filteredData = [];
+let sortField = 'd';
+let sortDir = -1;
+let curPage = 1;
+let pageSize = 50;
+let totalPages = 1;
+let chartInstance = null;
+
+(function init() {
+    const roomSel = document.getElementById('roomFilter');
+    const chartRoomSel = document.getElementById('chartRoom');
+    ALL_ROOMS.forEach(function(r) {
+        roomSel.innerHTML += '<option value="' + r + '">' + r + '</option>';
+        chartRoomSel.innerHTML += '<option value="' + r + '">' + r + '</option>';
+    });
+    doSearch();
+})();
+
+function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(function(b, i) {
+        b.classList.toggle('active', (i===0 && tab==='list') || (i===1 && tab==='chart'));
+    });
+    document.getElementById('panel-list').classList.toggle('active', tab === 'list');
+    document.getElementById('panel-chart').classList.toggle('active', tab === 'chart');
+}
+
+function doSearch() {
+    var startDate = document.getElementById('startDate').value;
+    var endDate = document.getElementById('endDate').value;
+    var roomF = document.getElementById('roomFilter').value;
+    var payableF = document.getElementById('payableFilter').value;
+    var paidF = document.getElementById('paidFilter').value;
+
+    filteredData = RAW_DATA.filter(function(r) {
+        if (startDate && r.d < startDate) return false;
+        if (endDate && r.d > endDate) return false;
+        if (roomF && r.r !== roomF) return false;
+        if (payableF === 'has' && r.p === null) return false;
+        if (payableF === 'null' && r.p !== null) return false;
+        if (payableF === 'gt0' && (r.p === null || r.p <= 0)) return false;
+        if (paidF === 'has' && r.a === null) return false;
+        if (paidF === 'null' && r.a !== null) return false;
+        if (paidF === 'gt0' && (r.a === null || r.a <= 0)) return false;
+        return true;
+    });
+
+    applySortNoRender();
+    curPage = 1;
+    renderTable();
+    renderStats();
+}
+
+function resetFilters() {
+    document.getElementById('startDate').value = '2016-01';
+    document.getElementById('endDate').value = '2025-04';
+    document.getElementById('roomFilter').value = '';
+    document.getElementById('payableFilter').value = '';
+    document.getElementById('paidFilter').value = '';
+    doSearch();
+}
+
+function sortBy(field) {
+    if (sortField === field) {
+        sortDir *= -1;
+    } else {
+        sortField = field;
+        sortDir = field === 'd' ? -1 : 1;
+    }
+    ['d', 'r', 'p', 'a'].forEach(function(f) {
+        var el = document.getElementById('sort-' + f);
+        el.innerHTML = '';
+        el.style.opacity = '0.3';
+    });
+    var icon = document.getElementById('sort-' + field);
+    icon.innerHTML = sortDir === 1 ? '&#9650;' : '&#9660;';
+    icon.style.opacity = '1';
+    applySortNoRender();
+    curPage = 1;
+    renderTable();
+}
+
+function applySortNoRender() {
+    var sf = sortField, sd = sortDir;
+    filteredData.sort(function(a, b) {
+        var va = a[sf], vb = b[sf];
+        if (va === null || va === undefined) va = sd > 0 ? Infinity : -Infinity;
+        if (vb === null || vb === undefined) vb = sd > 0 ? Infinity : -Infinity;
+        if (typeof va === 'string') return sd * va.localeCompare(vb);
+        return sd * (va - vb);
+    });
+}
+
+function renderStats() {
+    var total = filteredData.length;
+    var sumP = 0, sumA = 0;
+    var roomSet = new Set();
+    filteredData.forEach(function(r) {
+        if (r.p !== null) sumP += r.p;
+        if (r.a !== null) sumA += r.a;
+        roomSet.add(r.r);
+    });
+    document.getElementById('statTotal').textContent = total.toLocaleString() + ' 条';
+    document.getElementById('statPayable').textContent = sumP.toFixed(2);
+    document.getElementById('statPaid').textContent = sumA.toFixed(2);
+    document.getElementById('statRooms').textContent = roomSet.size + ' 户';
+}
+
+function renderTable() {
+    pageSize = parseInt(document.getElementById('pageSizeSelect').value);
+    totalPages = Math.max(1, Math.ceil(filteredData.length / pageSize));
+    if (curPage > totalPages) curPage = totalPages;
+
+    var start = (curPage - 1) * pageSize;
+    var pageData = filteredData.slice(start, start + pageSize);
+    var tbody = document.getElementById('tableBody');
+
+    if (filteredData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="no-data">暂无符合条件的数据</td></tr>';
+        document.getElementById('pageInfo').textContent = '';
+        document.getElementById('pageNums').innerHTML = '';
+        return;
+    }
+
+    var rows = pageData.map(function(r) {
+        var diff = (r.p !== null && r.a !== null) ? (r.a - r.p) : null;
+        var diffStr = diff !== null
+            ? '<span style="color:' + (diff >= 0 ? '#27ae60' : '#c0392b') + '">' + (diff >= 0 ? '+' : '') + diff.toFixed(2) + '</span>'
+            : '<span class="null-val">-</span>';
+        return '<tr>'
+            + '<td>' + r.d + '</td>'
+            + '<td class="room">' + r.r + '</td>'
+            + '<td class="' + (r.p !== null ? 'payable' : 'null-val') + '">' + (r.p !== null ? r.p.toFixed(2) : '-') + '</td>'
+            + '<td class="' + (r.a !== null ? 'paid' : 'null-val') + '">' + (r.a !== null ? r.a.toFixed(2) : '-') + '</td>'
+            + '<td>' + diffStr + '</td>'
+            + '</tr>';
+    });
+    tbody.innerHTML = rows.join('');
+
+    document.getElementById('pageInfo').textContent = '共 ' + filteredData.length + ' 条，第 ' + curPage + ' / ' + totalPages + ' 页';
+
+    var pages = [];
+    if (totalPages <= 7) {
+        for (var i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+        pages = [1];
+        var lo = Math.max(2, curPage - 2), hi = Math.min(totalPages - 1, curPage + 2);
+        if (lo > 2) pages.push('...');
+        for (var j = lo; j <= hi; j++) pages.push(j);
+        if (hi < totalPages - 1) pages.push('...');
+        pages.push(totalPages);
+    }
+    var nums = pages.map(function(p) {
+        if (p === '...') return '<span style="padding:0 4px;color:#aaa">&#8230;</span>';
+        return '<button class="page-btn' + (p === curPage ? ' active' : '') + '" onclick="goPage(' + p + ')">' + p + '</button>';
+    }).join('');
+    document.getElementById('pageNums').innerHTML = nums;
+    document.getElementById('btnFirst').disabled = curPage === 1;
+    document.getElementById('btnPrev').disabled = curPage === 1;
+    document.getElementById('btnNext').disabled = curPage === totalPages;
+    document.getElementById('btnLast').disabled = curPage === totalPages;
+}
+
+function goPage(p) {
+    if (p < 1 || p > totalPages || p === curPage) return;
+    curPage = p;
+    renderTable();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function changePageSize() {
+    curPage = 1;
+    renderTable();
+}
+
+function drawChart() {
+    var room = document.getElementById('chartRoom').value;
+    if (!room) { alert('请先选择房号！'); return; }
+    var startD = document.getElementById('chartStart').value;
+    var endD = document.getElementById('chartEnd').value;
+    var chartType = document.getElementById('chartType').value;
+
+    var roomData = RAW_DATA.filter(function(r) {
+        return r.r === room
+            && (!startD || r.d >= startD)
+            && (!endD || r.d <= endD);
+    });
+    roomData.sort(function(a, b) { return a.d.localeCompare(b.d); });
+
+    if (roomData.length === 0) { alert('该房号在所选时间段内无数据'); return; }
+
+    var totalP = 0, totalA = 0;
+    roomData.forEach(function(r) {
+        if (r.p !== null) totalP += r.p;
+        if (r.a !== null) totalA += r.a;
+    });
+
+    document.getElementById('chartStats').style.display = 'flex';
+    document.getElementById('ciRoom').textContent = room;
+    document.getElementById('ciPayable').textContent = totalP.toFixed(2);
+    document.getElementById('ciPaid').textContent = totalA.toFixed(2);
+    var diff = totalA - totalP;
+    var diffEl = document.getElementById('ciDiff');
+    diffEl.textContent = (diff >= 0 ? '+' : '') + diff.toFixed(2);
+    diffEl.className = 'ci-value ' + (diff >= 0 ? 'green' : 'red');
+    document.getElementById('ciMonths').textContent = roomData.length + ' 月';
+
+    var container = document.getElementById('chartContainer');
+    if (!chartInstance) {
+        chartInstance = echarts.init(container, null, {renderer: 'canvas', locale: 'ZH'});
+        window.addEventListener('resize', function() { chartInstance.resize(); });
+    }
+
+    var option;
+    if (chartType === 'cumulative') {
+        var dates = [], cumP = [], cumA = [];
+        var cp = 0, ca = 0;
+        roomData.forEach(function(r) {
+            dates.push(r.d);
+            if (r.p !== null) cp += r.p;
+            if (r.a !== null) ca += r.a;
+            cumP.push(parseFloat(cp.toFixed(2)));
+            cumA.push(parseFloat(ca.toFixed(2)));
+        });
+        option = {
+            title: {
+                text: room + '  累计应交 & 已交电费',
+                left: 'center',
+                textStyle: { fontSize: 16, fontWeight: 'bold', color: '#1a6fc4' }
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { type: 'cross' },
+                formatter: function(params) {
+                    var s = '<b>' + params[0].axisValue + '</b><br/>';
+                    params.forEach(function(p) {
+                        s += p.marker + ' ' + p.seriesName + ': <b>' + p.value + ' 元</b><br/>';
+                    });
+                    return s;
+                }
+            },
+            legend: { data: ['累计应交', '累计已交'], top: 36 },
+            toolbox: {
+                show: true, right: 20,
+                feature: {
+                    saveAsImage: { title: '保存图片' },
+                    restore: { title: '还原' },
+                    dataZoom: { title: { zoom: '区域缩放', back: '还原' } },
+                    magicType: { type: ['line', 'bar'], title: { line: '折线图', bar: '柱状图' } }
+                }
+            },
+            grid: { top: 80, right: 40, bottom: 80, left: 80 },
+            xAxis: {
+                type: 'category', data: dates,
+                axisLabel: { rotate: 45, fontSize: 11 },
+                boundaryGap: false
+            },
+            yAxis: {
+                type: 'value', name: '金额（元）',
+                splitLine: { lineStyle: { type: 'dashed' } }
+            },
+            dataZoom: [
+                { type: 'inside', start: 0, end: 100 },
+                { type: 'slider', start: 0, end: 100, bottom: 10 }
+            ],
+            series: [
+                {
+                    name: '累计应交', type: 'line', data: cumP,
+                    smooth: true, symbol: 'circle', symbolSize: 4,
+                    lineStyle: { color: '#c0392b', width: 2 },
+                    itemStyle: { color: '#c0392b' },
+                    areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(192,57,43,0.18)' }, { offset: 1, color: 'rgba(192,57,43,0.02)' }] } },
+                    markPoint: { data: [{ type: 'max', name: '最大值' }] }
+                },
+                {
+                    name: '累计已交', type: 'line', data: cumA,
+                    smooth: true, symbol: 'circle', symbolSize: 4,
+                    lineStyle: { color: '#27ae60', width: 2 },
+                    itemStyle: { color: '#27ae60' },
+                    areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(39,174,96,0.18)' }, { offset: 1, color: 'rgba(39,174,96,0.02)' }] } },
+                    markPoint: { data: [{ type: 'max', name: '最大值' }] }
+                }
+            ]
+        };
+    } else {
+        var mdates = roomData.map(function(r) { return r.d; });
+        var mP = roomData.map(function(r) { return r.p !== null ? r.p : 0; });
+        var mA = roomData.map(function(r) { return r.a !== null ? r.a : 0; });
+        option = {
+            title: {
+                text: room + '  每月应交 & 已交电费',
+                left: 'center',
+                textStyle: { fontSize: 16, fontWeight: 'bold', color: '#1a6fc4' }
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { type: 'cross' },
+                formatter: function(params) {
+                    var s = '<b>' + params[0].axisValue + '</b><br/>';
+                    params.forEach(function(p) {
+                        s += p.marker + ' ' + p.seriesName + ': <b>' + p.value + ' 元</b><br/>';
+                    });
+                    return s;
+                }
+            },
+            legend: { data: ['应交', '已交'], top: 36 },
+            toolbox: {
+                show: true, right: 20,
+                feature: {
+                    saveAsImage: { title: '保存图片' },
+                    restore: { title: '还原' },
+                    dataZoom: { title: { zoom: '区域缩放', back: '还原' } },
+                    magicType: { type: ['line', 'bar'], title: { line: '折线图', bar: '柱状图' } }
+                }
+            },
+            grid: { top: 80, right: 40, bottom: 80, left: 80 },
+            xAxis: { type: 'category', data: mdates, axisLabel: { rotate: 45, fontSize: 11 } },
+            yAxis: {
+                type: 'value', name: '金额（元）',
+                splitLine: { lineStyle: { type: 'dashed' } }
+            },
+            dataZoom: [
+                { type: 'inside', start: 0, end: 100 },
+                { type: 'slider', start: 0, end: 100, bottom: 10 }
+            ],
+            series: [
+                {
+                    name: '应交', type: 'bar', data: mP,
+                    itemStyle: { color: 'rgba(192,57,43,0.78)', borderRadius: [3,3,0,0] },
+                    emphasis: { itemStyle: { color: '#c0392b' } }
+                },
+                {
+                    name: '已交', type: 'bar', data: mA,
+                    itemStyle: { color: 'rgba(39,174,96,0.78)', borderRadius: [3,3,0,0] },
+                    emphasis: { itemStyle: { color: '#27ae60' } }
+                }
+            ]
+        };
+    }
+    chartInstance.setOption(option, true);
+    chartInstance.resize();
+}
+</script>
+</body>
+</html>

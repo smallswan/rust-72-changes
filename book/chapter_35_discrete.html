@@ -1,0 +1,623 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第三十五 离散数学 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第三十五-离散数学discrete-mathematics"><a class="header" href="#第三十五-离散数学discrete-mathematics">第三十五 离散数学（Discrete Mathematics）</a></h1>
+<p>离散数学是研究离散量的结构及其相互关系的数学分支，与连续数学（如微积分）相对。它是计算机科学的理论基础，为算法设计、数据结构、数据库、编译原理、密码学等提供了核心数学工具。</p>
+<hr>
+<h2 id="一集合论"><a class="header" href="#一集合论">一、集合论</a></h2>
+<h3 id="11-基本概念"><a class="header" href="#11-基本概念">1.1 基本概念</a></h3>
+<p><strong>集合</strong>：一组确定的、互不相同的对象的全体。集合中的对象称为<strong>元素</strong>。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>符号</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td>$a \in A$</td><td>$a$ 属于集合 $A$</td></tr>
+<tr><td>$a \notin A$</td><td>$a$ 不属于集合 $A$</td></tr>
+<tr><td>$\emptyset$</td><td>空集</td></tr>
+<tr><td>$|A|$</td><td>集合 $A$ 的元素个数（基数）</td></tr>
+<tr><td>$\mathcal{U}$</td><td>全集</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="12-集合间的关系"><a class="header" href="#12-集合间的关系">1.2 集合间的关系</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>关系</th><th>符号</th><th>定义</th></tr>
+</thead>
+<tbody>
+<tr><td>子集</td><td>$A \subseteq B$</td><td>$A$ 的每个元素都属于 $B$</td></tr>
+<tr><td>真子集</td><td>$A \subset B$</td><td>$A \subseteq B$ 且 $A \neq B$</td></tr>
+<tr><td>相等</td><td>$A = B$</td><td>$A \subseteq B$ 且 $B \subseteq A$</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="13-集合运算"><a class="header" href="#13-集合运算">1.3 集合运算</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>运算</th><th>符号</th><th>定义</th></tr>
+</thead>
+<tbody>
+<tr><td>并集</td><td>$A \cup B$</td><td>属于 $A$ 或属于 $B$ 的元素</td></tr>
+<tr><td>交集</td><td>$A \cap B$</td><td>同时属于 $A$ 和 $B$ 的元素</td></tr>
+<tr><td>差集</td><td>$A - B$</td><td>属于 $A$ 但不属于 $B$ 的元素</td></tr>
+<tr><td>补集</td><td>$\bar{A}$</td><td>属于全集但不属于 $A$ 的元素</td></tr>
+<tr><td>对称差</td><td>$A \triangle B$</td><td>$(A - B) \cup (B - A)$</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>运算律：</strong></p>
+<p>$$A \cup B = B \cup A \quad \text{（交换律）}$$
+$$A \cap (B \cup C) = (A \cap B) \cup (A \cap C) \quad \text{（分配律）}$$
+$$\overline{A \cup B} = \bar{A} \cap \bar{B} \quad \text{（德摩根定律）}$$
+$$\overline{A \cap B} = \bar{A} \cup \bar{B} \quad \text{（德摩根定律）}$$</p>
+<pre class="playground"><code class="language-rust edition2024">use std::collections::{HashSet, BTreeSet};
+
+fn main() {
+    let a: HashSet&lt;i32&gt; = [1, 2, 3, 4].iter().cloned().collect();
+    let b: HashSet&lt;i32&gt; = [3, 4, 5, 6].iter().cloned().collect();
+
+    // 并集
+    let union: BTreeSet&lt;_&gt; = a.union(&amp;b).cloned().collect();
+    println!("A ∪ B = {:?}", union);  // {1, 2, 3, 4, 5, 6}
+
+    // 交集
+    let intersection: BTreeSet&lt;_&gt; = a.intersection(&amp;b).cloned().collect();
+    println!("A ∩ B = {:?}", intersection);  // {3, 4}
+
+    // 差集
+    let difference: BTreeSet&lt;_&gt; = a.difference(&amp;b).cloned().collect();
+    println!("A - B = {:?}", difference);  // {1, 2}
+
+    // 对称差
+    let sym_diff: BTreeSet&lt;_&gt; = a.symmetric_difference(&amp;b).cloned().collect();
+    println!("A △ B = {:?}", sym_diff);  // {1, 2, 5, 6}
+}</code></pre>
+<h3 id="14-幂集"><a class="header" href="#14-幂集">1.4 幂集</a></h3>
+<p>集合 $A$ 的<strong>幂集</strong> $\mathcal{P}(A)$ 是 $A$ 的所有子集构成的集合。</p>
+<p>$$|\mathcal{P}(A)| = 2^{|A|}$$</p>
+<pre class="playground"><code class="language-rust edition2024">fn power_set&lt;T: Clone&gt;(set: &amp;[T]) -&gt; Vec&lt;Vec&lt;T&gt;&gt; {
+    let n = set.len();
+    let mut result = Vec::new();
+    for mask in 0..(1u32 &lt;&lt; n) {
+        let mut subset = Vec::new();
+        for i in 0..n {
+            if (mask &gt;&gt; i) &amp; 1 == 1 {
+                subset.push(set[i].clone());
+            }
+        }
+        result.push(subset);
+    }
+    result
+}
+
+fn main() {
+    let set = vec![1, 2, 3];
+    let ps = power_set(&amp;set);
+    println!("幂集（共 {} 个子集）:", ps.len());  // 8 = 2³
+    for subset in &amp;ps {
+        println!("  {:?}", subset);
+    }
+}</code></pre>
+<hr>
+<h2 id="二图论"><a class="header" href="#二图论">二、图论</a></h2>
+<h3 id="21-基本概念"><a class="header" href="#21-基本概念">2.1 基本概念</a></h3>
+<p><strong>图</strong> $G = (V, E)$ 由顶点集 $V$ 和边集 $E$ 组成。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>定义</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>有向图</strong></td><td>边有方向</td></tr>
+<tr><td><strong>无向图</strong></td><td>边无方向</td></tr>
+<tr><td><strong>完全图</strong> $K_n$</td><td>任意两个顶点之间都有边</td></tr>
+<tr><td><strong>度</strong></td><td>与顶点相连的边数</td></tr>
+<tr><td><strong>路径</strong></td><td>顶点与边交替的序列</td></tr>
+<tr><td><strong>回路</strong></td><td>起点和终点相同的路径</td></tr>
+<tr><td><strong>连通图</strong></td><td>任意两个顶点之间都有路径</td></tr>
+<tr><td><strong>树</strong></td><td>连通且无回路的图</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>握手定理：</strong> 无向图中所有顶点的度数之和等于边数的两倍：</p>
+<p>$$\sum_{v \in V} \deg(v) = 2|E|$$</p>
+<h3 id="22-七桥问题"><a class="header" href="#22-七桥问题">2.2 七桥问题</a></h3>
+<p>七桥问题是图论的起源。欧拉证明了：<strong>一个图存在一笔画（欧拉路径）的充要条件是：恰好有 0 个或 2 个奇数度的顶点。</strong></p>
+<ul>
+<li>0 个奇数度顶点 → 欧拉回路（起点和终点相同）</li>
+<li>2 个奇数度顶点 → 欧拉路径（起点和终点不同）</li>
+<li>其他情况 → 不存在一笔画</li>
+</ul>
+<h3 id="23-图的存储与遍历"><a class="header" href="#23-图的存储与遍历">2.3 图的存储与遍历</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use std::collections::{HashMap, HashSet, VecDeque};
+
+struct Graph {
+    adj: HashMap&lt;i32, Vec&lt;i32&gt;&gt;,
+}
+
+impl Graph {
+    fn new() -&gt; Self { Graph { adj: HashMap::new() } }
+
+    fn add_edge(&amp;mut self, u: i32, v: i32) {
+        self.adj.entry(u).or_default().push(v);
+        self.adj.entry(v).or_default().push(u);
+    }
+
+    // BFS 求最短路径
+    fn shortest_path(&amp;self, start: i32, end: i32) -&gt; Option&lt;Vec&lt;i32&gt;&gt; {
+        let mut visited = HashSet::new();
+        let mut queue = VecDeque::new();
+        let mut parent: HashMap&lt;i32, i32&gt; = HashMap::new();
+
+        visited.insert(start);
+        queue.push_back(start);
+
+        while let Some(node) = queue.pop_front() {
+            if node == end {
+                // 回溯路径
+                let mut path = Vec::new();
+                let mut current = end;
+                while current != start {
+                    path.push(current);
+                    current = parent[&amp;current];
+                }
+                path.push(start);
+                path.reverse();
+                return Some(path);
+            }
+            if let Some(neighbors) = self.adj.get(&amp;node) {
+                for &amp;neighbor in neighbors {
+                    if !visited.contains(&amp;neighbor) {
+                        visited.insert(neighbor);
+                        parent.insert(neighbor, node);
+                        queue.push_back(neighbor);
+                    }
+                }
+            }
+        }
+        None
+    }
+}
+
+fn main() {
+    let mut g = Graph::new();
+    g.add_edge(0, 1); g.add_edge(0, 2);
+    g.add_edge(1, 3); g.add_edge(2, 3);
+    g.add_edge(3, 4);
+
+    if let Some(path) = g.shortest_path(0, 4) {
+        println!("最短路径: {:?}", path);  // [0, 1, 3, 4] 或 [0, 2, 3, 4]
+    }
+}</code></pre>
+<h3 id="24-图的应用"><a class="header" href="#24-图的应用">2.4 图的应用</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>应用领域</th><th>具体应用</th></tr>
+</thead>
+<tbody>
+<tr><td>社交网络</td><td>好友关系、推荐系统</td></tr>
+<tr><td>地图导航</td><td>最短路径（Dijkstra、A*）</td></tr>
+<tr><td>网络协议</td><td>路由算法、最小生成树</td></tr>
+<tr><td>编译原理</td><td>语法树、依赖分析</td></tr>
+<tr><td>密码学</td><td>零知识证明、区块链</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="三数理逻辑"><a class="header" href="#三数理逻辑">三、数理逻辑</a></h2>
+<h3 id="31-命题与逻辑联结词"><a class="header" href="#31-命题与逻辑联结词">3.1 命题与逻辑联结词</a></h3>
+<p><strong>命题</strong>：可以判断真假的陈述句。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>联结词</th><th>符号</th><th>Rust</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td>非</td><td>$\neg$</td><td><code>!</code></td><td>取反</td></tr>
+<tr><td>与</td><td>$\land$</td><td><code>&amp;&amp;</code></td><td>同真才真</td></tr>
+<tr><td>或</td><td>$\lor$</td><td><code>||</code></td><td>有真则真</td></tr>
+<tr><td>蕴含</td><td>$\rightarrow$</td><td>—</td><td>只有前真后假时为假</td></tr>
+<tr><td>等价</td><td>$\leftrightarrow$</td><td><code>==</code></td><td>同真同假</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>蕴含的真值表：</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>$p$</th><th>$q$</th><th>$p \rightarrow q$</th></tr>
+</thead>
+<tbody>
+<tr><td>T</td><td>T</td><td>T</td></tr>
+<tr><td>T</td><td>F</td><td><strong>F</strong></td></tr>
+<tr><td>F</td><td>T</td><td>T</td></tr>
+<tr><td>F</td><td>F</td><td>T</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>注意：</strong> $p \rightarrow q$ 等价于 $\neg p \lor q$。当前提为假时，蕴含式恒为真。</p>
+</blockquote>
+<h3 id="32-量词"><a class="header" href="#32-量词">3.2 量词</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>量词</th><th>符号</th><th>含义</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td>全称量词</td><td>$\forall$</td><td>对所有</td><td>$\forall x &gt; 0, x^2 &gt; 0$</td></tr>
+<tr><td>存在量词</td><td>$\exists$</td><td>存在</td><td>$\exists x, x^2 = 4$</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>量词的否定：</strong></p>
+<p>$$\neg(\forall x, P(x)) = \exists x, \neg P(x)$$</p>
+<p>$$\neg(\exists x, P(x)) = \forall x, \neg P(x)$$</p>
+<hr>
+<h2 id="四组合数学"><a class="header" href="#四组合数学">四、组合数学</a></h2>
+<h3 id="41-加法原理与乘法原理"><a class="header" href="#41-加法原理与乘法原理">4.1 加法原理与乘法原理</a></h3>
+<p><strong>加法原理：</strong> 做一件事有 $n$ 类方法，第 $i$ 类有 $m_i$ 种方法，则总方法数为 $\sum m_i$。</p>
+<p><strong>乘法原理：</strong> 做一件事分 $n$ 步，第 $i$ 步有 $m_i$ 种方法，则总方法数为 $\prod m_i$。</p>
+<h3 id="42-排列与组合"><a class="header" href="#42-排列与组合">4.2 排列与组合</a></h3>
+<p>$$P(n,m) = \frac{n!}{(n-m)!}$$</p>
+<p>$$C(n,m) = \frac{n!}{m!(n-m)!}$$</p>
+<h3 id="43-鸽巢原理抽屉原理"><a class="header" href="#43-鸽巢原理抽屉原理">4.3 鸽巢原理（抽屉原理）</a></h3>
+<p>将 $n+1$ 个物品放入 $n$ 个盒子中，至少有一个盒子包含至少 2 个物品。</p>
+<blockquote>
+<p><strong>推论：</strong> 367 人中至少两人生日相同（一年最多 366 天）。</p>
+</blockquote>
+<h3 id="44-容斥原理"><a class="header" href="#44-容斥原理">4.4 容斥原理</a></h3>
+<p>$$|A \cup B| = |A| + |B| - |A \cap B|$$</p>
+<p>$$|A \cup B \cup C| = |A| + |B| + |C| - |A \cap B| - |A \cap C| - |B \cap C| + |A \cap B \cap C|$$</p>
+<hr>
+<h2 id="五关系"><a class="header" href="#五关系">五、关系</a></h2>
+<h3 id="51-二元关系"><a class="header" href="#51-二元关系">5.1 二元关系</a></h3>
+<p>从集合 $A$ 到集合 $B$ 的<strong>二元关系</strong>是 $A \times B$ 的子集。</p>
+<h3 id="52-关系的性质"><a class="header" href="#52-关系的性质">5.2 关系的性质</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>性质</th><th>定义</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>自反性</strong></td><td>$\forall a, (a,a) \in R$</td></tr>
+<tr><td><strong>对称性</strong></td><td>$(a,b) \in R \Rightarrow (b,a) \in R$</td></tr>
+<tr><td><strong>传递性</strong></td><td>$(a,b) \in R \land (b,c) \in R \Rightarrow (a,c) \in R$</td></tr>
+<tr><td><strong>反对称性</strong></td><td>$(a,b) \in R \land (b,a) \in R \Rightarrow a = b$</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="53-等价关系"><a class="header" href="#53-等价关系">5.3 等价关系</a></h3>
+<p>同时满足自反性、对称性、传递性的关系称为<strong>等价关系</strong>。</p>
+<p>等价关系将集合划分为若干<strong>等价类</strong>，等价类的集合称为<strong>商集</strong>。</p>
+<h3 id="54-偏序关系"><a class="header" href="#54-偏序关系">5.4 偏序关系</a></h3>
+<p>同时满足自反性、反对称性、传递性的关系称为<strong>偏序关系</strong>。</p>
+<p>偏序关系可以用<strong>哈斯图</strong>（Hasse Diagram）直观表示。</p>
+<hr>
+<h2 id="六代数结构"><a class="header" href="#六代数结构">六、代数结构</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>结构</th><th>定义</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>半群</strong></td><td>集合 + 满足结合律的运算</td><td>字符串拼接</td></tr>
+<tr><td><strong>群</strong></td><td>半群 + 有单位元 + 有逆元</td><td>整数加法 $(\mathbb{Z}, +)$</td></tr>
+<tr><td><strong>环</strong></td><td>群 + 第二种满足分配律的运算</td><td>整数环 $(\mathbb{Z}, +, \times)$</td></tr>
+<tr><td><strong>域</strong></td><td>环 + 第二种运算有逆元</td><td>有理数域 $(\mathbb{Q}, +, \times)$</td></tr>
+<tr><td><strong>格</strong></td><td>偏序集 + 任意两元素有上确界和下确界</td><td>子集格 $(\mathcal{P}(A), \subseteq)$</td></tr>
+<tr><td><strong>布尔代数</strong></td><td>格 + 补运算</td><td>命题逻辑</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>应用：</strong> 群论是 RSA、ECC 等密码算法的数学基础。有限域上的运算支撑着 AES、椭圆曲线等加密体系。</p>
+</blockquote>
+<hr>
+<h2 id="七学习资源"><a class="header" href="#七学习资源">七、学习资源</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>资源</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://www.amazon.com/">离散数学及其应用 (Rosen)</a></td><td>经典教材</td></tr>
+<tr><td><a href="https://visualgo.net/zh">VisuAlgo</a></td><td>图论算法可视化</td></tr>
+<tr><td><a href="https://www.3blue1brown.com/">3Blue1Brown</a></td><td>数学可视化</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="八总结"><a class="header" href="#八总结">八、总结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>分支</th><th>核心内容</th></tr>
+</thead>
+<tbody>
+<tr><td>集合论</td><td>并交差补、幂集、德摩根定律</td></tr>
+<tr><td>图论</td><td>顶点、边、路径、树、欧拉路径</td></tr>
+<tr><td>数理逻辑</td><td>命题、量词、蕴含、等价</td></tr>
+<tr><td>组合数学</td><td>排列组合、鸽巢原理、容斥原理</td></tr>
+<tr><td>关系</td><td>自反、对称、传递、等价关系、偏序关系</td></tr>
+<tr><td>代数结构</td><td>群、环、域、格、布尔代数</td></tr>
+</tbody>
+</table>
+</div>
+<p>离散数学是计算机科学的数学语言。从数据结构到算法设计，从数据库到密码学，离散数学的概念无处不在。</p>
+<blockquote>
+<p><strong>练习建议：</strong></p>
+<ol>
+<li>用 Rust 实现图的 DFS/BFS 遍历</li>
+<li>用容斥原理解决计数问题</li>
+<li>判断给定关系是否为等价关系或偏序关系</li>
+</ol>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_34_probability.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_36.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_34_probability.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_36.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

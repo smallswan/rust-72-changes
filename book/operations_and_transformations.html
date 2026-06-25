@@ -1,0 +1,387 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>中卷 运算与算法 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="中卷-运算与算法"><a class="header" href="#中卷-运算与算法">中卷 运算与算法</a></h1>
+<blockquote>
+<p>“算法是计算机的灵魂，数学是算法的灵魂。”</p>
+</blockquote>
+<h2 id="中卷概述"><a class="header" href="#中卷概述">中卷概述</a></h2>
+<p>如果说上卷“基础与类型“为我们搭建了Rust编程的基石，那么中卷“运算与算法“将带领我们进入计算机科学的核心地带——运算与算法的世界。从最简单的加减乘除到复杂的神经网络训练，从基本的位操作到高深的Lambda演算，运算与算法贯穿了编程的方方面面。</p>
+<p>计算机的本质就是一台运算机器。无论是处理用户输入、渲染图形界面，还是训练人工智能模型、加密敏感数据，背后都离不开各种各样的运算和算法。理解运算的原理和算法的思想，是每一位程序员从“会写代码“迈向“写好代码“的关键一步。</p>
+<p>本卷将从最基础的运算符出发，逐步深入到数据变换、数据处理、函数式编程、人工智能和数学运算等多个维度，全面展现Rust在运算与算法领域的强大能力和优雅表达。</p>
+<h2 id="从基本运算到复杂算法"><a class="header" href="#从基本运算到复杂算法">从基本运算到复杂算法</a></h2>
+<h3 id="基本运算算术关系逻辑位运算第十四十七章"><a class="header" href="#基本运算算术关系逻辑位运算第十四十七章">基本运算：算术、关系、逻辑、位运算（第十四~十七章）</a></h3>
+<p>Rust的运算符分为四大类，它们是构成一切复杂运算的基础：</p>
+<ul>
+<li><strong>算术运算符</strong>：<code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>%</code> 。Rust不支持<code>++</code> <code>--</code>运算符，可以使用<code>+=1</code> <code>-=1</code>替代。算术运算是所有计算的起点，从简单的计数到复杂的科学计算，都离不开这些基本操作。</li>
+<li><strong>关系运算符</strong>：<code>==</code> <code>!=</code> <code>&gt;</code> <code>&gt;=</code> <code>&lt;</code> <code>&lt;=</code> 。关系运算用于比较两个值的大小或相等性，是条件判断和排序算法的基石。</li>
+<li><strong>逻辑运算符</strong>：<code>&amp;&amp;</code> <code>||</code> <code>!</code> <code>^</code> <code>&amp;</code> <code>|</code> 。逻辑运算处理布尔值，用于组合多个条件，构建复杂的业务规则。</li>
+<li><strong>位运算符</strong>：<code>&amp;</code> <code>&amp;=</code> <code>|</code> <code>|=</code> <code>~</code> <code>^</code> <code>^=</code> <code>&gt;&gt;</code> <code>&lt;&lt;</code> 。位运算直接操作二进制位，在系统编程、图形处理、密码学等领域有着不可替代的作用。</li>
+</ul>
+<p>这四类运算符看似简单，却是构建一切复杂逻辑的砖瓦。在Rust中，这些运算符不仅可以用于基本类型，还可以通过运算符重载（<code>std::ops</code> trait）扩展到自定义类型，体现了Rust“零成本抽象“的设计理念。</p>
+<h3 id="数据变换交换反转旋转类型转换第十八十九章"><a class="header" href="#数据变换交换反转旋转类型转换第十八十九章">数据变换：交换、反转、旋转、类型转换（第十八~十九章）</a></h3>
+<p>数据在程序中的流动往往需要进行各种变换。交换两个变量的值、反转一个序列、旋转数组元素、在不同类型之间进行转换——这些看似简单的操作，却蕴含着丰富的编程技巧。</p>
+<p>Rust的所有权系统和类型安全为数据变换提供了独特的视角。如何在遵守所有权规则的前提下高效地交换数据？如何利用类型转换实现安全的数值计算？这些问题将在本部分得到深入探讨。</p>
+<h3 id="数据处理哈希压缩查询排序第二十二十三章"><a class="header" href="#数据处理哈希压缩查询排序第二十二十三章">数据处理：哈希、压缩、查询、排序（第二十~二十三章）</a></h3>
+<p>当数据量增大时，如何高效地处理数据成为关键问题。哈希算法提供了O(1)时间复杂度的数据查找能力；压缩算法帮助我们节省存储空间和传输带宽；查询与搜索算法让我们从海量数据中快速定位所需信息；排序算法则是数据处理中最基础也是最重要的操作之一。</p>
+<p>Rust的标准库和生态系统为这些操作提供了丰富的工具：从<code>std::collections::HashMap</code>到<code>flate2</code>压缩库，从线性搜索到二分查找，从冒泡排序到快速排序，我们将看到如何用Rust优雅而高效地实现这些经典算法。</p>
+<h3 id="函数式编程lambda演算第二十四章"><a class="header" href="#函数式编程lambda演算第二十四章">函数式编程：Lambda演算（第二十四章）</a></h3>
+<p>Lambda演算是函数式编程的理论基础，由阿隆佐·邱奇（Alonzo Church）于1930年代提出。它用一种极其简洁的方式定义了“计算“的本质——函数的应用和抽象。</p>
+<p>Rust虽然不是纯函数式语言，但它深受函数式编程思想的影响：闭包（closure）、迭代器（iterator）、高阶函数（higher-order function）等特性让Rust具备了强大的函数式编程能力。理解Lambda演算，将帮助我们更深入地理解Rust中这些特性的设计原理。</p>
+<h3 id="人工智能ai基础神经网络nlpcvrl生成式ai第二十五三十六四十章"><a class="header" href="#人工智能ai基础神经网络nlpcvrl生成式ai第二十五三十六四十章">人工智能：AI基础、神经网络、NLP、CV、RL、生成式AI（第二十五、三十六~四十章）</a></h3>
+<p>人工智能是当今最热门的技术领域之一，而Rust凭借其高性能和内存安全特性，正在AI基础设施领域崭露头角。</p>
+<p>从神经网络的前向传播和反向传播，到自然语言处理中的词嵌入和Transformer模型；从计算机视觉中的卷积神经网络到强化学习中的策略优化；再到生成式AI中的扩散模型和大语言模型——本部分将展示如何用Rust实现和部署这些前沿AI技术。</p>
+<h3 id="数学运算算法代数几何行列式矩阵向量函数微积分概率论离散数学第二十六三十五章"><a class="header" href="#数学运算算法代数几何行列式矩阵向量函数微积分概率论离散数学第二十六三十五章">数学运算：算法、代数、几何、行列式、矩阵、向量、函数、微积分、概率论、离散数学（第二十六~三十五章）</a></h3>
+<p>数学是计算机科学的基石。算法分析需要大O表示法和概率论；图形渲染需要线性代数和几何知识；机器学习需要微积分和统计学；密码学需要数论和离散数学。</p>
+<p>本部分将系统地介绍这些数学领域在编程中的应用，并用Rust实现相关的计算。从求解方程组到计算矩阵特征值，从向量空间到概率分布，从函数的导数到积分的数值计算——我们将看到数学与编程如何完美结合。</p>
+<h2 id="中卷各章节内容预览"><a class="header" href="#中卷各章节内容预览">中卷各章节内容预览</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">章节</th><th style="text-align: left">标题</th><th style="text-align: left">核心内容</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">第十四</td><td style="text-align: left">算术运算</td><td style="text-align: left">加减乘除、取模、幂运算、数值精度与溢出处理</td></tr>
+<tr><td style="text-align: center">第十五</td><td style="text-align: left">关系运算</td><td style="text-align: left">相等性比较、大小比较、浮点数比较陷阱、PartialOrd与Eq trait</td></tr>
+<tr><td style="text-align: center">第十六</td><td style="text-align: left">逻辑运算</td><td style="text-align: left">布尔逻辑、短路求值、位逻辑、逻辑运算在条件中的应用</td></tr>
+<tr><td style="text-align: center">第十七</td><td style="text-align: left">位运算</td><td style="text-align: left">与或非异或、移位操作、掩码技术、位域与标志位</td></tr>
+<tr><td style="text-align: center">第十八</td><td style="text-align: left">交换/反转/旋转</td><td style="text-align: left">变量交换、数组反转、循环移位、内存布局优化</td></tr>
+<tr><td style="text-align: center">第十九</td><td style="text-align: left">类型转换</td><td style="text-align: left">显式转换、隐式转换、TryFrom/From trait、数值类型安全</td></tr>
+<tr><td style="text-align: center">第二十</td><td style="text-align: left">哈希</td><td style="text-align: left">哈希函数原理、HashMap实现、一致性哈希、密码学哈希</td></tr>
+<tr><td style="text-align: center">第二十一</td><td style="text-align: left">打包/拆包 压缩/解压</td><td style="text-align: left">结构体序列化、数据打包算法、DEFLATE、gzip、zip格式</td></tr>
+<tr><td style="text-align: center">第二十二</td><td style="text-align: left">查询/检索/搜索</td><td style="text-align: left">线性搜索、二分搜索、字符串匹配、正则表达式、数据库查询</td></tr>
+<tr><td style="text-align: center">第二十三</td><td style="text-align: left">排序算法</td><td style="text-align: left">冒泡、选择、插入、归并、快速、堆排序、Rust中的排序实现</td></tr>
+<tr><td style="text-align: center">第二十四</td><td style="text-align: left">Lambda演算</td><td style="text-align: left">匿名函数、闭包、高阶函数、Y组合子、函数式编程范式</td></tr>
+<tr><td style="text-align: center">第二十五</td><td style="text-align: left">人工智能</td><td style="text-align: left">AI发展史、机器学习基础、Rust AI生态概述</td></tr>
+<tr><td style="text-align: center">第二十六</td><td style="text-align: left">算法</td><td style="text-align: left">复杂度分析、递归与分治、动态规划、贪心算法、图算法</td></tr>
+<tr><td style="text-align: center">第二十七</td><td style="text-align: left">代数</td><td style="text-align: left">多项式运算、方程求解、群环域基础、抽象代数应用</td></tr>
+<tr><td style="text-align: center">第二十八</td><td style="text-align: left">几何</td><td style="text-align: left">点线面、距离计算、相交检测、凸包算法、计算几何</td></tr>
+<tr><td style="text-align: center">第二十九</td><td style="text-align: left">行列式</td><td style="text-align: left">行列式计算、克拉默法则、特征多项式、LU分解</td></tr>
+<tr><td style="text-align: center">第三十</td><td style="text-align: left">矩阵</td><td style="text-align: left">矩阵运算、矩阵分解、特征值与特征向量、线性方程组求解</td></tr>
+<tr><td style="text-align: center">第三十一</td><td style="text-align: left">向量</td><td style="text-align: left">向量运算、点积叉积、向量空间、基与维度、几何应用</td></tr>
+<tr><td style="text-align: center">第三十二</td><td style="text-align: left">函数</td><td style="text-align: left">函数定义与调用、高阶函数、递归函数、纯函数、函数组合</td></tr>
+<tr><td style="text-align: center">第三十三</td><td style="text-align: left">微积分</td><td style="text-align: left">极限、导数、积分、泰勒展开、数值微分与数值积分</td></tr>
+<tr><td style="text-align: center">第三十四</td><td style="text-align: left">概率论</td><td style="text-align: left">随机事件、概率分布、期望值、大数定律、蒙特卡洛方法</td></tr>
+<tr><td style="text-align: center">第三十五</td><td style="text-align: left">离散数学</td><td style="text-align: left">集合论、图论、数理逻辑、组合数学、布尔代数</td></tr>
+<tr><td style="text-align: center">第三十六</td><td style="text-align: left">神经网络</td><td style="text-align: left">感知机、多层网络、激活函数、反向传播、Rust神经网络实现</td></tr>
+<tr><td style="text-align: center">第三十七</td><td style="text-align: left">自然语言处理</td><td style="text-align: left">分词、词嵌入、RNN/LSTM、注意力机制、Transformer</td></tr>
+<tr><td style="text-align: center">第三十八</td><td style="text-align: left">计算机视觉</td><td style="text-align: left">图像处理、卷积神经网络、目标检测、图像分割、OpenCV</td></tr>
+<tr><td style="text-align: center">第三十九</td><td style="text-align: left">强化学习</td><td style="text-align: left">马尔可夫决策过程、Q学习、策略梯度、深度强化学习</td></tr>
+<tr><td style="text-align: center">第四十</td><td style="text-align: left">生成式AI</td><td style="text-align: left">生成对抗网络、变分自编码器、扩散模型、大语言模型</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="数学与编程的关系"><a class="header" href="#数学与编程的关系">数学与编程的关系</a></h2>
+<p>数学与编程之间有着深刻而紧密的联系。从某种意义上说，编程就是数学的一种实践形式，而数学则为编程提供了理论基础。</p>
+<p><strong>算法分析需要数学</strong>。当我们评估一个算法的效率时，需要使用大O表示法来描述其时间复杂度和空间复杂度。概率论帮助我们理解随机算法的期望性能，摊还分析让我们更准确地评估数据结构的操作成本。</p>
+<p><strong>数据结构建立在数学之上</strong>。哈希表利用数论中的模运算；图算法基于图论；树结构源于组合数学；并查集利用等价关系的数学性质。</p>
+<p><strong>机器学习是应用数学</strong>。神经网络的前向传播是矩阵乘法，反向传播是链式法则（微积分）的应用，优化算法基于梯度下降（微积分），正则化技术源于统计学的偏差-方差权衡。</p>
+<p><strong>密码学是数论的应用</strong>。RSA算法基于大整数分解的困难性；椭圆曲线密码利用代数几何；零知识证明依赖于计算复杂性理论。</p>
+<p>Rust语言的设计也深受数学思想的影响。其类型系统可以看作是一种形式化逻辑系统；所有权模型借鉴了线性类型的数学理论；泛型编程体现了抽象代数的思想。理解这些数学背景，将帮助我们写出更加优雅和安全的Rust代码。</p>
+<h2 id="中卷知识图谱"><a class="header" href="#中卷知识图谱">中卷知识图谱</a></h2>
+<pre><code>                    运算与算法
+                       |
+        +--------------+--------------+--------------+
+        |              |              |              |
+    基本运算       数据变换       数据处理       高阶主题
+        |              |              |              |
+   +----+----+    +----+----+    +----+----+    +----+----+
+   |    |    |    |    |    |    |    |    |    |    |    |
+  算术 关系 逻辑 位运算 交换 反转 旋转 类型转换 哈希 压缩 查询 排序 Lambda  AI   数学
+   |    |    |    |              |              |              |
+  第十四 第十五 第十六 第十七    第十八~十九    第二十~二十三   第二十四~四十
+                                    |              |
+                              +-----+-----+  +-----+-----+
+                              |           |  |           |
+                            人工智能      数学运算      算法基础
+                              |           |
+                        第二十五,三十六~四十  第二十六~三十五
+</code></pre>
+<h2 id="阅读建议"><a class="header" href="#阅读建议">阅读建议</a></h2>
+<ol>
+<li>
+<p><strong>循序渐进</strong>：本卷内容从基础到高级逐步深入。建议先掌握第十四~十七章的基本运算，再学习后续章节。对于数学基础较弱的读者，可以先跳过第二十六~三十五章的数学内容，待需要时再回头学习。</p>
+</li>
+<li>
+<p><strong>理论与实践结合</strong>：每个算法和运算都配有Rust代码示例。建议读者在阅读的同时动手实践，修改参数、观察输出，以加深理解。</p>
+</li>
+<li>
+<p><strong>关注性能</strong>：Rust的核心优势之一是性能。在学习算法时，不仅要关注正确性，还要思考如何用Rust的特性（如零成本抽象、内存安全）来实现高效的实现。</p>
+</li>
+<li>
+<p><strong>建立联系</strong>：运算与算法不是孤立的知识点。尝试将不同章节的内容联系起来——比如，位运算如何加速某些算法？概率论如何优化搜索策略？矩阵运算如何应用于神经网络？</p>
+</li>
+<li>
+<p><strong>拓展阅读</strong>：本卷涉及的数学内容较为广泛，如需深入学习某个领域，建议参考相关的数学教材和专业书籍。</p>
+</li>
+</ol>
+<h2 id="复杂运算拓展"><a class="header" href="#复杂运算拓展">复杂运算拓展</a></h2>
+<p>在掌握基本运算之后，我们还需要了解更复杂的数学运算：</p>
+<ul>
+<li><strong><a href="https://baike.baidu.com/item/模运算/4376110?fr=ge_ala">模运算</a></strong>：模运算在密码学、哈希算法、循环队列等场景中有广泛应用。理解模运算的性质对于编写正确的算法至关重要。</li>
+<li><strong><a href="https://baike.baidu.com/item/%E4%B8%89%E8%A7%92%E5%87%BD%E6%95%B0/1652457?fr=ge_ala">三角函数</a></strong>：三角函数在图形学、信号处理、物理模拟等领域不可或缺。Rust的标准库提供了完整的三角函数支持。</li>
+</ul>
+<p>愿你在运算与算法的世界中，发现数学之美，体验编程之乐！</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_13.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_14.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_13.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_14.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

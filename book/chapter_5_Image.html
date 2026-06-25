@@ -1,0 +1,901 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第五 图片 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第五-图片"><a class="header" href="#第五-图片">第五 图片</a></h1>
+<p>随着互联网、社交媒体、电子商务的发展，图片作为一个重要的信息载体，被广泛应用。“一图胜过千言万语”、“有图有真相”、“发个朋友圈”。也催生了美颜、马赛克、PS（Photoshop）等相关技术。</p>
+<p>本章将从图片的本质出发，深入剖析像素编码原理、各种图片格式的底层机制，并通过 Rust 代码实现图片的读取、处理、转换等操作。</p>
+<h2 id="51-图片的本质"><a class="header" href="#51-图片的本质">5.1 图片的本质</a></h2>
+<h3 id="511-像素"><a class="header" href="#511-像素">5.1.1 像素</a></h3>
+<p>图片（Image）本质上是一个二维的<strong>像素矩阵</strong>。像素（Pixel，Picture Element 的缩写）是构成数字图像的最小单元。每个像素携带颜色信息，所有像素按照行列排列就构成了一幅完整的图像。</p>
+<p>一张分辨率为 $W \times H$ 的图片，共有 $W \times H$ 个像素。例如，一张 $1920 \times 1080$ 的 Full HD 图片共有 $2,073,600$ 个像素。</p>
+<h3 id="512-分辨率"><a class="header" href="#512-分辨率">5.1.2 分辨率</a></h3>
+<p>分辨率（Resolution）描述了图像中包含的像素数量，通常用“宽 x 高“表示。常见的分辨率标准：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">名称</th><th style="text-align: center">分辨率</th><th style="text-align: center">像素总数</th><th style="text-align: center">应用场景</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">QQVGA</td><td style="text-align: center">160 x 120</td><td style="text-align: center">19,200</td><td style="text-align: center">早期手机</td></tr>
+<tr><td style="text-align: center">VGA</td><td style="text-align: center">640 x 480</td><td style="text-align: center">307,200</td><td style="text-align: center">早期摄像头</td></tr>
+<tr><td style="text-align: center">HD</td><td style="text-align: center">1280 x 720</td><td style="text-align: center">921,600</td><td style="text-align: center">高清视频</td></tr>
+<tr><td style="text-align: center">Full HD</td><td style="text-align: center">1920 x 1080</td><td style="text-align: center">2,073,600</td><td style="text-align: center">主流显示器</td></tr>
+<tr><td style="text-align: center">2K (QHD)</td><td style="text-align: center">2560 x 1440</td><td style="text-align: center">3,686,400</td><td style="text-align: center">高端显示器</td></tr>
+<tr><td style="text-align: center">4K (UHD)</td><td style="text-align: center">3840 x 2160</td><td style="text-align: center">8,294,400</td><td style="text-align: center">专业显示器/电视</td></tr>
+<tr><td style="text-align: center">8K (UHD-2)</td><td style="text-align: center">7680 x 4320</td><td style="text-align: center">33,177,600</td><td style="text-align: center">广播级制作</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="513-颜色空间"><a class="header" href="#513-颜色空间">5.1.3 颜色空间</a></h3>
+<p>颜色空间（Color Space）定义了如何用数值来表示颜色。不同的颜色空间有不同的应用场景。</p>
+<p><strong>RGB 颜色空间</strong></p>
+<p>RGB（Red, Green, Blue）是最常用的加色模型，用于显示器、手机屏幕等发光设备。每个通道取值范围为 $[0, 255]$（8位），共可表示 $256^3 = 16,777,216$ 种颜色。</p>
+<p>一个像素的 RGB 值可以表示为三元组 $(R, G, B)$，其中：</p>
+<p>$$C = R \cdot (1, 0, 0) + G \cdot (0, 1, 0) + B \cdot (0, 0, 1)$$</p>
+<p><strong>CMYK 颜色空间</strong></p>
+<p>CMYK（Cyan, Magenta, Yellow, Key/Black）是减色模型，用于印刷行业。RGB 和 CMYK 之间的转换关系：</p>
+<p>$$K = 1 - \max(R, G, B)$$
+$$C = \frac{1 - R - K}{1 - K}$$
+$$M = \frac{1 - G - K}{1 - K}$$
+$$Y = \frac{1 - B - K}{1 - K}$$</p>
+<p><strong>YUV 颜色空间</strong></p>
+<p>YUV 将亮度（Y）和色度（U、V）分离，广泛用于视频压缩和传输。人眼对亮度变化更敏感，因此可以对色度分量进行更大的压缩。RGB 到 YUV 的转换（BT.601 标准）：</p>
+<p>$$Y = 0.299R + 0.587G + 0.114B$$
+$$U = -0.147R - 0.289G + 0.436B$$
+$$V = 0.615R - 0.515G - 0.100B$$</p>
+<p><strong>HSV 颜色空间</strong></p>
+<p>HSV（Hue, Saturation, Value）更符合人类对颜色的直觉感知：</p>
+<ul>
+<li>H（色相）：颜色类型，取值 $[0, 360)$</li>
+<li>S（饱和度）：颜色的纯度，取值 $[0, 1]$</li>
+<li>V（明度）：颜色的明暗，取值 $[0, 1]$</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// RGB 转 HSV
+fn rgb_to_hsv(r: u8, g: u8, b: u8) -&gt; (f64, f64, f64) {
+    let r = r as f64 / 255.0;
+    let g = g as f64 / 255.0;
+    let b = b as f64 / 255.0;
+
+    let max = r.max(g).max(b);
+    let min = r.min(g).min(b);
+    let delta = max - min;
+
+    // 计算色相 H
+    let h = if delta == 0.0 {
+        0.0
+    } else if max == r {
+        60.0 * (((g - b) / delta) % 6.0)
+    } else if max == g {
+        60.0 * (((b - r) / delta) + 2.0)
+    } else {
+        60.0 * (((r - g) / delta) + 4.0)
+    };
+
+    // 计算饱和度 S
+    let s = if max == 0.0 { 0.0 } else { delta / max };
+
+    (h, s, max)
+}
+<span class="boring">}</span></code></pre>
+<h2 id="52-像素编码原理"><a class="header" href="#52-像素编码原理">5.2 像素编码原理</a></h2>
+<h3 id="521-位深"><a class="header" href="#521-位深">5.2.1 位深</a></h3>
+<p>位深（Bit Depth）决定了每个像素可以表示的颜色数量。位深越大，颜色越丰富，但文件也越大。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">位深</th><th style="text-align: center">每通道位数</th><th style="text-align: center">每像素位数（RGB）</th><th style="text-align: center">可表示颜色数</th><th style="text-align: center">应用场景</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">1-bit</td><td style="text-align: center">1</td><td style="text-align: center">3</td><td style="text-align: center">8</td><td style="text-align: center">黑白图像</td></tr>
+<tr><td style="text-align: center">8-bit</td><td style="text-align: center">8</td><td style="text-align: center">24</td><td style="text-align: center">16,777,216</td><td style="text-align: center">标准图像</td></tr>
+<tr><td style="text-align: center">16-bit</td><td style="text-align: center">16</td><td style="text-align: center">48</td><td style="text-align: center">$2.81 \times 10^{14}$</td><td style="text-align: center">专业摄影</td></tr>
+<tr><td style="text-align: center">32-bit</td><td style="text-align: center">32 (float)</td><td style="text-align: center">96</td><td style="text-align: center">极大</td><td style="text-align: center">HDR、医学成像</td></tr>
+</tbody>
+</table>
+</div>
+<p>一张 $1920 \times 1080$ 的图片，在 24 位色深下的原始数据大小为：</p>
+<p>$$1920 \times 1080 \times 24 \text{ bits} = 49,766,400 \text{ bits} \approx 5.93 \text{ MB}$$</p>
+<h3 id="522-alpha-通道"><a class="header" href="#522-alpha-通道">5.2.2 Alpha 通道</a></h3>
+<p>Alpha 通道用于表示像素的透明度，取值范围 $[0, 255]$，其中 0 表示完全透明，255 表示完全不透明。带有 Alpha 通道的图像称为 RGBA 图像。</p>
+<p>RGBA 像素在内存中的排列方式通常为：</p>
+<pre><code>字节 0: R (红色)
+字节 1: G (绿色)
+字节 2: B (蓝色)
+字节 3: A (透明度)
+</code></pre>
+<p>Alpha 混合公式（将前景色与背景色混合）：</p>
+<p>$$C_{out} = \alpha \cdot C_{fg} + (1 - \alpha) \cdot C_{bg}$$</p>
+<p>其中 $\alpha$ 为归一化后的透明度值 $[0, 1]$。</p>
+<h2 id="53-图片格式详解"><a class="header" href="#53-图片格式详解">5.3 图片格式详解</a></h2>
+<h3 id="531-bmpbitmap"><a class="header" href="#531-bmpbitmap">5.3.1 BMP（Bitmap）</a></h3>
+<p>BMP 是 Windows 系统的标准图像格式，采用<strong>无压缩</strong>方式存储像素数据，文件体积较大但解码简单。</p>
+<p><strong>文件结构</strong>：</p>
+<pre><code>┌─────────────────────┐
+│ BMP 文件头 (14字节)   │  ← 文件类型、文件大小、偏移量
+├─────────────────────┤
+│ DIB 信息头 (40字节)   │  ← 宽度、高度、位深、压缩方式
+├─────────────────────┤
+│ 调色板 (可选)         │  ← 仅用于低位深图像
+├─────────────────────┤
+│ 像素数据              │  ← 按行存储，每行4字节对齐
+└─────────────────────┘
+</code></pre>
+<p>BMP 的像素数据是<strong>从下到上</strong>存储的（即图像的最后一行在文件的最前面），且每行数据需要按 4 字节对齐。例如，宽度为 3 的 24 位 BMP 图像，每行需要 $3 \times 3 = 9$ 字节，对齐后为 12 字节（补 3 字节填充）。</p>
+<h3 id="532-jpegjoint-photographic-experts-group"><a class="header" href="#532-jpegjoint-photographic-experts-group">5.3.2 JPEG（Joint Photographic Experts Group）</a></h3>
+<p>JPEG 是网络上最流行的有损压缩图像格式，在保留较高图像质量的同时拥有很高的压缩比。</p>
+<p><strong>压缩流程</strong>：</p>
+<pre><code>原始图像 → 颜色空间转换(YCbCr) → 分块(8x8) → DCT变换 → 量化 → 熵编码 → JPEG文件
+</code></pre>
+<p><strong>离散余弦变换（DCT）</strong></p>
+<p>JPEG 将图像分割为 $8 \times 8$ 的像素块，对每个块进行二维 DCT 变换：</p>
+<p>$$F(u,v) = \frac{1}{4}C(u)C(v)\sum_{x=0}^{7}\sum_{y=0}^{7}f(x,y)\cos\frac{(2x+1)u\pi}{16}\cos\frac{(2y+1)v\pi}{16}$$</p>
+<p>其中：</p>
+<p>$$C(k) = \begin{cases} \frac{1}{\sqrt{2}} &amp; k=0 \ 1 &amp; k&gt;0 \end{cases}$$</p>
+<p>DCT 将空间域的像素值转换为频率域的系数，低频系数集中在左上角（代表图像的大致轮廓），高频系数在右下角（代表细节）。</p>
+<p><strong>量化</strong></p>
+<p>量化是 JPEG 有损压缩的核心步骤。通过量化表将 DCT 系数除以对应的量化步长并取整：</p>
+<p>$$F_Q(u,v) = \text{round}\left(\frac{F(u,v)}{Q(u,v)}\right)$$</p>
+<p>量化步长越大，压缩比越高，但图像质量损失也越大。JPEG 标准定义了质量参数（1-100），通过缩放默认量化表来控制压缩质量。</p>
+<p><strong>熵编码</strong></p>
+<p>量化后的系数经过 Zigzag 扫描（将二维系数排列为一维序列，从低频到高频），然后使用 Huffman 编码或算术编码进行压缩。</p>
+<h3 id="533-pngportable-network-graphics"><a class="header" href="#533-pngportable-network-graphics">5.3.3 PNG（Portable Network Graphics）</a></h3>
+<p>PNG 是一种无损压缩的位图格式，支持 Alpha 通道，广泛用于网页和图形设计。</p>
+<p><strong>压缩算法：LZ77 + Huffman</strong></p>
+<p>PNG 使用 DEFLATE 压缩算法，该算法结合了两种技术：</p>
+<ol>
+<li><strong>LZ77</strong>：使用滑动窗口查找重复的字符串模式，用“距离-长度“对替换重复数据</li>
+<li><strong>Huffman 编码</strong>：对出现频率不同的符号使用不同长度的编码，高频符号用短编码</li>
+</ol>
+<p><strong>PNG 文件结构</strong>：</p>
+<pre><code>┌─────────────────────┐
+│ PNG 签名 (8字节)      │  固定值: 89 50 4E 47 0D 0A 1A 0A
+├─────────────────────┤
+│ IHDR 数据块           │  宽度、高度、位深、颜色类型、压缩方法等
+├─────────────────────┤
+│ 可选数据块             │  PLTE(调色板)、tEXt(文本)、gAMA(伽马)等
+├─────────────────────┤
+│ IDAT 数据块           │  压缩后的图像数据（可多个）
+├─────────────────────┤
+│ IEND 数据块           │  文件结束标记
+└─────────────────────┘
+</code></pre>
+<p><strong>隔行扫描（Adam7）</strong></p>
+<p>PNG 支持 Adam7 隔行扫描，将图像分为 7 个通道（pass），按特定模式逐步加载：</p>
+<pre><code>Pass 1: █ . . █ . . █ . .   (每8行每8列)
+Pass 2: . █ . . █ . . █ .   (每8行每4列)
+Pass 3: █ █ . █ █ . █ █ .   (每4行每4列)
+Pass 4: . . █ . . █ . . █   (每4行每2列)
+Pass 5: █ . █ █ . █ █ . █   (每2行每2列)
+Pass 6: . █ █ . █ █ . █ █   (每2行每1列)
+Pass 7: █ █ █ █ █ █ █ █ █   (每1行每1列)
+</code></pre>
+<p>这使得 PNG 在网络传输时可以先显示低分辨率预览，再逐步加载完整图像。</p>
+<h3 id="534-webp"><a class="header" href="#534-webp">5.3.4 WebP</a></h3>
+<p>WebP 是 Google 于 2010 年推出的现代图像格式，旨在替代 JPEG 和 PNG。</p>
+<p><strong>特点</strong>：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">特性</th><th style="text-align: center">WebP 有损</th><th style="text-align: center">WebP 无损</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">压缩算法</td><td style="text-align: center">VP8 (基于块预测 + DCT)</td><td style="text-align: center">LZ77 + Huffman + 颜色缓存</td></tr>
+<tr><td style="text-align: center">Alpha 通道</td><td style="text-align: center">支持</td><td style="text-align: center">支持</td></tr>
+<tr><td style="text-align: center">相比 JPEG</td><td style="text-align: center">文件小 25-35%</td><td style="text-align: center">-</td></tr>
+<tr><td style="text-align: center">相比 PNG</td><td style="text-align: center">-</td><td style="text-align: center">文件小 26%</td></tr>
+<tr><td style="text-align: center">动画</td><td style="text-align: center">支持 (WebP Animation)</td><td style="text-align: center">-</td></tr>
+<tr><td style="text-align: center">浏览器支持</td><td style="text-align: center">主流浏览器均支持</td><td style="text-align: center">主流浏览器均支持</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>有损 WebP 编码流程</strong>：</p>
+<pre><code>原始图像 → 预测(帧内预测) → 变换(DCT/WHT) → 量化 → 算术编码 → WebP文件
+</code></pre>
+<p>WebP 有损模式使用 VP8 视频编码的帧内预测技术，支持 4x4 到 16x16 的宏块划分，比 JPEG 的固定 8x8 分块更灵活。</p>
+<h3 id="535-gifgraphics-interchange-format"><a class="header" href="#535-gifgraphics-interchange-format">5.3.5 GIF（Graphics Interchange Format）</a></h3>
+<p>GIF 由 CompuServe 于 1987 年发布，是互联网早期最流行的图像格式之一。</p>
+<p><strong>特点</strong>：</p>
+<ul>
+<li><strong>LZW 压缩</strong>：使用 Lempel-Ziv-Welch 无损压缩算法</li>
+<li><strong>256 色限制</strong>：每个 GIF 最多包含 256 种颜色（8 位索引色），通过调色板实现</li>
+<li><strong>支持动画</strong>：通过将多帧图像存储在同一个文件中，配合帧延迟时间实现动画效果</li>
+<li><strong>支持透明</strong>：可以指定一种颜色为透明色</li>
+</ul>
+<p><strong>GIF 动画原理</strong>：</p>
+<pre><code>┌─────────────────────┐
+│ GIF 文件头            │  GIF87a 或 GIF89a
+├─────────────────────┤
+│ 逻辑屏幕描述符         │  画布尺寸、全局调色板信息
+├─────────────────────┤
+│ 全局颜色表 (可选)      │  最多 256 种颜色
+├─────────────────────┤
+│ 图形控制扩展           │  帧延迟时间、透明色索引
+├─────────────────────┤
+│ 图像描述符 + 像素数据   │  第 1 帧
+├─────────────────────┤
+│ 图形控制扩展           │  帧延迟时间
+├─────────────────────┤
+│ 图像描述符 + 像素数据   │  第 2 帧
+├─────────────────────┤
+│ ... (更多帧)          │
+├─────────────────────┤
+│ GIF 结尾标记 (0x3B)    │
+└─────────────────────┘
+</code></pre>
+<h3 id="536-svgscalable-vector-graphics"><a class="header" href="#536-svgscalable-vector-graphics">5.3.6 SVG（Scalable Vector Graphics）</a></h3>
+<p>SVG 是基于 XML 的矢量图像格式，与位图（BMP、JPEG、PNG 等）有本质区别。</p>
+<p><strong>位图 vs 矢量图</strong>：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">特性</th><th style="text-align: center">位图 (Raster)</th><th style="text-align: center">矢量图 (Vector)</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">存储方式</td><td style="text-align: center">像素矩阵</td><td style="text-align: center">数学公式描述</td></tr>
+<tr><td style="text-align: center">缩放</td><td style="text-align: center">放大后失真（锯齿）</td><td style="text-align: center">无限缩放不失真</td></tr>
+<tr><td style="text-align: center">文件大小</td><td style="text-align: center">与分辨率正相关</td><td style="text-align: center">与复杂度相关</td></tr>
+<tr><td style="text-align: center">适用场景</td><td style="text-align: center">照片、复杂图像</td><td style="text-align: center">图标、Logo、图表</td></tr>
+<tr><td style="text-align: center">编辑方式</td><td style="text-align: center">像素级操作</td><td style="text-align: center">修改路径和属性</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>SVG 示例</strong>：</p>
+<pre><code class="language-xml">&lt;svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"&gt;
+  &lt;!-- 红色圆形 --&gt;
+  &lt;circle cx="100" cy="100" r="80" fill="red" stroke="black" stroke-width="2"/&gt;
+  &lt;!-- 蓝色矩形 --&gt;
+  &lt;rect x="20" y="20" width="60" height="40" fill="blue" rx="5"/&gt;
+  &lt;!-- 文本 --&gt;
+  &lt;text x="100" y="190" text-anchor="middle" font-size="16"&gt;Rust Logo&lt;/text&gt;
+&lt;/svg&gt;
+</code></pre>
+<p>SVG 支持路径（path）、变换（transform）、渐变（gradient）、滤镜（filter）等丰富的图形功能，可以通过 CSS 和 JavaScript 进行动态控制。</p>
+<img src="images/rust-logo-blk.svg" alt="Rust Logo" width="30%">
+<img src="images/rustacean-orig-noshadow.svg" alt="Ferris" width="30%">
+<img src="images/python-logo.png" alt="Python" width="30%">
+<img src="images/motorcycle.svg" alt="Motorcycle" width="30%">
+<h2 id="54-exif-信息"><a class="header" href="#54-exif-信息">5.4 EXIF 信息</a></h2>
+<p>EXIF（Exchangeable Image File Format）是嵌入在 JPEG、TIFF 等图像文件中的元数据标准，最初由日本电子工业发展协会（JEIDA）制定。</p>
+<p>EXIF 记录了拍摄时的各种参数：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">类别</th><th style="text-align: center">包含信息</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">拍摄设备</td><td style="text-align: center">相机品牌、型号、镜头信息</td></tr>
+<tr><td style="text-align: center">拍摄参数</td><td style="text-align: center">光圈(F值)、快门速度、ISO感光度、焦距</td></tr>
+<tr><td style="text-align: center">图像参数</td><td style="text-align: center">分辨率、方向、色空间</td></tr>
+<tr><td style="text-align: center">GPS 定位</td><td style="text-align: center">纬度、经度、海拔、拍摄时间</td></tr>
+<tr><td style="text-align: center">软件信息</td><td style="text-align: center">处理软件名称和版本</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>安全提示</strong>：EXIF 中的 GPS 信息可能泄露拍摄地点，在分享照片前应注意清除敏感元数据。</p>
+<h2 id="55-rust-图片处理实战"><a class="header" href="#55-rust-图片处理实战">5.5 Rust 图片处理实战</a></h2>
+<h3 id="551-环境准备"><a class="header" href="#551-环境准备">5.5.1 环境准备</a></h3>
+<p>在 <code>Cargo.toml</code> 中添加依赖：</p>
+<pre><code class="language-toml">[dependencies]
+image = "0.25"
+</code></pre>
+<p><code>image</code> crate 是 Rust 生态中最流行的图像处理库，支持 BMP、JPEG、PNG、GIF、WebP、TIFF、AVIF 等多种格式的编解码。</p>
+<h3 id="552-读取与写入各种格式"><a class="header" href="#552-读取与写入各种格式">5.5.2 读取与写入各种格式</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use image::{DynamicImage, ImageFormat, io::Reader as ImageReader};
+use std::fs::File;
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // 读取图片（自动识别格式）
+    let img = ImageReader::open("input.jpg")?
+        .with_guessed_format()?
+        .decode()?;
+
+    println!("图片尺寸: {}x{}", img.width(), img.height());
+    println!("图片颜色类型: {:?}", img.color());
+
+    // 保存为不同格式
+    img.save("output.png")?;                          // 根据扩展名自动选择格式
+    img.save_with_format("output.bmp", ImageFormat::Bmp)?;
+    img.save_with_format("output.webp", ImageFormat::WebP)?;
+
+    // 手动指定格式写入
+    let mut output = File::create("output.jpg")?;
+    img.write_to(&amp;mut output, ImageFormat::Jpeg)?;
+
+    Ok(())
+}</code></pre>
+<h3 id="553-图片裁剪"><a class="header" href="#553-图片裁剪">5.5.3 图片裁剪</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use image::GenericImageView;
+
+fn crop_example() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let img = image::open("input.jpg")?;
+    let (width, height) = img.dimensions();
+
+    // 裁剪上半部分
+    let cropped = img.crop(0, 0, width, height / 2);
+    cropped.save("cropped_top.jpg")?;
+
+    // 裁剪中心区域
+    let crop_w = width / 2;
+    let crop_h = height / 2;
+    let cropped_center = img.crop(
+        (width - crop_w) / 2,
+        (height - crop_h) / 2,
+        crop_w,
+        crop_h,
+    );
+    cropped_center.save("cropped_center.jpg")?;
+
+    Ok(())
+}
+<span class="boring">}</span></code></pre>
+<h3 id="554-图片缩放与缩略图生成"><a class="header" href="#554-图片缩放与缩略图生成">5.5.4 图片缩放与缩略图生成</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use image::{imageops::FilterType, GenericImageView};
+use std::time::Instant;
+
+fn resize_example() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let img = image::open("examples/scaledown/test.jpg")?;
+
+    // 不同的缩放滤波算法对比
+    let filters = [
+        ("nearest", FilterType::Nearest),     // 最近邻插值（最快，质量最低）
+        ("triangle", FilterType::Triangle),     // 三角插值（双线性）
+        ("catmullrom", FilterType::CatmullRom),// Catmull-Rom 插值
+        ("gaussian", FilterType::Gaussian),     // 高斯插值
+        ("lanczos3", FilterType::Lanczos3),    // Lanczos3 插值（质量最高，较慢）
+    ];
+
+    for &amp;(name, filter) in &amp;filters {
+        let timer = Instant::now();
+        let scaled = img.resize(400, 400, filter);
+        println!("使用 {} 算法缩放耗时: {:?}", name, timer.elapsed());
+        let mut output = File::create(format!("test-{}.png", name))?;
+        scaled.write_to(&amp;mut output, ImageFormat::Jpeg)?;
+    }
+
+    // 生成缩略图（保持宽高比）
+    for &amp;size in &amp;[20_u32, 40, 100, 200, 400] {
+        let timer = Instant::now();
+        let thumbnail = img.thumbnail(size, size);
+        println!("生成 {}x{} 缩略图耗时: {:?}", size, size, timer.elapsed());
+        thumbnail.save(format!("test-thumb{}.png", size))?;
+    }
+
+    Ok(())
+}
+<span class="boring">}</span></code></pre>
+<p><strong>各滤波算法对比</strong>：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">算法</th><th style="text-align: center">速度</th><th style="text-align: center">质量</th><th style="text-align: center">适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">Nearest</td><td style="text-align: center">最快</td><td style="text-align: center">最低</td><td style="text-align: center">像素风格、游戏</td></tr>
+<tr><td style="text-align: center">Triangle</td><td style="text-align: center">快</td><td style="text-align: center">中等</td><td style="text-align: center">一般缩放</td></tr>
+<tr><td style="text-align: center">CatmullRom</td><td style="text-align: center">中等</td><td style="text-align: center">较高</td><td style="text-align: center">通用场景</td></tr>
+<tr><td style="text-align: center">Gaussian</td><td style="text-align: center">中等</td><td style="text-align: center">高</td><td style="text-align: center">平滑缩放</td></tr>
+<tr><td style="text-align: center">Lanczos3</td><td style="text-align: center">较慢</td><td style="text-align: center">最高</td><td style="text-align: center">高质量缩放</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="555-像素级操作"><a class="header" href="#555-像素级操作">5.5.5 像素级操作</a></h3>
+<p><strong>灰度化</strong></p>
+<p>将彩色图像转换为灰度图像，使用加权平均法（ITU-R BT.601 标准）：</p>
+<p>$$Gray = 0.299 \times R + 0.587 \times G + 0.114 \times B$$</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use image::{DynamicImage, Rgba};
+
+fn to_grayscale(img: &amp;DynamicImage) -&gt; DynamicImage {
+    let rgba_img = img.to_rgba8();
+    let mut output = rgba_img.clone();
+
+    for pixel in output.pixels_mut() {
+        let Rgba([r, g, b, a]) = *pixel else { continue };
+        let gray = (0.299 * r as f64 + 0.587 * g as f64 + 0.114 * b as f64) as u8;
+        *pixel = Rgba([gray, gray, gray, a]);
+    }
+
+    DynamicImage::ImageRgba8(output)
+}
+<span class="boring">}</span></code></pre>
+<p><strong>二值化</strong></p>
+<p>将灰度图像转换为黑白图像（只有 0 和 255 两个值）：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use image::{DynamicImage, Rgba, GenericImage};
+
+fn to_binary(img: &amp;DynamicImage, threshold: u8) -&gt; DynamicImage {
+    let gray_img = to_grayscale(img);
+    let (width, height) = gray_img.dimensions();
+    let mut output = image::GrayImage::new(width, height);
+
+    for y in 0..height {
+        for x in 0..width {
+            let pixel = gray_img.get_pixel(x, y);
+            let val = if pixel[0] &gt; threshold { 255 } else { 0 };
+            output.put_pixel(x, y, image::Luma([val]));
+        }
+    }
+
+    DynamicImage::ImageLuma8(output)
+}
+<span class="boring">}</span></code></pre>
+<p><strong>颜色反转（底片效果）</strong></p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use image::{DynamicImage, Rgba};
+
+fn invert_colors(img: &amp;DynamicImage) -&gt; DynamicImage {
+    let rgba_img = img.to_rgba8();
+    let mut output = rgba_img.clone();
+
+    for pixel in output.pixels_mut() {
+        let Rgba([r, g, b, a]) = *pixel else { continue };
+        *pixel = Rgba([255 - r, 255 - g, 255 - b, a]);
+    }
+
+    DynamicImage::ImageRgba8(output)
+}
+<span class="boring">}</span></code></pre>
+<p><strong>亮度与对比度调整</strong></p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use image::{DynamicImage, Rgba};
+
+fn adjust_brightness_contrast(
+    img: &amp;DynamicImage,
+    brightness: i16,  // -255 到 255
+    contrast: f32,    // 0.0 到 2.0（1.0 为原始）
+) -&gt; DynamicImage {
+    let rgba_img = img.to_rgba8();
+    let mut output = rgba_img.clone();
+
+    let factor = (259.0 * (contrast + 255.0)) / (255.0 * (259.0 - contrast));
+
+    for pixel in output.pixels_mut() {
+        let Rgba([r, g, b, a]) = *pixel else { continue };
+        let adjust = |c: u8| -&gt; u8 {
+            let val = factor * (c as f32 - 128.0) + 128.0 + brightness as f32;
+            val.clamp(0.0, 255.0) as u8
+        };
+        *pixel = Rgba([adjust(r), adjust(g), adjust(b), a]);
+    }
+
+    DynamicImage::ImageRgba8(output)
+}
+<span class="boring">}</span></code></pre>
+<h3 id="556-格式转换"><a class="header" href="#556-格式转换">5.5.6 格式转换</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use image::{io::Reader as ImageReader, ImageFormat};
+use std::path::Path;
+
+/// 批量转换图片格式
+fn convert_format(input: &amp;Path, output: &amp;Path, format: ImageFormat) -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let img = ImageReader::open(input)?
+        .with_guessed_format()?
+        .decode()?;
+
+    let mut file = std::fs::File::create(output)?;
+    img.write_to(&amp;mut file, format)?;
+    println!("已转换: {} -&gt; {}", input.display(), output.display());
+    Ok(())
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // JPEG 转 PNG
+    convert_format(
+        std::path::Path::new("photo.jpg"),
+        std::path::Path::new("photo.png"),
+        ImageFormat::Png,
+    )?;
+
+    // PNG 转 WebP
+    convert_format(
+        std::path::Path::new("photo.png"),
+        std::path::Path::new("photo.webp"),
+        ImageFormat::WebP,
+    )?;
+
+    Ok(())
+}</code></pre>
+<h3 id="557-图片水印"><a class="header" href="#557-图片水印">5.5.7 图片水印</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use image::{DynamicImage, GenericImage, imageops::overlay};
+
+fn add_watermark(base_img: &amp;DynamicImage, watermark: &amp;DynamicImage, opacity: f32) -&gt; DynamicImage {
+    let mut base = base_img.clone();
+    let (bw, bh) = base.dimensions();
+    let wm = watermark.resize(bw / 4, bh / 4, imageops::FilterType::Lanczos3);
+    let (ww, wh) = wm.dimensions();
+
+    // 将水印放在右下角
+    let x = bw.saturating_sub(ww + 20);
+    let y = bh.saturating_sub(wh + 20);
+
+    overlay(&amp;mut base, &amp;wm, x as i64, y as i64);
+    base
+}
+<span class="boring">}</span></code></pre>
+<h2 id="56-ocr-光学字符识别"><a class="header" href="#56-ocr-光学字符识别">5.6 OCR 光学字符识别</a></h2>
+<p><a href="https://baike.baidu.com/item/%E5%85%89%E5%AD%A6%E5%AD%97%E7%AC%A6%E8%AF%86%E5%88%AB/4162921">OCR</a>（Optical Character Recognition，光学字符识别）是将图像中的文字转换为可编辑文本的技术。</p>
+<p><strong>OCR 的基本流程</strong>：</p>
+<pre><code>输入图像 → 图像预处理 → 文字区域检测 → 字符分割 → 字符识别 → 后处理 → 输出文本
+</code></pre>
+<p><strong>预处理步骤</strong>：</p>
+<ol>
+<li><strong>灰度化</strong>：减少计算量</li>
+<li><strong>二值化</strong>：分离文字和背景</li>
+<li><strong>去噪</strong>：消除干扰</li>
+<li><strong>倾斜校正</strong>：修正图像角度</li>
+<li><strong>归一化</strong>：统一文字大小</li>
+</ol>
+<p><strong>主流 OCR 引擎</strong>：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">引擎</th><th style="text-align: center">语言</th><th style="text-align: center">特点</th><th style="text-align: center">许可证</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">Tesseract</td><td style="text-align: center">C++</td><td style="text-align: center">Google 维护，支持 100+ 语言</td><td style="text-align: center">Apache 2.0</td></tr>
+<tr><td style="text-align: center">PaddleOCR</td><td style="text-align: center">Python/C++</td><td style="text-align: center">百度开源，中文识别优秀</td><td style="text-align: center">Apache 2.0</td></tr>
+<tr><td style="text-align: center">EasyOCR</td><td style="text-align: center">Python</td><td style="text-align: center">支持 80+ 语言，易用</td><td style="text-align: center">Apache 2.0</td></tr>
+<tr><td style="text-align: center">Tesseract.js</td><td style="text-align: center">JavaScript</td><td style="text-align: center">浏览器端运行</td><td style="text-align: center">Apache 2.0</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>应用场景</strong>：</p>
+<ul>
+<li>身份证、银行卡、发票识别</li>
+<li>车牌识别</li>
+<li>文档数字化</li>
+<li>手写文字识别</li>
+<li>街景文字提取</li>
+</ul>
+<p>在 Rust 中，可以通过 FFI 调用 Tesseract C 库，或者调用 PaddleOCR 的 HTTP 服务来实现 OCR 功能。</p>
+<h2 id="57-相关-rust-库"><a class="header" href="#57-相关-rust-库">5.7 相关 Rust 库</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">库名</th><th style="text-align: left">说明</th><th style="text-align: left">链接</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">image</td><td style="text-align: left">Rust 最流行的图像处理库，支持多种格式编解码</td><td style="text-align: left"><a href="https://github.com/image-rs/image">GitHub</a></td></tr>
+<tr><td style="text-align: left">imageproc</td><td style="text-align: left">基于image的图像处理算法库（边缘检测、形态学等）</td><td style="text-align: left"><a href="https://github.com/image-rs/imageproc">GitHub</a></td></tr>
+<tr><td style="text-align: left">resvg</td><td style="text-align: left">高性能 SVG 渲染库</td><td style="text-align: left"><a href="https://github.com/RazrFalcon/resvg">GitHub</a></td></tr>
+<tr><td style="text-align: left">oxipng</td><td style="text-align: left">PNG 无损优化工具</td><td style="text-align: left"><a href="https://github.com/shssoichern/oxipng">GitHub</a></td></tr>
+<tr><td style="text-align: left">mozjpeg-sys</td><td style="text-align: left">Mozilla 的 JPEG 编码器 Rust 绑定</td><td style="text-align: left"><a href="https://crates.io/crates/mozjpeg-sys">crates.io</a></td></tr>
+<tr><td style="text-align: left">libwebp-sys</td><td style="text-align: left">Google WebP 编解码库 Rust 绑定</td><td style="text-align: left"><a href="https://crates.io/crates/libwebp-sys">crates.io</a></td></tr>
+<tr><td style="text-align: left">tesseract-rs</td><td style="text-align: left">Tesseract OCR 的 Rust 封装</td><td style="text-align: left"><a href="https://crates.io/crates/tesseract">crates.io</a></td></tr>
+<tr><td style="text-align: left">Luban</td><td style="text-align: left">接近微信朋友圈的图片压缩算法</td><td style="text-align: left"><a href="https://github.com/Curzibn/Luban">GitHub</a></td></tr>
+<tr><td style="text-align: left"><a href="https://github.com/hucool/WXImageCompress">iOS微信聊天，朋友圈图片压缩算法</a></td><td style="text-align: left">微信图片压缩算法分析</td><td style="text-align: left"><a href="https://github.com/hucool/WXImageCompress">GitHub</a></td></tr>
+<tr><td style="text-align: left">Tesseract</td><td style="text-align: left">C++ OCR 引擎</td><td style="text-align: left"><a href="https://github.com/tesseract-ocr/tesseract">GitHub</a></td></tr>
+<tr><td style="text-align: left">Tesseract.js</td><td style="text-align: left">浏览器端 OCR</td><td style="text-align: left"><a href="https://github.com/naptha/tesseract.js">GitHub</a></td></tr>
+<tr><td style="text-align: left">PaddleOCR</td><td style="text-align: left">百度开源 OCR</td><td style="text-align: left"><a href="https://github.com/PaddlePaddle/PaddleOCR">GitHub</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="58-总结"><a class="header" href="#58-总结">5.8 总结</a></h2>
+<h3 id="图片格式对比"><a class="header" href="#图片格式对比">图片格式对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">格式</th><th style="text-align: center">压缩方式</th><th style="text-align: center">Alpha通道</th><th style="text-align: center">动画</th><th style="text-align: left">典型用途</th><th style="text-align: center">文件大小</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">BMP</td><td style="text-align: center">无压缩</td><td style="text-align: center">否</td><td style="text-align: center">否</td><td style="text-align: left">Windows 位图、简单存储</td><td style="text-align: center">最大</td></tr>
+<tr><td style="text-align: center">JPEG</td><td style="text-align: center">有损 (DCT)</td><td style="text-align: center">否</td><td style="text-align: center">否</td><td style="text-align: left">网页照片、摄影作品</td><td style="text-align: center">小</td></tr>
+<tr><td style="text-align: center">PNG</td><td style="text-align: center">无损 (LZ77+Huffman)</td><td style="text-align: center">是</td><td style="text-align: center">否</td><td style="text-align: left">网页图形、需要透明的场景</td><td style="text-align: center">中等</td></tr>
+<tr><td style="text-align: center">WebP</td><td style="text-align: center">有损/无损</td><td style="text-align: center">是</td><td style="text-align: center">是</td><td style="text-align: left">现代网页、替代JPEG/PNG</td><td style="text-align: center">最小</td></tr>
+<tr><td style="text-align: center">GIF</td><td style="text-align: center">无损 (LZW)</td><td style="text-align: center">索引色</td><td style="text-align: center">是</td><td style="text-align: left">简单动画、低色图像</td><td style="text-align: center">中等</td></tr>
+<tr><td style="text-align: center">SVG</td><td style="text-align: center">矢量</td><td style="text-align: center">是</td><td style="text-align: center">是(CSS/JS)</td><td style="text-align: left">图标、Logo、图表</td><td style="text-align: center">最小(简单图形)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="关键公式汇总"><a class="header" href="#关键公式汇总">关键公式汇总</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">公式</th><th style="text-align: left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">$Gray = 0.299R + 0.587G + 0.114B$</td><td style="text-align: left">RGB 转灰度</td></tr>
+<tr><td style="text-align: left">$C_{out} = \alpha C_{fg} + (1-\alpha) C_{bg}$</td><td style="text-align: left">Alpha 混合</td></tr>
+<tr><td style="text-align: left">$Y = 0.299R + 0.587G + 0.114B$</td><td style="text-align: left">RGB 转 YUV 亮度分量</td></tr>
+<tr><td style="text-align: left">$F_Q = \text{round}(F/Q)$</td><td style="text-align: left">JPEG 量化</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="59-练习题"><a class="header" href="#59-练习题">5.9 练习题</a></h2>
+<ol>
+<li>
+<p><strong>基础题</strong>：使用 <code>image</code> 库读取一张 JPEG 图片，获取其宽度、高度和颜色类型，并输出到控制台。</p>
+</li>
+<li>
+<p><strong>格式转换</strong>：编写一个 Rust 程序，将一个目录下所有 <code>.png</code> 文件批量转换为 <code>.webp</code> 格式。</p>
+</li>
+<li>
+<p><strong>像素操作</strong>：实现一个函数，将图片的红色通道增强 50%（即将每个像素的 R 值乘以 1.5，不超过 255）。</p>
+</li>
+<li>
+<p><strong>灰度化对比</strong>：分别实现平均值法（$Gray = (R+G+B)/3$）和加权平均法（BT.601）的灰度化，对比两种方法的效果差异。</p>
+</li>
+<li>
+<p><strong>缩略图生成器</strong>：编写一个命令行工具，接受一个图片路径和目标尺寸参数，生成指定大小的缩略图，并支持选择不同的缩放滤波算法。</p>
+</li>
+<li>
+<p><strong>EXIF 读取</strong>：使用 <code>kamadak-exif</code> 或 <code>rexiv2</code> crate 读取一张照片的 EXIF 信息，输出拍摄时间、光圈、快门速度和 GPS 坐标。</p>
+</li>
+<li>
+<p><strong>思考题</strong>：为什么 JPEG 不适合存储文字截图？如果需要压缩文字截图，应该选择什么格式？为什么？</p>
+</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_4_Time.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_6_Barcode.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_4_Time.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_6_Barcode.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

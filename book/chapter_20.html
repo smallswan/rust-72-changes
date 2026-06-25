@@ -1,0 +1,964 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第二十 哈希 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第二十章-哈希"><a class="header" href="#第二十章-哈希">第二十章 哈希</a></h1>
+<p><a href="https://baike.baidu.com/item/Hash/390310?fromtitle=%E5%93%88%E5%B8%8C&amp;fromid=24086145&amp;fr=aladdin">散列函数</a></p>
+<h2 id="201-哈希函数概述"><a class="header" href="#201-哈希函数概述">20.1 哈希函数概述</a></h2>
+<h3 id="什么是哈希函数"><a class="header" href="#什么是哈希函数">什么是哈希函数</a></h3>
+<p>哈希函数（Hash Function）是一种将任意长度的输入数据映射为固定长度输出数据的函数。这个固定长度的输出通常被称为<strong>哈希值</strong>（Hash Value）、<strong>摘要</strong>（Digest）或<strong>指纹</strong>（Fingerprint）。无论输入数据是一个字节还是数个 TB，哈希函数始终输出相同长度的结果。</p>
+<p>从数学角度来看，哈希函数可以定义为：</p>
+<p>$$H: {0,1}^* \to {0,1}^n$$</p>
+<p>其中，${0,1}^*$ 表示任意长度的二进制串集合，${0,1}^n$ 表示长度为 $n$ 的二进制串集合。例如，SHA-256 的输出长度 $n = 256$。</p>
+<h3 id="哈希函数的核心性质"><a class="header" href="#哈希函数的核心性质">哈希函数的核心性质</a></h3>
+<p>一个合格的哈希函数通常需要满足以下核心性质：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>性质</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>确定性</strong></td><td>相同的输入始终产生相同的输出：若 $x = y$，则 $H(x) = H(y)$</td></tr>
+<tr><td><strong>单向性（抗原像性）</strong></td><td>给定哈希值 $h$，很难找到原始输入 $x$ 使得 $H(x) = h$</td></tr>
+<tr><td><strong>抗碰撞性</strong></td><td>很难找到两个不同的输入 $x \neq y$ 使得 $H(x) = H(y)$</td></tr>
+<tr><td><strong>雪崩效应</strong></td><td>输入的微小变化导致输出的巨大变化，改变一个比特应影响约一半的输出比特</td></tr>
+<tr><td><strong>固定输出长度</strong></td><td>无论输入多长，输出长度始终固定</td></tr>
+</tbody>
+</table>
+</div>
+<p>其中，<strong>抗碰撞性</strong>又分为两种：</p>
+<ul>
+<li><strong>弱抗碰撞性</strong>：给定一个输入 $x$，很难找到另一个不同的输入 $y$ 使得 $H(x) = H(y)$。</li>
+<li><strong>强抗碰撞性</strong>：很难找到任意两个不同的输入 $x \neq y$ 使得 $H(x) = H(y)$。</li>
+</ul>
+<p>对于密码学应用，通常要求满足强抗碰撞性。根据生日攻击理论，对于一个 $n$ 位输出的哈希函数，找到碰撞的期望尝试次数约为 $\sqrt{2^n}$。因此，SHA-256（256 位输出）的安全性远高于 MD5（128 位输出）。</p>
+<h3 id="哈希函数的分类"><a class="header" href="#哈希函数的分类">哈希函数的分类</a></h3>
+<p>哈希函数按用途可分为两大类：</p>
+<ol>
+<li><strong>非加密哈希（Non-cryptographic Hash）</strong>：追求速度，用于哈希表、数据校验、布隆过滤器等场景。不要求抗碰撞性等密码学安全性质。</li>
+<li><strong>加密哈希（Cryptographic Hash）</strong>：追求安全性，用于密码存储、数字签名、消息认证等场景。必须满足单向性和抗碰撞性。</li>
+</ol>
+<pre class="playground"><code class="language-rust edition2024">// 非加密哈希 vs 加密哈希的简单对比示例
+use std::collections::HashMap;
+use sha2::{Sha256, Digest};
+
+fn main() {
+    // 非加密哈希：HashMap 内部使用 SipHash
+    let mut map = HashMap::new();
+    map.insert("key1", "value1");
+    println!("HashMap 查找 key1: {:?}", map.get("key1"));
+
+    // 加密哈希：SHA-256
+    let mut hasher = Sha256::new();
+    hasher.update(b"hello world");
+    let result = hasher.finalize();
+    println!("SHA-256('hello world') = {}", hex::encode(result));
+}</code></pre>
+<h2 id="202-非加密哈希"><a class="header" href="#202-非加密哈希">20.2 非加密哈希</a></h2>
+<p>非加密哈希函数的设计目标是<strong>速度优先</strong>，通常用于不需要密码学安全性的场景。它们不保证抗碰撞性，但在正常使用中碰撞概率极低。</p>
+<h3 id="主要用途"><a class="header" href="#主要用途">主要用途</a></h3>
+<ul>
+<li><strong>哈希表</strong>：将键映射到桶（bucket）中，实现快速查找</li>
+<li><strong>数据校验</strong>：检测数据传输中的错误</li>
+<li><strong>布隆过滤器</strong>：高效的概率型数据结构</li>
+<li><strong>负载均衡</strong>：一致性哈希（Consistent Hashing）</li>
+<li><strong>指纹识别</strong>：快速判断两个数据块是否相同</li>
+</ul>
+<h3 id="crc32"><a class="header" href="#crc32">CRC32</a></h3>
+<p><a href="https://baike.baidu.com/item/CRC32/7460858?fr=aladdin">CRC32</a>（Cyclic Redundancy Check，循环冗余校验）是一种基于多项式除法的校验算法，广泛用于网络通信和文件校验。其原理是将数据视为一个大的二进制多项式，除以一个预定义的生成多项式，余数即为 CRC 值。</p>
+<p>CRC32 的数学原理：将输入数据 $M(x)$ 视为多项式，生成多项式为 $G(x)$，则：</p>
+<p>$$CRC(M) = M(x) \cdot x^{32} \mod G(x)$$</p>
+<p>常用的 CRC32 生成多项式为：</p>
+<p>$$G(x) = x^{32} + x^{26} + x^{23} + x^{22} + x^{16} + x^{12} + x^{11} + x^{10} + x^8 + x^7 + x^5 + x^4 + x^2 + x + 1$$</p>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: crc32fast = "1"
+use crc32fast::Hasher;
+
+fn main() {
+    let mut hasher = Hasher::new();
+    hasher.update(b"hello world");
+    let checksum = hasher.finalize();
+    println!("CRC32('hello world') = {:08x}", checksum);
+}</code></pre>
+<h3 id="murmurhash"><a class="header" href="#murmurhash">MurmurHash</a></h3>
+<p>MurmurHash 是一种非加密哈希算法，由 Austin Appleby 创建。名字来源于 “multiply” 和 “rotate” 两个操作的组合。它速度快、分布均匀，但不提供加密安全性。MurmurHash 有多个版本（MurmurHash1/2/3），其中 MurmurHash3 最为常用。</p>
+<h3 id="siphash"><a class="header" href="#siphash">SipHash</a></h3>
+<p><a href="https://www.131002.net/siphash/siphash.pdf">SipHash</a> 是一种快速但“密码学强度“的伪随机函数，由 Aumasson 和 Bernstein 设计。SipHash is a fast but ‘cryptographically strong’ pseudo-random function by Aumasson and Bernstein.</p>
+<p><strong>Rust 的 <code>HashMap</code> 和 <code>HashSet</code> 默认使用 SipHash 作为哈希算法</strong>，这是 Rust 标准库的一个重要安全设计决策。SipHash 能够有效抵抗 HashDoS（哈希碰撞拒绝服务）攻击，攻击者无法通过构造特定输入来制造大量哈希碰撞。</p>
+<pre class="playground"><code class="language-rust edition2024">// Rust 标准库 HashMap 默认使用 SipHash
+use std::collections::HashMap;
+use std::hash::{Hash, Hasher};
+use std::collections::hash_map::DefaultHasher;
+
+fn get_hash&lt;T: Hash&gt;(t: &amp;T) -&gt; u64 {
+    let mut s = DefaultHasher::new();
+    t.hash(&amp;mut s);
+    s.finish()
+}
+
+fn main() {
+    let hash1 = get_hash(&amp;"hello");
+    let hash2 = get_hash(&amp;"world");
+    println!("SipHash(\"hello\") = {}", hash1);
+    println!("SipHash(\"world\") = {}", hash2);
+
+    // HashMap 内部自动使用 SipHash
+    let mut scores = HashMap::new();
+    scores.insert("Alice", 95);
+    scores.insert("Bob", 87);
+    println!("scores: {:?}", scores);
+}</code></pre>
+<h3 id="xxhash--xxh3"><a class="header" href="#xxhash--xxh3">XxHash / XXH3</a></h3>
+<p><a href="https://www.5axxw.com/wiki/content/8g09uv">XxHash</a> 是一种非常快速的非加密哈希算法，由 Yann Collet 设计。XXH3 是其最新版本，在大数据量场景下性能极为出色。</p>
+<p><a href="https://github.com/shepmaster/twox-hash">twox-hash</a> 是 XxHash 的 Rust 实现，XxHash是一种非常快速的哈希算法。</p>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: xxhash-rust = { version = "0.8", features = ["xxh3"] }
+use xxhash_rust::xxh3::xxh3_128;
+
+fn main() {
+    let hash = xxh3_128(b"hello world");
+    println!("XXH3-128('hello world') = {:016x}", hash);
+}</code></pre>
+<h3 id="highwayhash"><a class="header" href="#highwayhash">HighwayHash</a></h3>
+<p><a href="https://github.com/google/highwayhash">HighwayHash</a> 是 Google 开发的一种高速哈希算法，设计目标是能够在短字符串和长字符串上都达到极高的吞吐量。它支持 64 位、128 位和 256 位输出。</p>
+<p><a href="https://github.com/nickbabcock/highway-rs">highway-rs</a> 是 HighwayHash 的 Rust 实现。</p>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml dependencies:
+// highway = "1"
+
+use highway::{HighwayHash, HighwayHasher, Key};
+
+fn main() {
+    // Generate 128bit hash
+    let key = Key([1, 2, 3, 4]);
+    let mut hasher128 = HighwayHasher::new(key);
+    hasher128.append(&amp;[255]);
+    let res128: [u64; 2] = hasher128.finalize128();
+    println!("128-bit hash: {:?}", res128);
+    assert_eq!([0xbb007d2462e77f3c, 0x224508f916b3991f], res128);
+    println!("128-bit hash assertion passed!");
+
+    // Generate 256bit hash
+    let key = Key([1, 2, 3, 4]);
+    let mut hasher256 = HighwayHasher::new(key);
+    hasher256.append(&amp;[255]);
+    let res256: [u64; 4] = hasher256.finalize256();
+    println!("256-bit hash: {:?}", res256);
+    let expected: [u64; 4] = [
+        0x7161cadbf7cd70e1,
+        0xaac4905de62b2f5e,
+        0x7b02b936933faa7,
+        0xc8efcfc45b239f8d,
+    ];
+    assert_eq!(expected, res256);
+    println!("256-bit hash assertion passed!");
+}</code></pre>
+<h3 id="非加密哈希算法对比"><a class="header" href="#非加密哈希算法对比">非加密哈希算法对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>输出位数</th><th>特点</th><th>Rust crate</th><th>典型场景</th></tr>
+</thead>
+<tbody>
+<tr><td>CRC32</td><td>32</td><td>基于多项式除法，硬件加速</td><td><code>crc32fast</code></td><td>数据校验、文件校验</td></tr>
+<tr><td>MurmurHash3</td><td>32/64/128</td><td>速度快，分布均匀</td><td><code>murmur3</code></td><td>布隆过滤器、数据分片</td></tr>
+<tr><td>SipHash</td><td>64</td><td>抗 HashDoS，Rust 默认</td><td>标准库内置</td><td>HashMap、HashSet</td></tr>
+<tr><td>XxHash</td><td>32/64/128</td><td>极快，支持流式处理</td><td><code>xxhash-rust</code></td><td>数据处理、数据库</td></tr>
+<tr><td>XXH3</td><td>64/128</td><td>XxHash 最新版，更快</td><td><code>xxhash-rust</code></td><td>大数据量哈希</td></tr>
+<tr><td>HighwayHash</td><td>64/128/256</td><td>Google 开发，SIMD 加速</td><td><code>highway</code></td><td>网络数据包、缓存</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="203-加密哈希"><a class="header" href="#203-加密哈希">20.3 加密哈希</a></h2>
+<p>加密哈希函数（Cryptographic Hash Function）是密码学中的核心原语，除了满足哈希函数的基本性质外，还必须具备<strong>单向性</strong>和<strong>抗碰撞性</strong>等安全性质。</p>
+<h3 id="主要用途-1"><a class="header" href="#主要用途-1">主要用途</a></h3>
+<ul>
+<li><strong>密码存储</strong>：存储用户密码的哈希值而非明文</li>
+<li><strong>数字签名</strong>：对消息摘要进行签名，提高效率</li>
+<li><strong>数据完整性</strong>：验证文件或消息是否被篡改</li>
+<li><strong>消息认证</strong>：结合密钥生成消息认证码（MAC）</li>
+<li><strong>区块链</strong>：工作量证明、区块链接</li>
+</ul>
+<h3 id="md5"><a class="header" href="#md5">MD5</a></h3>
+<p><a href="https://baike.baidu.com/link?url=rqoWQjzXxNj-EcP5xwsA9wUgTfjgpmuUT_i9xeWSCYHjpBf16kMFv7Z5ECpdzLTo">MD5</a>（Message-Digest Algorithm 5）由 Ronald Rivest 于 1991 年设计，输出 128 位（16 字节）哈希值。MD5 曾广泛用于文件校验和数字签名，但<strong>现已不安全</strong>——2004 年王小云教授团队发现了 MD5 的碰撞攻击方法，此后 MD5 不再被推荐用于任何安全敏感场景。</p>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: md-5 = "0.10"
+use md5::{Md5, Digest};
+
+fn main() {
+    let mut hasher = Md5::new();
+    hasher.update(b"hello world");
+    let result = hasher.finalize();
+    println!("MD5('hello world') = {}", hex::encode(result));
+    // 输出: 5eb63bbbe01eeed093cb22bb8f5acdc3
+}</code></pre>
+<h3 id="sha-系列"><a class="header" href="#sha-系列">SHA 系列</a></h3>
+<p><a href="https://baike.baidu.com/item/sha256/9726070?fr=aladdin">SHA256</a>（Secure Hash Algorithm）是美国国家安全局（NSA）设计的一系列加密哈希算法，由 NIST 发布为联邦信息处理标准（FIPS）。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>输出位数</th><th>内部块大小</th><th>状态</th><th>安全性</th></tr>
+</thead>
+<tbody>
+<tr><td>SHA-1</td><td>160</td><td>512</td><td>已破解（2017年）</td><td>不安全</td></tr>
+<tr><td>SHA-224</td><td>224</td><td>512</td><td>安全</td><td>112位安全性</td></tr>
+<tr><td>SHA-256</td><td>256</td><td>512</td><td>安全</td><td>128位安全性</td></tr>
+<tr><td>SHA-384</td><td>384</td><td>1024</td><td>安全</td><td>192位安全性</td></tr>
+<tr><td>SHA-512</td><td>512</td><td>1024</td><td>安全</td><td>256位安全性</td></tr>
+</tbody>
+</table>
+</div>
+<p>SHA-256 是目前最广泛使用的加密哈希算法之一。其处理流程包括：</p>
+<ol>
+<li><strong>消息填充</strong>：在消息末尾添加填充位，使消息长度满足 $L \equiv 448 \pmod{512}$</li>
+<li><strong>附加长度</strong>：追加原始消息的 64 位长度值</li>
+<li><strong>分块处理</strong>：将填充后的消息分为 512 位的块</li>
+<li><strong>压缩函数</strong>：每个块经过 64 轮压缩运算，更新 8 个 32 位的工作变量</li>
+<li><strong>输出拼接</strong>：最终将 8 个工作变量拼接为 256 位输出</li>
+</ol>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: sha2 = "0.10"
+use sha2::{Sha256, Sha512, Digest};
+
+fn main() {
+    // SHA-256
+    let mut hasher256 = Sha256::new();
+    hasher256.update(b"hello world");
+    let result256 = hasher256.finalize();
+    println!("SHA-256('hello world') = {}", hex::encode(result256));
+
+    // SHA-512
+    let mut hasher512 = Sha512::new();
+    hasher512.update(b"hello world");
+    let result512 = hasher512.finalize();
+    println!("SHA-512('hello world') = {}", hex::encode(result512));
+}</code></pre>
+<h3 id="sha-3--keccak"><a class="header" href="#sha-3--keccak">SHA-3 / Keccak</a></h3>
+<p><a href="https://baike.baidu.com/item/SHA3?fromModule=lemma_search-box">SHA3</a>（Keccak）是 NIST 在 2015 年发布的最新加密哈希标准，采用与 SHA-2 完全不同的<strong>海绵结构</strong>（Sponge Construction）。</p>
+<p>海绵结构的核心是一个固定宽度的<strong>置换函数</strong> $f$，其处理过程为：</p>
+<ol>
+<li><strong>吸收阶段（Absorbing）</strong>：将输入消息分块后与状态进行异或，然后应用置换函数 $f$</li>
+<li><strong>挤压阶段（Squeezing）</strong>：从状态中提取输出</li>
+</ol>
+<p>$$Keccak<a href="M">r, c, d</a> = Sponge[f, pad, r](M, d)$$</p>
+<p>其中 $r$ 为比特率（rate），$c$ 为容量（capacity），$d$ 为输出长度。安全性与容量 $c$ 成正比。</p>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: sha3 = "0.10"
+use sha3::{Sha3_256, Digest};
+
+fn main() {
+    let mut hasher = Sha3_256::new();
+    hasher.update(b"hello world");
+    let result = hasher.finalize();
+    println!("SHA3-256('hello world') = {}", hex::encode(result));
+}</code></pre>
+<h3 id="blake3"><a class="header" href="#blake3">BLAKE3</a></h3>
+<p><a href="https://github.com/BLAKE3-team/BLAKE3">BLAKE3</a> 是 BLAKE2 的继任者，由 Jean-Philippe Aumasson、Samuel Neves、Zooko Wilcox-O’Hearn 和 Christian Winnerlein 设计。BLAKE3 的特点包括：</p>
+<ul>
+<li><strong>极高性能</strong>：在多核 CPU 上可达到每秒数十 GB 的哈希速度</li>
+<li><strong>并行化设计</strong>：基于 Merkle 树结构，天然支持并行计算</li>
+<li><strong>多功能</strong>：支持哈希、密钥派生（KDF）、可扩展输出（XOF）</li>
+<li><strong>安全性</strong>：基于 BLAKE2s 的安全证明</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: blake3 = "1"
+use blake3::Hasher;
+
+fn main() {
+    // 基本哈希
+    let hash = blake3::hash(b"hello world");
+    println!("BLAKE3('hello world') = {}", hash);
+
+    // 流式哈希
+    let mut hasher = Hasher::new();
+    hasher.update(b"hello ");
+    hasher.update(b"world");
+    let hash = hasher.finalize();
+    println!("BLAKE3(streaming) = {}", hash);
+
+    // 密钥派生
+    let key = blake3::derive_key("my-app-key", b"some-derivation-context");
+    println!("Derived key: {}", hex::encode(key.as_bytes()));
+}</code></pre>
+<h3 id="sm3"><a class="header" href="#sm3">SM3</a></h3>
+<p><a href="https://www.oscca.gov.cn/sca/xxgk/2010-12/17/1002389/files/302a3ada057c4a73830536d03e683110.pdf">SM3</a> 是中国国家密码管理局发布的密码杂凑算法，属于国密（SM）标准体系的一部分。SM3 输出 256 位哈希值，安全性 comparable to SHA-256，在金融、政务等场景中被广泛使用。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 使用 OpenSSL 命令行计算 SM3
+// openssl sm3 Rust实战配套代码.zip
+<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: sm3 = "0.4"
+use sm3::{Sm3, Digest};
+
+fn main() {
+    let mut hasher = Sm3::new();
+    hasher.update(b"hello world");
+    let result = hasher.finalize();
+    println!("SM3('hello world') = {}", hex::encode(result));
+}</code></pre>
+<h3 id="加密哈希算法对比"><a class="header" href="#加密哈希算法对比">加密哈希算法对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>输出位数</th><th>设计者</th><th>结构</th><th>安全状态</th><th>Rust crate</th></tr>
+</thead>
+<tbody>
+<tr><td>MD5</td><td>128</td><td>Rivest</td><td>Merkle-Damgard</td><td>已破解</td><td><code>md-5</code></td></tr>
+<tr><td>SHA-1</td><td>160</td><td>NSA</td><td>Merkle-Damgard</td><td>已破解</td><td><code>sha1</code></td></tr>
+<tr><td>SHA-256</td><td>256</td><td>NSA</td><td>Merkle-Damgard</td><td>安全</td><td><code>sha2</code></td></tr>
+<tr><td>SHA-512</td><td>512</td><td>NSA</td><td>Merkle-Damgard</td><td>安全</td><td><code>sha2</code></td></tr>
+<tr><td>SHA3-256</td><td>256</td><td>Keccak Team</td><td>海绵结构</td><td>安全</td><td><code>sha3</code></td></tr>
+<tr><td>BLAKE3</td><td>256</td><td>Aumasson et al.</td><td>Merkle 树</td><td>安全</td><td><code>blake3</code></td></tr>
+<tr><td>SM3</td><td>256</td><td>中国国家密码局</td><td>Merkle-Damgard</td><td>安全</td><td><code>sm3</code></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="204-消息认证码mac"><a class="header" href="#204-消息认证码mac">20.4 消息认证码（MAC）</a></h2>
+<p>MAC(Message Authentication Code, 消息认证码) 是一种带密钥的哈希函数，用于验证消息的完整性和真实性。与普通哈希不同，MAC 需要一个密钥，只有拥有密钥的人才能生成和验证 MAC 值。</p>
+<p>GMAC (Galois message authentication code mode, 伽罗华消息认证码) 是 MAC 的一种实现方式，基于伽罗华域（Galois Field）的乘法运算，常与 AES 结合形成 GCM（Galois/Counter Mode）认证加密模式。</p>
+<h3 id="hmac-原理"><a class="header" href="#hmac-原理">HMAC 原理</a></h3>
+<p>HMAC（Hash-based MAC）是最常用的 MAC 构造方法，其定义为：</p>
+<p>$$HMAC(K, m) = H\big((K’ \oplus opad) \parallel H((K’ \oplus ipad) \parallel m)\big)$$</p>
+<p>其中：</p>
+<ul>
+<li>$H$ 是底层哈希函数（如 SHA-256）</li>
+<li>$K$ 是密钥</li>
+<li>$K’$ 是从 $K$ 派生的密钥（若 $K$ 长度超过块大小则先哈希，否则右端补零）</li>
+<li>$ipad$（inner padding）是重复块大小次的 $0x36$</li>
+<li>$opad$（outer padding）是重复块大小次的 $0x5c$</li>
+<li>$\parallel$ 表示拼接操作</li>
+<li>$\oplus$ 表示异或操作</li>
+</ul>
+<p>HMAC 的计算过程分为两步：</p>
+<ol>
+<li><strong>内层哈希</strong>：计算 $H((K’ \oplus ipad) \parallel m)$</li>
+<li><strong>外层哈希</strong>：计算 $H((K’ \oplus opad) \parallel \text{内层结果})$</li>
+</ol>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: hmac = "0.12", sha2 = "0.10", hex = "0.4"
+use hmac::{Hmac, Mac};
+use sha2::Sha256;
+
+type HmacSha256 = Hmac&lt;Sha256&gt;;
+
+fn main() {
+    // 创建 HMAC-SHA256
+    let mut mac = HmacSha256::new_from_slice(b"my-secret-key")
+        .expect("HMAC can take key of any size");
+    mac.update(b"hello world");
+    let result = mac.finalize();
+    println!("HMAC-SHA256 = {}", hex::encode(result.into_bytes()));
+
+    // 验证 HMAC
+    use hmac::Mac;
+    let mut mac2 = HmacSha256::new_from_slice(b"my-secret-key").unwrap();
+    mac2.update(b"hello world");
+    mac2.verify(result.into_bytes()).expect("HMAC verification failed");
+    println!("HMAC verification passed!");
+}</code></pre>
+<h3 id="gmac--gcm-模式"><a class="header" href="#gmac--gcm-模式">GMAC / GCM 模式</a></h3>
+<p>GCM（Galois/Counter Mode）是一种同时提供加密和认证的模式，其中的认证部分使用 GMAC。GCM 模式广泛应用于 TLS 1.2/1.3、IPsec 等协议中。</p>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: aes-gcm = "0.10"
+use aes_gcm::{Aes256Gcm, Key, Nonce};
+use aes_gcm::aead::{Aead, KeyInit};
+
+fn main() {
+    let key = Key::&lt;Aes256Gcm&gt;::from_slice(b"an example very very secret key!");
+    let cipher = Aes256Gcm::new(key);
+    let nonce = Nonce::from_slice(b"unique nonce"); // 96-bits; unique per message
+
+    let ciphertext = cipher.encrypt(nonce, b"plaintext message".as_ref())
+        .expect("encryption failure");
+    println!("Ciphertext: {}", hex::encode(&amp;ciphertext));
+
+    let plaintext = cipher.decrypt(nonce, ciphertext.as_ref())
+        .expect("decryption failure");
+    println!("Plaintext: {}", String::from_utf8_lossy(&amp;plaintext));
+}</code></pre>
+<h2 id="205-哈希在实际应用中的签名验证"><a class="header" href="#205-哈希在实际应用中的签名验证">20.5 哈希在实际应用中的签名验证</a></h2>
+<p>在实际的互联网应用中，哈希函数常用于 API 签名验证。签名验证的核心流程是：将请求参数按规则排序、拼接后追加密钥，再进行哈希运算，将得到的签名值与请求中携带的签名进行比对。</p>
+<h3 id="支付宝签名验证"><a class="header" href="#支付宝签名验证">支付宝签名验证</a></h3>
+<p>以下是一个完整的支付宝签名验证实现，支持 MD5 和 SHA256 两种签名方式：</p>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml dependencies:
+// md-5 = "0.10"
+// sha2 = "0.10"
+// digest = "0.10"
+// chrono = { version = "0.4", features = ["clock"] }
+// lazy_static = "1"
+use md5::Md5;
+use sha2::Sha256;
+use digest::Digest;
+use std::collections::HashMap;
+use chrono::Utc;
+use lazy_static::lazy_static;
+
+const ALIPAY_SIGN_SECRET_KEY: &amp;str = "abcdefgh";
+
+lazy_static! {
+    static ref SUPPORT_SIGN_TYPE: Vec&lt;&amp;'static str&gt; = vec!["MD5", "SHA256"];
+}
+
+pub fn verify_alipay_sign(params_map: HashMap&lt;String, String&gt;) -&gt; Result&lt;bool, &amp;'static str&gt; {
+    params_map.get("timestamp").expect("required timestamp");
+    let sign_type = params_map.get("sign_type").expect("required sign_type");
+    let sign_type_str = sign_type.as_str();
+
+    if !SUPPORT_SIGN_TYPE.contains(&amp;sign_type_str) {
+        return Err("not support this sign type");
+    }
+    params_map.get("sign").expect("required sign");
+
+    let mut keys: Vec&lt;&amp;String&gt; = params_map
+        .keys()
+        .filter(|k| *k != "sign" &amp;&amp; *k != "sign_type")
+        .collect();
+    keys.sort();
+
+    let mut params_str = String::new();
+    for key in &amp;keys {
+        if let Some(value) = params_map.get(*key) {
+            params_str.push_str(&amp;format!("{}={}&amp;", key, value));
+        }
+    }
+    params_str.push_str(ALIPAY_SIGN_SECRET_KEY);
+
+    let sign = compute_sign(sign_type_str, &amp;params_str);
+
+    if let Some(param_sign) = params_map.get("sign") {
+        Ok(*param_sign == sign)
+    } else {
+        Ok(false)
+    }
+}
+
+fn compute_sign(sign_type: &amp;str, data: &amp;str) -&gt; String {
+    if sign_type == "MD5" {
+        let mut md = Md5::new();
+        md.update(data.as_bytes());
+        md.finalize().iter().map(|b| format!("{:02x}", b)).collect()
+    } else if sign_type == "SHA256" {
+        let mut sha256 = Sha256::new();
+        sha256.update(data.as_bytes());
+        sha256.finalize().iter().map(|b| format!("{:02x}", b)).collect()
+    } else {
+        String::new()
+    }
+}
+
+fn alipay_sign() {
+    let mut params_map = HashMap::&lt;String, String&gt;::new();
+
+    params_map.insert("service".to_string(), "api-demo".to_string());
+    params_map.insert("partner".to_string(), "2088101568338364".to_string());
+    params_map.insert(
+        "timestamp".to_string(),
+        Utc::now().timestamp_millis().to_string(),
+    );
+
+    let mut keys: Vec&lt;&amp;String&gt; = params_map
+        .keys()
+        .filter(|k| *k != "sign" &amp;&amp; *k != "sign_type")
+        .collect();
+    keys.sort();
+
+    let mut params_str = String::new();
+    for key in &amp;keys {
+        if let Some(value) = params_map.get(*key) {
+            params_str.push_str(&amp;format!("{}={}&amp;", key, value));
+        }
+    }
+    params_str.push_str(ALIPAY_SIGN_SECRET_KEY);
+
+    println!("params_str=&gt;{}", params_str);
+
+    let sign_type = SUPPORT_SIGN_TYPE[1]; // "SHA256"
+    let sign = compute_sign(sign_type, &amp;params_str);
+    println!("sign=&gt;{}", sign);
+
+    params_map.insert("sign_type".to_string(), sign_type.to_string());
+    params_map.insert("sign".to_string(), sign);
+
+    let ok = verify_alipay_sign(params_map);
+    println!("verify_alipay_sign : {:?}", ok);
+
+    // 测试不支持的签名类型
+    let mut params_map2 = HashMap::&lt;String, String&gt;::new();
+    params_map2.insert("sign_type".to_string(), "SHA512".to_string());
+    params_map2.insert(
+        "timestamp".to_string(),
+        Utc::now().timestamp_millis().to_string(),
+    );
+    let result = verify_alipay_sign(params_map2);
+    println!("SHA512 (unsupported) result: {:?}", result);
+    assert!(result.is_err(), "Expected error for unsupported SHA512");
+    println!("All tests passed!");
+}
+
+fn main() {
+    alipay_sign();
+}</code></pre>
+<h3 id="签名流程详解"><a class="header" href="#签名流程详解">签名流程详解</a></h3>
+<p>上述支付宝签名验证的完整流程如下：</p>
+<ol>
+<li><strong>参数收集</strong>：获取所有请求参数（<code>HashMap&lt;String, String&gt;</code>）</li>
+<li><strong>参数过滤</strong>：排除 <code>sign</code> 和 <code>sign_type</code> 字段</li>
+<li><strong>参数排序</strong>：将剩余参数按 key 的字母序升序排列</li>
+<li><strong>参数拼接</strong>：按 <code>key=value&amp;</code> 格式拼接所有参数</li>
+<li><strong>追加密钥</strong>：在拼接字符串末尾追加签名密钥</li>
+<li><strong>哈希计算</strong>：根据 <code>sign_type</code> 选择 MD5 或 SHA256 计算哈希值</li>
+<li><strong>签名比较</strong>：将计算得到的签名与请求中携带的签名进行比对</li>
+</ol>
+<h3 id="微信支付签名简介"><a class="header" href="#微信支付签名简介">微信支付签名简介</a></h3>
+<p>微信支付的签名流程与支付宝类似，但使用的是 MD5 或 HMAC-SHA256，并且签名串的构造方式略有不同。微信支付 v3 API 使用 SHA256-RSA2048 签名，签名串的构造格式为：</p>
+<pre><code>HTTP请求方法\n
+URL路径\n
+时间戳\n
+随机字符串\n
+请求报文主体\n
+</code></pre>
+<p>然后使用商户的 RSA 私钥对签名串进行签名，接收方使用商户的 RSA 公钥进行验签。</p>
+<h2 id="206-哈希的常见应用场景"><a class="header" href="#206-哈希的常见应用场景">20.6 哈希的常见应用场景</a></h2>
+<h3 id="数据完整性校验"><a class="header" href="#数据完整性校验">数据完整性校验</a></h3>
+<p>哈希函数最常见的用途之一是验证数据的完整性。下载文件时，发布方通常会提供文件的哈希值（如 SHA-256），用户下载后可以重新计算哈希值并与发布方提供的值比对，确认文件未被篡改。</p>
+<pre class="playground"><code class="language-rust edition2024">use sha2::{Sha256, Digest};
+use std::fs::File;
+use std::io::{self, Read};
+
+fn compute_file_hash(path: &amp;str) -&gt; Result&lt;String, io::Error&gt; {
+    let mut file = File::open(path)?;
+    let mut hasher = Sha256::new();
+    let mut buffer = [0u8; 8192];
+    loop {
+        let n = file.read(&amp;mut buffer)?;
+        if n == 0 { break; }
+        hasher.update(&amp;buffer[..n]);
+    }
+    Ok(hex::encode(hasher.finalize()))
+}
+
+fn main() -&gt; Result&lt;(), io::Error&gt; {
+    let hash = compute_file_hash("Cargo.toml")?;
+    println!("SHA-256(Cargo.toml) = {}", hash);
+    Ok(())
+}</code></pre>
+<h3 id="密码存储加盐哈希"><a class="header" href="#密码存储加盐哈希">密码存储（加盐哈希）</a></h3>
+<p>存储用户密码时，<strong>绝对不能存储明文密码</strong>，也不应直接存储密码的哈希值（容易被彩虹表攻击）。正确的做法是使用<strong>加盐哈希</strong>（Salted Hash）：</p>
+<p>$$\text{stored} = H(password \parallel salt)$$</p>
+<p>其中 $salt$ 是一个随机生成的值，每个用户的 salt 都不同。更推荐的做法是使用专门的密码哈希算法如 bcrypt、scrypt 或 Argon2，它们内置了 salt 管理并增加了计算成本以抵抗暴力破解。</p>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: bcrypt = "0.15"
+use bcrypt::{hash, verify, DEFAULT_COST};
+
+fn main() -&gt; Result&lt;(), bcrypt::BcryptError&gt; {
+    let password = "my-secret-password";
+
+    // 哈希密码（自动生成 salt）
+    let hashed = hash(password, DEFAULT_COST)?;
+    println!("Hashed password: {}", hashed);
+
+    // 验证密码
+    let valid = verify(password, &amp;hashed)?;
+    println!("Password valid: {}", valid);
+
+    let invalid = verify("wrong-password", &amp;hashed)?;
+    println!("Wrong password valid: {}", invalid);
+
+    Ok(())
+}</code></pre>
+<h3 id="数字签名"><a class="header" href="#数字签名">数字签名</a></h3>
+<p>数字签名是公钥密码学与哈希函数的结合。发送方用自己的私钥对消息的哈希值进行签名，接收方用发送方的公钥验证签名。由于哈希函数将任意长度的消息压缩为固定长度，数字签名只需要对短得多的哈希值进行运算，大大提高了效率。</p>
+<p>数字签名的流程：</p>
+<ol>
+<li>发送方计算消息的哈希值：$h = H(m)$</li>
+<li>发送方用私钥签名：$\sigma = Sign_{sk}(h)$</li>
+<li>接收方用公钥验证：$Verify_{pk}(h, \sigma)$</li>
+</ol>
+<h3 id="布隆过滤器"><a class="header" href="#布隆过滤器">布隆过滤器</a></h3>
+<p>布隆过滤器（Bloom Filter）是一种空间高效的概率型数据结构，用于判断一个元素是否属于某个集合。它使用多个哈希函数将元素映射到位数组中。布隆过滤器可能产生<strong>假阳性</strong>（误判为存在），但不会产生<strong>假阴性</strong>（不会漏判）。</p>
+<p>对于 $m$ 位的位数组和 $k$ 个哈希函数，插入 $n$ 个元素后，假阳性概率为：</p>
+<p>$$P(\text{false positive}) \approx \left(1 - e^{-kn/m}\right)^k$$</p>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: bloom = "0.3"
+use bloom::Bloom;
+
+fn main() {
+    let mut bloom = Bloom::new_for_fp_rate(1000, 0.01);
+
+    bloom.insert("hello");
+    bloom.insert("world");
+
+    println!("Contains 'hello': {}", bloom.contains(&amp;"hello")); // true
+    println!("Contains 'world': {}", bloom.contains(&amp;"world")); // true
+    println!("Contains 'rust':  {}", bloom.contains(&amp;"rust"));  // 可能 false（假阳性概率约1%）
+}</code></pre>
+<h3 id="git-版本控制sha-1-内容寻址"><a class="header" href="#git-版本控制sha-1-内容寻址">Git 版本控制（SHA-1 内容寻址）</a></h3>
+<p>Git 使用 SHA-1 哈希作为内容寻址的基础。Git 中的每个对象（blob、tree、commit）都通过其内容的 SHA-1 哈希值来标识，这个哈希值被称为 <strong>object ID</strong>（OID）。这种设计保证了：</p>
+<ul>
+<li>相同内容必定产生相同的哈希值（数据去重）</li>
+<li>不同内容几乎不可能产生相同的哈希值（数据完整性）</li>
+<li>任何内容的修改都会导致哈希值变化（变更追踪）</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: sha1 = "0.10"
+use sha1::{Sha1, Digest};
+
+fn main() {
+    let mut hasher = Sha1::new();
+    hasher.update(b"hello world");
+    let result = hasher.finalize();
+    println!("SHA-1('hello world') = {}", hex::encode(result));
+}</code></pre>
+<blockquote>
+<p>注意：虽然 SHA-1 在理论上已被破解，但 Git 仍在使用它。Git 社区正在逐步迁移到 SHA-256（Git v2.29+ 开始支持 SHA-256 对象格式）。</p>
+</blockquote>
+<h2 id="207-总结"><a class="header" href="#207-总结">20.7 总结</a></h2>
+<h3 id="加密哈希-vs-非加密哈希对比"><a class="header" href="#加密哈希-vs-非加密哈希对比">加密哈希 vs 非加密哈希对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th>非加密哈希</th><th>加密哈希</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>设计目标</strong></td><td>速度优先</td><td>安全优先</td></tr>
+<tr><td><strong>单向性</strong></td><td>不要求</td><td>必须满足</td></tr>
+<tr><td><strong>抗碰撞性</strong></td><td>不要求</td><td>必须满足</td></tr>
+<tr><td><strong>抗 HashDoS</strong></td><td>部分支持（如 SipHash）</td><td>天然支持</td></tr>
+<tr><td><strong>典型算法</strong></td><td>CRC32, MurmurHash, SipHash, XxHash, HighwayHash</td><td>MD5, SHA-256, SHA-3, BLAKE3, SM3</td></tr>
+<tr><td><strong>典型场景</strong></td><td>哈希表、布隆过滤器、数据校验</td><td>密码存储、数字签名、消息认证</td></tr>
+<tr><td><strong>速度</strong></td><td>极快（数 GB/s）</td><td>较慢（数百 MB/s）</td></tr>
+<tr><td><strong>输出长度</strong></td><td>可变（32~256位）</td><td>固定（128~512位）</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="算法选择建议"><a class="header" href="#算法选择建议">算法选择建议</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>场景</th><th>推荐算法</th><th>理由</th></tr>
+</thead>
+<tbody>
+<tr><td>HashMap / HashSet</td><td>SipHash（Rust 默认）</td><td>抗 HashDoS，标准库内置</td></tr>
+<tr><td>布隆过滤器</td><td>MurmurHash3 / XxHash</td><td>速度快，分布均匀</td></tr>
+<tr><td>大数据处理 / 缓存</td><td>XXH3 / HighwayHash</td><td>极高吞吐量</td></tr>
+<tr><td>文件校验</td><td>SHA-256</td><td>安全可靠，广泛支持</td></tr>
+<tr><td>API 签名验证</td><td>SHA-256 / HMAC-SHA256</td><td>行业标准</td></tr>
+<tr><td>密码存储</td><td>bcrypt / Argon2</td><td>专门设计的密码哈希算法</td></tr>
+<tr><td>数字签名</td><td>SHA-256 + RSA/ECDSA</td><td>行业标准组合</td></tr>
+<tr><td>国密合规场景</td><td>SM3 / SM2</td><td>满足国密标准要求</td></tr>
+<tr><td>通用加密哈希（新项目）</td><td>BLAKE3</td><td>性能最优，安全性好</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="关键要点"><a class="header" href="#关键要点">关键要点</a></h3>
+<ol>
+<li><strong>不要用 MD5 或 SHA-1</strong> 做任何安全相关的事情，它们已被破解。</li>
+<li><strong>Rust 的 HashMap 默认使用 SipHash</strong>，这是一个优秀的安全设计决策。</li>
+<li><strong>密码存储请使用 bcrypt/Argon2</strong>，不要自己实现加盐哈希。</li>
+<li><strong>API 签名验证</strong>是哈希函数在互联网应用中最常见的实际用途之一。</li>
+<li><strong>BLAKE3</strong> 是目前综合性能最好的加密哈希算法，适合新项目使用。</li>
+<li><strong>非加密哈希和加密哈希的用途完全不同</strong>，选择时务必根据场景判断。</li>
+</ol>
+<h2 id="208-练习题"><a class="header" href="#208-练习题">20.8 练习题</a></h2>
+<h3 id="练习-1基础概念"><a class="header" href="#练习-1基础概念">练习 1：基础概念</a></h3>
+<p>请解释哈希函数的“雪崩效应“，并编写一个 Rust 程序，计算 <code>hello</code> 和 <code>hellp</code>（仅一个字母不同）的 SHA-256 哈希值，统计两个哈希值中有多少位不同。</p>
+<h3 id="练习-2非加密哈希性能对比"><a class="header" href="#练习-2非加密哈希性能对比">练习 2：非加密哈希性能对比</a></h3>
+<p>使用 <code>crc32fast</code>、<code>xxhash-rust</code> 和 <code>highway</code> 三个 crate，分别对 1MB 的随机数据进行哈希计算，测量并比较它们的耗时。使用 <code>std::time::Instant</code> 进行计时。</p>
+<h3 id="练习-3实现简单文件校验工具"><a class="header" href="#练习-3实现简单文件校验工具">练习 3：实现简单文件校验工具</a></h3>
+<p>编写一个 Rust 命令行工具，接受文件路径作为参数，计算并输出该文件的 SHA-256 哈希值。要求支持流式读取大文件（不要一次性读入内存）。</p>
+<h3 id="练习-4hmac-签名与验证"><a class="header" href="#练习-4hmac-签名与验证">练习 4：HMAC 签名与验证</a></h3>
+<p>编写一个 Rust 程序，实现以下功能：</p>
+<ul>
+<li>使用 HMAC-SHA256 对消息 <code>"transfer 1000 to account A"</code> 进行签名</li>
+<li>使用相同的密钥验证签名</li>
+<li>使用不同的密钥验证签名（预期失败）</li>
+</ul>
+<h3 id="练习-5密码存储系统"><a class="header" href="#练习-5密码存储系统">练习 5：密码存储系统</a></h3>
+<p>使用 <code>bcrypt</code> crate 实现一个简单的用户注册和登录系统：</p>
+<ul>
+<li>注册时对密码进行 bcrypt 哈希</li>
+<li>登录时验证密码是否正确</li>
+<li>测试错误密码是否能通过验证</li>
+</ul>
+<h3 id="练习-6理解碰撞概率"><a class="header" href="#练习-6理解碰撞概率">练习 6：理解碰撞概率</a></h3>
+<p>根据生日攻击理论，对于输出长度为 $n$ 位的哈希函数，找到碰撞的期望尝试次数约为 $\sqrt{2^n}$。请计算：</p>
+<ul>
+<li>MD5（128位）的碰撞期望次数</li>
+<li>SHA-256（256位）的碰撞期望次数</li>
+<li>SHA-256 的碰撞难度是 MD5 的多少倍？</li>
+</ul>
+<h3 id="练习-7api-签名扩展"><a class="header" href="#练习-7api-签名扩展">练习 7：API 签名扩展</a></h3>
+<p>基于本章的支付宝签名验证代码，扩展 <code>SUPPORT_SIGN_TYPE</code> 以支持 HMAC-SHA256 签名方式。要求：</p>
+<ul>
+<li>添加 HMAC-SHA256 到支持的签名类型列表</li>
+<li>在 <code>compute_sign</code> 函数中实现 HMAC-SHA256 签名逻辑</li>
+<li>编写测试验证新签名类型的正确性</li>
+</ul>
+<h3 id="练习-8布隆过滤器实现"><a class="header" href="#练习-8布隆过滤器实现">练习 8：布隆过滤器实现</a></h3>
+<p>不使用第三方布隆过滤器库，使用 Rust 标准库中的 <code>Vec&lt;bool&gt;</code> 和两个不同的哈希函数（如 SipHash 的不同种子），手动实现一个简单的布隆过滤器。要求支持 <code>insert</code> 和 <code>contains</code> 操作，并测试其假阳性率。</p>
+<hr>
+<h2 id="参考链接"><a class="header" href="#参考链接">参考链接</a></h2>
+<h3 id="hash-算法"><a class="header" href="#hash-算法">Hash 算法</a></h3>
+<ul>
+<li><a href="https://baike.baidu.com/link?url=rqoWQjzXxNj-EcP5xwsA9wUgTfjgpmuUT_i9xeWSCYHjpBf16kMFv7Z5ECpdzLTo">MD5</a></li>
+<li><a href="https://baike.baidu.com/item/sha256/9726070?fr=aladdin">SHA256</a></li>
+<li><a href="https://baike.baidu.com/item/SHA3?fromModule=lemma_search-box">SHA3</a></li>
+<li><a href="https://www.131002.net/siphash/siphash.pdf">SipHash</a> SipHash is a fast but ‘cryptographically strong’ pseudo-random function by Aumasson and Bernstein.</li>
+<li><a href="https://github.com/google/highwayhash">highwayhash</a></li>
+<li><a href="https://github.com/nickbabcock/highway-rs">highway-rs</a></li>
+<li><a href="https://github.com/shepmaster/twox-hash">twox-hash</a>  XxHash是一种非常快速的哈希算法</li>
+<li><a href="https://github.com/BLAKE3-team/BLAKE3">BLAKE3</a></li>
+<li><a href="https://www.5axxw.com/wiki/content/8g09uv">XxHash</a> 非常快速的非加密哈希算法</li>
+<li><a href="https://www.oscca.gov.cn/sca/xxgk/2010-12/17/1002389/files/302a3ada057c4a73830536d03e683110.pdf">SM3</a> SM3密码杂凑算法</li>
+</ul>
+<p><a href="https://baike.baidu.com/item/CRC32/7460858?fr=aladdin">CRC32</a>  循环冗余校验</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_19.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_21.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_19.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_21.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

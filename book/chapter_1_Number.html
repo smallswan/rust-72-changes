@@ -1,0 +1,717 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第一 数字 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第一-数字"><a class="header" href="#第一-数字">第一 数字</a></h1>
+<p>计算机正如其名，从诞生之日，就是为了进行快速地数值计算，主要用于炮弹的弹道计算。为了搞清楚计算机的工作原理，我们首先要了解数字（尤其是整数）在计算机中是怎么表示的。本章将从最基础的二进制编码出发，逐步深入进制转换、大数运算、浮点数表示、特殊数以及素数与数论等领域，并结合 Rust 代码进行实践。</p>
+<h2 id="11-编码方式"><a class="header" href="#11-编码方式">1.1 编码方式</a></h2>
+<h3 id="111-二进制与编码概述"><a class="header" href="#111-二进制与编码概述">1.1.1 二进制与编码概述</a></h3>
+<p>我们知道计算机中数据都是以 0、1 组成的二进制进行编码、计算、存储、传输的。二进制编码又分为：原码、反码、补码几种编码方式。</p>
+<ul>
+<li><a href="https://baike.baidu.com/item/%E5%8E%9F%E7%A0%81">原码</a></li>
+<li><a href="https://baike.baidu.com/item/%E5%8F%8D%E7%A0%81/769985">反码</a></li>
+<li><a href="https://baike.baidu.com/item/%E8%A1%A5%E7%A0%81/6854613?fr=aladdin">补码</a></li>
+<li><a href="https://baike.baidu.com/item/%E6%8E%A9%E7%A0%81/86301?fr=aladdin">掩码</a></li>
+</ul>
+<p>所谓原码就是二进制定点表示法，即最高位为符号位，“0“表示正，“1“表示负，其余位表示数值的大小。</p>
+<h3 id="112-原码反码补码"><a class="header" href="#112-原码反码补码">1.1.2 原码、反码、补码</a></h3>
+<p><strong>原码（Sign-Magnitude）</strong>：最高位表示符号，其余位表示数值的绝对值。对于 $n$ 位有符号整数，原码的表示范围为 $[-(2^{n-1}-1), 2^{n-1}-1]$。</p>
+<p>$$[x]_{原} = \begin{cases} x &amp; x \geq 0 \ 2^{n-1} + |x| &amp; x &lt; 0 \end{cases}$$</p>
+<p><strong>反码（Ones’ Complement）</strong>：正数的反码与其原码相同；负数的反码是对正数逐位取反，符号位保持为 1。</p>
+<p>$$[x]_{反} = \begin{cases} x &amp; x \geq 0 \ 2^n - 1 + x &amp; x &lt; 0 \end{cases}$$</p>
+<p><strong>补码（Two’s Complement）</strong>：正数的补码与其原码相同；负数的补码是在其反码的末位加 1。在计算机系统中，数值一律用<strong>补码</strong>来表示和存储。</p>
+<p>$$[x]_{补} = \begin{cases} x &amp; x \geq 0 \ 2^n + x &amp; x &lt; 0 \end{cases}$$</p>
+<p>使用补码的好处在于：可以将符号位和数值域统一处理；同时，加法和减法也可以统一处理（减法转化为加负数的补码）。</p>
+<h3 id="113-编码转换规则"><a class="header" href="#113-编码转换规则">1.1.3 编码转换规则</a></h3>
+<p>原码 =&gt; 反码 =&gt; 补码</p>
+<p><strong>原码 =&gt; 补码</strong></p>
+<p>(1) 正整数的补码是其二进制表示，与原码相同。</p>
+<p>(2) 求负整数的补码，将其原码除符号位外的所有位取反（0 变 1，1 变 0，符号位为 1 不变）后加 1。</p>
+<p><strong>补码 =&gt; 原码</strong></p>
+<p>(1) 如果补码的符号位为“0“，表示是一个正数，其原码就是补码。</p>
+<p>(2) 如果补码的符号位为“1“，表示是一个负数，那么求给定的这个补码的补码就是要求的原码。</p>
+<p>简而言之：正整数的原码、反码、补码相同；负整数的补码就是在原码的基础上符号位不变，其他位取反（得到反码），然后加 1。</p>
+<p>以 -1 为例（假设类型为 i8），-1 的原码为 <code>10000001</code>，反码为 <code>11111110</code>，补码为 <code>11111111</code>。由此可见反码作为原码和补码相互转换的中间码。</p>
+<h3 id="114-编码方式对比表"><a class="header" href="#114-编码方式对比表">1.1.4 编码方式对比表</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">编码方式</th><th style="text-align: center">正数表示</th><th style="text-align: center">负数表示</th><th style="text-align: center">零的表示</th><th style="text-align: center">表示范围（n 位）</th><th style="text-align: left">特点</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">原码</td><td style="text-align: center">符号位 0 + 绝对值</td><td style="text-align: center">符号位 1 + 绝对值</td><td style="text-align: center">+0: <code>00...0</code>, -0: <code>10...0</code></td><td style="text-align: center">$[-(2^{n-1}-1), 2^{n-1}-1]$</td><td style="text-align: left">直观，但存在正负零</td></tr>
+<tr><td style="text-align: center">反码</td><td style="text-align: center">与原码相同</td><td style="text-align: center">原码逐位取反</td><td style="text-align: center">+0: <code>00...0</code>, -0: <code>11...1</code></td><td style="text-align: center">$[-(2^{n-1}-1), 2^{n-1}-1]$</td><td style="text-align: left">存在正负零，运算需循环进位</td></tr>
+<tr><td style="text-align: center">补码</td><td style="text-align: center">与原码相同</td><td style="text-align: center">反码末位加 1</td><td style="text-align: center">唯一：<code>00...0</code></td><td style="text-align: center">$[-2^{n-1}, 2^{n-1}-1]$</td><td style="text-align: left">无正负零，加减法统一处理</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="115-rust-整数类型与进制输出"><a class="header" href="#115-rust-整数类型与进制输出">1.1.5 Rust 整数类型与进制输出</a></h3>
+<p>Rust 提供了丰富的整数类型，下面是各类型的取值范围：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 十进制
+println!("{}", i8::MIN);
+println!("{}", i8::MAX);
+println!("{}", i16::MIN);
+println!("{}", i16::MAX);
+println!("{}", i32::MIN);
+println!("{}", i32::MAX);
+println!("{}", i64::MIN);
+println!("{}", i64::MAX);
+println!("{}", u8::MIN);
+println!("{}", u8::MAX);
+println!("{}", u16::MIN);
+println!("{}", u16::MAX);
+println!("{}", u32::MIN);
+println!("{}", u32::MAX);
+println!("{}", u64::MIN);
+println!("{}", u64::MAX);
+<span class="boring">}</span></code></pre>
+<p>Rust 支持多种进制的格式化输出：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 二进制 10001
+println!("0b{:08b}", 17i8);
+// 八进制 21
+println!("0o{:08o}", 17i8);
+// 十六进制 11
+println!("0x{:08x}", 17i8);
+
+println!("0b{:08b}", 0i8);
+println!("0b{:08b}", 1i8);
+println!("0b{:08b}", -1i8);
+println!("0b{:08b}", i8::MAX);
+
+println!("0b{:08b}", -2i8);
+println!("0b{:08b}", 17u8);
+println!("0o{:08o}", 17u8);
+println!("0x{:08x}", 17u8);
+<span class="boring">}</span></code></pre>
+<h2 id="12-进制转换"><a class="header" href="#12-进制转换">1.2 进制转换</a></h2>
+<h3 id="121-进制转换概述"><a class="header" href="#121-进制转换概述">1.2.1 进制转换概述</a></h3>
+<p>进制是计数系统的基础。日常生活中我们使用十进制（基数为 10），而计算机使用二进制（基数为 2）。此外，八进制和十六进制也因便于表示二进制而被广泛使用。不同进制之间的转换是程序员的基本功。</p>
+<p>进制转换的核心公式：一个 $b$ 进制数 $(d_n d_{n-1} … d_1 d_0)_b$ 转换为十进制：</p>
+<p>$$N = d_n \times b^n + d_{n-1} \times b^{n-1} + … + d_1 \times b^1 + d_0 \times b^0 = \sum_{i=0}^{n} d_i \times b^i$$</p>
+<h3 id="122-excel-表格列名转换26-进制"><a class="header" href="#122-excel-表格列名转换26-进制">1.2.2 Excel 表格列名转换（26 进制）</a></h3>
+<p>Excel 表格的列名采用了一种特殊的 26 进制表示：A=1, B=2, …, Z=26, AA=27, AB=28, …。这与普通的 26 进制略有不同，因为没有表示 0 的“数字“。</p>
+<p><strong>Go 语言实现</strong>：</p>
+<pre><code class="language-go">// ColumnNameToNumber provides a function to convert Excel sheet column name
+// (case-insensitive) to int. The function returns an error if column name
+// incorrect.
+//
+// Example:
+//
+//	excelize.ColumnNameToNumber("AK") // returns 37, nil
+func ColumnNameToNumber(name string) (int, error) {
+	if len(name) == 0 {
+		return -1, newInvalidColumnNameError(name)
+	}
+	col := 0
+	multi := 1
+	for i := len(name) - 1; i &gt;= 0; i-- {
+		r := name[i]
+		if r &gt;= 'A' &amp;&amp; r &lt;= 'Z' {
+			col += int(r-'A'+1) * multi
+		} else if r &gt;= 'a' &amp;&amp; r &lt;= 'z' {
+			col += int(r-'a'+1) * multi
+		} else {
+			return -1, newInvalidColumnNameError(name)
+		}
+		multi *= 26
+	}
+	if col &gt; MaxColumns {
+		return -1, ErrColumnNumber
+	}
+	return col, nil
+}
+
+// ColumnNumberToName provides a function to convert the integer to Excel
+// sheet column title.
+//
+// Example:
+//
+//	excelize.ColumnNumberToName(37) // returns "AK", nil
+func ColumnNumberToName(num int) (string, error) {
+	if num &lt; MinColumns || num &gt; MaxColumns {
+		return "", ErrColumnNumber
+	}
+	var col string
+	for num &gt; 0 {
+		col = string(rune((num-1)%26+65)) + col
+		num = (num - 1) / 26
+	}
+	return col, nil
+}
+</code></pre>
+<p><strong>Rust 语言实现</strong>：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>const MIN_COLUMNS: usize = 1;
+const MAX_COLUMNS: usize = 16384;
+/// The column number convert to column name
+fn column_number_to_name(num: usize) -&gt; std::string::String {
+    if num &lt; MIN_COLUMNS || num &gt; MAX_COLUMNS {
+        return "".to_string();
+    }
+    let mut ret = num;
+    let mut col = std::string::String::new();
+    while ret &gt; 0 {
+        let ch = ((ret - 1) % 26 + 65) as u8;
+        ret = (ret - 1) / 26;
+        col.insert(0, ch as char);
+    }
+
+    col
+}
+
+///
+/// column name convert to column number
+fn column_name_to_number(name: std::string::String) -&gt; usize {
+    let len = name.len();
+    if len == 0 {
+        return 0;
+    }
+    let mut col = 0;
+    let bytes = name.as_bytes();
+    let mut i = len - 1;
+    let mut multi = 1;
+    loop {
+        let ch = bytes[i];
+        if ch &gt;= b'A' &amp;&amp; ch &lt;= b'Z' {
+            col += multi * (ch - b'A' + 1) as usize;
+        } else if ch &gt;= b'a' &amp;&amp; ch &lt;= b'z' {
+            col += multi * (ch - b'a' + 1) as usize;
+        } else {
+            return 0;
+        }
+
+        if i &lt; 1 {
+            break;
+        }
+        i -= 1;
+        multi *= 26;
+    }
+    if col &gt; MAX_COLUMNS {
+        return 0;
+    }
+
+    col
+}
+
+println!("{}", column_number_to_name(28));
+println!("{}", column_name_to_number("AF".to_string()));
+<span class="boring">}</span></code></pre>
+<h2 id="13-实战应用"><a class="header" href="#13-实战应用">1.3 实战应用</a></h2>
+<h3 id="131-力扣实战十进制整数的反码"><a class="header" href="#131-力扣实战十进制整数的反码">1.3.1 力扣实战：十进制整数的反码</a></h3>
+<p><a href="https://leetcode-cn.com/problems/complement-of-base-10-integer/">1009. 十进制整数的反码</a></p>
+<p>原码通过与掩码进行异或（XOR）运算得到“反码“，注意：这里的“反码“和真正的反码定义是不一样的。</p>
+<pre class="playground"><code class="language-rust edition2024">pub fn bitwise_complement(n: i32) -&gt; i32 {
+    if n == 0 {
+        return 1;
+    }
+    let mut num = n;
+    let mut mark = 1;
+    let mut high_bit = 0;
+    while num &gt; 0 {
+        num &gt;&gt;= 1;
+        high_bit += 1;
+    }
+
+    //dbg!(high_bit);
+    let mark = match (high_bit == 31) {
+        true =&gt; i32::MAX - 1,
+        false =&gt; (1 &lt;&lt; high_bit) - 1,
+    };
+
+    n ^ mark
+}
+
+fn main() {
+    let n = 911;
+    let complement = bitwise_complement(n);
+    println!("{:032b}", n);
+    println!("{:032b}", complement);
+}</code></pre>
+<h2 id="14-大数运算"><a class="header" href="#14-大数运算">1.4 大数运算</a></h2>
+<h3 id="141-大整型概述"><a class="header" href="#141-大整型概述">1.4.1 大整型概述</a></h3>
+<p>数值多大才能称得上天文数字呢？天文数字又有何用呢？在现代密码学、科学计算和数论研究中，大数运算是不可或缺的。Rust 的标准整数类型有固定的位数限制，对于超出范围的计算，需要使用专门的大数库。</p>
+<h3 id="142-古戈尔"><a class="header" href="#142-古戈尔">1.4.2 古戈尔</a></h3>
+<p>1 古戈尔 = $10^{100}$（10 的 100 次方）</p>
+<p>目前人类发现的最大素数，是 $2^{136279841} - 1$，这个数字有 41,024,320 位。</p>
+<p>葛立恒数 葛立恒数诞生于组合数学领域的拉姆齐理论（Ramsey Theory）。这个理论的核心思想是：在足够大的系统中，完全的无序是不可能的，一定会出现某种有规则的子结构</p>
+<p>TREE(3) 如果把葛立恒数比作一个原子的大小，那么 TREE(3) 的大小可能相当于一个已知宇宙的规模。在数学上，TREE(3) 的增长速度已经超越了使用葛立恒数定义过程中所使用的递归方法所能达到的极限。更具体地说，TREE(3) 的增长速度远非葛立恒数可比，它已经触及了 “增长速度超越皮亚诺算术” 的领域。</p>
+<h3 id="143-阶乘与末尾零"><a class="header" href="#143-阶乘与末尾零">1.4.3 阶乘与末尾零</a></h3>
+<p><strong>问题：100 的阶乘（100!）末尾有多少个零呢？</strong></p>
+<p>要计算 $n!$（$n$ 的阶乘）末尾有多少个零，其实就是看这个乘积里因子 10 有多少个。而 $10 = 2 \times 5$，在阶乘中因子 2 的数量远多于因子 5，所以末尾零的个数等于因子 5 的个数。</p>
+<p>计算方法（勒让德公式）：</p>
+<p>$$Z(n!) = \sum_{k=1}^{\infty} \left\lfloor \frac{n}{5^k} \right\rfloor = \left\lfloor \frac{n}{5} \right\rfloor + \left\lfloor \frac{n}{25} \right\rfloor + \left\lfloor \frac{n}{125} \right\rfloor + \cdots$$</p>
+<p>以 $n = 100$ 为例：</p>
+<p>$$Z(100!) = \left\lfloor \frac{100}{5} \right\rfloor + \left\lfloor \frac{100}{25} \right\rfloor + \left\lfloor \frac{100}{125} \right\rfloor + \cdots = 20 + 4 + 0 + \cdots = 24$$</p>
+<p>答案：100! 的末尾有 24 个零。</p>
+<h3 id="144-rust-大数运算示例"><a class="header" href="#144-rust-大数运算示例">1.4.4 Rust 大数运算示例</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use num::bigint::{BigInt, ToBigInt};
+/// 计算 x 的阶乘，即 x!
+fn factorial(x: i32) -&gt; BigInt {
+    if let Some(mut facatorial) = 1.to_bigint() {
+        for i in 1..(x + 1) {
+            facatorial *= i;
+        }
+        facatorial
+    } else {
+        panic!("Failed to calculate factorial!");
+    }
+}
+let result = factorial(100);
+println!("{}", result);
+
+use num::BigUint;
+let x = BigUint::parse_bytes(b"786fe10f87d8ddfeeeea9a4a49e63388e3b2a9e1b0a794907908f6123dbf6c6a", 16).unwrap();
+println!("{}", x);
+// SM2 密码算法曲线所使用的质数
+let p = BigUint::parse_bytes(b"FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF", 16).unwrap();
+println!("{}", p);
+<span class="boring">}</span></code></pre>
+<h2 id="15-浮点数"><a class="header" href="#15-浮点数">1.5 浮点数</a></h2>
+<h3 id="151-ieee-754-标准"><a class="header" href="#151-ieee-754-标准">1.5.1 IEEE 754 标准</a></h3>
+<p>现代计算机普遍采用 IEEE 754 标准存储浮点数，主要由三部分组成：</p>
+<p>$$\text{浮点数} = (-1)^{sign} \times (1 + mantissa) \times 2^{(exponent - bias)}$$</p>
+<ul>
+<li><strong>符号位（Sign Bit）</strong>：表示浮点数的正负，1 位。</li>
+<li><strong>指数位（Exponent）</strong>：表示浮点数的指数部分，单精度 8 位，双精度 11 位。</li>
+<li><strong>尾数位（Mantissa/Significand）</strong>：表示浮点数的小数部分，单精度 23 位，双精度 52 位。</li>
+<li><strong>偏置（Bias）</strong>：指数部分的偏移量，用于表示负数指数。单精度 bias = 127，双精度 bias = 1023。</li>
+</ul>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">类型</th><th style="text-align: center">符号位</th><th style="text-align: center">指数位</th><th style="text-align: center">尾数位</th><th style="text-align: center">总位数</th><th style="text-align: center">偏置</th><th style="text-align: center">精度（约）</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">f32（单精度）</td><td style="text-align: center">1</td><td style="text-align: center">8</td><td style="text-align: center">23</td><td style="text-align: center">32</td><td style="text-align: center">127</td><td style="text-align: center">7 位有效数字</td></tr>
+<tr><td style="text-align: center">f64（双精度）</td><td style="text-align: center">1</td><td style="text-align: center">11</td><td style="text-align: center">52</td><td style="text-align: center">64</td><td style="text-align: center">1023</td><td style="text-align: center">15 位有效数字</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="152-浮点数的精度问题"><a class="header" href="#152-浮点数的精度问题">1.5.2 浮点数的精度问题</a></h3>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    // 默认是 f64
+    let a: f64 = 0.1;
+    let b: f64 = 0.2;
+
+    // 使用 f32 精度更低
+    let c: f32 = 0.1;
+    let d: f32 = 0.2;
+
+    println!("f64: {}", a + b);  // 0.30000000000000004
+    println!("f32: {}", c + d);  // 0.3
+
+    // 比较浮点数（不推荐直接使用 ==）
+    let x: f64 = 0.1 + 0.2;
+    let y: f64 = 0.3;
+    println!("直接比较: {}", x == y);  // false
+
+    // 使用容差比较
+    let eps = 1e-10;
+    println!("容差比较: {}", (x - y).abs() &lt; eps);  // true
+}</code></pre>
+<p>浮点数的精度问题原因：</p>
+<ul>
+<li><strong>原因 1</strong>：二进制无法精确表示某些十进制小数（如 0.1）</li>
+<li><strong>原因 2</strong>：运算顺序影响精度</li>
+<li><strong>原因 3</strong>：舍入误差累积</li>
+</ul>
+<h4 id="解决精度问题"><a class="header" href="#解决精度问题">解决精度问题</a></h4>
+<ul>
+<li>方案一：<code>rust_decimal</code> — 高性能金融计算首选</li>
+<li>方案二：<code>bigdecimal</code> — 任意精度的“瑞士军刀”</li>
+</ul>
+<h2 id="16-特殊数"><a class="header" href="#16-特殊数">1.6 特殊数</a></h2>
+<h3 id="161-数的分类概述"><a class="header" href="#161-数的分类概述">1.6.1 数的分类概述</a></h3>
+<p>数可以按照多种方式进行分类：整数（奇数、偶数）、浮点数、复数、质数、合数、完美数等。本节介绍两种有趣的特殊数——勾股数和的士数。</p>
+<h3 id="162-勾股数"><a class="header" href="#162-勾股数">1.6.2 勾股数</a></h3>
+<p>勾股数（Pythagorean triple）是指满足勾股定理的三个正整数 $(a, b, c)$ 的一组解：</p>
+<p>$$a^2 + b^2 = c^2$$</p>
+<p>例子：</p>
+<p>$$3^2 + 4^2 = 5^2$$
+$$5^2 + 12^2 = 13^2$$
+$$6^2 + 8^2 = 10^2$$
+$$8^2 + 15^2 = 17^2$$
+$$7^2 + 24^2 = 25^2$$</p>
+<p>勾股数有无穷多组，可以通过欧几里得公式生成：对于任意正整数 $m &gt; n$，令</p>
+<p>$$a = m^2 - n^2, \quad b = 2mn, \quad c = m^2 + n^2$$</p>
+<p>则 $(a, b, c)$ 必为一组勾股数。</p>
+<h3 id="163-的士数"><a class="header" href="#163-的士数">1.6.3 的士数</a></h3>
+<p>的士数（Taxicab Number，记为 $Ta(n)$）：能写成 $n$ 组两个正整数立方和的最小正整数。</p>
+<p>$$N = a_1^3 + b_1^3 = a_2^3 + b_2^3 = … = a_n^3 + b_n^3$$</p>
+<p>最著名的的士数是 $1729 = 1^3 + 12^3 = 10^3 + 9^3$。这个数因数学家哈代和拉马努金的一段著名对话而得名。</p>
+<h2 id="17-素数与数论"><a class="header" href="#17-素数与数论">1.7 素数与数论</a></h2>
+<h3 id="171-素数概述"><a class="header" href="#171-素数概述">1.7.1 素数概述</a></h3>
+<p><a href="https://baike.baidu.com/item/%E8%B4%A8%E6%95%B0/263515">质数</a>（素数）是数论的核心研究对象。素数在密码学（如 RSA 算法）、哈希函数、随机数生成等领域有着广泛应用。</p>
+<p>素数的主要类型包括：</p>
+<ul>
+<li><strong>孪生素数</strong>：相差为 2 的一对素数，如 (3, 5), (11, 13), (17, 19)</li>
+<li><strong>梅森素数</strong>：形如 $2^p - 1$ 的素数，其中 $p$ 本身也是素数</li>
+<li><strong>费马素数</strong>：形如 $2^{2^n} + 1$ 的素数</li>
+</ul>
+<h3 id="172-素数的定义与性质"><a class="header" href="#172-素数的定义与性质">1.7.2 素数的定义与性质</a></h3>
+<p><strong>定义</strong>：质数（prime number）又称素数，有无限个。质数定义为在大于 1 的自然数中，除了 1 和它本身以外不再有其他因数的数称为质数。</p>
+<p><strong>质数的性质</strong>：</p>
+<ul>
+<li><strong>无穷性</strong>：质数有无穷多个（欧几里得证明）。</li>
+<li><strong>分布规律</strong>：随着数字增大，质数会变得越来越稀疏。质数定理描述了这种分布：小于 $n$ 的质数个数约为 $\frac{n}{\ln n}$。</li>
+<li><strong>唯一分解定理（算术基本定理）</strong>：任何一个大于 1 的整数，无论它有多大，都可以被唯一地分解成一组质数的乘积。</li>
+</ul>
+<p>$$n = p_1^{a_1} \times p_2^{a_2} \times … \times p_k^{a_k}$$</p>
+<ul>
+<li><strong>素性检验</strong>：判断一个大数是否为质数在计算上非常困难，没有简单的通用公式，这也是许多密码系统安全性的基础。</li>
+</ul>
+<h3 id="173-著名猜想与定理"><a class="header" href="#173-著名猜想与定理">1.7.3 著名猜想与定理</a></h3>
+<ul>
+<li>
+<p><strong>费马小定理</strong>：对于质数 $p$ 和任意整数 $a$，有 $a^{p-1} \equiv 1 \pmod{p}$。</p>
+</li>
+<li>
+<p><strong>欧拉定理</strong>：对于互质的正整数 $a$ 和 $n$，有 $a^{\varphi(n)} \equiv 1 \pmod{n}$，其中 $\varphi(n)$ 是欧拉函数，表示小于 $n$ 且与 $n$ 互质的正整数的个数。</p>
+</li>
+<li>
+<p><strong>哥德巴赫猜想</strong>：任何一个大于 2 的偶数，都可以写成两个质数之和。例如，$4 = 2 + 2$，$10 = 3 + 7$。这个猜想至今未被证明，但已被计算机验证到非常大的数。</p>
+</li>
+<li>
+<p><strong>孪生素数猜想</strong>：存在无穷多对相差为 2 的质数。目前，数学家张益唐在该问题上取得了里程碑式的突破。</p>
+</li>
+<li>
+<p><strong>黎曼猜想</strong>：这是关于质数分布规律的终极猜想，被认为是数学界最重要的未解难题之一。它试图用黎曼 $\zeta$ 函数来精确描述质数的分布：</p>
+</li>
+</ul>
+<p>$$\zeta(s) = \sum_{n=1}^{\infty} \frac{1}{n^s} = \frac{1}{1^s} + \frac{1}{2^s} + \frac{1}{3^s} + \cdots$$</p>
+<ul>
+<li><strong>克拉茨猜想</strong>：对于任意正整数，如果是偶数则除以 2，如果是奇数则乘 3 加 1，重复此过程，最终都会到达 1。</li>
+</ul>
+<h2 id="18-总结"><a class="header" href="#18-总结">1.8 总结</a></h2>
+<h3 id="本章知识点汇总"><a class="header" href="#本章知识点汇总">本章知识点汇总</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">知识点</th><th style="text-align: left">核心内容</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">原码</td><td style="text-align: left">最高位为符号位，其余表示数值绝对值</td></tr>
+<tr><td style="text-align: left">反码</td><td style="text-align: left">负数逐位取反，存在正负零问题</td></tr>
+<tr><td style="text-align: left">补码</td><td style="text-align: left">负数反码加 1，计算机中统一使用，无正负零</td></tr>
+<tr><td style="text-align: left">进制转换</td><td style="text-align: left">$N = \sum d_i \times b^i$，Excel 列名为特殊 26 进制</td></tr>
+<tr><td style="text-align: left">阶乘末尾零</td><td style="text-align: left">$Z(n!) = \sum \lfloor n/5^k \rfloor$</td></tr>
+<tr><td style="text-align: left">IEEE 754</td><td style="text-align: left">$(-1)^{sign} \times (1 + mantissa) \times 2^{exponent - bias}$</td></tr>
+<tr><td style="text-align: left">勾股数</td><td style="text-align: left">$a^2 + b^2 = c^2$，欧几里得公式可生成</td></tr>
+<tr><td style="text-align: left">素数</td><td style="text-align: left">大于 1 且只有 1 和自身两个因子的自然数</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="rust-整数类型范围"><a class="header" href="#rust-整数类型范围">Rust 整数类型范围</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">类型</th><th style="text-align: center">最小值</th><th style="text-align: center">最大值</th><th style="text-align: center">位数</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">i8</td><td style="text-align: center">-128</td><td style="text-align: center">127</td><td style="text-align: center">8</td></tr>
+<tr><td style="text-align: center">i16</td><td style="text-align: center">-32,768</td><td style="text-align: center">32,767</td><td style="text-align: center">16</td></tr>
+<tr><td style="text-align: center">i32</td><td style="text-align: center">-2,147,483,648</td><td style="text-align: center">2,147,483,647</td><td style="text-align: center">32</td></tr>
+<tr><td style="text-align: center">i64</td><td style="text-align: center">-9,223,372,036,854,775,808</td><td style="text-align: center">9,223,372,036,854,775,807</td><td style="text-align: center">64</td></tr>
+<tr><td style="text-align: center">u8</td><td style="text-align: center">0</td><td style="text-align: center">255</td><td style="text-align: center">8</td></tr>
+<tr><td style="text-align: center">u16</td><td style="text-align: center">0</td><td style="text-align: center">65,535</td><td style="text-align: center">16</td></tr>
+<tr><td style="text-align: center">u32</td><td style="text-align: center">0</td><td style="text-align: center">4,294,967,295</td><td style="text-align: center">32</td></tr>
+<tr><td style="text-align: center">u64</td><td style="text-align: center">0</td><td style="text-align: center">18,446,744,073,709,551,615</td><td style="text-align: center">64</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="19-练习题"><a class="header" href="#19-练习题">1.9 练习题</a></h2>
+<ol>
+<li>
+<p><strong>基础题</strong>：写出 -5（i8 类型）的原码、反码和补码，并用 Rust 代码验证 <code>println!("0b{:08b}", -5i8)</code> 的输出。</p>
+</li>
+<li>
+<p><strong>进制转换</strong>：编写一个 Rust 函数，将十进制整数转换为任意进制（2-36）的字符串表示。</p>
+</li>
+<li>
+<p><strong>Excel 列名</strong>：使用 Rust 实现 <code>column_number_to_name</code> 和 <code>column_name_to_number</code> 函数，并编写测试用例验证 <code>1-&gt;A</code>, <code>26-&gt;Z</code>, <code>27-&gt;AA</code>, <code>702-&gt;ZZ</code>, <code>703-&gt;AAA</code> 等边界情况。</p>
+</li>
+<li>
+<p><strong>阶乘末尾零</strong>：编写一个 Rust 函数，输入整数 $n$，计算 $n!$ 末尾零的个数。验证 $n = 100$ 时结果为 24，$n = 1000$ 时结果为 249。</p>
+</li>
+<li>
+<p><strong>浮点数比较</strong>：解释为什么 <code>0.1 + 0.2 != 0.3</code> 在计算机中成立，并编写一个 Rust 函数，使用容差法正确比较两个 f64 浮点数是否相等。</p>
+</li>
+<li>
+<p><strong>勾股数生成</strong>：使用欧几里得公式编写 Rust 代码，生成前 10 组本原勾股数（即 $gcd(a, b, c) = 1$ 的勾股数）。</p>
+</li>
+<li>
+<p><strong>素数判定</strong>：编写一个 Rust 函数，使用试除法判断一个正整数是否为素数，并分析其时间复杂度。尝试优化到只需检查到 $\sqrt{n}$。</p>
+</li>
+<li>
+<p><strong>思考题</strong>：在密码学中，为什么需要使用大素数（数百位甚至上千位）？如果素数很小会有什么安全隐患？</p>
+</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="data_and_encode.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_2.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="data_and_encode.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_2.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,746 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第五十二 零知识证明 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第五十二章-零知识证明"><a class="header" href="#第五十二章-零知识证明">第五十二章 零知识证明</a></h1>
+<blockquote>
+<p>证明我知道秘密，但不透露秘密本身</p>
+</blockquote>
+<p>零知识证明（Zero-Knowledge Proof, ZKP）是密码学中最迷人的概念之一。它允许证明者向验证者证明某个陈述为真，而无需透露任何超出陈述真实性之外的信息。本章将介绍零知识证明的基本原理、主要类型及其在 Rust 中的实现。</p>
+<h2 id="521-什么是零知识证明"><a class="header" href="#521-什么是零知识证明">52.1 什么是零知识证明</a></h2>
+<h3 id="直观理解"><a class="header" href="#直观理解">直观理解</a></h3>
+<p>想象一个场景：Alice 声称她知道一个迷宫的秘密出口，但她不想透露出口的位置。她可以这样做：</p>
+<ol>
+<li>Alice 进入迷宫</li>
+<li>Bob 在入口等待，随机喊“从 A 口出“或“从 B 口出“</li>
+<li>Alice 从指定的出口出现</li>
+<li>重复多次</li>
+</ol>
+<p>如果 Alice 真的知道秘密路径，她每次都能从指定出口出现；如果她只是运气好，连续多次猜对的概率会指数级下降。关键是，Bob 从未看到 Alice 在迷宫中的路径——他只知道 Alice“似乎“知道出口。</p>
+<h3 id="零知识证明的三要素"><a class="header" href="#零知识证明的三要素">零知识证明的三要素</a></h3>
+<p>一个完整的零知识证明系统必须满足三个性质：</p>
+<ol>
+<li><strong>完备性（Completeness）</strong>：如果陈述为真，诚实的证明者可以说服诚实的验证者</li>
+<li><strong>可靠性（Soundness）</strong>：如果陈述为假，任何欺骗性的证明者都无法以不可忽略的概率说服验证者</li>
+<li><strong>零知识性（Zero-Knowledge）</strong>：验证者除了“陈述为真“之外，无法获得任何额外信息</li>
+</ol>
+<h3 id="形式化定义"><a class="header" href="#形式化定义">形式化定义</a></h3>
+<pre><code>公共输入 x
+证明者私有输入 w（见证/witness）
+
+关系 R(x, w) = true 表示"w 是 x 的有效见证"
+
+证明者知道 w 使得 R(x, w) = true
+    ↓
+零知识证明协议
+    ↓
+验证者确信"存在 w 使得 R(x, w) = true"
+但不知道 w 的任何信息
+</code></pre>
+<h2 id="522-交互式-vs-非交互式"><a class="header" href="#522-交互式-vs-非交互式">52.2 交互式 vs 非交互式</a></h2>
+<h3 id="交互式零知识证明"><a class="header" href="#交互式零知识证明">交互式零知识证明</a></h3>
+<p>经典的零知识证明是<strong>交互式</strong>的：证明者和验证者需要进行多轮通信。</p>
+<p><strong>示例：离散对数的零知识证明</strong></p>
+<pre><code>公共参数：循环群 G，生成元 g，素数阶 p
+公共输入：y = g^x mod p（Alice 声称知道 x）
+
+1. Alice 选择随机数 r，计算 a = g^r mod p，发送 a 给 Bob
+2. Bob 选择随机挑战 c，发送给 Alice
+3. Alice 计算 s = r + c * x mod (p-1)，发送 s 给 Bob
+4. Bob 验证：g^s ≡ a * y^c (mod p)
+</code></pre>
+<p>验证等式成立的原因：</p>
+<pre><code>g^s = g^(r + c*x) = g^r * g^(c*x) = g^r * (g^x)^c = a * y^c
+</code></pre>
+<p>这个协议是零知识的，因为 Bob 可以从自己生成的随机数构造出与真实协议不可区分的“模拟“ transcript。</p>
+<h3 id="非交互式零知识证明nizk"><a class="header" href="#非交互式零知识证明nizk">非交互式零知识证明（NIZK）</a></h3>
+<p>交互式证明在实际应用中很不方便。Fiat-Shamir 启发式方法可以将交互式协议转换为<strong>非交互式</strong>：</p>
+<pre><code>将验证者的随机挑战替换为哈希函数的输出：
+    c = Hash(g, y, a)
+
+这样证明者可以一次性生成完整证明，验证者独立验证。
+</code></pre>
+<p>非交互式零知识证明的优势：</p>
+<ul>
+<li>证明可以公开广播，任何人都可以验证</li>
+<li>适合区块链等无需许可的环境</li>
+<li>证明可以被重复使用</li>
+</ul>
+<h3 id="交互式-vs-非交互式对比"><a class="header" href="#交互式-vs-非交互式对比">交互式 vs 非交互式对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th>交互式 ZKP</th><th>非交互式 ZKP</th></tr>
+</thead>
+<tbody>
+<tr><td>通信轮数</td><td>多轮</td><td>一轮（证明者 → 验证者）</td></tr>
+<tr><td>可公开验证</td><td>否</td><td>是</td></tr>
+<tr><td>应用场景</td><td>私有协议</td><td>区块链、公开审计</td></tr>
+<tr><td>转换方法</td><td>—</td><td>Fiat-Shamir 启发式</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="523-zk-snarks-简介"><a class="header" href="#523-zk-snarks-简介">52.3 zk-SNARKs 简介</a></h2>
+<h3 id="什么是-zk-snark"><a class="header" href="#什么是-zk-snark">什么是 zk-SNARK</a></h3>
+<p>zk-SNARK（Zero-Knowledge Succinct Non-Interactive Argument of Knowledge）是目前最实用的零知识证明系统之一，具备以下特性：</p>
+<ul>
+<li><strong>零知识（Zero-Knowledge）</strong>：不泄露见证信息</li>
+<li><strong>简洁（Succinct）</strong>：证明大小恒定（几百字节），验证时间极短（毫秒级）</li>
+<li><strong>非交互（Non-Interactive）</strong>：单条消息完成证明</li>
+<li><strong>知识论证（Argument of Knowledge）</strong>：证明者确实“知道“见证，而不仅仅是陈述为真</li>
+</ul>
+<h3 id="zk-snark-的工作原理概述"><a class="header" href="#zk-snark-的工作原理概述">zk-SNARK 的工作原理（概述）</a></h3>
+<p>zk-SNARK 的核心思想是将计算转换为<strong>算术电路</strong>，然后将电路转换为多项式约束：</p>
+<pre><code>程序/计算
+    ↓
+算术电路（加法门、乘法门）
+    ↓
+R1CS（Rank-1 Constraint System，一阶约束系统）
+    ↓
+QAP（Quadratic Arithmetic Program，二次算术程序）
+    ↓
+多项式承诺（如 KZG、FRI）
+    ↓
+简洁证明
+</code></pre>
+<p><strong>关键概念</strong>：</p>
+<ul>
+<li><strong>可信设置（Trusted Setup）</strong>：某些 zk-SNARK 变体需要生成公共参考字符串（CRS），这个过程必须安全执行</li>
+<li><strong>通用可信设置</strong>：如 Groth16 需要为每个电路单独设置</li>
+<li><strong>透明设置</strong>：如 STARKs、Bulletproofs 不需要可信设置</li>
+</ul>
+<h3 id="主流-zk-snark-方案"><a class="header" href="#主流-zk-snark-方案">主流 zk-SNARK 方案</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方案</th><th>证明大小</th><th>验证时间</th><th>可信设置</th><th>后量子安全</th></tr>
+</thead>
+<tbody>
+<tr><td>Groth16</td><td>192 字节</td><td>1.5ms</td><td>每个电路一次</td><td>否</td></tr>
+<tr><td>PLONK</td><td>~400 字节</td><td>~3ms</td><td>通用（一次）</td><td>否</td></tr>
+<tr><td>STARKs</td><td>~50KB</td><td>~10ms</td><td>无需</td><td>是</td></tr>
+<tr><td>Bulletproofs</td><td>~1KB</td><td>~线性</td><td>无需</td><td>否</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="零知识证明的应用场景"><a class="header" href="#零知识证明的应用场景">零知识证明的应用场景</a></h3>
+<p><strong>1. 隐私交易</strong></p>
+<p>区块链上的交易通常是透明的。ZKP 可以隐藏交易金额和参与方，同时保证交易有效性：</p>
+<pre><code>传统交易：
+  Alice --10 BTC--&gt; Bob（全网可见）
+
+Zcash 隐私交易：
+  ??? --??--&gt; ???（金额和地址隐藏）
+  但 ZKP 证明：发送方有足够余额，交易有效
+</code></pre>
+<p><strong>2. 身份验证</strong></p>
+<p>证明你年满 18 岁，而不透露出生日期；证明你的信用评分高于阈值，而不透露具体分数。</p>
+<p><strong>3. 计算外包验证</strong></p>
+<p>将复杂计算外包给第三方，用 ZKP 验证计算结果的正确性，而无需重新执行计算。</p>
+<p><strong>4. 区块链扩容（Rollups）</strong></p>
+<p>将大量交易在链下执行，只向主链提交一个简洁的 ZKP 证明，证明所有链下交易都有效。</p>
+<h2 id="524-rust-实现零知识证明示例"><a class="header" href="#524-rust-实现零知识证明示例">52.4 Rust 实现：零知识证明示例</a></h2>
+<h3 id="使用-bellman-库实现简单电路"><a class="header" href="#使用-bellman-库实现简单电路">使用 bellman 库实现简单电路</a></h3>
+<p><code>bellman</code> 是 Zcash 团队开发的 Rust zk-SNARK 库，基于 Groth16 证明系统。</p>
+<pre><code class="language-toml"># Cargo.toml
+[dependencies]
+bellman = "0.14"
+ff = "0.13"
+bls12_381 = "0.8"
+rand = "0.8"
+</code></pre>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use bellman::{Circuit, ConstraintSystem, SynthesisError};
+use bls12_381::Scalar;
+use ff::PrimeField;
+
+// 证明：我知道 x 和 y，使得 x * y = public_output
+struct MultiplicationCircuit {
+    x: Option&lt;Scalar&gt;,
+    y: Option&lt;Scalar&gt;,
+}
+
+impl Circuit&lt;Scalar&gt; for MultiplicationCircuit {
+    fn synthesize&lt;CS: ConstraintSystem&lt;Scalar&gt;&gt;(
+        self,
+        cs: &amp;mut CS,
+    ) -&gt; Result&lt;(), SynthesisError&gt; {
+        // 分配私有输入 x
+        let x = cs.alloc(|| "x", || {
+            self.x.ok_or(SynthesisError::AssignmentMissing)
+        })?;
+
+        // 分配私有输入 y
+        let y = cs.alloc(|| "y", || {
+            self.y.ok_or(SynthesisError::AssignmentMissing)
+        })?;
+
+        // 分配公共输出
+        let public_output = self.x.and_then(|x| {
+            self.y.map(|y| x * y)
+        });
+
+        let output = cs.alloc_input(|| "output", || {
+            public_output.ok_or(SynthesisError::AssignmentMissing)
+        })?;
+
+        // 约束：x * y = output
+        cs.enforce(
+            || "multiplication constraint",
+            |lc| lc + x,
+            |lc| lc + y,
+            |lc| lc + output,
+        );
+
+        Ok(())
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="生成和验证证明"><a class="header" href="#生成和验证证明">生成和验证证明</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use bellman::groth16::{generate_random_parameters, create_random_proof, verify_proof, PreparedVerifyingKey};
+use bls12_381::{Bls12, Scalar};
+use rand::rngs::OsRng;
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let rng = &amp;mut OsRng;
+
+    // 1. 可信设置：为电路生成参数
+    let params = {
+        let c = MultiplicationCircuit { x: None, y: None };
+        generate_random_parameters::&lt;Bls12, _, _&gt;(c, rng)?
+    };
+
+    // 准备验证密钥（加速验证）
+    let pvk = PreparedVerifyingKey::from(params.vk.clone());
+
+    // 2. 创建证明：我知道 3 和 5，它们的乘积是 15
+    let public_input = Scalar::from(15);
+
+    let proof = {
+        let c = MultiplicationCircuit {
+            x: Some(Scalar::from(3)),
+            y: Some(Scalar::from(5)),
+        };
+        create_random_proof(c, &amp;params, rng)?
+    };
+
+    // 3. 验证证明
+    let is_valid = verify_proof(&amp;pvk, &amp;proof, &amp;[public_input])?;
+
+    println!("证明有效: {}", is_valid);
+
+    // 尝试验证错误的输入
+    let wrong_input = Scalar::from(100);
+    let is_invalid = verify_proof(&amp;pvk, &amp;proof, &amp;[wrong_input]).is_ok();
+    println!("错误输入验证通过: {}", is_invalid);
+
+    Ok(())
+}</code></pre>
+<h3 id="简化的零知识证明演示不依赖外部库"><a class="header" href="#简化的零知识证明演示不依赖外部库">简化的零知识证明演示（不依赖外部库）</a></h3>
+<p>为了理解零知识证明的核心原理，我们实现一个极简的“颜色证明“示例——基于图同态的零知识证明概念：</p>
+<pre class="playground"><code class="language-rust edition2024">use sha2::{Sha256, Digest};
+use rand::Rng;
+
+// 简化的承诺方案
+fn commit(secret: &amp;str, nonce: &amp;[u8]) -&gt; String {
+    let mut hasher = Sha256::new();
+    hasher.update(secret.as_bytes());
+    hasher.update(nonce);
+    format!("{:x}", hasher.finalize())
+}
+
+// 证明者声称"我知道一个满足某种性质的值"
+// 这里简化为：我知道一个值，其哈希的前 4 位是 0
+struct Prover {
+    secret: String,
+}
+
+impl Prover {
+    fn new(secret: String) -&gt; Self {
+        Prover { secret }
+    }
+
+    // 生成承诺
+    fn commit_secret(&amp;self) -&gt; (String, Vec&lt;u8&gt;) {
+        let nonce: Vec&lt;u8&gt; = (0..16).map(|_| rand::thread_rng().gen::&lt;u8&gt;()).collect();
+        let commitment = commit(&amp;self.secret, &amp;nonce);
+        (commitment, nonce)
+    }
+
+    // 响应挑战
+    fn respond(&amp;self, challenge: u8) -&gt; String {
+        if challenge == 0 {
+            // 揭示秘密
+            self.secret.clone()
+        } else {
+            // 揭示其他信息（简化示例）
+            format!("response_{}", challenge)
+        }
+    }
+}
+
+struct Verifier {
+    commitment: String,
+}
+
+impl Verifier {
+    fn new(commitment: String) -&gt; Self {
+        Verifier { commitment }
+    }
+
+    // 生成随机挑战
+    fn challenge(&amp;self) -&gt; u8 {
+        rand::thread_rng().gen_range(0..2)
+    }
+
+    // 验证响应
+    fn verify(&amp;self, response: &amp;str, nonce: &amp;[u8], challenge: u8) -&gt; bool {
+        if challenge == 0 {
+            // 验证承诺是否对应揭示的秘密
+            let recomputed = commit(response, nonce);
+            recomputed == self.commitment
+        } else {
+            // 其他验证逻辑
+            response.starts_with("response_")
+        }
+    }
+}
+
+fn main() {
+    println!("=== 简化的零知识证明演示 ===\n");
+
+    // 场景：证明者知道一个"特殊"字符串（比如 SHA-256 前导 0）
+    let secret = "my_secret_value_42".to_string();
+    let prover = Prover::new(secret);
+
+    // 证明者生成承诺
+    let (commitment, nonce) = prover.commit_secret();
+    println!("承诺: {}", &amp;commitment[..16]);
+
+    // 验证者存储承诺并发起挑战
+    let verifier = Verifier::new(commitment);
+
+    // 多轮交互
+    let mut success_count = 0;
+    let rounds = 10;
+
+    for round in 1..=rounds {
+        let challenge = verifier.challenge();
+        let response = prover.respond(challenge);
+        let valid = verifier.verify(&amp;response, &amp;nonce, challenge);
+
+        println!(
+            "轮次 {}: 挑战={}, 验证={}",
+            round, challenge, valid
+        );
+
+        if valid {
+            success_count += 1;
+        }
+    }
+
+    println!("\n成功率: {}/{} = {:.0}%", success_count, rounds,
+             (success_count as f64 / rounds as f64) * 100.0);
+
+    if success_count == rounds {
+        println!("验证者确信：证明者知道秘密！");
+    }
+}</code></pre>
+<h3 id="范围证明概念bulletproofs-风格"><a class="header" href="#范围证明概念bulletproofs-风格">范围证明概念（Bulletproofs 风格）</a></h3>
+<p>范围证明是 ZKP 的重要应用：证明一个值在某个范围内，而不透露具体值。</p>
+<pre class="playground"><code class="language-rust edition2024">use sha2::{Sha256, Digest};
+
+// 概念演示：证明 value 在 [0, 2^n) 范围内
+// 实际实现需要使用 Pedersen 承诺和内部乘积论证
+
+struct RangeProofConcept {
+    n: usize,  // 位数
+}
+
+impl RangeProofConcept {
+    // 将值分解为二进制位
+    fn decompose(value: u64, n: usize) -&gt; Vec&lt;bool&gt; {
+        let mut bits = Vec::with_capacity(n);
+        for i in 0..n {
+            bits.push(((value &gt;&gt; i) &amp; 1) == 1);
+        }
+        bits
+    }
+
+    // 验证二进制分解的正确性
+    fn verify_decomposition(value: u64, bits: &amp;[bool]) -&gt; bool {
+        let reconstructed: u64 = bits.iter()
+            .enumerate()
+            .map(|(i, &amp;b)| if b { 1u64 &lt;&lt; i } else { 0 })
+            .sum();
+        reconstructed == value
+    }
+
+    // 概念：证明每个位是 0 或 1
+    fn prove_bit_is_binary(bit: bool) -&gt; &amp;'static str {
+        // 在实际 ZKP 中，这转化为约束：b * (1 - b) = 0
+        // 即 b 只能是 0 或 1
+        if bit {
+            "bit = 1: 1 * (1 - 1) = 0 ✓"
+        } else {
+            "bit = 0: 0 * (1 - 0) = 0 ✓"
+        }
+    }
+}
+
+fn main() {
+    let proof = RangeProofConcept { n: 32 };
+
+    let value = 12345u64;
+    let bits = RangeProofConcept::decompose(value, 32);
+
+    println!("值: {}", value);
+    println!("二进制分解: {:?}", bits);
+    println!("分解验证: {}", RangeProofConcept::verify_decomposition(value, &amp;bits));
+
+    println!("\n每位验证:");
+    for (i, &amp;bit) in bits.iter().take(8).enumerate() {
+        println!("  位 {}: {}", i, RangeProofConcept::prove_bit_is_binary(bit));
+    }
+
+    // 范围验证
+    let max_value = (1u64 &lt;&lt; 32) - 1;
+    println!("\n范围验证: 0 &lt;= {} &lt;= {} → {}", value, max_value,
+             value &lt;= max_value);
+}</code></pre>
+<h3 id="使用-arkworks-进行现代-zkp-开发"><a class="header" href="#使用-arkworks-进行现代-zkp-开发">使用 arkworks 进行现代 ZKP 开发</a></h3>
+<p><code>arkworks</code> 是 Rust 生态中更现代的零知识证明框架，提供了模块化的代数组件。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// arkworks 概念示例
+use ark_ff::Field;
+use ark_bls12_381::Fr;
+
+// 在有限域上运算
+fn field_operations() {
+    let a = Fr::from(3u64);
+    let b = Fr::from(5u64);
+
+    let sum = a + b;
+    let product = a * b;
+    let inverse = a.inverse().expect("可逆");
+
+    println!("3 + 5 = {:?}", sum);
+    println!("3 * 5 = {:?}", product);
+    println!("3^-1 = {:?}", inverse);
+    println!("3 * 3^-1 = {:?}", a * inverse);  // 应等于 1
+}
+<span class="boring">}</span></code></pre>
+<h2 id="525-零知识证明的挑战与前沿"><a class="header" href="#525-零知识证明的挑战与前沿">52.5 零知识证明的挑战与前沿</a></h2>
+<h3 id="当前挑战"><a class="header" href="#当前挑战">当前挑战</a></h3>
+<ol>
+<li><strong>可信设置的安全性</strong>：Groth16 等方案需要可信设置，如果设置过程被泄露，整个系统的安全性将崩溃</li>
+<li><strong>计算开销</strong>：生成证明的计算成本仍然很高</li>
+<li><strong>电路复杂性</strong>：将程序转换为算术电路需要专业知识</li>
+<li><strong>量子计算威胁</strong>：基于椭圆曲线的 ZKP 面临量子计算的潜在威胁（STARKs 是后量子安全的替代方案）</li>
+</ol>
+<h3 id="前沿发展方向"><a class="header" href="#前沿发展方向">前沿发展方向</a></h3>
+<ul>
+<li><strong>硬件加速</strong>：GPU、FPGA、ASIC 用于加速证明生成</li>
+<li><strong>递归证明</strong>：在一个证明中验证另一个证明，实现无限压缩</li>
+<li><strong>zk-EVM</strong>：在零知识证明中执行以太坊虚拟机指令</li>
+<li><strong>身份与合规</strong>：KYC/AML 与隐私保护的结合</li>
+</ul>
+<h2 id="526-本章总结"><a class="header" href="#526-本章总结">52.6 本章总结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>说明</th><th>Rust 生态</th></tr>
+</thead>
+<tbody>
+<tr><td>交互式 ZKP</td><td>多轮通信完成证明</td><td>理论演示</td></tr>
+<tr><td>非交互式 ZKP</td><td>单条消息，可公开验证</td><td>Fiat-Shamir 转换</td></tr>
+<tr><td>zk-SNARK</td><td>简洁非交互零知识证明</td><td><code>bellman</code>, <code>arkworks</code></td></tr>
+<tr><td>zk-STARK</td><td>透明设置、后量子安全</td><td><code>winterfell</code></td></tr>
+<tr><td>范围证明</td><td>证明值在范围内</td><td><code>bulletproofs</code></td></tr>
+<tr><td>电路编译</td><td>程序 → 算术电路</td><td><code>circom-compat</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
+<ol>
+<li>
+<p><strong>基础练习</strong>：运行上述 <code>bellman</code> 乘法电路示例，尝试修改电路证明其他关系（如 x + y = z）。</p>
+</li>
+<li>
+<p><strong>中级练习</strong>：实现一个简化的离散对数零知识证明（Sigma 协议），使用 Fiat-Shamir 转换为非交互式。</p>
+</li>
+<li>
+<p><strong>高级练习</strong>：使用 <code>arkworks</code> 构建一个更复杂的电路，如证明你知道一个 Merkle 树中的叶子节点（ membership proof）。</p>
+</li>
+<li>
+<p><strong>实践项目</strong>：研究 Zcash 或 Filecoin 中零知识证明的应用，尝试运行它们的 Rust 节点或客户端。</p>
+</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>密码学箴言</strong>：零知识证明是密码学的“魔术“——它让你确信对方知道秘密，同时确信自己什么都没学到。在隐私与验证之间，ZKP 找到了完美的平衡。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_51_blockchain.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_53_homomorphic_encryption.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_51_blockchain.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_53_homomorphic_encryption.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

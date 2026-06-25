@@ -1,0 +1,12 @@
+[package]
+name = "visualization"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+image = "0.25.10"
+plotters = "0.3.7"
+qrcode = "0.14.1"
+rand = "0.10.1"
+rand_core = "0.10.1"
+rdrand = "0.9.0"

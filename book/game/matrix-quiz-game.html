@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI能力测试（矩阵）</title>
+<style>
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--border:#30363d;
+  --text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#79c0ff;
+  --green:#3fb950;--yellow:#d29922;--red:#f85149;--purple:#bc8cff;
+  --orange:#ffa657;--teal:#39d353;
+  --easy:#3fb950;--medium:#d29922;--hard:#f85149;
+  --shadow:0 8px 32px rgba(0,0,0,.6);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* ===== SCREENS ===== */
+.screen{display:none;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;}
+
+/* ===== HOME ===== */
+#home{align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 0%,#1a2744 0%,var(--bg) 70%);}
+.home-inner{text-align:center;max-width:600px;padding:40px 24px;}
+.logo-badge{display:inline-flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:50px;padding:8px 20px;margin-bottom:24px;font-size:13px;color:var(--text2);}
+.logo-badge span{width:8px;height:8px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite;}
+h1.game-title{font-size:clamp(28px,5vw,48px);font-weight:800;background:linear-gradient(135deg,var(--accent2),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px;}
+.game-subtitle{color:var(--text2);font-size:15px;margin-bottom:40px;line-height:1.6;}
+
+.stats-bar{display:flex;gap:20px;justify-content:center;margin-bottom:40px;flex-wrap:wrap;}
+.stat-chip{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 20px;text-align:center;}
+.stat-chip .val{font-size:22px;font-weight:700;color:var(--accent);}
+.stat-chip .lbl{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;}
+
+.difficulty-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;}
+.diff-card{background:var(--bg2);border:2px solid var(--border);border-radius:16px;padding:24px 16px;cursor:pointer;transition:all .2s;text-align:center;}
+.diff-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+.diff-card.easy:hover,.diff-card.easy.sel{border-color:var(--easy);box-shadow:0 0 20px rgba(63,185,80,.3);}
+.diff-card.medium:hover,.diff-card.medium.sel{border-color:var(--medium);box-shadow:0 0 20px rgba(210,153,34,.3);}
+.diff-card.hard:hover,.diff-card.hard.sel{border-color:var(--hard);box-shadow:0 0 20px rgba(248,81,73,.3);}
+.diff-icon{font-size:32px;margin-bottom:8px;}
+.diff-name{font-weight:700;font-size:15px;margin-bottom:4px;}
+.diff-count{font-size:12px;color:var(--text2);}
+.diff-topics{font-size:11px;color:var(--text2);margin-top:8px;line-height:1.5;}
+
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;border:none;border-radius:12px;padding:14px 40px;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;width:100%;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(88,166,255,.4);}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+.nav-links{display:flex;gap:16px;justify-content:center;margin-top:24px;flex-wrap:wrap;}
+.nav-link{background:none;border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:8px 16px;cursor:pointer;font-size:13px;transition:all .2s;}
+.nav-link:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ===== QUIZ SCREEN ===== */
+#quiz{background:var(--bg);}
+.quiz-header{display:flex;align-items:center;gap:16px;padding:16px 24px;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.quiz-back{background:none;border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px;transition:all .2s;}
+.quiz-back:hover{border-color:var(--accent);color:var(--accent);}
+.quiz-title{font-weight:700;font-size:15px;flex:1;}
+.diff-tag{padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;}
+.diff-tag.easy{background:rgba(63,185,80,.15);color:var(--easy);}
+.diff-tag.medium{background:rgba(210,153,34,.15);color:var(--medium);}
+.diff-tag.hard{background:rgba(248,81,73,.15);color:var(--hard);}
+
+.progress-wrap{padding:8px 24px;background:var(--bg2);}
+.progress-info{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:6px;}
+.progress-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--purple));transition:width .4s ease;}
+
+.quiz-body{flex:1;padding:24px;max-width:900px;margin:0 auto;width:100%;}
+.q-number{font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.q-type-tag{display:inline-block;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:12px;color:var(--accent);margin-bottom:16px;}
+.q-stem{font-size:17px;font-weight:600;line-height:1.7;margin-bottom:20px;}
+.q-stem .math{font-family:'Courier New',monospace;background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:15px;}
+
+.matrix-display{display:inline-flex;align-items:stretch;gap:4px;margin:12px 0;background:var(--bg2);padding:16px;border-radius:12px;border:1px solid var(--border);}
+.matrix-bracket{display:flex;align-items:stretch;color:var(--text2);font-size:28px;font-weight:100;}
+.matrix-bracket.left{border-left:2px solid var(--text2);border-top:2px solid var(--text2);border-bottom:2px solid var(--text2);padding:0 6px 0 2px;border-radius:2px 0 0 2px;}
+.matrix-bracket.right{border-right:2px solid var(--text2);border-top:2px solid var(--text2);border-bottom:2px solid var(--text2);padding:0 2px 0 6px;border-radius:0 2px 2px 0;}
+.matrix-cells{display:flex;flex-direction:column;gap:6px;}
+.matrix-row{display:flex;gap:10px;}
+.matrix-cell{width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-family:'Courier New',monospace;font-size:14px;font-weight:600;background:var(--bg3);border-radius:6px;color:var(--text);}
+
+/* Options */
+.options-grid{display:grid;gap:12px;}
+.options-grid.two-col{grid-template-columns:repeat(2,1fr);}
+.opt-btn{background:var(--bg2);border:2px solid var(--border);border-radius:12px;padding:14px 18px;cursor:pointer;text-align:left;font-size:14px;color:var(--text);transition:all .2s;font-family:inherit;display:flex;align-items:center;gap:12px;}
+.opt-btn:hover:not(:disabled){border-color:var(--accent);background:rgba(88,166,255,.08);}
+.opt-btn.correct{border-color:var(--green)!important;background:rgba(63,185,80,.12)!important;color:var(--green);}
+.opt-btn.wrong{border-color:var(--red)!important;background:rgba(248,81,73,.12)!important;color:var(--red);}
+.opt-btn:disabled{cursor:default;}
+.opt-key{width:28px;height:28px;border-radius:6px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:var(--text2);}
+.opt-btn.correct .opt-key{background:var(--green);color:#fff;}
+.opt-btn.wrong .opt-key{background:var(--red);color:#fff;}
+
+/* Fill input */
+.fill-area{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+.fill-input{background:var(--bg2);border:2px solid var(--border);border-radius:10px;padding:12px 16px;font-size:16px;color:var(--text);font-family:'Courier New',monospace;width:220px;transition:all .2s;}
+.fill-input:focus{outline:none;border-color:var(--accent);}
+.fill-input.correct{border-color:var(--green);color:var(--green);}
+.fill-input.wrong{border-color:var(--red);color:var(--red);}
+.btn-check{background:var(--accent);color:#000;border:none;border-radius:10px;padding:12px 24px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-check:hover{background:var(--accent2);}
+.fill-hint{font-size:12px;color:var(--text2);margin-top:8px;}
+
+/* Feedback */
+.feedback-box{margin-top:20px;padding:16px;border-radius:12px;border:1px solid;display:none;}
+.feedback-box.show{display:block;animation:fadeIn .3s;}
+.feedback-box.correct-fb{border-color:var(--green);background:rgba(63,185,80,.08);}
+.feedback-box.wrong-fb{border-color:var(--red);background:rgba(248,81,73,.08);}
+.fb-title{font-weight:700;font-size:15px;margin-bottom:8px;}
+.correct-fb .fb-title{color:var(--green);}
+.wrong-fb .fb-title{color:var(--red);}
+.fb-explain{font-size:13px;color:var(--text2);line-height:1.7;}
+.fb-explain .math{font-family:'Courier New',monospace;color:var(--accent2);}
+
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding-top:20px;border-top:1px solid var(--border);}
+.btn-next{background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;display:none;}
+.btn-next:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(88,166,255,.4);}
+.btn-next.show{display:block;}
+.q-flag{background:none;border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:13px;transition:all .2s;}
+.q-flag:hover{border-color:var(--yellow);color:var(--yellow);}
+.q-flag.flagged{border-color:var(--yellow);color:var(--yellow);background:rgba(210,153,34,.1);}
+
+/* ===== RESULT SCREEN ===== */
+#result{align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 20%,#1a2030 0%,var(--bg) 70%);}
+.result-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:40px 32px;max-width:520px;width:90%;text-align:center;}
+.result-emoji{font-size:64px;margin-bottom:16px;}
+.result-score-big{font-size:56px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.result-score-label{color:var(--text2);font-size:14px;margin-bottom:24px;}
+.result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0 28px;}
+.rs-item{background:var(--bg3);border-radius:10px;padding:14px;}
+.rs-val{font-size:22px;font-weight:700;}
+.rs-lbl{font-size:11px;color:var(--text2);margin-top:2px;}
+.result-medals{margin:16px 0;}
+.medal-list{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+.medal-item{background:var(--bg3);border-radius:10px;padding:10px 14px;text-align:center;}
+.medal-item .mi{font-size:24px;}
+.medal-item .mn{font-size:11px;color:var(--text2);margin-top:4px;}
+.result-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-secondary{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:12px;font-size:14px;cursor:pointer;transition:all .2s;}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ===== BADGES SCREEN ===== */
+#badges{background:var(--bg);}
+.page-header{display:flex;align-items:center;gap:16px;padding:20px 24px;border-bottom:1px solid var(--border);}
+.page-header h2{font-size:20px;font-weight:700;flex:1;}
+.badges-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;padding:24px;}
+.badge-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;text-align:center;transition:all .2s;}
+.badge-card.earned{border-color:var(--accent);box-shadow:0 0 20px rgba(88,166,255,.2);}
+.badge-card.locked{opacity:.45;filter:grayscale(.8);}
+.badge-icon{font-size:40px;margin-bottom:10px;}
+.badge-name{font-weight:700;font-size:13px;margin-bottom:4px;}
+.badge-desc{font-size:11px;color:var(--text2);line-height:1.5;}
+.badge-earned-tag{display:inline-block;margin-top:8px;background:rgba(63,185,80,.15);color:var(--green);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;}
+
+/* ===== WRONG NOTES ===== */
+#wrongnotes{background:var(--bg);}
+.wn-list{padding:16px 24px;display:flex;flex-direction:column;gap:12px;}
+.wn-item{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.wn-meta{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap;}
+.wn-stem{font-size:14px;line-height:1.6;margin-bottom:8px;}
+.wn-answer{font-size:13px;color:var(--text2);}
+.wn-answer span{color:var(--green);}
+.empty-state{text-align:center;padding:80px 24px;color:var(--text2);}
+.empty-icon{font-size:48px;margin-bottom:16px;}
+
+/* ===== PROGRESS SCREEN ===== */
+#progress-screen{background:var(--bg);}
+.prog-section{padding:20px 24px;}
+.prog-section h3{font-size:15px;font-weight:700;margin-bottom:16px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;}
+.prog-diff-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
+.pdc{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;}
+.pdc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.pdc-name{font-weight:700;font-size:14px;}
+.pdc-pct{font-size:13px;font-weight:700;}
+.pdc-bar{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:8px;}
+.pdc-fill{height:100%;border-radius:4px;transition:width .5s;}
+.pdc.easy .pdc-fill{background:var(--easy);}
+.pdc.medium .pdc-fill{background:var(--medium);}
+.pdc.hard .pdc-fill{background:var(--hard);}
+.pdc-stats{font-size:12px;color:var(--text2);}
+.heat-grid{display:flex;flex-wrap:wrap;gap:4px;}
+.heat-cell{width:14px;height:14px;border-radius:3px;background:var(--bg3);}
+.heat-cell.lv1{background:#0e4429;}
+.heat-cell.lv2{background:#006d32;}
+.heat-cell.lv3{background:#26a641;}
+.heat-cell.lv4{background:#39d353;}
+
+/* ===== HELP SCREEN ===== */
+#help{background:var(--bg);}
+.help-nav{display:flex;gap:8px;padding:16px 24px;flex-wrap:wrap;border-bottom:1px solid var(--border);}
+.help-tab{background:none;border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;transition:all .2s;}
+.help-tab.active{background:var(--accent);border-color:var(--accent);color:#000;font-weight:700;}
+.help-content{padding:24px;max-width:800px;}
+.help-section{display:none;}
+.help-section.active{display:block;}
+.help-section h3{font-size:18px;font-weight:700;margin-bottom:16px;color:var(--accent2);}
+.concept-block{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;}
+.concept-block h4{font-size:14px;font-weight:700;margin-bottom:8px;}
+.concept-block p{font-size:13px;color:var(--text2);line-height:1.7;}
+.formula{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'Courier New',monospace;font-size:13px;color:var(--accent2);margin:8px 0;}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 18px;font-size:14px;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s;max-width:300px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{border-color:var(--green);}
+.toast.error{border-color:var(--red);}
+.toast.info{border-color:var(--accent);}
+
+/* ===== COMBO FLASH ===== */
+.combo-flash{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.5);opacity:0;pointer-events:none;z-index:998;transition:all .3s;text-align:center;}
+.combo-flash.show{transform:translate(-50%,-50%) scale(1);opacity:1;}
+.combo-flash.hide{transform:translate(-50%,-50%) scale(1.4);opacity:0;}
+.combo-text{font-size:48px;font-weight:900;background:linear-gradient(135deg,#ffd700,#ff8c00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.combo-sub{font-size:16px;color:var(--yellow);}
+
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+.shake{animation:shake .3s;}
+
+@media(max-width:520px){
+  .difficulty-grid{grid-template-columns:1fr;}
+  .options-grid.two-col{grid-template-columns:1fr;}
+  .result-stats{grid-template-columns:repeat(3,1fr);}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HOME ===== -->
+<div id="home" class="screen active">
+  <div class="home-inner">
+    <div class="logo-badge"><span></span>线性代数 · 矩阵能力测评</div>
+    <h1 class="game-title">AI能力测试（矩阵）</h1>
+    <p class="game-subtitle">覆盖逆序数 · 行列式 · 特征值 · 线性方程组<br>从基础到进阶，系统强化线性代数核心能力</p>
+
+    <div class="stats-bar">
+      <div class="stat-chip"><div class="val" id="stat-done">0</div><div class="lbl">已答题</div></div>
+      <div class="stat-chip"><div class="val" id="stat-acc">—</div><div class="lbl">正确率</div></div>
+      <div class="stat-chip"><div class="val" id="stat-badges">0</div><div class="lbl">勋章</div></div>
+      <div class="stat-chip"><div class="val" id="stat-streak">0</div><div class="lbl">连对</div></div>
+    </div>
+
+    <div class="difficulty-grid">
+      <div class="diff-card easy" onclick="selectDiff('easy')">
+        <div class="diff-icon">🌱</div>
+        <div class="diff-name" style="color:var(--easy)">简单</div>
+        <div class="diff-count" id="cnt-easy">— 题</div>
+        <div class="diff-topics">逆序数 · 排列奇偶<br>矩阵四则 · 转置 · 迹<br>向量内积 · 向量长度</div>
+      </div>
+      <div class="diff-card medium" onclick="selectDiff('medium')">
+        <div class="diff-icon">⚡</div>
+        <div class="diff-name" style="color:var(--medium)">中等</div>
+        <div class="diff-count" id="cnt-medium">— 题</div>
+        <div class="diff-topics">行列式 · 余子式<br>伴随矩阵 · 逆矩阵<br>矩阵的秩 · 特征值 · 特征向量</div>
+      </div>
+      <div class="diff-card hard" onclick="selectDiff('hard')">
+        <div class="diff-icon">🔥</div>
+        <div class="diff-name" style="color:var(--hard)">困难</div>
+        <div class="diff-count" id="cnt-hard">— 题</div>
+        <div class="diff-topics">矩阵分解 · LU/QR<br>齐次线性方程组<br>非齐次线性方程组</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="startBtn" onclick="startQuiz()" disabled>请选择难度开始</button>
+
+    <div class="nav-links">
+      <button class="nav-link" onclick="showScreen('badges')">🏅 勋章墙</button>
+      <button class="nav-link" onclick="showScreen('wrongnotes')">📒 错题集</button>
+      <button class="nav-link" onclick="showScreen('progress-screen')">📊 我的进度</button>
+      <button class="nav-link" onclick="showScreen('help')">💡 帮助</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div id="quiz" class="screen">
+  <div class="quiz-header">
+    <button class="quiz-back" onclick="showScreen('home')">← 返回</button>
+    <span class="quiz-title" id="quizTitle">矩阵测试</span>
+    <span class="diff-tag" id="quizDiffTag">简单</span>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span id="progText">第 1 题 / 共 10 题</span>
+      <span id="progScore">得分: 0</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+  </div>
+  <div class="quiz-body">
+    <div class="q-number" id="qNum">第 1 题</div>
+    <div class="q-type-tag" id="qTypeTag">选择题</div>
+    <div class="q-stem" id="qStem"></div>
+    <div id="qMatrixArea"></div>
+    <div id="qOptionsArea"></div>
+    <div class="feedback-box" id="feedbackBox">
+      <div class="fb-title" id="fbTitle"></div>
+      <div class="fb-explain" id="fbExplain"></div>
+    </div>
+    <div class="quiz-nav">
+      <button class="q-flag" id="flagBtn" onclick="toggleFlag()">🚩 标记</button>
+      <button class="btn-next" id="nextBtn" onclick="nextQuestion()">下一题 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== RESULT ===== -->
+<div id="result" class="screen">
+  <div class="result-card">
+    <div class="result-emoji" id="resEmoji">🎉</div>
+    <div class="result-score-big" id="resScore">85</div>
+    <div class="result-score-label">综合得分</div>
+    <div class="result-stats">
+      <div class="rs-item"><div class="rs-val" id="resCorrect" style="color:var(--green)">8</div><div class="rs-lbl">答对</div></div>
+      <div class="rs-item"><div class="rs-val" id="resWrong" style="color:var(--red)">2</div><div class="rs-lbl">答错</div></div>
+      <div class="rs-item"><div class="rs-val" id="resTime">2:30</div><div class="rs-lbl">用时</div></div>
+    </div>
+    <div class="result-medals" id="newMedalsArea" style="display:none">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:8px;">🎖️ 获得新勋章</div>
+      <div class="medal-list" id="newMedalsList"></div>
+    </div>
+    <div class="result-btns">
+      <button class="btn-secondary" onclick="startQuiz()">再来一轮</button>
+      <button class="btn-secondary" onclick="showScreen('wrongnotes')">查看错题</button>
+      <button class="btn-primary" style="flex:1" onclick="showScreen('home')">返回主页</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BADGES ===== -->
+<div id="badges" class="screen">
+  <div class="page-header">
+    <button class="nav-link" onclick="showScreen('home')">← 返回</button>
+    <h2>🏅 勋章墙</h2>
+    <span id="badgeCountLabel" style="font-size:13px;color:var(--text2)"></span>
+  </div>
+  <div class="badges-grid" id="badgesGrid"></div>
+</div>
+
+<!-- ===== WRONG NOTES ===== -->
+<div id="wrongnotes" class="screen">
+  <div class="page-header">
+    <button class="nav-link" onclick="showScreen('home')">← 返回</button>
+    <h2>📒 错题集</h2>
+    <button class="nav-link" onclick="clearWrongNotes()" style="color:var(--red);border-color:var(--red)">清空</button>
+  </div>
+  <div class="wn-list" id="wnList"></div>
+</div>
+
+<!-- ===== PROGRESS ===== -->
+<div id="progress-screen" class="screen">
+  <div class="page-header">
+    <button class="nav-link" onclick="showScreen('home')">← 返回</button>
+    <h2>📊 我的进度</h2>
+  </div>
+  <div class="prog-section">
+    <h3>难度进度</h3>
+    <div class="prog-diff-cards" id="progDiffCards"></div>
+  </div>
+  <div class="prog-section">
+    <h3>答题热力图（最近60天）</h3>
+    <div class="heat-grid" id="heatGrid"></div>
+  </div>
+  <div class="prog-section">
+    <h3>题型掌握度</h3>
+    <div id="typeProgress"></div>
+  </div>
+</div>
+
+<!-- ===== HELP ===== -->
+<div id="help" class="screen">
+  <div class="page-header">
+    <button class="nav-link" onclick="showScreen('home')">← 返回</button>
+    <h2>💡 知识帮助</h2>
+  </div>
+  <div class="help-nav" id="helpNav"></div>
+  <div class="help-content" id="helpContent"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<!-- Combo Flash -->
+<div class="combo-flash" id="comboFlash">
+  <div class="combo-text" id="comboText">🔥 5连击!</div>
+  <div class="combo-sub" id="comboSub">太棒了！</div>
+</div>
+
+<script>
+// ============================================================
+//  QUESTION BANK
+// ============================================================
+const QB = {
+easy:[
+// --- 逆序数 ---
+{id:'e01',type:'mc',topic:'逆序数',
+ stem:'排列 <span class="math">3,1,4,2</span> 的逆序数为：',
+ opts:['2','3','4','5'],ans:1,
+ explain:'逆序对：(3,1),(3,2),(4,2)，共 3 个，逆序数 = <span class="math">3</span>。'},
+{id:'e02',type:'mc',topic:'逆序数',
+ stem:'排列 <span class="math">4,3,2,1</span> 的逆序数为：',
+ opts:['4','5','6','7'],ans:2,
+ explain:'每个较大的数后面都跟着更小的数。逆序对：(4,3),(4,2),(4,1),(3,2),(3,1),(2,1)，共 <span class="math">6</span> 个。'},
+{id:'e03',type:'mc',topic:'排列奇偶性',
+ stem:'排列 <span class="math">2,4,1,3</span> 是：',
+ opts:['奇排列','偶排列','既非奇也非偶','无法判断'],ans:1,
+ explain:'逆序对：(2,1),(4,1),(4,3)，逆序数 = 3（奇数），故为<span class="math">奇排列</span>。'},
+{id:'e04',type:'mc',topic:'排列奇偶性',
+ stem:'排列 <span class="math">1,2,3,4,5</span>（自然顺序）是：',
+ opts:['奇排列','偶排列','中性排列','不确定'],ans:1,
+ explain:'自然顺序排列逆序数为 0，0 为偶数，故为<span class="math">偶排列</span>。'},
+{id:'e05',type:'fill',topic:'逆序数',
+ stem:'排列 <span class="math">2,3,4,1</span> 的逆序数为 ___',
+ ans:'3',
+ explain:'逆序对：(2,1),(3,1),(4,1)，共 <span class="math">3</span> 个。'},
+
+// --- 矩阵加减 ---
+{id:'e06',type:'mc',topic:'矩阵加法',
+ stem:'设矩阵 A = [[1,2],[3,4]]，B = [[5,6],[7,8]]，则 A+B 的 (1,1) 元素为：',
+ matrix:{A:[[1,2],[3,4]],B:[[5,6],[7,8]]},
+ opts:['5','6','7','8'],ans:1,
+ explain:'矩阵加法对应元素相加：<span class="math">1+5=6</span>。'},
+{id:'e07',type:'mc',topic:'矩阵减法',
+ stem:'设 A = [[3,5],[1,2]]，B = [[1,2],[0,1]]，则 A−B 的 (2,2) 元素为：',
+ matrix:{A:[[3,5],[1,2]],B:[[1,2],[0,1]]},
+ opts:['0','1','2','3'],ans:1,
+ explain:'<span class="math">a₂₂ − b₂₂ = 2 − 1 = 1</span>。'},
+{id:'e08',type:'mc',topic:'矩阵乘法',
+ stem:'设 A = [[1,0],[0,1]]（单位矩阵），B = [[3,7],[2,5]]，则 AB =',
+ matrix:{A:[[1,0],[0,1]],B:[[3,7],[2,5]]},
+ opts:['[[4,7],[2,6]]','[[3,7],[2,5]]','[[3,0],[0,5]]','[[1,7],[2,1]]'],ans:1,
+ explain:'单位矩阵与任何矩阵相乘结果不变：<span class="math">IA = A</span>。'},
+{id:'e09',type:'mc',topic:'矩阵乘法',
+ stem:'A = [[1,2],[3,4]]，B = [[1,0],[1,1]]，则 AB 的 (1,2) 元素为：',
+ matrix:{A:[[1,2],[3,4]],B:[[1,0],[1,1]]},
+ opts:['1','2','3','4'],ans:1,
+ explain:'第1行×第2列：<span class="math">1×0 + 2×1 = 2</span>。'},
+{id:'e10',type:'mc',topic:'矩阵乘法',
+ stem:'A = [[2,1],[0,3]]，B = [[1,2],[3,0]]，则 AB 的 (2,1) 元素为：',
+ matrix:{A:[[2,1],[0,3]],B:[[1,2],[3,0]]},
+ opts:['6','9','3','0'],ans:1,
+ explain:'第2行×第1列：<span class="math">0×1 + 3×3 = 9</span>。'},
+{id:'e11',type:'mc',topic:'矩阵的幂',
+ stem:'A = [[1,1],[0,1]]，则 A² 的 (1,2) 元素为：',
+ matrix:{A:[[1,1],[0,1]]},
+ opts:['1','2','3','4'],ans:1,
+ explain:'A² = A×A，第1行×第2列：<span class="math">1×1 + 1×1 = 2</span>。'},
+{id:'e12',type:'mc',topic:'矩阵转置',
+ stem:'A = [[1,2,3],[4,5,6]]，则 Aᵀ 的第2列第1行元素为：',
+ matrix:{A:[[1,2,3],[4,5,6]]},
+ opts:['1','2','4','5'],ans:2,
+ explain:'转置将行列互换，原 A 第1行第2列元素 <span class="math">2</span> 变为 Aᵀ 的第2列第1行。'},
+{id:'e13',type:'fill',topic:'矩阵的迹',
+ stem:'A = [[3,1,2],[0,5,4],[1,2,7]]，则 tr(A) = ___',
+ matrix:{A:[[3,1,2],[0,5,4],[1,2,7]]},
+ ans:'15',
+ explain:'迹 = 主对角线元素之和：<span class="math">3 + 5 + 7 = 15</span>。'},
+{id:'e14',type:'mc',topic:'矩阵的迹',
+ stem:'单位矩阵 I₃ 的迹 tr(I₃) =',
+ opts:['0','1','2','3'],ans:3,
+ explain:'n 阶单位矩阵对角线全为1，tr(Iₙ) = <span class="math">n</span>，故 tr(I₃) = 3。'},
+{id:'e15',type:'mc',topic:'向量内积',
+ stem:'向量 a = (1, 2, 3)，b = (4, 5, 6)，则 a·b =',
+ opts:['28','32','22','18'],ans:1,
+ explain:'内积 = 1×4 + 2×5 + 3×6 = 4 + 10 + 18 = <span class="math">32</span>。'},
+{id:'e16',type:'fill',topic:'向量内积',
+ stem:'向量 a = (2, −1, 3)，b = (1, 4, 2)，则 a·b = ___',
+ ans:'4',
+ explain:'<span class="math">2×1 + (−1)×4 + 3×2 = 2 − 4 + 6 = 4</span>。'},
+{id:'e17',type:'mc',topic:'向量长度',
+ stem:'向量 a = (3, 4) 的模（长度）|a| =',
+ opts:['5','6','7','12'],ans:0,
+ explain:'|a| = √(3² + 4²) = √(9+16) = √25 = <span class="math">5</span>。'},
+{id:'e18',type:'mc',topic:'向量长度',
+ stem:'向量 a = (1, 1, 1, 1) 的模 |a| =',
+ opts:['2','√3','√4 = 2','4'],ans:0,
+ explain:'|a| = √(1+1+1+1) = √4 = <span class="math">2</span>。'},
+{id:'e19',type:'mc',topic:'矩阵加法',
+ stem:'下列矩阵中，属于对称矩阵（A = Aᵀ）的是：',
+ opts:['[[1,2],[3,4]]','[[1,2],[2,5]]','[[0,1],[−1,0]]','[[1,0],[1,1]]'],ans:1,
+ explain:'对称矩阵满足 aᵢⱼ = aⱼᵢ，选项B中 a₁₂ = a₂₁ = 2，故 <span class="math">[[1,2],[2,5]]</span> 是对称矩阵。'},
+{id:'e20',type:'fill',topic:'矩阵的幂',
+ stem:'A = [[2,0],[0,3]]（对角矩阵），则 A² 的 (2,2) 元素为 ___',
+ matrix:{A:[[2,0],[0,3]]},
+ ans:'9',
+ explain:'对角矩阵的幂等于对角元素各自取幂：<span class="math">3² = 9</span>。'},
+],
+
+medium:[
+// --- 行列式 ---
+{id:'m01',type:'mc',topic:'行列式',
+ stem:'计算 2 阶行列式：|A| = |[[3,2],[1,4]]|',
+ matrix:{A:[[3,2],[1,4]]},
+ opts:['10','11','12','9'],ans:0,
+ explain:'2阶行列式：<span class="math">ad − bc = 3×4 − 2×1 = 12 − 2 = 10</span>。'},
+{id:'m02',type:'mc',topic:'行列式',
+ stem:'计算 3 阶行列式（上三角矩阵）|A|，A = [[2,3,1],[0,5,4],[0,0,3]]',
+ matrix:{A:[[2,3,1],[0,5,4],[0,0,3]]},
+ opts:['25','30','35','10'],ans:1,
+ explain:'上三角矩阵的行列式 = 主对角线元素之积：<span class="math">2 × 5 × 3 = 30</span>。'},
+{id:'m03',type:'fill',topic:'行列式',
+ stem:'范德蒙德矩阵 [[1,1,1],[1,2,3],[1,4,9]] 的行列式值为 ___',
+ matrix:{A:[[1,1,1],[1,2,3],[1,4,9]]},
+ ans:'2',
+ explain:'3阶范德蒙德行列式 = (x₂−x₁)(x₃−x₁)(x₃−x₂) = (2−1)(3−1)(3−2) = <span class="math">1×2×1 = 2</span>。'},
+{id:'m04',type:'mc',topic:'行列式',
+ stem:'若矩阵 A = [[1,2],[3,6]]，则 |A| =',
+ matrix:{A:[[1,2],[3,6]]},
+ opts:['0','12','-6','6'],ans:0,
+ explain:'<span class="math">1×6 − 2×3 = 6 − 6 = 0</span>。行列式为 0，矩阵不可逆（奇异矩阵）。'},
+{id:'m05',type:'mc',topic:'余子式',
+ stem:'A = [[1,2,3],[4,5,6],[7,8,9]]，元素 a₂₂ = 5 的余子式 M₂₂ =',
+ matrix:{A:[[1,2,3],[4,5,6],[7,8,9]]},
+ opts:['-6','-3','0','6'],ans:1,
+ explain:'删去第2行第2列，得子矩阵 [[1,3],[7,9]]，余子式 = <span class="math">1×9 − 3×7 = 9 − 21 = −12</span>。<br>注意：正确答案应为 -12。',hint:'-12'},
+{id:'m06',type:'mc',topic:'代数余子式',
+ stem:'A = [[2,1],[3,4]]，元素 a₁₂ = 1 的代数余子式 A₁₂ =',
+ matrix:{A:[[2,1],[3,4]]},
+ opts:['3','-3','4','-4'],ans:1,
+ explain:'余子式 M₁₂ = 3（删去第1行第2列剩余元素），代数余子式 <span class="math">A₁₂ = (−1)^(1+2) × 3 = −3</span>。'},
+{id:'m07',type:'mc',topic:'伴随矩阵',
+ stem:'A = [[1,2],[3,4]] 的伴随矩阵 A* 为：',
+ matrix:{A:[[1,2],[3,4]]},
+ opts:['[[4,-2],[-3,1]]','[[4,-3],[-2,1]]','[[-4,2],[3,-1]]','[[1,3],[2,4]]'],ans:0,
+ explain:'2阶矩阵伴随：<span class="math">A* = [[d,-b],[-c,a]] = [[4,-2],[-3,1]]</span>。'},
+{id:'m08',type:'mc',topic:'逆矩阵',
+ stem:'A = [[2,1],[1,1]] 的逆矩阵 A⁻¹ 为：',
+ matrix:{A:[[2,1],[1,1]]},
+ opts:['[[1,-1],[-1,2]]','[[1,1],[1,2]]','[[-1,1],[1,-2]]','[[2,-1],[-1,1]]'],ans:0,
+ explain:'|A| = 2−1 = 1，A⁻¹ = (1/|A|)A* = <span class="math">[[1,-1],[-1,2]]</span>。'},
+{id:'m09',type:'mc',topic:'逆矩阵',
+ stem:'若 |A| = 0，则矩阵 A：',
+ opts:['可逆','不可逆','有唯一逆矩阵','逆矩阵为零矩阵'],ans:1,
+ explain:'行列式为 0 表明矩阵<span class="math">奇异</span>，不存在逆矩阵（不可逆）。'},
+{id:'m10',type:'mc',topic:'矩阵的秩',
+ stem:'A = [[1,2,3],[2,4,6],[3,6,9]]，则 rank(A) =',
+ matrix:{A:[[1,2,3],[2,4,6],[3,6,9]]},
+ opts:['1','2','3','0'],ans:0,
+ explain:'第2、3行分别是第1行的2倍、3倍，矩阵的秩 = <span class="math">1</span>。'},
+{id:'m11',type:'mc',topic:'矩阵的秩',
+ stem:'单位矩阵 I₃ 的秩为：',
+ opts:['1','2','3','0'],ans:2,
+ explain:'单位矩阵可逆，其所有行（列）线性无关，rank(I₃) = <span class="math">3</span>。'},
+{id:'m12',type:'mc',topic:'特征值',
+ stem:'A = [[2,0],[0,3]]（对角矩阵）的特征值为：',
+ matrix:{A:[[2,0],[0,3]]},
+ opts:['1,5','2,3','0,6','−2,−3'],ans:1,
+ explain:'对角矩阵的特征值就是<span class="math">主对角线元素</span>，即 λ₁=2，λ₂=3。'},
+{id:'m13',type:'mc',topic:'特征值',
+ stem:'2阶矩阵 A = [[1,1],[0,2]] 的特征多项式 det(A−λI) = 0，特征值为：',
+ matrix:{A:[[1,1],[0,2]]},
+ opts:['λ=1,2','λ=0,3','λ=−1,−2','λ=2,3'],ans:0,
+ explain:'det(A−λI) = (1−λ)(2−λ) = 0，解得 <span class="math">λ₁=1, λ₂=2</span>。'},
+{id:'m14',type:'mc',topic:'特征向量',
+ stem:'A = [[2,0],[0,3]]，对应特征值 λ=2 的特征向量为：',
+ matrix:{A:[[2,0],[0,3]]},
+ opts:['(1,0)','(0,1)','(1,1)','(2,3)'],ans:0,
+ explain:'(A−2I)x=0，得 [[0,0],[0,1]]x=0，解为 <span class="math">x₂=0，x₁任意</span>，取 ξ=(1,0)。'},
+{id:'m15',type:'fill',topic:'行列式',
+ stem:'下三角矩阵 A = [[5,0,0],[3,2,0],[1,4,6]] 的行列式为 ___',
+ matrix:{A:[[5,0,0],[3,2,0],[1,4,6]]},
+ ans:'60',
+ explain:'下三角矩阵行列式 = 对角线乘积：<span class="math">5 × 2 × 6 = 60</span>。'},
+{id:'m16',type:'mc',topic:'矩阵的秩',
+ stem:'若 A 是 m×n 矩阵，则 rank(A) ≤',
+ opts:['m+n','m×n','min(m,n)','max(m,n)'],ans:2,
+ explain:'矩阵的秩不超过行数和列数，即 <span class="math">rank(A) ≤ min(m,n)</span>。'},
+{id:'m17',type:'mc',topic:'伴随矩阵',
+ stem:'设 A 为 n 阶可逆矩阵，则 A·A* = ',
+ opts:['I','|A|·I','A','A²'],ans:1,
+ explain:'根据伴随矩阵定义：<span class="math">A·A* = |A|·I</span>。'},
+{id:'m18',type:'mc',topic:'特征值',
+ stem:'若 λ 是矩阵 A 的特征值，则 λ³ 是 ___ 的特征值：',
+ opts:['A+3I','3A','A³','A⁻¹'],ans:2,
+ explain:'若 Ax = λx，则 A³x = λ³x，故 <span class="math">λ³</span> 是 A³ 的特征值。'},
+{id:'m19',type:'mc',topic:'行列式',
+ stem:'|kA| 与 |A| 的关系（A为n阶矩阵）：',
+ opts:['k|A|','k²|A|','kⁿ|A|','|A|'],ans:2,
+ explain:'行列式的性质：每行提公因子k，n阶矩阵共n行，故 <span class="math">|kA| = kⁿ|A|</span>。'},
+{id:'m20',type:'mc',topic:'代数余子式',
+ stem:'行列式按某行展开定理：|A| = Σᵢ aᵢⱼ·Aᵢⱼ，这里的 Aᵢⱼ 是：',
+ opts:['余子式','代数余子式','元素本身','行列式'],ans:1,
+ explain:'按行展开公式中，系数是<span class="math">代数余子式</span> Aᵢⱼ = (−1)^(i+j) Mᵢⱼ。'},
+],
+
+hard:[
+// --- 矩阵分解 ---
+{id:'h01',type:'mc',topic:'矩阵分解',
+ stem:'LU 分解中，L 表示：',
+ opts:['正交矩阵','上三角矩阵','下三角矩阵（主对角为1）','对角矩阵'],ans:2,
+ explain:'LU 分解将矩阵 A 分解为下三角矩阵 L 和上三角矩阵 U 的乘积，其中 <span class="math">L</span> 是单位下三角矩阵（对角线全为1）。'},
+{id:'h02',type:'mc',topic:'矩阵分解',
+ stem:'对矩阵 A = [[2,4],[1,3]] 做 LU 分解，U 的 (1,1) 元素为：',
+ matrix:{A:[[2,4],[1,3]]},
+ opts:['1','2','3','4'],ans:1,
+ explain:'高斯消元：第1行不变（枢轴为2），L₂₁ = 1/2，U = [[2,4],[0,1]]，U(1,1) = <span class="math">2</span>。'},
+{id:'h03',type:'mc',topic:'矩阵分解',
+ stem:'QR 分解中，Q 是满足 QᵀQ = I 的矩阵，称为：',
+ opts:['对称矩阵','正交矩阵','对角矩阵','三角矩阵'],ans:1,
+ explain:'QR 分解将 A 分解为 Q（<span class="math">正交矩阵</span>）和 R（上三角矩阵），Q 满足 QᵀQ = I。'},
+{id:'h04',type:'mc',topic:'矩阵分解',
+ stem:'矩阵 A = [[4,2],[2,1]] 的 LU 分解，U 的 (2,2) 元素为：',
+ matrix:{A:[[4,2],[2,1]]},
+ opts:['0','1/2','1','2'],ans:0,
+ explain:'消元：R₂ ← R₂ − (1/2)R₁，得 U = [[4,2],[0,0]]，U(2,2) = <span class="math">0</span>（矩阵奇异）。'},
+// --- 齐次线性方程组 ---
+{id:'h05',type:'mc',topic:'齐次线性方程组',
+ stem:'齐次线性方程组 Ax = 0 有非零解的充要条件是：',
+ opts:['|A| ≠ 0','rank(A) = n','rank(A) < n','A 为单位矩阵'],ans:2,
+ explain:'齐次方程组 Ax=0 有非零解 ⟺ <span class="math">rank(A) < n</span>（系数矩阵的秩小于未知数个数）。'},
+{id:'h06',type:'mc',topic:'齐次线性方程组',
+ stem:'方程组 [[1,2,3],[2,4,6],[1,1,1]] x = 0 的基础解系含几个向量？',
+ matrix:{A:[[1,2,3],[2,4,6],[1,1,1]]},
+ opts:['1','2','3','0'],ans:0,
+ explain:'对增广矩阵化简，rank(A) = 2，未知数 n = 3，基础解系含 <span class="math">n − rank(A) = 3 − 2 = 1</span> 个向量。'},
+{id:'h07',type:'mc',topic:'齐次线性方程组',
+ stem:'n 个方程 n 个未知数的齐次方程组 Ax=0，若 |A|≠0，则解为：',
+ opts:['只有无穷多解','只有零解','有非零解','不确定'],ans:1,
+ explain:'|A|≠0 ⟹ A 可逆 ⟹ rank(A)=n，故方程组的唯一解为<span class="math">零解</span>。'},
+{id:'h08',type:'mc',topic:'齐次线性方程组',
+ stem:'若 Ax=0 的基础解系含 2 个向量，则通解的自由变量个数为：',
+ opts:['1','2','3','不确定'],ans:1,
+ explain:'基础解系含 k 个向量 ⟺ 有 <span class="math">k = n − rank(A)</span> 个自由变量，此处 k=2。'},
+// --- 非齐次线性方程组 ---
+{id:'h09',type:'mc',topic:'非齐次线性方程组',
+ stem:'非齐次方程组 Ax=b 有解的充要条件是：',
+ opts:['|A| ≠ 0','rank(A) = rank(A|b)','rank(A) < rank(A|b)','A 可逆'],ans:1,
+ explain:'非齐次方程组有解 ⟺ 系数矩阵与增广矩阵的秩相等：<span class="math">rank(A) = rank(A|b)</span>。'},
+{id:'h10',type:'mc',topic:'非齐次线性方程组',
+ stem:'方程组 x₁+x₂=3, 2x₁+2x₂=6 的解情况：',
+ opts:['无解','唯一解','无穷多解','矛盾方程'],ans:2,
+ explain:'第2方程 = 2×第1方程，两方程线性相关，方程组有<span class="math">无穷多解</span>（解集为直线）。'},
+{id:'h11',type:'mc',topic:'非齐次线性方程组',
+ stem:'方程组 x₁+x₂=1, x₁+x₂=2 的解情况：',
+ opts:['无解','唯一解','无穷多解','只有零解'],ans:0,
+ explain:'两方程矛盾（相同左端，不同右端），方程组<span class="math">无解</span>，增广矩阵的秩大于系数矩阵的秩。'},
+{id:'h12',type:'mc',topic:'非齐次线性方程组',
+ stem:'3元非齐次方程组，rank(A)=rank(A|b)=2，则通解结构：',
+ opts:['唯一解','有1个自由变量，无穷多解','有2个自由变量','无解'],ans:1,
+ explain:'rank=2 < n=3，有 n−rank = <span class="math">1</span> 个自由变量，通解=特解+齐次通解。'},
+{id:'h13',type:'mc',topic:'矩阵分解',
+ stem:'奇异值分解（SVD）将矩阵 A 分解为 A = UΣVᵀ，其中 Σ 是：',
+ opts:['正交矩阵','对角矩阵（含奇异值）','单位矩阵','下三角矩阵'],ans:1,
+ explain:'SVD 中 Σ 是<span class="math">对角矩阵</span>，对角元素为 A 的奇异值（σ₁≥σ₂≥…≥0）。'},
+{id:'h14',type:'mc',topic:'齐次线性方程组',
+ stem:'A = [[1,−1,1],[−1,1,−1],[2,−2,2]]，Ax=0 的基础解系含几个向量？',
+ matrix:{A:[[1,-1,1],[-1,1,-1],[2,-2,2]]},
+ opts:['1','2','3','0'],ans:1,
+ explain:'三行均成比例，rank(A)=1，基础解系含 <span class="math">3−1=2</span> 个向量。'},
+{id:'h15',type:'mc',topic:'非齐次线性方程组',
+ stem:'Ax=b 有唯一解的充要条件（A 为 n×n 方阵）：',
+ opts:['rank(A)=1','|A|≠0 且 rank(A|b)=rank(A)','rank(A) < n','A 的行向量线性相关'],ans:1,
+ explain:'方阵 Ax=b 有唯一解 ⟺ <span class="math">|A|≠0</span>（等价于 rank(A)=n=rank(A|b)）。'},
+]
+};
+
+// ============================================================
+//  GAME STATE
+// ============================================================
+const STATE = {
+  diff:'easy',
+  questions:[],
+  current:0,
+  score:0,
+  correct:0,
+  wrong:0,
+  answered:false,
+  flags:new Set(),
+  startTime:0,
+  combo:0,
+  maxCombo:0,
+};
+
+// ============================================================
+//  PERSISTENCE
+// ============================================================
+function loadData(){
+  try{return JSON.parse(localStorage.getItem('mqg_data')||'null');}catch(e){return null;}
+}
+function saveData(){
+  const d=getData();
+  localStorage.setItem('mqg_data',JSON.stringify(d));
+}
+function getData(){
+  return {
+    totalDone: STATS.totalDone,
+    totalCorrect: STATS.totalCorrect,
+    byDiff: STATS.byDiff,
+    byType: STATS.byType,
+    earnedBadges: [...STATS.earnedBadges],
+    wrongNotes: STATS.wrongNotes,
+    heatmap: STATS.heatmap,
+    streak: STATS.streak,
+    maxStreak: STATS.maxStreak,
+  };
+}
+
+let STATS = {
+  totalDone:0, totalCorrect:0,
+  byDiff:{easy:{done:0,correct:0}, medium:{done:0,correct:0}, hard:{done:0,correct:0}},
+  byType:{},
+  earnedBadges:new Set(),
+  wrongNotes:[],
+  heatmap:{},
+  streak:0, maxStreak:0,
+};
+
+function initStats(){
+  const d=loadData();
+  if(d){
+    STATS.totalDone=d.totalDone||0;
+    STATS.totalCorrect=d.totalCorrect||0;
+    STATS.byDiff=d.byDiff||STATS.byDiff;
+    STATS.byType=d.byType||{};
+    STATS.earnedBadges=new Set(d.earnedBadges||[]);
+    STATS.wrongNotes=d.wrongNotes||[];
+    STATS.heatmap=d.heatmap||{};
+    STATS.streak=d.streak||0;
+    STATS.maxStreak=d.maxStreak||0;
+  }
+}
+
+// ============================================================
+//  BADGES DEFINITION
+// ============================================================
+const BADGES_DEF = [
+  {id:'first_blood', icon:'🩸', name:'初次出手', desc:'完成第一道题'},
+  {id:'easy_clear',  icon:'🌱', name:'简单通关', desc:'完成一轮简单题目'},
+  {id:'medium_clear',icon:'⚡', name:'中等突破', desc:'完成一轮中等题目'},
+  {id:'hard_clear',  icon:'🔥', name:'困难征服', desc:'完成一轮困难题目'},
+  {id:'perfect',     icon:'💯', name:'满分答卷', desc:'一轮全部答对'},
+  {id:'combo5',      icon:'🔥', name:'5连击', desc:'连续答对5题'},
+  {id:'combo10',     icon:'⚡', name:'10连击', desc:'连续答对10题'},
+  {id:'total10',     icon:'📘', name:'入门学者', desc:'累计答对10题'},
+  {id:'total50',     icon:'📗', name:'线性代数学徒', desc:'累计答对50题'},
+  {id:'total100',    icon:'📕', name:'矩阵达人', desc:'累计答对100题'},
+  {id:'det_master',  icon:'🔢', name:'行列式专家', desc:'行列式题型答对率≥80%'},
+  {id:'eigen_master',icon:'🎯', name:'特征值猎手', desc:'特征值/特征向量答对率≥80%'},
+  {id:'no_wrong',    icon:'🛡️', name:'无懈可击', desc:'一轮零错误答完'},
+  {id:'speed_demon', icon:'⚡', name:'速度恶魔', desc:'平均每题用时<20秒'},
+  {id:'all_diff',    icon:'🏆', name:'全难度通关', desc:'三个难度各完成一轮'},
+];
+
+// ============================================================
+//  SCREEN MANAGER
+// ============================================================
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);
+  if(el)el.classList.add('active');
+  if(id==='home') refreshHome();
+  if(id==='badges') renderBadges();
+  if(id==='wrongnotes') renderWrongNotes();
+  if(id==='progress-screen') renderProgress();
+  if(id==='help') renderHelp();
+}
+
+// ============================================================
+//  HOME
+// ============================================================
+function refreshHome(){
+  document.getElementById('stat-done').textContent=STATS.totalDone;
+  const acc=STATS.totalDone>0?Math.round(STATS.totalCorrect/STATS.totalDone*100)+'%':'—';
+  document.getElementById('stat-acc').textContent=acc;
+  document.getElementById('stat-badges').textContent=STATS.earnedBadges.size;
+  document.getElementById('stat-streak').textContent=STATS.streak;
+  document.getElementById('cnt-easy').textContent=QB.easy.length+' 题';
+  document.getElementById('cnt-medium').textContent=QB.medium.length+' 题';
+  document.getElementById('cnt-hard').textContent=QB.hard.length+' 题';
+}
+
+function selectDiff(d){
+  STATE.diff=d;
+  document.querySelectorAll('.diff-card').forEach(c=>c.classList.remove('sel'));
+  document.querySelector('.diff-card.'+d).classList.add('sel');
+  const btn=document.getElementById('startBtn');
+  btn.disabled=false;
+  btn.textContent='开始 '+({easy:'简单',medium:'中等',hard:'困难'}[d])+' 模式';
+}
+
+// ============================================================
+//  QUIZ ENGINE
+// ============================================================
+function startQuiz(){
+  const pool=[...QB[STATE.diff]];
+  // shuffle
+  for(let i=pool.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [pool[i],pool[j]]=[pool[j],pool[i]];
+  }
+  STATE.questions=pool.slice(0,Math.min(10,pool.length));
+  STATE.current=0; STATE.score=0; STATE.correct=0; STATE.wrong=0;
+  STATE.flags.clear(); STATE.answered=false;
+  STATE.combo=0; STATE.startTime=Date.now();
+
+  const diffMap={easy:'简单',medium:'中等',hard:'困难'};
+  document.getElementById('quizTitle').textContent='矩阵测试 · '+diffMap[STATE.diff];
+  const tag=document.getElementById('quizDiffTag');
+  tag.textContent=diffMap[STATE.diff];
+  tag.className='diff-tag '+STATE.diff;
+
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q=STATE.questions[STATE.current];
+  const total=STATE.questions.length;
+  STATE.answered=false;
+
+  document.getElementById('qNum').textContent='第 '+(STATE.current+1)+' 题';
+  document.getElementById('qTypeTag').textContent=q.type==='mc'?'单选题':'填空题';
+  document.getElementById('qStem').innerHTML=q.stem;
+  document.getElementById('progText').textContent='第 '+(STATE.current+1)+' 题 / 共 '+total+' 题';
+  document.getElementById('progScore').textContent='得分: '+STATE.score;
+  document.getElementById('progFill').style.width=(STATE.current/total*100)+'%';
+
+  const flagBtn=document.getElementById('flagBtn');
+  flagBtn.className='q-flag'+(STATE.flags.has(STATE.current)?' flagged':'');
+
+  // matrix
+  const matArea=document.getElementById('qMatrixArea');
+  matArea.innerHTML='';
+  if(q.matrix){
+    const keys=Object.keys(q.matrix);
+    keys.forEach(k=>{
+      const wrap=document.createElement('div');
+      wrap.style.display='inline-block';wrap.style.marginRight='16px';
+      wrap.innerHTML='<span style="font-size:13px;color:var(--text2);margin-bottom:4px;display:block">'+k+' =</span>';
+      wrap.appendChild(buildMatrix(q.matrix[k]));
+      matArea.appendChild(wrap);
+    });
+  }
+
+  // feedback
+  const fb=document.getElementById('feedbackBox');
+  fb.className='feedback-box'; fb.style.display='none';
+
+  // options
+  const optArea=document.getElementById('qOptionsArea');
+  optArea.innerHTML='';
+  const nextBtn=document.getElementById('nextBtn');
+  nextBtn.className='btn-next';
+
+  if(q.type==='mc'){
+    const grid=document.createElement('div');
+    grid.className='options-grid'+(q.opts.length<=4?' two-col':'');
+    q.opts.forEach((o,i)=>{
+      const btn=document.createElement('button');
+      btn.className='opt-btn';
+      btn.innerHTML='<span class="opt-key">'+'ABCD'[i]+'</span><span>'+o+'</span>';
+      btn.onclick=()=>answerMC(i,btn,q);
+      grid.appendChild(btn);
+    });
+    optArea.appendChild(grid);
+  } else {
+    const hint=q.hint||'';
+    optArea.innerHTML=`
+      <div class="fill-area">
+        <input class="fill-input" id="fillIn" type="text" placeholder="输入答案..." autocomplete="off">
+        <button class="btn-check" onclick="answerFill()">确认</button>
+      </div>
+      <div class="fill-hint">提示：输入数字${hint?' (本题答案格式：'+hint+')':''}</div>`;
+    const inp=document.getElementById('fillIn');
+    inp.onkeydown=e=>{if(e.key==='Enter')answerFill();};
+    inp.focus();
+  }
+}
+
+function buildMatrix(data){
+  const wrap=document.createElement('div');
+  wrap.className='matrix-display';
+  const lb=document.createElement('div');lb.className='matrix-bracket left';
+  const rb=document.createElement('div');rb.className='matrix-bracket right';
+  const cells=document.createElement('div');cells.className='matrix-cells';
+  data.forEach(row=>{
+    const r=document.createElement('div');r.className='matrix-row';
+    row.forEach(v=>{
+      const c=document.createElement('div');c.className='matrix-cell';
+      c.textContent=v;
+      r.appendChild(c);
+    });
+    cells.appendChild(r);
+  });
+  wrap.appendChild(lb);wrap.appendChild(cells);wrap.appendChild(rb);
+  return wrap;
+}
+
+function answerMC(idx,btn,q){
+  if(STATE.answered)return;
+  STATE.answered=true;
+  const correct=idx===q.ans;
+  const opts=document.querySelectorAll('.opt-btn');
+  opts.forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.ans)b.classList.add('correct');
+    else if(i===idx&&!correct)b.classList.add('wrong');
+  });
+  handleResult(correct,q);
+}
+
+function answerFill(){
+  if(STATE.answered)return;
+  const inp=document.getElementById('fillIn');
+  const val=inp.value.trim().replace(/\s/g,'');
+  const correct=val===String(q_current().ans)||val===String(q_current().hint);
+  inp.disabled=true;
+  inp.classList.add(correct?'correct':'wrong');
+  if(!correct){
+    const hint=document.createElement('div');
+    hint.style.cssText='margin-top:8px;font-size:13px;color:var(--text2)';
+    hint.innerHTML='正确答案：<span style="color:var(--green)">'+q_current().ans+'</span>';
+    inp.parentElement.parentElement.appendChild(hint);
+  }
+  handleResult(correct,q_current());
+}
+
+function q_current(){return STATE.questions[STATE.current];}
+
+function handleResult(correct,q){
+  // score
+  const pts=correct?({easy:10,medium:15,hard:20}[STATE.diff]):0;
+  STATE.score+=pts;
+  if(correct){
+    STATE.correct++; STATE.combo++;
+    STATE.maxCombo=Math.max(STATE.maxCombo,STATE.combo);
+    STATS.streak++; STATS.maxStreak=Math.max(STATS.maxStreak,STATS.streak);
+    if(STATE.combo===5)showCombo('🔥 5连击！','太棒了！');
+    if(STATE.combo===10)showCombo('⚡ 10连击！','神级发挥！');
+    if(STATE.combo>0&&STATE.combo%5===0&&STATE.combo>10)showCombo('🌟 '+STATE.combo+'连击！','无敌！');
+  } else {
+    STATE.wrong++;
+    STATE.combo=0; STATS.streak=0;
+    addWrongNote(q);
+  }
+
+  // stats
+  STATS.totalDone++;
+  if(correct)STATS.totalCorrect++;
+  STATS.byDiff[STATE.diff].done++;
+  if(correct)STATS.byDiff[STATE.diff].correct++;
+  if(!STATS.byType[q.topic])STATS.byType[q.topic]={done:0,correct:0};
+  STATS.byType[q.topic].done++;
+  if(correct)STATS.byType[q.topic].correct++;
+
+  // heatmap
+  const today=new Date().toISOString().slice(0,10);
+  STATS.heatmap[today]=(STATS.heatmap[today]||0)+1;
+
+  checkBadges(correct);
+  saveData();
+
+  // feedback
+  showFeedback(correct,q);
+  document.getElementById('nextBtn').className='btn-next show';
+  document.getElementById('progScore').textContent='得分: '+STATE.score;
+}
+
+function showFeedback(correct,q){
+  const fb=document.getElementById('feedbackBox');
+  fb.className='feedback-box show '+(correct?'correct-fb':'wrong-fb');
+  fb.style.display='block';
+  document.getElementById('fbTitle').textContent=correct?'✅ 回答正确！ +'+({easy:10,medium:15,hard:20}[STATE.diff])+'分':'❌ 回答错误';
+  document.getElementById('fbExplain').innerHTML='<b>解析：</b>'+q.explain;
+}
+
+function toggleFlag(){
+  if(STATE.flags.has(STATE.current))STATE.flags.delete(STATE.current);
+  else STATE.flags.add(STATE.current);
+  const btn=document.getElementById('flagBtn');
+  btn.className='q-flag'+(STATE.flags.has(STATE.current)?' flagged':'');
+  showToast(STATE.flags.has(STATE.current)?'已标记本题':'已取消标记','info');
+}
+
+function nextQuestion(){
+  STATE.current++;
+  if(STATE.current>=STATE.questions.length){
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+// ============================================================
+//  RESULT
+// ============================================================
+function showResult(){
+  const elapsed=Math.round((Date.now()-STATE.startTime)/1000);
+  const mm=Math.floor(elapsed/60), ss=elapsed%60;
+  const total=STATE.questions.length;
+  const pct=Math.round(STATE.correct/total*100);
+
+  let emoji='😔';
+  if(pct===100)emoji='🏆';
+  else if(pct>=80)emoji='🎉';
+  else if(pct>=60)emoji='😊';
+  else if(pct>=40)emoji='🤔';
+
+  document.getElementById('resEmoji').textContent=emoji;
+  document.getElementById('resScore').textContent=STATE.score;
+  document.getElementById('resCorrect').textContent=STATE.correct;
+  document.getElementById('resWrong').textContent=STATE.wrong;
+  document.getElementById('resTime').textContent=mm+':'+String(ss).padStart(2,'0');
+
+  // new badges
+  const prev=new Set([...STATS.earnedBadges]);
+  checkBadgesFinal();
+  const newBadges=[...STATS.earnedBadges].filter(b=>!prev.has(b));
+  const newMedalsArea=document.getElementById('newMedalsArea');
+  const newMedalsList=document.getElementById('newMedalsList');
+  newMedalsList.innerHTML='';
+  if(newBadges.length>0){
+    newMedalsArea.style.display='block';
+    newBadges.forEach(bid=>{
+      const def=BADGES_DEF.find(b=>b.id===bid);
+      if(def){
+        const el=document.createElement('div');
+        el.className='medal-item';
+        el.innerHTML='<div class="mi">'+def.icon+'</div><div class="mn">'+def.name+'</div>';
+        newMedalsList.appendChild(el);
+      }
+    });
+  } else { newMedalsArea.style.display='none'; }
+
+  showScreen('result');
+}
+
+// ============================================================
+//  BADGES
+// ============================================================
+function checkBadges(correct){
+  if(STATS.totalDone>=1)STATS.earnedBadges.add('first_blood');
+  if(STATS.totalCorrect>=10)STATS.earnedBadges.add('total10');
+  if(STATS.totalCorrect>=50)STATS.earnedBadges.add('total50');
+  if(STATS.totalCorrect>=100)STATS.earnedBadges.add('total100');
+  if(STATE.combo>=5)STATS.earnedBadges.add('combo5');
+  if(STATE.combo>=10)STATS.earnedBadges.add('combo10');
+}
+
+function checkBadgesFinal(){
+  checkBadges(false);
+  const total=STATE.questions.length;
+  if(STATE.wrong===0&&total>0)STATS.earnedBadges.add('no_wrong');
+  if(STATE.wrong===0&&total>0)STATS.earnedBadges.add('perfect');
+  if(STATE.diff==='easy')STATS.earnedBadges.add('easy_clear');
+  if(STATE.diff==='medium')STATS.earnedBadges.add('medium_clear');
+  if(STATE.diff==='hard')STATS.earnedBadges.add('hard_clear');
+  if(STATS.earnedBadges.has('easy_clear')&&STATS.earnedBadges.has('medium_clear')&&STATS.earnedBadges.has('hard_clear'))
+    STATS.earnedBadges.add('all_diff');
+
+  // speed demon
+  const elapsed=(Date.now()-STATE.startTime)/1000;
+  if(elapsed/total<20&&total>0)STATS.earnedBadges.add('speed_demon');
+
+  // topic mastery
+  ['det','eigen'].forEach(t=>{
+    const topics=t==='det'?['行列式','余子式','代数余子式']:['特征值','特征向量'];
+    let done=0,correct=0;
+    topics.forEach(tp=>{
+      if(STATS.byType[tp]){done+=STATS.byType[tp].done;correct+=STATS.byType[tp].correct;}
+    });
+    if(done>=5&&correct/done>=0.8)STATS.earnedBadges.add(t==='det'?'det_master':'eigen_master');
+  });
+
+  saveData();
+}
+
+function renderBadges(){
+  const grid=document.getElementById('badgesGrid');
+  grid.innerHTML='';
+  BADGES_DEF.forEach(b=>{
+    const earned=STATS.earnedBadges.has(b.id);
+    const card=document.createElement('div');
+    card.className='badge-card '+(earned?'earned':'locked');
+    card.innerHTML=`<div class="badge-icon">${b.icon}</div>
+      <div class="badge-name">${b.name}</div>
+      <div class="badge-desc">${b.desc}</div>
+      ${earned?'<div class="badge-earned-tag">✓ 已获得</div>':''}`;
+    grid.appendChild(card);
+  });
+  document.getElementById('badgeCountLabel').textContent=
+    STATS.earnedBadges.size+' / '+BADGES_DEF.length+' 枚';
+}
+
+// ============================================================
+//  WRONG NOTES
+// ============================================================
+function addWrongNote(q){
+  const exists=STATS.wrongNotes.find(n=>n.id===q.id);
+  if(!exists){
+    STATS.wrongNotes.push({
+      id:q.id, stem:q.stem, topic:q.topic,
+      diff:STATE.diff,
+      ans:q.type==='mc'?q.opts[q.ans]:q.ans,
+      time:new Date().toLocaleDateString()
+    });
+    if(STATS.wrongNotes.length>100)STATS.wrongNotes.shift();
+  }
+}
+
+function renderWrongNotes(){
+  const list=document.getElementById('wnList');
+  if(STATS.wrongNotes.length===0){
+    list.innerHTML='<div class="empty-state"><div class="empty-icon">🎉</div><p>还没有错题，继续保持！</p></div>';
+    return;
+  }
+  list.innerHTML='';
+  [...STATS.wrongNotes].reverse().forEach((n,i)=>{
+    const el=document.createElement('div');
+    el.className='wn-item';
+    const diffMap={easy:'简单',medium:'中等',hard:'困难'};
+    el.innerHTML=`
+      <div class="wn-meta">
+        <span class="diff-tag ${n.diff}">${diffMap[n.diff]}</span>
+        <span class="q-type-tag" style="background:transparent;padding:0">${n.topic}</span>
+        <span style="font-size:11px;color:var(--text2);margin-left:auto">${n.time}</span>
+      </div>
+      <div class="wn-stem">${n.stem}</div>
+      <div class="wn-answer">正确答案：<span>${n.ans}</span></div>`;
+    list.appendChild(el);
+  });
+}
+
+function clearWrongNotes(){
+  if(confirm('确定要清空错题集吗？')){
+    STATS.wrongNotes=[];
+    saveData();
+    renderWrongNotes();
+    showToast('错题集已清空','info');
+  }
+}
+
+// ============================================================
+//  PROGRESS
+// ============================================================
+function renderProgress(){
+  // diff cards
+  const container=document.getElementById('progDiffCards');
+  container.innerHTML='';
+  const diffs=[
+    {k:'easy',name:'简单',icon:'🌱'},
+    {k:'medium',name:'中等',icon:'⚡'},
+    {k:'hard',name:'困难',icon:'🔥'},
+  ];
+  diffs.forEach(d=>{
+    const s=STATS.byDiff[d.k];
+    const total=QB[d.k].length;
+    const pct=s.done>0?Math.round(s.correct/s.done*100):0;
+    const el=document.createElement('div');
+    el.className='pdc '+d.k;
+    el.innerHTML=`
+      <div class="pdc-header">
+        <span class="pdc-name">${d.icon} ${d.name}</span>
+        <span class="pdc-pct" style="color:var(--${d.k})">${pct}%</span>
+      </div>
+      <div class="pdc-bar"><div class="pdc-fill" style="width:${pct}%"></div></div>
+      <div class="pdc-stats">已答 ${s.done} 题 · 答对 ${s.correct} 题 · 题库共 ${total} 题</div>`;
+    container.appendChild(el);
+  });
+
+  // heatmap
+  const hg=document.getElementById('heatGrid');
+  hg.innerHTML='';
+  const today=new Date();
+  for(let i=59;i>=0;i--){
+    const d=new Date(today);d.setDate(today.getDate()-i);
+    const key=d.toISOString().slice(0,10);
+    const cnt=STATS.heatmap[key]||0;
+    const cell=document.createElement('div');
+    let lv='';
+    if(cnt>=10)lv='lv4';else if(cnt>=5)lv='lv3';else if(cnt>=2)lv='lv2';else if(cnt>=1)lv='lv1';
+    cell.className='heat-cell '+lv;
+    cell.title=key+': '+cnt+'题';
+    hg.appendChild(cell);
+  }
+
+  // type progress
+  const tp=document.getElementById('typeProgress');
+  tp.innerHTML='';
+  const types=Object.keys(STATS.byType).sort();
+  if(types.length===0){tp.innerHTML='<p style="color:var(--text2);font-size:13px">暂无数据</p>';return;}
+  types.forEach(t=>{
+    const s=STATS.byType[t];
+    const pct=Math.round(s.correct/s.done*100);
+    const el=document.createElement('div');
+    el.style.cssText='margin-bottom:14px';
+    el.innerHTML=`
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+        <span>${t}</span>
+        <span style="color:var(--text2)">${s.correct}/${s.done} · ${pct}%</span>
+      </div>
+      <div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${pct>=80?'var(--green)':pct>=60?'var(--medium)':'var(--red)'};border-radius:3px;transition:width .5s"></div>
+      </div>`;
+    tp.appendChild(el);
+  });
+}
+
+// ============================================================
+//  HELP
+// ============================================================
+const HELP_SECTIONS = [
+  {id:'h_inv',name:'逆序数',content:`
+    <h3>逆序数与排列奇偶性</h3>
+    <div class="concept-block">
+      <h4>逆序数的定义</h4>
+      <p>对于排列 (i₁, i₂, ..., iₙ)，若 i_s > i_t 且 s < t，则称 (i_s, i_t) 构成一个<b>逆序对</b>。所有逆序对的总数称为该排列的<b>逆序数</b>，记作 τ(i₁, i₂, ..., iₙ)。</p>
+    </div>
+    <div class="concept-block">
+      <h4>排列的奇偶性</h4>
+      <p>逆序数为偶数的排列称为<b>偶排列</b>，逆序数为奇数的排列称为<b>奇排列</b>。自然顺序排列 (1,2,...,n) 是偶排列（逆序数=0）。</p>
+    </div>
+    <div class="concept-block">
+      <h4>计算方法</h4>
+      <p>逐个统计每个元素前面（或后面）比它大（或小）的元素个数，然后求和。</p>
+      <div class="formula">例：排列 (3,1,4,2) 的逆序数
+3前无更大 → 0
+1前有3>1 → 1
+4前无更大 → 0
+2前有3>2,4>2 → 2
+总逆序数 = 0+1+0+2 = 3（奇排列）</div>
+    </div>
+  `},
+  {id:'h_mat',name:'矩阵运算',content:`
+    <h3>矩阵基本运算</h3>
+    <div class="concept-block">
+      <h4>矩阵加减法</h4>
+      <p>同型矩阵才能相加减，对应元素相加减。</p>
+      <div class="formula">(A+B)ᵢⱼ = aᵢⱼ + bᵢⱼ</div>
+    </div>
+    <div class="concept-block">
+      <h4>矩阵乘法</h4>
+      <p>A(m×n) × B(n×p) = C(m×p)，其中 cᵢⱼ = Σₖ aᵢₖbₖⱼ。注意矩阵乘法一般<b>不满足交换律</b>。</p>
+      <div class="formula">cᵢⱼ = aᵢ₁b₁ⱼ + aᵢ₂b₂ⱼ + ... + aᵢₙbₙⱼ</div>
+    </div>
+    <div class="concept-block">
+      <h4>矩阵转置</h4>
+      <p>将矩阵的行列互换得到转置矩阵 Aᵀ。(Aᵀ)ᵢⱼ = aⱼᵢ。性质：(AB)ᵀ = BᵀAᵀ。</p>
+    </div>
+    <div class="concept-block">
+      <h4>矩阵的迹</h4>
+      <p>方阵主对角线元素之和：tr(A) = Σᵢ aᵢᵢ。性质：tr(AB) = tr(BA)。</p>
+    </div>
+    <div class="concept-block">
+      <h4>向量内积与长度</h4>
+      <div class="formula">a·b = Σᵢ aᵢbᵢ    |a| = √(a·a) = √(Σᵢ aᵢ²)</div>
+    </div>
+  `},
+  {id:'h_det',name:'行列式',content:`
+    <h3>行列式</h3>
+    <div class="concept-block">
+      <h4>2阶行列式</h4>
+      <div class="formula">|A| = |a b| = ad - bc
+           |c d|</div>
+    </div>
+    <div class="concept-block">
+      <h4>上/下三角矩阵</h4>
+      <p>三角矩阵的行列式等于主对角线元素的乘积：</p>
+      <div class="formula">|A| = a₁₁ × a₂₂ × ... × aₙₙ</div>
+    </div>
+    <div class="concept-block">
+      <h4>行列式的性质</h4>
+      <p>① |kA| = kⁿ|A|（n阶）&nbsp;&nbsp;② |AB| = |A||B|<br>③ 互换两行，行列式变号&nbsp;&nbsp;④ 某行全为0则行列式为0</p>
+    </div>
+    <div class="concept-block">
+      <h4>余子式与代数余子式</h4>
+      <p>Mᵢⱼ 为删去第i行第j列后的行列式（余子式）。<br>Aᵢⱼ = (-1)^(i+j) Mᵢⱼ（代数余子式）。</p>
+      <div class="formula">按第i行展开：|A| = Σⱼ aᵢⱼAᵢⱼ</div>
+    </div>
+    <div class="concept-block">
+      <h4>范德蒙德行列式</h4>
+      <div class="formula">Vₙ = Π_{1≤i&lt;j≤n} (xⱼ - xᵢ)</div>
+    </div>
+  `},
+  {id:'h_inv2',name:'逆矩阵',content:`
+    <h3>逆矩阵与伴随矩阵</h3>
+    <div class="concept-block">
+      <h4>伴随矩阵</h4>
+      <p>A* 的第i行第j列元素 = Aⱼᵢ（代数余子式，注意转置！）</p>
+      <div class="formula">2阶：A = [[a,b],[c,d]]，A* = [[d,-b],[-c,a]]</div>
+    </div>
+    <div class="concept-block">
+      <h4>逆矩阵</h4>
+      <p>当 |A| ≠ 0 时，A 可逆，A⁻¹ = (1/|A|) A*</p>
+      <div class="formula">A · A⁻¹ = A⁻¹ · A = I
+A · A* = |A| · I</div>
+    </div>
+    <div class="concept-block">
+      <h4>矩阵的秩</h4>
+      <p>矩阵中最大的非零子式的阶数。对矩阵做初等行变换不改变秩。<br>满秩矩阵（rank=n）= 可逆矩阵。</p>
+    </div>
+  `},
+  {id:'h_eig',name:'特征值',content:`
+    <h3>特征值与特征向量</h3>
+    <div class="concept-block">
+      <h4>定义</h4>
+      <p>若 Ax = λx 且 x≠0，则 λ 是特征值，x 是对应的特征向量。</p>
+      <div class="formula">特征方程：det(A - λI) = 0</div>
+    </div>
+    <div class="concept-block">
+      <h4>求解步骤</h4>
+      <p>① 计算特征多项式 |A−λI| = 0，解出特征值 λ<br>② 对每个 λ，解方程组 (A−λI)x = 0，求特征向量</p>
+    </div>
+    <div class="concept-block">
+      <h4>常用性质</h4>
+      <div class="formula">tr(A) = Σ λᵢ    |A| = Π λᵢ
+Aⁿ 的特征值为 λⁿ
+A⁻¹ 的特征值为 1/λ（若A可逆）</div>
+    </div>
+    <div class="concept-block">
+      <h4>对角矩阵的特征值</h4>
+      <p>对角矩阵的特征值就是主对角线元素；三角矩阵同理。</p>
+    </div>
+  `},
+  {id:'h_sys',name:'线性方程组',content:`
+    <h3>线性方程组</h3>
+    <div class="concept-block">
+      <h4>齐次方程组 Ax = 0</h4>
+      <div class="formula">有非零解 ⟺ rank(A) &lt; n
+基础解系含 k = n − rank(A) 个向量
+通解 = c₁ξ₁ + c₂ξ₂ + ... + cₖξₖ</div>
+    </div>
+    <div class="concept-block">
+      <h4>非齐次方程组 Ax = b</h4>
+      <div class="formula">有解 ⟺ rank(A) = rank(A|b)
+唯一解 ⟺ rank(A) = rank(A|b) = n
+无穷多解 ⟺ rank(A) = rank(A|b) &lt; n
+无解 ⟺ rank(A) &lt; rank(A|b)</div>
+    </div>
+    <div class="concept-block">
+      <h4>通解结构（非齐次）</h4>
+      <p>非齐次通解 = 一个特解 + 对应齐次方程组的通解</p>
+      <div class="formula">x = x* + c₁ξ₁ + ... + cₖξₖ</div>
+    </div>
+  `},
+  {id:'h_dec',name:'矩阵分解',content:`
+    <h3>矩阵分解</h3>
+    <div class="concept-block">
+      <h4>LU 分解</h4>
+      <p>将矩阵 A 分解为单位下三角矩阵 L 和上三角矩阵 U 的乘积：A = LU。用于高效求解线性方程组 Ax=b（分两步：Ly=b，Ux=y）。</p>
+    </div>
+    <div class="concept-block">
+      <h4>QR 分解</h4>
+      <p>将矩阵 A 分解为正交矩阵 Q（QᵀQ=I）和上三角矩阵 R 的乘积：A = QR。常用于最小二乘问题求解。</p>
+    </div>
+    <div class="concept-block">
+      <h4>奇异值分解（SVD）</h4>
+      <div class="formula">A = UΣVᵀ
+U: m×m 正交矩阵
+Σ: m×n 对角矩阵（奇异值）
+V: n×n 正交矩阵</div>
+      <p>SVD 是矩阵分解中最强大的工具，可用于降维（PCA）、数据压缩、伪逆等。</p>
+    </div>
+  `},
+];
+
+function renderHelp(){
+  const nav=document.getElementById('helpNav');
+  const content=document.getElementById('helpContent');
+  nav.innerHTML=''; content.innerHTML='';
+
+  HELP_SECTIONS.forEach((s,i)=>{
+    const tab=document.createElement('button');
+    tab.className='help-tab'+(i===0?' active':'');
+    tab.textContent=s.name;
+    tab.onclick=()=>{
+      document.querySelectorAll('.help-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.help-section').forEach(sec=>sec.classList.remove('active'));
+      document.getElementById('hs_'+s.id).classList.add('active');
+    };
+    nav.appendChild(tab);
+
+    const sec=document.createElement('div');
+    sec.className='help-section'+(i===0?' active':'');
+    sec.id='hs_'+s.id;
+    sec.innerHTML=s.content;
+    content.appendChild(sec);
+  });
+}
+
+// ============================================================
+//  COMBO FLASH
+// ============================================================
+function showCombo(text,sub){
+  const el=document.getElementById('comboFlash');
+  document.getElementById('comboText').textContent=text;
+  document.getElementById('comboSub').textContent=sub;
+  el.className='combo-flash show';
+  setTimeout(()=>{el.className='combo-flash hide';},1500);
+}
+
+// ============================================================
+//  TOAST
+// ============================================================
+function showToast(msg,type='info'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast show '+type;
+  setTimeout(()=>{t.className='toast';},2500);
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+initStats();
+refreshHome();
+
+// Fix m05 answer
+QB.medium[4].ans=3; // -12 is at index... let's adjust
+// Recalibrate m05
+QB.medium[4].opts=['−6','−12','0','6'];
+QB.medium[4].ans=1;
+QB.medium[4].explain='删去第2行第2列，得子矩阵 [[1,3],[7,9]]，余子式 M₂₂ = <span class="math">1×9 − 3×7 = 9 − 21 = −12</span>。';
+</script>
+</body>
+</html>

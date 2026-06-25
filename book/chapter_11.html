@@ -1,0 +1,1420 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第十一 数据的序列化、反序列化、持久化、可视化 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第十一章-数据的序列化反序列化持久化可视化"><a class="header" href="#第十一章-数据的序列化反序列化持久化可视化">第十一章 数据的序列化、反序列化、持久化、可视化</a></h1>
+<h2 id="111-概述"><a class="header" href="#111-概述">11.1 概述</a></h2>
+<h3 id="什么是序列化与反序列化"><a class="header" href="#什么是序列化与反序列化">什么是序列化与反序列化</a></h3>
+<p><a href="https://baike.baidu.com/item/%E5%BA%8F%E5%88%97%E5%8C%96/2890184?fr=aladdin">序列化</a>（Serialization）是将对象的状态信息转换为可以存储或传输的形式的过程。在序列化期间，对象将其当前状态写入到临时或持久性存储区。以后，可以通过从存储区中读取或反序列化对象的状态，重新创建该对象。</p>
+<p>序列化（编码）是将对象序列化为二进制形式（字节数组），主要用于网络传输、数据持久化等；而反序列化（解码）则是将从网络、磁盘等读取的字节数组还原成原始对象，主要用于网络传输对象的解码，以便完成远程调用。</p>
+<p>反序列化的最重要的作用：根据字节流中保存的对象状态及描述信息，通过反序列化重建对象。</p>
+<h3 id="为什么需要序列化"><a class="header" href="#为什么需要序列化">为什么需要序列化</a></h3>
+<p>在计算机系统中，数据存在于内存中时以结构化的对象形式存在，但当我们需要将数据<strong>跨进程、跨机器、跨时间</strong>传递时，就必须将其转换为一种统一的字节流格式。序列化解决的核心问题是：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>场景</th><th>说明</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td>网络传输</td><td>不同机器间传递数据，需将对象转为字节流</td><td>RPC调用、REST API</td></tr>
+<tr><td>数据持久化</td><td>将内存中的对象保存到磁盘，以便后续恢复</td><td>配置文件、数据库记录</td></tr>
+<tr><td>进程间通信</td><td>同一机器上不同进程间交换数据</td><td>管道、消息队列</td></tr>
+<tr><td>深拷贝</td><td>通过序列化/反序列化实现对象的完整复制</td><td>缓存快照</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="序列化的完整流程"><a class="header" href="#序列化的完整流程">序列化的完整流程</a></h3>
+<p>一个典型的数据序列化与传输流程可以表示为：</p>
+<p>$$
+\text{原始对象} \xrightarrow{\text{编码}} \text{字节流} \xrightarrow{\text{传输}} \text{字节流} \xrightarrow{\text{解码}} \text{重建对象}
+$$</p>
+<p>用数学语言描述，设原始对象为 $O$，序列化函数为 $S$，传输通道为 $T$，反序列化函数为 $D$，则完整过程为：</p>
+<p>$$
+O’ = D(T(S(O)))
+$$</p>
+<p>理想情况下，我们希望 $O’ = O$，即反序列化后的对象与原始对象完全一致。这要求序列化格式能够无损地表达原始数据的所有信息。</p>
+<p><a href="https://blog.csdn.net/xlgen157387/article/details/79840134">序列化和反序列化的底层实现原理是什么？</a></p>
+<h2 id="112-常见序列化格式"><a class="header" href="#112-常见序列化格式">11.2 常见序列化格式</a></h2>
+<p>常见的序列化数据格式有：<a href="https://baike.baidu.com/item/JSON/2462549?fr=aladdin">JSON</a>、<a href="https://baike.baidu.com/item/%E5%8F%AF%E6%89%A9%E5%B1%95%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80/2885849?fromtitle=xml&amp;fromid=86251">XML</a>、BSON、YAML、<a href="https://toml.io/cn/v1.0.0-rc.2">TOML</a> 等。每种格式都有其适用的场景和优缺点。</p>
+<h3 id="1121-json"><a class="header" href="#1121-json">11.2.1 JSON</a></h3>
+<p><strong>JSON</strong>（JavaScript Object Notation）是一种轻量级的数据交换格式，由 Douglas Crockford 在 2001 年提出。它基于 JavaScript 的对象字面量语法，但独立于任何编程语言，几乎所有的现代编程语言都支持 JSON。</p>
+<p><strong>JSON 的核心特点：</strong></p>
+<ul>
+<li><strong>轻量级</strong>：相比 XML，JSON 没有冗余的标签，数据体积更小</li>
+<li><strong>可读性好</strong>：人类可以直接阅读和编写</li>
+<li><strong>广泛支持</strong>：几乎所有语言和平台都内置了 JSON 支持</li>
+<li><strong>树形结构</strong>：支持嵌套的对象和数组</li>
+</ul>
+<p><strong>JSON 与 Rust 数据类型映射：</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>JSON 类型</th><th>Rust 类型</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><code>number</code> (整数)</td><td><code>i32</code>, <code>i64</code>, <code>u32</code>, <code>u64</code></td><td><code>42</code></td></tr>
+<tr><td><code>number</code> (浮点)</td><td><code>f32</code>, <code>f64</code></td><td><code>3.14</code></td></tr>
+<tr><td><code>string</code></td><td><code>String</code>, <code>&amp;str</code></td><td><code>"hello"</code></td></tr>
+<tr><td><code>boolean</code></td><td><code>bool</code></td><td><code>true</code> / <code>false</code></td></tr>
+<tr><td><code>null</code></td><td><code>Option&lt;T&gt;</code> (None)</td><td><code>null</code></td></tr>
+<tr><td><code>array</code></td><td><code>Vec&lt;T&gt;</code>, <code>[T; N]</code></td><td><code>[1, 2, 3]</code></td></tr>
+<tr><td><code>object</code></td><td><code>struct</code>, <code>HashMap&lt;K, V&gt;</code></td><td><code>{"key": "value"}</code></td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">use serde::Serialize;
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct Person {
+    first_name: String,
+    last_name: String,
+}
+
+fn main() {
+    let person = Person {
+        first_name: "Graydon".to_string(),
+        last_name: "Hoare".to_string(),
+    };
+
+    let json = serde_json::to_string_pretty(&amp;person).unwrap();
+
+    // Prints:
+    //
+    //    {
+    //      "firstName": "Graydon",
+    //      "lastName": "Hoare"
+    //    }
+    println!("{}", json);
+}</code></pre>
+<h3 id="1122-xml"><a class="header" href="#1122-xml">11.2.2 XML</a></h3>
+<p><strong>XML</strong>（eXtensible Markup Language，可扩展标记语言）是一种自描述性强的标记语言，由 W3C 于 1998 年标准化。XML 使用标签来描述数据的结构和语义，在 SOAP、SVG、HTML 等领域有广泛应用。</p>
+<p><strong>XML 的核心特点：</strong></p>
+<ul>
+<li><strong>自描述性强</strong>：标签本身携带语义信息</li>
+<li><strong>严格的语法规范</strong>：必须有根元素、标签必须闭合</li>
+<li><strong>支持命名空间</strong>：避免标签名冲突</li>
+<li><strong>适合文档型数据</strong>：如配置文件、文档交换</li>
+</ul>
+<p><strong>JSON vs XML 对比：</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th>JSON</th><th>XML</th></tr>
+</thead>
+<tbody>
+<tr><td>数据体积</td><td>较小</td><td>较大（标签冗余）</td></tr>
+<tr><td>可读性</td><td>较好</td><td>一般（标签较多）</td></tr>
+<tr><td>解析速度</td><td>快</td><td>较慢</td></tr>
+<tr><td>数据类型</td><td>原生支持</td><td>需要 Schema 定义</td></tr>
+<tr><td>注释支持</td><td>不支持</td><td>支持 <code>&lt;!-- --&gt;</code></td></tr>
+<tr><td>命名空间</td><td>不支持</td><td>支持</td></tr>
+<tr><td>适用场景</td><td>Web API、配置</td><td>文档交换、SOAP</td></tr>
+</tbody>
+</table>
+</div>
+<p>在 Rust 中，可以使用 <code>quick-xml</code> 库来处理 XML 数据：</p>
+<pre class="playground"><code class="language-rust edition2024">use quick_xml::events::Event;
+use quick_xml::Reader;
+use std::io::BufReader;
+
+fn main() {
+    let xml = r#"&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    &lt;config&gt;
+        &lt;database&gt;
+            &lt;host&gt;localhost&lt;/host&gt;
+            &lt;port&gt;5432&lt;/port&gt;
+            &lt;name&gt;mydb&lt;/name&gt;
+        &lt;/database&gt;
+        &lt;server&gt;
+            &lt;host&gt;0.0.0.0&lt;/host&gt;
+            &lt;port&gt;8080&lt;/port&gt;
+        &lt;/server&gt;
+    &lt;/config&gt;"#;
+
+    let mut reader = Reader::from_reader(xml.as_bytes());
+    let mut buf = Vec::new();
+    let mut depth = 0;
+
+    loop {
+        match reader.read_event_into(&amp;mut buf) {
+            Ok(Event::Start(e)) =&gt; {
+                depth += 1;
+                println!("{:indent$}&lt;{}&gt;", "", e.name(), indent = depth * 2);
+            }
+            Ok(Event::Empty(e)) =&gt; {
+                println!("{:indent$}&lt;{} /&gt;", "", e.name(), indent = depth * 2);
+            }
+            Ok(Event::Text(e)) =&gt; {
+                let text = e.unescape().unwrap();
+                if !text.trim().is_empty() {
+                    println!("{:indent$}{}", "", text.trim(), indent = depth * 2 + 2);
+                }
+            }
+            Ok(Event::End(e)) =&gt; {
+                depth -= 1;
+                println!("{:indent$}&lt;/{}&gt;", "", e.name(), indent = depth * 2);
+            }
+            Ok(Event::Eof) =&gt; break,
+            Err(e) =&gt; eprintln!("Error: {:?}", e),
+            _ =&gt; {}
+        }
+        buf.clear();
+    }
+}</code></pre>
+<h3 id="1123-yaml"><a class="header" href="#1123-yaml">11.2.3 YAML</a></h3>
+<p><strong>YAML</strong>（YAML Ain’t Markup Language）是一种人类友好的数据序列化格式，广泛用于配置文件（如 Kubernetes 的资源清单、CI/CD 配置文件等）。</p>
+<p><strong>YAML 的核心特点：</strong></p>
+<ul>
+<li><strong>缩进表示层级</strong>：使用空格缩进而非花括号</li>
+<li><strong>人类友好</strong>：语法简洁，接近自然语言</li>
+<li><strong>支持注释</strong>：使用 <code>#</code> 添加注释</li>
+<li><strong>支持复杂数据类型</strong>：锚点（<code>&amp;</code>）和别名（<code>*</code>）实现引用</li>
+</ul>
+<pre><code class="language-yaml"># 应用配置
+server:
+  host: 0.0.0.0
+  port: 8080
+  workers: 4
+
+database:
+  url: "postgres://user:pass@localhost/mydb"
+  pool_size: 10
+  timeout: 30s
+
+logging:
+  level: info
+  format: json
+</code></pre>
+<p>在 Rust 中，可以使用 <code>serde_yaml</code> 来处理 YAML：</p>
+<pre class="playground"><code class="language-rust edition2024">use serde::Deserialize;
+
+#[derive(Debug, Deserialize)]
+struct Config {
+    server: Server,
+    database: Database,
+    logging: Logging,
+}
+
+#[derive(Debug, Deserialize)]
+struct Server {
+    host: String,
+    port: u16,
+    workers: usize,
+}
+
+#[derive(Debug, Deserialize)]
+struct Database {
+    url: String,
+    pool_size: u32,
+    timeout: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct Logging {
+    level: String,
+    format: String,
+}
+
+fn main() {
+    let yaml = r#"
+server:
+  host: 0.0.0.0
+  port: 8080
+  workers: 4
+
+database:
+  url: "postgres://user:pass@localhost/mydb"
+  pool_size: 10
+  timeout: 30s
+
+logging:
+  level: info
+  format: json
+"#;
+
+    let config: Config = serde_yaml::from_str(yaml).unwrap();
+    println!("Server: {}:{}", config.server.host, config.server.port);
+    println!("Database pool: {}", config.database.pool_size);
+    println!("Log level: {}", config.logging.level);
+}</code></pre>
+<h3 id="1124-toml"><a class="header" href="#1124-toml">11.2.4 TOML</a></h3>
+<p><strong>TOML</strong>（Tom’s Obvious, Minimal Language）由 GitHub 联合创始人 Tom Preston-Werner 创建，是一种语义明确、易于阅读的配置文件格式。Rust 社区对 TOML 有着天然的支持——<code>Cargo.toml</code> 就是 TOML 格式的配置文件。</p>
+<p><strong>TOML 的核心特点：</strong></p>
+<ul>
+<li><strong>语义明确</strong>：类型清晰，不会产生歧义</li>
+<li><strong>INI 风格</strong>：使用 <code>[section]</code> 和 <code>key = value</code> 的形式</li>
+<li><strong>Rust 生态首选</strong>：Cargo.toml 就是 TOML</li>
+<li><strong>支持多种数据类型</strong>：字符串、整数、浮点数、布尔值、日期时间、数组、内联表</li>
+</ul>
+<pre><code class="language-toml">[package]
+name = "my_app"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[profile.release]
+opt-level = 3
+lto = true
+</code></pre>
+<p>在 Rust 中，可以使用 <code>toml</code> crate 来解析 TOML：</p>
+<pre class="playground"><code class="language-rust edition2024">use serde::Deserialize;
+use std::fs;
+
+#[derive(Debug, Deserialize)]
+struct AppConfig {
+    package: Package,
+    dependencies: std::collections::HashMap&lt;String, toml::Value&gt;,
+}
+
+#[derive(Debug, Deserialize)]
+struct Package {
+    name: String,
+    version: String,
+    edition: String,
+}
+
+fn main() {
+    let content = fs::read_to_string("Cargo.toml").unwrap();
+    let config: AppConfig = toml::from_str(&amp;content).unwrap();
+    println!("项目名称: {}", config.package.name);
+    println!("版本: {}", config.package.version);
+
+    for (name, value) in &amp;config.dependencies {
+        println!("依赖 {}: {:?}", name, value);
+    }
+}</code></pre>
+<h3 id="1125-bson"><a class="header" href="#1125-bson">11.2.5 BSON</a></h3>
+<p><strong>BSON</strong>（Binary JSON）是一种二进制形式的 JSON 序列化格式，由 MongoDB 开发。BSON 扩展了 JSON 的数据类型，支持日期时间、二进制数据、正则表达式等。</p>
+<p>BSON 的主要优势在于：</p>
+<ul>
+<li><strong>二进制格式</strong>：解析速度比文本格式的 JSON 更快</li>
+<li><strong>扩展数据类型</strong>：支持 <code>Date</code>、<code>Binary</code>、<code>ObjectId</code>、<code>Regex</code> 等</li>
+<li><strong>MongoDB 原生格式</strong>：MongoDB 内部使用 BSON 存储和传输数据</li>
+</ul>
+<h3 id="1126-protocol-buffersprotobuf"><a class="header" href="#1126-protocol-buffersprotobuf">11.2.6 Protocol Buffers（Protobuf）</a></h3>
+<p><strong>Protocol Buffers</strong>（简称 Protobuf）是 Google 开发的高效二进制序列化协议。与 JSON/XML 不同，Protobuf 需要先定义 <code>.proto</code> 模式文件，然后通过编译器生成各语言的代码。</p>
+<pre><code class="language-protobuf">// person.proto
+syntax = "proto3";
+
+message Person {
+    string name = 1;
+    int32 age = 2;
+    repeated string emails = 3;
+}
+</code></pre>
+<p>Protobuf 的核心优势：</p>
+<ul>
+<li><strong>极致性能</strong>：二进制编码，体积小、解析快</li>
+<li><strong>强类型约束</strong>：通过 <code>.proto</code> 文件定义数据结构</li>
+<li><strong>向前/向后兼容</strong>：字段编号机制保证兼容性</li>
+<li><strong>跨语言支持</strong>：支持 C++、Java、Python、Go、Rust 等多种语言</li>
+</ul>
+<h3 id="1127-各格式对比总结"><a class="header" href="#1127-各格式对比总结">11.2.7 各格式对比总结</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>格式</th><th>可读性</th><th>解析速度</th><th>数据体积</th><th>数据类型</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td>JSON</td><td>高</td><td>中</td><td>中</td><td>基本类型</td><td>Web API、前后端交互</td></tr>
+<tr><td>XML</td><td>中</td><td>慢</td><td>大</td><td>基本类型</td><td>文档交换、SOAP、SVG</td></tr>
+<tr><td>YAML</td><td>高</td><td>慢</td><td>中</td><td>基本类型</td><td>配置文件、K8s 清单</td></tr>
+<tr><td>TOML</td><td>高</td><td>中</td><td>中</td><td>基本类型+日期</td><td>Rust/Cargo 配置</td></tr>
+<tr><td>BSON</td><td>低</td><td>快</td><td>中</td><td>扩展类型</td><td>MongoDB 存储</td></tr>
+<tr><td>Protobuf</td><td>低</td><td>极快</td><td>极小</td><td>强类型</td><td>高性能 RPC、微服务</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="113-rust-中的-serde-生态"><a class="header" href="#113-rust-中的-serde-生态">11.3 Rust 中的 Serde 生态</a></h2>
+<h3 id="1131-serde-框架概述"><a class="header" href="#1131-serde-框架概述">11.3.1 Serde 框架概述</a></h3>
+<p><a href="https://serde.rs/">Serde</a> 是 Rust 生态中最核心的序列化/反序列化框架，其名字来源于 <strong>SE</strong>rialize / <strong>DE</strong>serialize 的缩写。Serde 采用了一种优雅的设计：将数据结构的定义与序列化格式解耦，通过 trait 抽象实现“一次定义，多种格式输出“。</p>
+<p>Serde 的架构可以用以下公式表达：</p>
+<p>$$
+\text{Data} \xleftrightarrow{\text{Serialize/Deserialize}} \text{Serializer/Deserializer} \xleftrightarrow{\text{Format}} \text{JSON/XML/YAML/…}
+$$</p>
+<h3 id="1132-核心-trait"><a class="header" href="#1132-核心-trait">11.3.2 核心 Trait</a></h3>
+<p>Serde 定义了两个核心 trait：</p>
+<ul>
+<li><strong><code>Serialize</code></strong>：将 Rust 数据结构转换为通用的中间表示</li>
+<li><strong><code>Deserialize</code></strong>：从通用的中间表示重建 Rust 数据结构</li>
+</ul>
+<p>这两个 trait 是 Serde 生态的基石，所有数据格式（JSON、XML、YAML 等）都基于这两个 trait 实现。</p>
+<h3 id="1133-常用派生宏"><a class="header" href="#1133-常用派生宏">11.3.3 常用派生宏</a></h3>
+<p>在大多数场景下，我们不需要手动实现 <code>Serialize</code> 和 <code>Deserialize</code>，只需使用 <code>#[derive]</code> 派生宏即可：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize, Debug)]
+struct User {
+    id: u64,
+    name: String,
+    email: Option&lt;String&gt;,
+    roles: Vec&lt;String&gt;,
+}
+<span class="boring">}</span></code></pre>
+<h3 id="1134-常用属性"><a class="header" href="#1134-常用属性">11.3.4 常用属性</a></h3>
+<p>Serde 提供了丰富的属性来控制序列化行为：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>属性</th><th>说明</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><code>#[serde(rename_all = "camelCase")]</code></td><td>批量重命名所有字段</td><td><code>first_name</code> -&gt; <code>firstName</code></td></tr>
+<tr><td><code>#[serde(rename = "name")]</code></td><td>重命名单个字段</td><td>字段名映射</td></tr>
+<tr><td><code>#[serde(skip)]</code></td><td>跳过序列化/反序列化</td><td>敏感字段</td></tr>
+<tr><td><code>#[serde(skip_serializing)]</code></td><td>仅跳过序列化</td><td>密码字段</td></tr>
+<tr><td><code>#[serde(skip_deserializing)]</code></td><td>仅跳过反序列化</td><td>计算字段</td></tr>
+<tr><td><code>#[serde(default)]</code></td><td>反序列化时使用默认值</td><td>可选字段</td></tr>
+<tr><td><code>#[serde(flatten)]</code></td><td>扁平化嵌套结构</td><td>合并层级</td></tr>
+<tr><td><code>#[serde(with = "module")]</code></td><td>自定义序列化模块</td><td>特殊格式</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+struct ApiResponse {
+    status_code: u16,
+    message: String,
+    #[serde(skip_serializing)]
+    debug_info: String,
+    #[serde(default)]
+    retry_after: Option&lt;u32&gt;,
+    #[serde(flatten)]
+    metadata: Metadata,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Metadata {
+    request_id: String,
+    timestamp: i64,
+}
+
+fn main() {
+    let resp = ApiResponse {
+        status_code: 200,
+        message: "OK".to_string(),
+        debug_info: "internal trace".to_string(),
+        retry_after: None,
+        metadata: Metadata {
+            request_id: "abc-123".to_string(),
+            timestamp: 1700000000,
+        },
+    };
+
+    let json = serde_json::to_string_pretty(&amp;resp).unwrap();
+    println!("{}", json);
+}</code></pre>
+<h3 id="1135-person-序列化示例"><a class="header" href="#1135-person-序列化示例">11.3.5 Person 序列化示例</a></h3>
+<p>以下是一个完整的 Person 结构体序列化示例：</p>
+<pre class="playground"><code class="language-rust edition2024">use serde::Serialize;
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct Person {
+    first_name: String,
+    last_name: String,
+}
+
+fn main() {
+    let person = Person {
+        first_name: "Graydon".to_string(),
+        last_name: "Hoare".to_string(),
+    };
+
+    let json = serde_json::to_string_pretty(&amp;person).unwrap();
+
+    // Prints:
+    //
+    //    {
+    //      "firstName": "Graydon",
+    //      "lastName": "Hoare"
+    //    }
+    println!("{}", json);
+}</code></pre>
+<h3 id="1136-自定义-deserialize-实现"><a class="header" href="#1136-自定义-deserialize-实现">11.3.6 自定义 Deserialize 实现</a></h3>
+<p>在某些场景下，派生宏无法满足需求（如自定义数据格式、条件解析等），此时需要手动实现 <code>Deserialize</code> trait。以下是一个完整的 <code>Duration</code> 结构体自定义反序列化实现：</p>
+<pre class="playground"><code class="language-rust edition2024">use std::fmt;
+use serde::Serialize;
+use serde::de::{self, Deserialize, Deserializer, Visitor, SeqAccess, MapAccess};
+
+#[allow(dead_code)]
+#[derive(Serialize)]
+struct Duration {
+    secs: u64,
+    nanos: u32,
+}
+
+impl Duration {
+    fn new(secs: u64, nanos: u32) -&gt; Self {
+        Duration{
+            secs,
+            nanos
+        }
+    }
+}
+
+impl&lt;'de&gt; Deserialize&lt;'de&gt; for Duration {
+    fn deserialize&lt;D&gt;(deserializer: D) -&gt; Result&lt;Self, D::Error&gt;
+    where
+        D: Deserializer&lt;'de&gt;,
+    {
+        enum Field { Secs, Nanos }
+
+        // This part could also be generated independently by:
+        //
+        //    #[derive(Deserialize)]
+        //    #[serde(field_identifier, rename_all = "lowercase")]
+        //    enum Field { Secs, Nanos }
+        impl&lt;'de&gt; Deserialize&lt;'de&gt; for Field {
+            fn deserialize&lt;D&gt;(deserializer: D) -&gt; Result&lt;Field, D::Error&gt;
+            where
+                D: Deserializer&lt;'de&gt;,
+            {
+                struct FieldVisitor;
+
+                impl&lt;'de&gt; Visitor&lt;'de&gt; for FieldVisitor {
+                    type Value = Field;
+
+                    fn expecting(&amp;self, formatter: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+                        formatter.write_str("`secs` or `nanos`")
+                    }
+
+                    fn visit_str&lt;E&gt;(self, value: &amp;str) -&gt; Result&lt;Field, E&gt;
+                    where
+                        E: de::Error,
+                    {
+                        match value {
+                            "secs" =&gt; Ok(Field::Secs),
+                            "nanos" =&gt; Ok(Field::Nanos),
+                            _ =&gt; Err(de::Error::unknown_field(value, FIELDS)),
+                        }
+                    }
+                }
+
+                deserializer.deserialize_identifier(FieldVisitor)
+            }
+        }
+
+        struct DurationVisitor;
+
+        impl&lt;'de&gt; Visitor&lt;'de&gt; for DurationVisitor {
+            type Value = Duration;
+
+            fn expecting(&amp;self, formatter: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+                formatter.write_str("struct Duration")
+            }
+
+            fn visit_seq&lt;V&gt;(self, mut seq: V) -&gt; Result&lt;Duration, V::Error&gt;
+            where
+                V: SeqAccess&lt;'de&gt;,
+            {
+                let secs = seq.next_element()?
+                    .ok_or_else(|| de::Error::invalid_length(0, &amp;self))?;
+                let nanos = seq.next_element()?
+                    .ok_or_else(|| de::Error::invalid_length(1, &amp;self))?;
+                Ok(Duration::new(secs, nanos))
+            }
+
+            fn visit_map&lt;V&gt;(self, mut map: V) -&gt; Result&lt;Duration, V::Error&gt;
+            where
+                V: MapAccess&lt;'de&gt;,
+            {
+                let mut secs = None;
+                let mut nanos = None;
+                while let Some(key) = map.next_key()? {
+                    match key {
+                        Field::Secs =&gt; {
+                            if secs.is_some() {
+                                return Err(de::Error::duplicate_field("secs"));
+                            }
+                            secs = Some(map.next_value()?);
+                        }
+                        Field::Nanos =&gt; {
+                            if nanos.is_some() {
+                                return Err(de::Error::duplicate_field("nanos"));
+                            }
+                            nanos = Some(map.next_value()?);
+                        }
+                    }
+                }
+                let secs = secs.ok_or_else(|| de::Error::missing_field("secs"))?;
+                let nanos = nanos.ok_or_else(|| de::Error::missing_field("nanos"))?;
+                Ok(Duration::new(secs, nanos))
+            }
+        }
+
+        const FIELDS: &amp;'static [&amp;'static str] = &amp;["secs", "nanos"];
+        deserializer.deserialize_struct("Duration", FIELDS, DurationVisitor)
+    }
+}
+
+fn main(){
+    let duration = Duration::new(10u64,140_000_000u32);
+    let json = serde_json::to_string_pretty(&amp;duration).unwrap();
+    println!("{}",json);
+    
+    if let Ok(duration2) = serde_json::from_str::&lt;Duration&gt;(&amp;json){
+        println!("secs:{}, nanos:{}",duration2.secs, duration2.nanos); 
+    }
+    
+}</code></pre>
+<h3 id="1137-serde_json-常用-api"><a class="header" href="#1137-serde_json-常用-api">11.3.7 serde_json 常用 API</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>API</th><th>说明</th><th>返回类型</th></tr>
+</thead>
+<tbody>
+<tr><td><code>serde_json::to_string(&amp;val)</code></td><td>序列化为紧凑 JSON 字符串</td><td><code>Result&lt;String&gt;</code></td></tr>
+<tr><td><code>serde_json::to_string_pretty(&amp;val)</code></td><td>序列化为格式化 JSON 字符串</td><td><code>Result&lt;String&gt;</code></td></tr>
+<tr><td><code>serde_json::to_vec(&amp;val)</code></td><td>序列化为字节向量</td><td><code>Result&lt;Vec&lt;u8&gt;&gt;</code></td></tr>
+<tr><td><code>serde_json::to_writer(writer, &amp;val)</code></td><td>序列化并写入 Writer</td><td><code>Result&lt;()&gt;</code></td></tr>
+<tr><td><code>serde_json::from_str::&lt;T&gt;(&amp;str)</code></td><td>从字符串反序列化</td><td><code>Result&lt;T&gt;</code></td></tr>
+<tr><td><code>serde_json::from_slice::&lt;T&gt;(&amp;[u8])</code></td><td>从字节切片反序列化</td><td><code>Result&lt;T&gt;</code></td></tr>
+<tr><td><code>serde_json::from_reader::&lt;T, R&gt;(reader)</code></td><td>从 Reader 反序列化</td><td><code>Result&lt;T&gt;</code></td></tr>
+<tr><td><code>serde_json::Value</code></td><td>动态 JSON 值类型</td><td>枚举类型</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="1138-错误处理"><a class="header" href="#1138-错误处理">11.3.8 错误处理</a></h3>
+<p>Serde 的错误处理通过 <code>serde_json::Error</code> 类型实现，它提供了丰富的错误信息：</p>
+<pre class="playground"><code class="language-rust edition2024">use serde::Deserialize;
+
+#[derive(Deserialize, Debug)]
+struct Config {
+    name: String,
+    port: u16,
+}
+
+fn main() {
+    let json = r#"{"name": "test", "port": "abc"}"#;
+    
+    match serde_json::from_str::&lt;Config&gt;(json) {
+        Ok(config) =&gt; println!("配置加载成功: {:?}", config),
+        Err(e) =&gt; {
+            eprintln!("配置解析失败: {}", e);
+            // 输出详细错误分类
+            if e.is_syntax() {
+                eprintln!("  -&gt; JSON 语法错误");
+            } else if e.is_data() {
+                eprintln!("  -&gt; 数据类型不匹配");
+            } else if e.is_eof() {
+                eprintln!("  -&gt; JSON 数据不完整");
+            }
+        }
+    }
+}</code></pre>
+<h3 id="1139-相关库参考"><a class="header" href="#1139-相关库参考">11.3.9 相关库参考</a></h3>
+<p><strong>Rust 库：</strong></p>
+<ul>
+<li><a href="https://serde.rs/">serde</a> — Serde 框架核心</li>
+<li><a href="https://github.com/serde-rs/json">serde_json</a> — JSON 序列化支持</li>
+<li><a href="https://docs.rs/quick-xml">quick-xml</a> — XML 解析库</li>
+</ul>
+<p><strong>Java 库（对比参考）：</strong></p>
+<ul>
+<li><a href="https://github.com/FasterXML">FasterXML</a> — Java 高性能 XML/JSON 处理</li>
+<li><a href="https://github.com/FasterXML/jackson">jackson</a> — Java 多格式数据处理</li>
+<li><a href="http://hessian.caucho.com/">hessian</a> — 二进制 RPC 协议</li>
+</ul>
+<p><a href="https://blog.csdn.net/u013541707/article/details/108336497">FastJson小技巧——@JSONField的史上最全最详细讲解——一看就会</a></p>
+<h2 id="114-数据持久化"><a class="header" href="#114-数据持久化">11.4 数据持久化</a></h2>
+<h3 id="1141-什么是持久化"><a class="header" href="#1141-什么是持久化">11.4.1 什么是持久化</a></h3>
+<p>持久化（Persistence），即把数据（如内存中的对象）保存到可永久保存的存储设备中（如磁盘）。持久化的主要应用是将内存中的对象存储在数据库中，或者存储在磁盘文件中、XML 数据文件中等等。</p>
+<p>从信息论的角度看，持久化是将易失性存储（内存，$T_{volatile} \approx 10^{-9}$ 秒访问延迟）中的数据转移到非易失性存储（磁盘/SSD，$T_{nonvolatile} \approx 10^{-6}$ 秒访问延迟）的过程：</p>
+<p>$$
+\text{Memory Data} \xrightarrow{\text{Serialize}} \text{Byte Stream} \xrightarrow{\text{Write}} \text{Persistent Storage}
+$$</p>
+<h3 id="1142-持久化方式"><a class="header" href="#1142-持久化方式">11.4.2 持久化方式</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方式</th><th>说明</th><th>适用场景</th><th>Rust 代表库</th></tr>
+</thead>
+<tbody>
+<tr><td>文件存储</td><td>JSON/TOML/YAML 等配置文件</td><td>应用配置、小型数据</td><td><code>serde_json</code>, <code>toml</code></td></tr>
+<tr><td>关系型数据库</td><td>SQL 数据库，结构化存储</td><td>业务数据、事务处理</td><td><code>sea-orm</code>, <code>sqlx</code></td></tr>
+<tr><td>NoSQL 数据库</td><td>键值存储、文档存储</td><td>高并发、灵活 Schema</td><td><code>redis</code>, <code>mongodb</code></td></tr>
+<tr><td>对象存储</td><td>S3 兼容的分布式存储</td><td>大文件、媒体资源</td><td><code>minio</code>, <code>rustfs</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="1143-文件存储示例"><a class="header" href="#1143-文件存储示例">11.4.3 文件存储示例</a></h3>
+<p>文件存储是最简单的持久化方式，适合配置文件和小型数据集：</p>
+<pre class="playground"><code class="language-rust edition2024">use serde::{Serialize, Deserialize};
+use std::fs;
+
+#[derive(Serialize, Deserialize, Debug)]
+struct AppSettings {
+    theme: String,
+    language: String,
+    max_connections: u32,
+    auto_save: bool,
+}
+
+fn save_settings(settings: &amp;AppSettings, path: &amp;str) -&gt; std::io::Result&lt;()&gt; {
+    let json = serde_json::to_string_pretty(settings).unwrap();
+    fs::write(path, json)
+}
+
+fn load_settings(path: &amp;str) -&gt; std::io::Result&lt;AppSettings&gt; {
+    let json = fs::read_to_string(path)?;
+    let settings: AppSettings = serde_json::from_str(&amp;json).unwrap();
+    Ok(settings)
+}
+
+fn main() {
+    let settings = AppSettings {
+        theme: "dark".to_string(),
+        language: "zh-CN".to_string(),
+        max_connections: 100,
+        auto_save: true,
+    };
+
+    save_settings(&amp;settings, "settings.json").unwrap();
+    println!("配置已保存");
+
+    let loaded = load_settings("settings.json").unwrap();
+    println!("加载的配置: {:?}", loaded);
+}</code></pre>
+<h3 id="1144-数据库存储"><a class="header" href="#1144-数据库存储">11.4.4 数据库存储</a></h3>
+<img src="images/SeaORMbanner.png" width="600" />
+<p><a href="https://github.com/SeaQL/sea-orm">sea-orm</a> 是 Rust 生态中优秀的异步 ORM 框架，基于 SQLx 构建，提供了类型安全的数据库操作接口。</p>
+<p>以下是一个使用 SQLite 进行数据持久化的示例：</p>
+<pre class="playground"><code class="language-rust edition2024">use rusqlite::{Connection, Result};
+use serde::{Serialize, Deserialize};
+
+#[derive(Debug, Serialize, Deserialize)]
+struct User {
+    id: Option&lt;i64&gt;,
+    name: String,
+    email: String,
+    age: u32,
+}
+
+fn init_db(conn: &amp;Connection) -&gt; Result&lt;()&gt; {
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS users (
+            id    INTEGER PRIMARY KEY AUTOINCREMENT,
+            name  TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            age   INTEGER NOT NULL
+        )",
+        [],
+    )?;
+    Ok(())
+}
+
+fn insert_user(conn: &amp;Connection, user: &amp;User) -&gt; Result&lt;i64&gt; {
+    conn.execute(
+        "INSERT INTO users (name, email, age) VALUES (?1, ?2, ?3)",
+        [&amp;user.name, &amp;user.email, &amp;user.age.to_string()],
+    )?;
+    Ok(conn.last_insert_rowid())
+}
+
+fn query_users(conn: &amp;Connection) -&gt; Result&lt;Vec&lt;User&gt;&gt; {
+    let mut stmt = conn.prepare("SELECT id, name, email, age FROM users")?;
+    let user_iter = stmt.query_map([], |row| {
+        Ok(User {
+            id: Some(row.get(0)?),
+            name: row.get(1)?,
+            email: row.get(2)?,
+            age: row.get(3)?,
+        })
+    })?;
+
+    let mut users = Vec::new();
+    for user in user_iter {
+        users.push(user?);
+    }
+    Ok(users)
+}
+
+fn main() -&gt; Result&lt;()&gt; {
+    let conn = Connection::open("users.db")?;
+    init_db(&amp;conn)?;
+
+    let user = User {
+        id: None,
+        name: "张三".to_string(),
+        email: "zhangsan@example.com".to_string(),
+        age: 28,
+    };
+
+    let id = insert_user(&amp;conn, &amp;user)?;
+    println!("插入用户成功，ID: {}", id);
+
+    let users = query_users(&amp;conn)?;
+    let json = serde_json::to_string_pretty(&amp;users).unwrap();
+    println!("所有用户:\n{}", json);
+
+    Ok(())
+}</code></pre>
+<h3 id="1145-对象存储"><a class="header" href="#1145-对象存储">11.4.5 对象存储</a></h3>
+<p>对象存储是一种适合存储海量非结构化数据（图片、视频、日志文件等）的存储方案，兼容 Amazon S3 API。</p>
+<ul>
+<li><a href="https://www.minio.org.cn/">MINIO</a> — 全球增长最快的对象存储系统</li>
+<li><a href="https://rustfs.com.cn/">RustFS</a> — 世界上增长最快的分布式对象存储</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 使用 minio-rs 上传文件的简要示例
+// Cargo.toml: minio = "0.2"
+
+use minio::s3::args::*;
+use minio::s3::Client;
+
+async fn upload_file(
+    client: &amp;Client,
+    bucket: &amp;str,
+    object_name: &amp;str,
+    file_path: &amp;str,
+) {
+    let args = PutObjectArgs::new(bucket, object_name, file_path);
+    client.put_object(args).await.unwrap();
+    println!("文件 {} 上传成功", object_name);
+}
+<span class="boring">}</span></code></pre>
+<h2 id="115-数据可视化"><a class="header" href="#115-数据可视化">11.5 数据可视化</a></h2>
+<h3 id="1151-可视化的意义"><a class="header" href="#1151-可视化的意义">11.5.1 可视化的意义</a></h3>
+<p>数据可视化（Data Visualization）是将数据转化为图形或图像的过程，目的是让数据“说话“，帮助人们更直观地理解数据中隐藏的模式、趋势和关联。</p>
+<p>在数据分析中，可视化扮演着不可替代的角色：</p>
+<ul>
+<li><strong>趋势分析</strong>：股价走势、气温变化、降雨量统计</li>
+<li><strong>对比分析</strong>：不同产品销量对比、部门绩效对比</li>
+<li><strong>分布分析</strong>：用户年龄分布、收入分布</li>
+<li><strong>关联分析</strong>：变量之间的相关性</li>
+<li><strong>实时监控</strong>：服务器负载、系统健康度、网络流量</li>
+</ul>
+<h3 id="1152-常见可视化类型"><a class="header" href="#1152-常见可视化类型">11.5.2 常见可视化类型</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型</th><th>用途</th><th>示例场景</th></tr>
+</thead>
+<tbody>
+<tr><td>折线图</td><td>展示趋势变化</td><td>股价走势、气温变化</td></tr>
+<tr><td>柱状图</td><td>展示分类对比</td><td>各部门销售额、月度收入</td></tr>
+<tr><td>饼图</td><td>展示占比分布</td><td>市场份额、预算分配</td></tr>
+<tr><td>散点图</td><td>展示相关性</td><td>身高与体重关系</td></tr>
+<tr><td>热力图</td><td>展示密度分布</td><td>用户活跃时段、地理热力</td></tr>
+<tr><td>地图</td><td>展示地理分布</td><td>销售区域分布、疫情分布</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="1153-rust-可视化库"><a class="header" href="#1153-rust-可视化库">11.5.3 Rust 可视化库</a></h3>
+<p>Rust 生态中有多个可视化库可供选择：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>库</th><th>特点</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>plotters</strong></td><td>纯 Rust 绑图库，支持 SVG/PNG/BMP</td><td>服务端绑图、报告生成</td></tr>
+<tr><td><strong>plotly</strong></td><td>交互式图表，基于 Plotly.js</td><td>Web 可视化、仪表盘</td></tr>
+<tr><td><strong>egui</strong></td><td>即时模式 GUI 框架</td><td>桌面应用内嵌图表</td></tr>
+<tr><td><strong>iced</strong></td><td>Elm 架构 GUI 框架</td><td>跨平台桌面应用</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="1154-plotters-折线图示例"><a class="header" href="#1154-plotters-折线图示例">11.5.4 plotters 折线图示例</a></h3>
+<p><code>plotters</code> 是 Rust 中最流行的纯绑图库，无需外部依赖，支持多种输出格式：</p>
+<pre class="playground"><code class="language-rust edition2024">use plotters::prelude::*;
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let root = BitMapBackend::new("line_chart.png", (800, 600))
+        .into_drawing_area();
+    root.fill(&amp;WHITE)?;
+    
+    // 创建绑图区域
+    let mut chart = ChartBuilder::on(&amp;root)
+        .caption("月度销售额趋势", ("Microsoft YaHei", 30))
+        .x_label_area_size(40)
+        .y_label_area_size(60)
+        .margin(10)
+        .build_cartesian_2d(1u32..12u32, 0f64..100f64)?;
+
+    chart.configure_mesh()
+        .x_desc("月份")
+        .y_desc("销售额（万元）")
+        .draw()?;
+
+    // 绘制折线
+    let data: Vec&lt;(u32, f64)&gt; = vec![
+        (1, 25.0), (2, 32.0), (3, 28.0), (4, 45.0),
+        (5, 52.0), (6, 48.0), (7, 61.0), (8, 58.0),
+        (9, 72.0), (10, 68.0), (11, 80.0), (12, 95.0),
+    ];
+
+    chart.draw_series(LineSeries::new(
+        data.iter().map(|&amp;(x, y)| (x, y)),
+        &amp;RED,
+    ))?
+    .legend(|(x, y)| PathElement::new(vec![(x, y), (x + 20, y)], RED));
+
+    root.present()?;
+    println!("折线图已保存为 line_chart.png");
+    Ok(())
+}</code></pre>
+<h3 id="1155-plotters-柱状图示例"><a class="header" href="#1155-plotters-柱状图示例">11.5.5 plotters 柱状图示例</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use plotters::prelude::*;
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let root = BitMapBackend::new("bar_chart.png", (800, 600))
+        .into_drawing_area();
+    root.fill(&amp;WHITE)?;
+
+    let mut chart = ChartBuilder::on(&amp;root)
+        .caption("各编程语言使用率", ("Microsoft YaHei", 30))
+        .x_label_area_size(50)
+        .y_label_area_size(60)
+        .margin(10)
+        .build_cartesian_2d(0usize..5usize, 0f64..40f64)?;
+
+    chart.configure_mesh()
+        .x_desc("编程语言")
+        .y_desc("使用率 (%)")
+        .x_labels(&amp;["Rust", "Python", "Java", "Go", "C++"])
+        .draw()?;
+
+    let data: Vec&lt;(usize, f64)&gt; = vec![
+        (0, 13.5), (1, 28.1), (2, 16.3), (3, 8.7), (4, 10.2),
+    ];
+
+    let colors = [RED, BLUE, GREEN, ORANGE, PURPLE];
+
+    chart.draw_series(
+        data.iter().enumerate().map(|(i, &amp;(x, y))| {
+            Rectangle::new(
+                [(x, 0), (x + 1, y)],
+                colors[i].filled(),
+            )
+        }),
+    )?;
+
+    root.present()?;
+    println!("柱状图已保存为 bar_chart.png");
+    Ok(())
+}</code></pre>
+<h2 id="116-数据融合"><a class="header" href="#116-数据融合">11.6 数据融合</a></h2>
+<h3 id="1161-什么是数据融合"><a class="header" href="#1161-什么是数据融合">11.6.1 什么是数据融合</a></h3>
+<p>数据融合（Data Fusion）是一种将来自不同来源、不同格式或不同结构的数据集成到一个统一的数据模型或数据集中的过程。它不仅仅是简单的数据拼接，而是一个复杂的系统工程，涉及到数据的采集、清洗、转换、整合和存储等多个环节。</p>
+<p><a href="https://cloud.tencent.com/developer/article/2565885">数据融合是什么？</a></p>
+<h3 id="1162-etl-流程"><a class="header" href="#1162-etl-流程">11.6.2 ETL 流程</a></h3>
+<p>数据融合的核心流程是 <strong>ETL</strong>（Extract-Transform-Load）：</p>
+<p>$$
+\text{数据源} \xrightarrow{\text{Extract（抽取）}} \text{原始数据} \xrightarrow{\text{Transform（转换）}} \text{清洗后数据} \xrightarrow{\text{Load（加载）}} \text{目标系统}
+$$</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>阶段</th><th>说明</th><th>关键操作</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Extract（抽取）</strong></td><td>从多个数据源提取数据</td><td>API 调用、数据库查询、文件读取</td></tr>
+<tr><td><strong>Transform（转换）</strong></td><td>清洗和转换数据</td><td>去重、格式转换、类型映射、聚合计算</td></tr>
+<tr><td><strong>Load（加载）</strong></td><td>将处理后的数据写入目标</td><td>批量插入、增量更新、实时流写入</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="1163-数据清洗与转换"><a class="header" href="#1163-数据清洗与转换">11.6.3 数据清洗与转换</a></h3>
+<p>数据融合中最关键的环节是数据清洗和转换，常见操作包括：</p>
+<ul>
+<li><strong>去重</strong>：删除重复记录，保证数据唯一性</li>
+<li><strong>格式统一</strong>：日期格式、编码格式、数值精度的统一</li>
+<li><strong>缺失值处理</strong>：填充默认值、插值或标记为空</li>
+<li><strong>类型转换</strong>：字符串转数值、时间戳转日期等</li>
+<li><strong>数据校验</strong>：范围检查、正则匹配、业务规则验证</li>
+<li><strong>聚合计算</strong>：分组统计、滚动窗口、连接关联</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024">use serde::{Serialize, Deserialize};
+use std::collections::HashMap;
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+struct Record {
+    id: String,
+    name: String,
+    value: f64,
+    source: String,
+}
+
+/// 数据清洗：去重和格式标准化
+fn deduplicate(records: Vec&lt;Record&gt;) -&gt; Vec&lt;Record&gt; {
+    let mut seen = HashMap::new();
+    for record in records {
+        seen.entry(record.id.clone())
+            .or_insert(record);
+    }
+    seen.into_values().collect()
+}
+
+/// 数据转换：值域映射
+fn normalize_values(records: &amp;mut [Record], min: f64, max: f64) {
+    let range = max - min;
+    for record in records.iter_mut() {
+        record.value = (record.value - min) / range;
+    }
+}
+
+/// 数据融合：合并多个来源的数据
+fn merge_sources(sources: Vec&lt;Vec&lt;Record&gt;&gt;) -&gt; Vec&lt;Record&gt; {
+    let all: Vec&lt;Record&gt; = sources.into_iter().flatten().collect();
+    let mut deduped = deduplicate(all);
+    if let (Some(&amp;min_val), Some(&amp;max_val)) = (
+        deduped.iter().map(|r| r.value).reduce(f64::min),
+        deduped.iter().map(|r| r.value).reduce(f64::max),
+    ) {
+        normalize_values(&amp;mut deduped, min_val, max_val);
+    }
+    deduped
+}
+
+fn main() {
+    let source_a = vec![
+        Record { id: "1".into(), name: "Alpha".into(), value: 100.0, source: "A".into() },
+        Record { id: "2".into(), name: "Beta".into(), value: 200.0, source: "A".into() },
+    ];
+    let source_b = vec![
+        Record { id: "1".into(), name: "Alpha".into(), value: 100.0, source: "B".into() },
+        Record { id: "3".into(), name: "Gamma".into(), value: 300.0, source: "B".into() },
+    ];
+
+    let merged = merge_sources(vec![source_a, source_b]);
+    println!("融合后共 {} 条记录:", merged.len());
+    for r in &amp;merged {
+        println!("  {} - {} (normalized: {:.2})", r.id, r.name, r.value);
+    }
+}</code></pre>
+<h2 id="117-列式存储与-apache-arrow"><a class="header" href="#117-列式存储与-apache-arrow">11.7 列式存储与 Apache Arrow</a></h2>
+<h3 id="1171-行式存储-vs-列式存储"><a class="header" href="#1171-行式存储-vs-列式存储">11.7.1 行式存储 vs 列式存储</a></h3>
+<p>传统数据库大多采用<strong>行式存储</strong>（Row-oriented Storage），即一行数据连续存储。而<strong>列式存储</strong>（Column-oriented Storage）则将每一列的数据连续存储。两种存储方式各有优劣：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th>行式存储</th><th>列式存储</th></tr>
+</thead>
+<tbody>
+<tr><td>写入方式</td><td>逐行写入，适合 OLTP</td><td>逐列写入，适合 OLAP</td></tr>
+<tr><td>读取效率</td><td>读取整行快</td><td>读取特定列快</td></tr>
+<tr><td>压缩比</td><td>较低（不同类型数据混合）</td><td>较高（同类型数据连续）</td></tr>
+<tr><td>适用场景</td><td>事务处理、点查询</td><td>分析查询、聚合统计</td></tr>
+<tr><td>代表系统</td><td>MySQL、PostgreSQL</td><td>ClickHouse、Arrow</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="1172-apache-arrow-概述"><a class="header" href="#1172-apache-arrow-概述">11.7.2 Apache Arrow 概述</a></h3>
+<p>Apache Arrow 是一种基于内存的列式数据结构，它的出现就是为了解决系统到系统之间的数据传输问题。在分布式系统内部，每个系统都有自己的内存格式，大量的 CPU 资源被消耗在序列化和反序列化过程中，并且由于每个项目都有自己的实现，没有一个明确的标准，造成各个系统都在重复着复制、转换工作，这种问题在微服务系统架构出现之后更加明显，Arrow 的出现就是为了解决这一问题。</p>
+<img src="images/shared.png" width="600" />
+<p>Arrow 的核心优势在于：</p>
+<ul>
+<li><strong>零拷贝读取</strong>：不同系统之间共享内存，无需序列化/反序列化</li>
+<li><strong>列式内存格式</strong>：天然适合向量化操作和分析查询</li>
+<li><strong>语言无关</strong>：支持 C/C++、Java、Python、Rust 等多种语言</li>
+<li><strong>标准化</strong>：统一的内存格式规范，消除格式转换开销</li>
+</ul>
+<h3 id="1173-simd-加速"><a class="header" href="#1173-simd-加速">11.7.3 SIMD 加速</a></h3>
+<p>Apache Arrow 的列式内存布局天然适合 <strong>SIMD</strong>（Single Instruction, Multiple Data）指令集加速。由于同一列的数据类型相同且连续存储，CPU 可以使用一条指令同时处理多个数据元素：</p>
+<img src="images/simd.png" width="600" />
+<p>设列中有 $n$ 个元素，标量处理的时间复杂度为 $O(n)$，而 SIMD 处理（假设向量宽度为 $w$）的时间复杂度为 $O(n/w)$，理论上可获得 $w$ 倍的加速比。</p>
+<h3 id="1174-datafusion-查询引擎"><a class="header" href="#1174-datafusion-查询引擎">11.7.4 DataFusion 查询引擎</a></h3>
+<p><a href="https://github.com/apache/datafusion">DataFusion</a> 是基于 Apache Arrow 构建的查询引擎，用 Rust 编写，提供了 SQL 查询能力和 DataFrame API，适合构建高性能的数据分析系统。</p>
+<h3 id="1175-rust-arrow-crate-示例"><a class="header" href="#1175-rust-arrow-crate-示例">11.7.5 Rust arrow crate 示例</a></h3>
+<p>以下示例展示了如何使用 Rust 的 <code>arrow</code> crate 创建和操作列式数据：</p>
+<pre class="playground"><code class="language-rust edition2024">use arrow::array::{Float64Array, Int64Array, StringArray};
+use arrow::datatypes::{DataType, Field, Schema};
+use arrow::record_batch::RecordBatch;
+use std::sync::Arc;
+
+fn main() {
+    // 定义 Schema
+    let schema = Schema::new(vec![
+        Field::new("city", DataType::Utf8, false),
+        Field::new("population", DataType::Int64, false),
+        Field::new("avg_temperature", DataType::Float64, false),
+    ]);
+
+    // 创建列数据
+    let cities = StringArray::from(vec![
+        "北京", "上海", "广州", "深圳", "杭州",
+    ]);
+    let populations = Int64Array::from(vec![
+        21_540_000, 24_870_000, 18_680_000, 17_560_000, 12_200_000,
+    ]);
+    let temperatures = Float64Array::from(vec![
+        12.6, 16.1, 22.0, 22.4, 16.9,
+    ]);
+
+    // 创建 RecordBatch
+    let batch = RecordBatch::try_new(
+        Arc::new(schema),
+        vec![
+            Arc::new(cities),
+            Arc::new(populations),
+            Arc::new(temperatures),
+        ],
+    ).unwrap();
+
+    println!("RecordBatch 包含 {} 行, {} 列", batch.num_rows(), batch.num_columns());
+    println!("Schema: {:?}", batch.schema());
+
+    // 访问列数据
+    let temp_col = batch
+        .column(2)
+        .as_any()
+        .downcast_ref::&lt;Float64Array&gt;()
+        .unwrap();
+    println!("平均温度: {:?}", temp_col.values());
+}</code></pre>
+<h3 id="1176-相关链接"><a class="header" href="#1176-相关链接">11.7.6 相关链接</a></h3>
+<ul>
+<li><a href="https://github.com/apache/arrow">Apache Arrow</a></li>
+<li><a href="https://github.com/apache/datafusion">DataFusion</a></li>
+<li>https://arrow.apache.org/</li>
+</ul>
+<h2 id="118-总结"><a class="header" href="#118-总结">11.8 总结</a></h2>
+<h3 id="序列化格式对比"><a class="header" href="#序列化格式对比">序列化格式对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>格式</th><th>可读性</th><th>解析速度</th><th>数据体积</th><th>扩展性</th><th>Rust 支持</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td>JSON</td><td>高</td><td>中</td><td>中</td><td>中</td><td><code>serde_json</code></td><td>Web API、配置</td></tr>
+<tr><td>XML</td><td>中</td><td>慢</td><td>大</td><td>高</td><td><code>quick-xml</code></td><td>文档交换、SOAP</td></tr>
+<tr><td>YAML</td><td>高</td><td>慢</td><td>中</td><td>中</td><td><code>serde_yaml</code></td><td>配置文件</td></tr>
+<tr><td>TOML</td><td>高</td><td>中</td><td>中</td><td>低</td><td><code>toml</code></td><td>Cargo 配置</td></tr>
+<tr><td>BSON</td><td>低</td><td>快</td><td>中</td><td>高</td><td><code>bson</code></td><td>MongoDB</td></tr>
+<tr><td>Protobuf</td><td>低</td><td>极快</td><td>极小</td><td>高</td><td><code>prost</code></td><td>高性能 RPC</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="持久化方案对比"><a class="header" href="#持久化方案对比">持久化方案对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方案</th><th>类型</th><th>性能</th><th>事务支持</th><th>Rust 代表库</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td>JSON 文件</td><td>文件存储</td><td>低</td><td>无</td><td><code>serde_json</code></td><td>小型配置</td></tr>
+<tr><td>SQLite</td><td>嵌入式数据库</td><td>中</td><td>ACID</td><td><code>rusqlite</code></td><td>本地应用</td></tr>
+<tr><td>MySQL</td><td>关系型数据库</td><td>高</td><td>ACID</td><td><code>sea-orm</code>, <code>sqlx</code></td><td>服务端应用</td></tr>
+<tr><td>PostgreSQL</td><td>关系型数据库</td><td>高</td><td>ACID</td><td><code>sea-orm</code>, <code>sqlx</code></td><td>服务端应用</td></tr>
+<tr><td>Oracle</td><td>关系型数据库</td><td>高</td><td>ACID</td><td><code>sea-orm</code>, <code>sqlx</code></td><td>服务端应用</td></tr>
+<tr><td>Redis</td><td>内存数据库</td><td>极高</td><td>有限</td><td><code>redis</code></td><td>缓存、会话</td></tr>
+<tr><td>MinIO/RustFS</td><td>对象存储</td><td>高</td><td>最终一致</td><td><code>minio</code></td><td>大文件存储</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="rust-数据生态全景"><a class="header" href="#rust-数据生态全景">Rust 数据生态全景</a></h3>
+<p>Rust 在数据处理领域拥有完善的生态体系：</p>
+<pre><code>数据获取 ──→ 数据序列化 ──→ 数据存储 ──→ 数据分析 ──→ 数据可视化
+   │              │              │              │              │
+   ├─ HTTP       ├─ serde       ├─ sea-orm     ├─ arrow       ├─ plotters
+   ├─ gRPC       ├─ serde_json  ├─ sqlx        ├─ datafusion  ├─ plotly
+   ├─ CSV        ├─ serde_yaml  ├─ redis       ├─ polars      ├─ egui
+   ├─ 数据库     ├─ quick-xml   ├─ rusqlite    └─ ndarray     └─ iced
+   └─ 文件       └─ toml        └─ minio
+</code></pre>
+<h2 id="119-练习题"><a class="header" href="#119-练习题">11.9 练习题</a></h2>
+<p><strong>练习 1</strong>：使用 <code>serde_json</code> 将以下 Rust 结构体序列化为 JSON，并要求字段名使用 snake_case，同时跳过 <code>password</code> 字段的序列化。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct Account {
+    user_id: u64,
+    username: String,
+    email: String,
+    password: String,
+    created_at: String,
+}
+<span class="boring">}</span></code></pre>
+<p><strong>练习 2</strong>：编写一个程序，读取一个 TOML 配置文件，解析为 Rust 结构体，并打印其中的数据库连接信息。</p>
+<p><strong>练习 3</strong>：使用 <code>quick-xml</code> 解析以下 XML 数据，提取所有 <code>&lt;book&gt;</code> 标签中的 <code>title</code> 和 <code>author</code> 属性：</p>
+<pre><code class="language-xml">&lt;library&gt;
+    &lt;book title="Rust编程之道" author="张三"/&gt;
+    &lt;book title="Rust实战" author="李四"/&gt;
+    &lt;book title="Rust系统编程" author="王五"/&gt;
+&lt;/library&gt;
+</code></pre>
+<p><strong>练习 4</strong>：实现一个简单的 ETL 流程：从 CSV 文件中读取数据（Extract），将价格字段从字符串转换为浮点数（Transform），然后将结果保存为 JSON 文件（Load）。</p>
+<p><strong>练习 5</strong>：使用 <code>rusqlite</code> 创建一个学生信息表，包含学号、姓名、成绩三个字段，实现插入、查询、更新和删除操作。</p>
+<p><strong>练习 6</strong>：使用 <code>plotters</code> 库绘制一个散点图，展示以下数据点的分布：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let data: Vec&lt;(f64, f64)&gt; = vec![
+    (1.0, 2.3), (2.0, 4.1), (3.0, 5.8), (4.0, 8.2),
+    (5.0, 9.7), (6.0, 12.1), (7.0, 14.5), (8.0, 16.0),
+];
+<span class="boring">}</span></code></pre>
+<p><strong>练习 7</strong>：使用 <code>arrow</code> crate 创建一个包含 1000 个随机浮点数的列式数据集，计算其均值和标准差，并与使用普通 <code>Vec&lt;f64&gt;</code> 的计算进行性能对比。</p>
+<p><strong>练习 8</strong>：设计一个数据融合方案：假设你有两个数据源，一个是 JSON 格式的用户信息（包含 user_id、name），另一个是 CSV 格式的订单信息（包含 user_id、amount、date），请编写程序将两个数据源按 user_id 进行关联，生成一个包含用户名称和订单总额的汇总报告。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_10.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_12.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_10.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_12.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

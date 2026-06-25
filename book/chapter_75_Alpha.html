@@ -1,0 +1,461 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>附录2 符号表 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="附录2-符号表"><a class="header" href="#附录2-符号表">附录2 符号表</a></h1>
+<h2 id="一希腊字母表"><a class="header" href="#一希腊字母表">一、希腊字母表</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>序号</th><th>大写</th><th>小写</th><th>英文注音</th><th>中文注音</th><th>常见用途</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>Α</td><td>α</td><td>Alpha</td><td>阿尔法</td><td>显著性水平、角度</td></tr>
+<tr><td>2</td><td>Β</td><td>β</td><td>Beta</td><td>贝塔</td><td>回归系数、角度</td></tr>
+<tr><td>3</td><td>Γ</td><td>γ</td><td>Gamma</td><td>伽马</td><td>欧拉常数、伽马函数</td></tr>
+<tr><td>4</td><td>Δ</td><td>δ</td><td>Delta</td><td>德尔塔</td><td>变化量、判别式</td></tr>
+<tr><td>5</td><td>Ε</td><td>ε</td><td>Epsilon</td><td>艾普西隆</td><td>误差、容差、小量</td></tr>
+<tr><td>6</td><td>Ζ</td><td>ζ</td><td>Zeta</td><td>泽塔</td><td>黎曼ζ函数</td></tr>
+<tr><td>7</td><td>Η</td><td>η</td><td>Eta</td><td>伊塔</td><td>学习率、效率</td></tr>
+<tr><td>8</td><td>Θ</td><td>θ</td><td>Theta</td><td>西塔</td><td>角度、参数</td></tr>
+<tr><td>9</td><td>Ι</td><td>ι</td><td>Iota</td><td>约塔</td><td>微小量</td></tr>
+<tr><td>10</td><td>Κ</td><td>κ</td><td>Kappa</td><td>卡帕</td><td>曲率</td></tr>
+<tr><td>11</td><td>Λ</td><td>λ</td><td>Lambda</td><td>拉姆达</td><td>特征值、泊松分布参数</td></tr>
+<tr><td>12</td><td>Μ</td><td>μ</td><td>Mu</td><td>缪</td><td>均值、摩擦系数</td></tr>
+<tr><td>13</td><td>Ν</td><td>ν</td><td>Nu</td><td>纽</td><td>频率、自由度</td></tr>
+<tr><td>14</td><td>Ξ</td><td>ξ</td><td>Xi</td><td>克西</td><td>随机变量</td></tr>
+<tr><td>15</td><td>Ο</td><td>ο</td><td>Omicron</td><td>奥密克戎</td><td>—</td></tr>
+<tr><td>16</td><td>Π</td><td>π</td><td>Pi</td><td>派</td><td>圆周率 3.14159…</td></tr>
+<tr><td>17</td><td>Ρ</td><td>ρ</td><td>Rho</td><td>柔</td><td>密度、相关系数</td></tr>
+<tr><td>18</td><td>Σ</td><td>σ/ς</td><td>Sigma</td><td>西格玛</td><td>求和、标准差</td></tr>
+<tr><td>19</td><td>Τ</td><td>τ</td><td>Tau</td><td>陶</td><td>时间常数、切应力</td></tr>
+<tr><td>20</td><td>Υ</td><td>υ</td><td>Upsilon</td><td>宇普西隆</td><td>—</td></tr>
+<tr><td>21</td><td>Φ</td><td>φ/ϕ</td><td>Phi</td><td>斐</td><td>黄金分割数、相位</td></tr>
+<tr><td>22</td><td>Χ</td><td>χ</td><td>Chi</td><td>希</td><td>卡方分布</td></tr>
+<tr><td>23</td><td>Ψ</td><td>ψ</td><td>Psi</td><td>普西</td><td>波函数</td></tr>
+<tr><td>24</td><td>Ω</td><td>ω</td><td>Omega</td><td>欧米伽</td><td>角速度、全概率空间</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="二数学符号"><a class="header" href="#二数学符号">二、数学符号</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>符号</th><th>含义</th><th>LaTeX</th></tr>
+</thead>
+<tbody>
+<tr><td>$\partial$</td><td>偏微分</td><td><code>\partial</code></td></tr>
+<tr><td>$\Delta$</td><td>变化量（增量）、判别式</td><td><code>\Delta</code></td></tr>
+<tr><td>$\nabla$</td><td>梯度（Nabla 算子）</td><td><code>\nabla</code></td></tr>
+<tr><td>$\nabla \cdot \vec{F}$</td><td>散度</td><td><code>\nabla \cdot</code></td></tr>
+<tr><td>$\nabla \times \vec{F}$</td><td>旋度</td><td><code>\nabla \times</code></td></tr>
+<tr><td>$\nabla^2$</td><td>拉普拉斯算子</td><td><code>\nabla^2</code></td></tr>
+<tr><td>$\sum$</td><td>求和</td><td><code>\sum</code></td></tr>
+<tr><td>$\prod$</td><td>连乘</td><td><code>\prod</code></td></tr>
+<tr><td>$\forall$</td><td>任意、全称量词</td><td><code>\forall</code></td></tr>
+<tr><td>$\exists$</td><td>存在量词</td><td><code>\exists</code></td></tr>
+<tr><td>$\in$</td><td>属于</td><td><code>\in</code></td></tr>
+<tr><td>$\notin$</td><td>不属于</td><td><code>\notin</code></td></tr>
+<tr><td>$\infty$</td><td>无穷大</td><td><code>\infty</code></td></tr>
+<tr><td>$\int$</td><td>积分</td><td><code>\int</code></td></tr>
+<tr><td>$\oint$</td><td>曲线积分</td><td><code>\oint</code></td></tr>
+<tr><td>$\oint$</td><td>向量分析的场量计算</td><td><code>\oint</code></td></tr>
+<tr><td>$\binom{n}{k}$</td><td>组合数</td><td><code>\binom{n}{k}</code></td></tr>
+<tr><td>$\hat{y}$</td><td>预测值</td><td><code>\hat{y}</code></td></tr>
+<tr><td>$\vec{\alpha}$</td><td>向量 α</td><td><code>\vec{\alpha}</code></td></tr>
+<tr><td>$\sigma$</td><td>标准差、激活函数</td><td><code>\sigma</code></td></tr>
+<tr><td>$\epsilon$</td><td>误差、容差</td><td><code>\epsilon</code></td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="三unicode-表情符号指南"><a class="header" href="#三unicode-表情符号指南">三、Unicode 表情符号指南</a></h2>
+<h3 id="概念标识"><a class="header" href="#概念标识">概念标识</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>符号</th><th>含义</th><th>符号</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td>🦀</td><td>Rust / Crab</td><td>🐍</td><td>Python</td></tr>
+<tr><td>❓</td><td>问题</td><td>🌰 / 🍊</td><td>例子</td></tr>
+<tr><td>⚙️</td><td>算法 / 工具</td><td>📝</td><td>代码</td></tr>
+<tr><td>📦</td><td>库</td><td>🚀</td><td>性能、加速</td></tr>
+<tr><td>✅</td><td>正确</td><td>❌</td><td>错误</td></tr>
+<tr><td>🎯</td><td>目标</td><td>⚠️</td><td>危险</td></tr>
+<tr><td>🧠</td><td>大脑 / 思考</td><td>📚</td><td>题库 / 学习</td></tr>
+<tr><td>🎮</td><td>游戏</td><td>🏅</td><td>勋章</td></tr>
+<tr><td>💡</td><td>提示</td><td>📌</td><td>知识点速记</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="难度标识"><a class="header" href="#难度标识">难度标识</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>符号</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td>🌱</td><td>简单</td></tr>
+<tr><td>⚡</td><td>中等</td></tr>
+<tr><td>🔥</td><td>困难</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="其他常用"><a class="header" href="#其他常用">其他常用</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>符号</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td>🎉</td><td>庆祝 / 完成</td></tr>
+<tr><td>☁️</td><td>云计算</td></tr>
+<tr><td>💰</td><td>金钱</td></tr>
+<tr><td>🥕</td><td>萝卜</td></tr>
+<tr><td>🌹</td><td>玫瑰</td></tr>
+<tr><td>🌻</td><td>向日葵</td></tr>
+<tr><td>🟢 / 🔵 / 🟡</td><td>红绿灯状态</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="四重要术语中英文对照"><a class="header" href="#四重要术语中英文对照">四、重要术语中英文对照</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>中文</th><th>English</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>同质性 / 均匀性</td><td>Homogeneity</td><td>统计与数据分布概念</td></tr>
+<tr><td>完整性 / 完备性</td><td>Completeness</td><td>数学与逻辑概念</td></tr>
+<tr><td>文献 / 语料库</td><td>Corpus</td><td>NLP 领域的文本集合</td></tr>
+<tr><td>旋转</td><td>Revolve / Rotate</td><td>几何变换</td></tr>
+<tr><td>同余</td><td>Congruence</td><td>数论概念</td></tr>
+<tr><td>模数</td><td>Modulus</td><td>同余运算中的模</td></tr>
+<tr><td>逆元</td><td>Inverse Element</td><td>群论概念</td></tr>
+<tr><td>特征值</td><td>Eigenvalue</td><td>线性代数</td></tr>
+<tr><td>奇异值</td><td>Singular Value</td><td>矩阵分解</td></tr>
+<tr><td>梯度</td><td>Gradient</td><td>微积分</td></tr>
+<tr><td>散度</td><td>Divergence</td><td>向量分析</td></tr>
+<tr><td>旋度</td><td>Curl</td><td>向量分析</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="五重要文献"><a class="header" href="#五重要文献">五、重要文献</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>文献</th><th>时代</th><th>作者</th><th>贡献</th></tr>
+</thead>
+<tbody>
+<tr><td>《九章算术》</td><td>东汉</td><td>多人</td><td>古代数学经典，含246道问题</td></tr>
+<tr><td>《九章算术注》</td><td>三国</td><td>刘徽</td><td>注疏《九章算术》，创割圆术</td></tr>
+<tr><td>《孙子算经》</td><td>南北朝</td><td>孙子</td><td>物不知数问题（中国剩余定理）</td></tr>
+<tr><td>《海岛算经》</td><td>三国</td><td>刘徽</td><td>测量数学著作</td></tr>
+<tr><td>《几何原本》</td><td>古希腊</td><td>欧几里得</td><td>公理化数学的典范</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="六rust-中常用符号"><a class="header" href="#六rust-中常用符号">六、Rust 中常用符号</a></h2>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 常用运算符
+&amp;&amp;  ||  !    // 逻辑运算符
+&amp;   |   ^    // 位运算符
+&gt;&gt;  &lt;&lt;       // 移位运算符
+==  !=   &gt;   &lt;   &gt;=  &lt;=  // 关系运算符
++   -   *   /   %       // 算术运算符
+-&gt;            // 函数返回类型
+=&gt;            // match 分支
+::            // 路径分隔符
+|_|           // 闭包语法
+&amp;   &amp;mut      // 引用、可变引用
+*             // 解引用
+..  ..=       // Range 语法
+_             // 通配符
+#!  #         // 属性
+@             // 模式绑定
+?             // 错误传播
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="七马尔可夫模型变体"><a class="header" href="#七马尔可夫模型变体">七、马尔可夫模型变体</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>模型</th><th>全称</th><th>特点</th><th>应用场景</th></tr>
+</thead>
+<tbody>
+<tr><td>MC</td><td>马尔可夫链</td><td>状态完全可观测、无记忆性</td><td>文本生成、股票预测</td></tr>
+<tr><td>HMM</td><td>隐马尔可夫模型</td><td>状态不可直接观测</td><td>语音识别、中文分词</td></tr>
+<tr><td>MDP</td><td>马尔可夫决策过程</td><td>加入动作与奖励</td><td>强化学习</td></tr>
+<tr><td>POMDP</td><td>部分可观测 MDP</td><td>观测不完全</td><td>机器人导航、自动驾驶</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>马尔可夫性质：</strong> 未来的状态只取决于当前状态，而与过去状态无关。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_74_Programmer.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_76_Tools.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_74_Programmer.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_76_Tools.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

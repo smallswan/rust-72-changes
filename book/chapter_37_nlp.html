@@ -1,0 +1,1383 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第三十七 自然语言处理 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第三十七-自然语言处理nlp-natural-language-processing"><a class="header" href="#第三十七-自然语言处理nlp-natural-language-processing">第三十七 自然语言处理（NLP, Natural Language Processing）</a></h1>
+<pre><code class="language-txt">第三十七 自然语言处理
+├── 什么是自然语言处理（NLP）
+├── 文本预处理
+│   ├── 分词
+│   ├── 清洗与标准化
+│   └── 词干提取与词形还原
+├── 文本表示
+│   ├── 词袋模型（BoW）
+│   ├── TF-IDF
+│   └── 词嵌入（Word2Vec）
+├── 语言模型
+│   ├── 统计语言模型（N-gram）
+│   ├── 神经网络语言模型
+│   └── Transformer 与自注意力机制
+├── 大语言模型（LLM）
+│   ├── Token 与词嵌入
+│   ├── AI Agent（智能体）
+│   └── 典型大模型介绍
+├── Rust NLP 生态
+│   ├── rust-bert / candle / burn
+│   └── 实战：用 Rust 实现 TF-IDF
+└── 总结与练习
+
+</code></pre>
+<p>自然语言处理（Natural Language Processing，简称 NLP）是人工智能领域中最具魅力的方向之一。它的目标是让计算机理解、生成和处理人类自然语言——从搜索引擎的关键词匹配，到手机里的语音助手，再到如今能写代码、做推理的大语言模型，NLP 已经深刻地改变了我们的日常生活。</p>
+<p>$$\text{自然语言处理} = \text{语言学} + \text{计算机科学} + \text{数学（概率论/线性代数）}$$</p>
+<hr>
+<h2 id="一什么是自然语言处理"><a class="header" href="#一什么是自然语言处理">一、什么是自然语言处理</a></h2>
+<h3 id="11-nlp-的定义"><a class="header" href="#11-nlp-的定义">1.1 NLP 的定义</a></h3>
+<p>自然语言处理是计算机科学、人工智能和语言学的交叉学科，研究如何让计算机有效地处理和理解人类自然语言。NLP 的核心任务是弥合人类语言（模糊、上下文依赖、高度灵活）与计算机表示（精确、结构化、形式化）之间的鸿沟。</p>
+<h3 id="12-nlp-的发展历程"><a class="header" href="#12-nlp-的发展历程">1.2 NLP 的发展历程</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>时代</th><th>时间段</th><th>代表方法</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>规则时代</strong></td><td>1950s–1980s</td><td>专家系统、正则匹配</td><td>依赖人工编写语法规则，泛化能力差</td></tr>
+<tr><td><strong>统计时代</strong></td><td>1990s–2010s</td><td>N-gram、HMM、CRF</td><td>基于概率和统计，数据驱动</td></tr>
+<tr><td><strong>深度学习时代</strong></td><td>2013–2017</td><td>Word2Vec、RNN/LSTM、Seq2Seq</td><td>神经网络自动学习特征</td></tr>
+<tr><td><strong>预训练时代</strong></td><td>2018–至今</td><td>BERT、GPT、Transformer</td><td>大规模预训练 + 微调范式</td></tr>
+<tr><td><strong>大模型时代</strong></td><td>2022–至今</td><td>ChatGPT、Claude、DeepSeek</td><td>生成式AI、Agent、多模态</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="13-nlp-的核心任务"><a class="header" href="#13-nlp-的核心任务">1.3 NLP 的核心任务</a></h3>
+<p>NLP 的任务可以大致分为以下几类：</p>
+<ul>
+<li><strong>文本分类</strong>：情感分析、垃圾邮件检测、新闻分类</li>
+<li><strong>序列标注</strong>：命名实体识别（NER）、词性标注</li>
+<li><strong>文本生成</strong>：机器翻译、文本摘要、对话系统</li>
+<li><strong>信息抽取</strong>：关系抽取、事件抽取、知识图谱构建</li>
+<li><strong>语义理解</strong>：问答系统、阅读理解、语义相似度</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024">/// NLP 任务枚举——用 Rust 类型系统表达领域知识
+#[derive(Debug, Clone, PartialEq)]
+enum NlpTask {
+    TextClassification,   // 文本分类
+    NamedEntityRecognition, // 命名实体识别
+    MachineTranslation,    // 机器翻译
+    TextSummarization,     // 文本摘要
+    QuestionAnswering,      // 问答系统
+    SentimentAnalysis,     // 情感分析
+}
+
+fn describe_task(task: &amp;NlpTask) -&gt; &amp;str {
+    match task {
+        NlpTask::TextClassification =&gt; "将文本归入预定义类别",
+        NlpTask::NamedEntityRecognition =&gt; "从文本中识别人名、地名、组织名等实体",
+        NlpTask::MachineTranslation =&gt; "将文本从一种语言翻译为另一种语言",
+        NlpTask::TextSummarization =&gt; "生成文本的简洁摘要",
+        NlpTask::QuestionAnswering =&gt; "根据上下文回答问题",
+        NlpTask::SentimentAnalysis =&gt; "判断文本的情感倾向（正面/负面/中性）",
+    }
+}
+
+fn main() {
+    let tasks = vec![
+        NlpTask::TextClassification,
+        NlpTask::SentimentAnalysis,
+        NlpTask::MachineTranslation,
+    ];
+    for task in &amp;tasks {
+        println!("{:?}: {}", task, describe_task(task));
+    }
+}</code></pre>
+<hr>
+<h2 id="二文本预处理"><a class="header" href="#二文本预处理">二、文本预处理</a></h2>
+<p>文本预处理是 NLP 管道的第一步，也是最关键的一步。原始文本往往包含噪声——标点、特殊字符、大小写不一致、停用词等，需要经过清洗和标准化才能用于后续分析。</p>
+<h3 id="21-分词tokenization"><a class="header" href="#21-分词tokenization">2.1 分词（Tokenization）</a></h3>
+<p>分词是将连续的文本切分为有意义的单元（词、子词或字符）的过程。中文没有天然的空格分隔符，分词尤为关键。</p>
+<pre class="playground"><code class="language-rust edition2024">/// 简单的英文分词器
+fn tokenize_english(text: &amp;str) -&gt; Vec&lt;&amp;str&gt; {
+    text.split_whitespace()
+        .map(|word| word.trim_matches(|c: char| !c.is_alphanumeric()))
+        .filter(|w| !w.is_empty())
+        .collect()
+}
+
+/// 简单的中文分词器（基于字符级别 + 常用词匹配）
+fn tokenize_chinese(text: &amp;str) -&gt; Vec&lt;String&gt; {
+    // 常用双字词词典（示例）
+    let dictionary = vec![
+        "自然", "语言", "处理", "人工", "智能", "机器", "学习",
+        "深度", "模型", "计算", "科学", "技术", "方法", "数据",
+    ];
+    let chars: Vec&lt;char&gt; = text.chars().filter(|c| !c.is_whitespace()).collect();
+    let mut tokens = Vec::new();
+    let mut i = 0;
+    while i &lt; chars.len() {
+        // 优先尝试匹配双字词
+        if i + 1 &lt; chars.len() {
+            let bigram: String = chars[i..=i + 1].iter().collect();
+            if dictionary.contains(&amp;bigram.as_str()) {
+                tokens.push(bigram);
+                i += 2;
+                continue;
+            }
+        }
+        // 单字回退
+        tokens.push(chars[i].to_string());
+        i += 1;
+    }
+    tokens
+}
+
+fn main() {
+    let en_text = "Natural Language Processing is fascinating!";
+    let en_tokens = tokenize_english(en_text);
+    println!("英文分词: {:?}", en_tokens);
+
+    let zh_text = "自然语言处理是人工智能的核心技术";
+    let zh_tokens = tokenize_chinese(zh_text);
+    println!("中文分词: {:?}", zh_tokens);
+}</code></pre>
+<h3 id="22-文本清洗与标准化"><a class="header" href="#22-文本清洗与标准化">2.2 文本清洗与标准化</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use std::collections::HashSet;
+
+/// 文本清洗管道
+struct TextCleaner {
+    stopwords: HashSet&lt;String&gt;,
+}
+
+impl TextCleaner {
+    fn new() -&gt; Self {
+        let stopwords: HashSet&lt;String&gt; = [
+            "的", "了", "在", "是", "我", "有", "和", "就",
+            "不", "人", "都", "一", "一个", "上", "也", "很",
+            "the", "a", "an", "is", "are", "was", "were",
+            "and", "or", "but", "in", "on", "at", "to",
+        ]
+        .iter()
+        .map(|s| s.to_string())
+        .collect();
+        TextCleaner { stopwords }
+    }
+
+    /// 转小写（英文）
+    fn to_lowercase(&amp;self, text: &amp;str) -&gt; String {
+        text.to_lowercase()
+    }
+
+    /// 去除标点和特殊字符
+    fn remove_punctuation(&amp;self, text: &amp;str) -&gt; String {
+        text.chars()
+            .filter(|c| c.is_alphanumeric() || c.is_whitespace() || *c == '\u{4e00}..='\u{9fff}')
+            .collect()
+    }
+
+    /// 去除停用词
+    fn remove_stopwords(&amp;self, tokens: &amp;[String]) -&gt; Vec&lt;String&gt; {
+        tokens.iter().filter(|t| !self.stopwords.contains(*t)).cloned().collect()
+    }
+
+    /// 完整清洗管道
+    fn clean(&amp;self, text: &amp;str) -&gt; Vec&lt;String&gt; {
+        let lowered = self.to_lowercase(text);
+        let tokens: Vec&lt;String&gt; = lowered
+            .split_whitespace()
+            .map(|s| s.to_string())
+            .collect();
+        self.remove_stopwords(&amp;tokens)
+    }
+}
+
+fn main() {
+    let cleaner = TextCleaner::new();
+    let text = "Natural Language Processing is a fascinating field of study";
+    let cleaned = cleaner.clean(text);
+    println!("清洗前: {}", text);
+    println!("清洗后: {:?}", cleaned);
+}</code></pre>
+<h3 id="23-词干提取与词形还原"><a class="header" href="#23-词干提取与词形还原">2.3 词干提取与词形还原</a></h3>
+<p>词干提取（Stemming）是将词还原为词干的过程，例如 “running” -&gt; “run”。词形还原（Lemmatization）则是将词还原为词典中的原形，例如 “better” -&gt; “good”。</p>
+<pre class="playground"><code class="language-rust edition2024">/// 简易英文词干提取器（Porter 算法简化版）
+fn stem(word: &amp;str) -&gt; String {
+    let mut result = word.to_string();
+
+    // 去除常见后缀
+    let suffixes = [
+        "ing", "tion", "ness", "ment", "able", "ible",
+        "ful", "less", "ous", "ive", "ed", "er", "ly", "es", "s",
+    ];
+
+    for suffix in &amp;suffixes {
+        if result.ends_with(suffix) &amp;&amp; result.len() &gt; suffix.len() + 2 {
+            result = result[..result.len() - suffix.len()].to_string();
+            break;
+        }
+    }
+
+    result
+}
+
+fn main() {
+    let words = ["running", "happiness", "computing", "played", "easily"];
+    for word in &amp;words {
+        println!("{} -&gt; {}", word, stem(word));
+    }
+    // running -&gt; runn
+    // happiness -&gt; happi
+    // computing -&gt; comput
+    // played -&gt; play
+    // easily -&gt; eas
+}</code></pre>
+<hr>
+<h2 id="三文本表示"><a class="header" href="#三文本表示">三、文本表示</a></h2>
+<p>计算机无法直接处理文本字符串，需要将文本转换为数值向量。文本表示方法经历了从离散到稠密、从人工设计到自动学习的演进。</p>
+<h3 id="31-词袋模型bag-of-words-bow"><a class="header" href="#31-词袋模型bag-of-words-bow">3.1 词袋模型（Bag of Words, BoW）</a></h3>
+<p>词袋模型是最简单的文本表示方法。它忽略词序，仅统计每个词在文档中出现的次数。</p>
+<p>给定文档集合 $D = {d_1, d_2, \ldots, d_n}$ 和词汇表 $V = {w_1, w_2, \ldots, w_m}$，文档 $d_i$ 的 BoW 向量为：</p>
+<p>$$\text{BoW}(d_i) = [c_{i1}, c_{i2}, \ldots, c_{im}]$$</p>
+<p>其中 $c_{ij}$ 表示词 $w_j$ 在文档 $d_i$ 中出现的次数。</p>
+<pre class="playground"><code class="language-rust edition2024">use std::collections::HashMap;
+
+/// 词袋模型
+struct BagOfWords {
+    vocabulary: Vec&lt;String&gt;,
+    word_to_idx: HashMap&lt;String, usize&gt;,
+}
+
+impl BagOfWords {
+    /// 从文档集合构建词汇表
+    fn fit(documents: &amp;[&amp;str]) -&gt; Self {
+        let mut word_set = std::collections::BTreeSet::new();
+        for doc in documents {
+            for word in doc.split_whitespace() {
+                word_set.insert(word.to_string());
+            }
+        }
+        let vocabulary: Vec&lt;String&gt; = word_set.into_iter().collect();
+        let word_to_idx: HashMap&lt;String, usize&gt; = vocabulary
+            .iter()
+            .enumerate()
+            .map(|(i, w)| (w.clone(), i))
+            .collect();
+        BagOfWords { vocabulary, word_to_idx }
+    }
+
+    /// 将文档转换为 BoW 向量
+    fn transform(&amp;self, document: &amp;str) -&gt; Vec&lt;usize&gt; {
+        let mut vector = vec![0usize; self.vocabulary.len()];
+        for word in document.split_whitespace() {
+            if let Some(&amp;idx) = self.word_to_idx.get(word) {
+                vector[idx] += 1;
+            }
+        }
+        vector
+    }
+
+    /// 获取词汇表
+    fn vocabulary(&amp;self) -&gt; &amp;[String] {
+        &amp;self.vocabulary
+    }
+}
+
+fn main() {
+    let docs = [
+        "rust language system safety",
+        "rust programming memory safety",
+        "python programming language",
+    ];
+
+    let bow = BagOfWords::fit(&amp;docs);
+    println!("词汇表: {:?}", bow.vocabulary());
+
+    for doc in &amp;docs {
+        let vec = bow.transform(doc);
+        println!("文档 \"{}\" -&gt; {:?}", doc, vec);
+    }
+}</code></pre>
+<h3 id="32-tf-idf"><a class="header" href="#32-tf-idf">3.2 TF-IDF</a></h3>
+<p>TF-IDF（Term Frequency - Inverse Document Frequency）在词频的基础上引入了逆文档频率，降低了常见词的权重，提升了区分度高的词的权重。</p>
+<p>$$\text{TF-IDF}(t, d, D) = \text{TF}(t, d) \times \text{IDF}(t, D)$$</p>
+<p>其中：</p>
+<p>$$\text{TF}(t, d) = \frac{f_{t,d}}{\sum_{t’ \in d} f_{t’,d}}$$</p>
+<p>$$\text{IDF}(t, D) = \log \frac{|D|}{|{d \in D : t \in d}| + 1}$$</p>
+<pre class="playground"><code class="language-rust edition2024">use std::collections::HashMap;
+
+/// TF-IDF 计算器
+struct TfIdfCalculator {
+    vocabulary: Vec&lt;String&gt;,
+    word_to_idx: HashMap&lt;String, usize&gt;,
+    idf: Vec&lt;f64&gt;, // 每个词的 IDF 值
+}
+
+impl TfIdfCalculator {
+    fn fit(documents: &amp;[&amp;str]) -&gt; Self {
+        // 构建词汇表
+        let mut word_set = std::collections::BTreeSet::new();
+        for doc in documents {
+            for word in doc.split_whitespace() {
+                word_set.insert(word.to_string());
+            }
+        }
+        let vocabulary: Vec&lt;String&gt; = word_set.into_iter().collect();
+        let word_to_idx: HashMap&lt;String, usize&gt; = vocabulary
+            .iter()
+            .enumerate()
+            .map(|(i, w)| (w.clone(), i))
+            .collect();
+
+        // 计算 IDF
+        let n_docs = documents.len() as f64;
+        let mut doc_freq = vec![0usize; vocabulary.len()];
+        for doc in documents {
+            let mut seen = std::collections::HashSet::new();
+            for word in doc.split_whitespace() {
+                if let Some(&amp;idx) = word_to_idx.get(word) {
+                    if seen.insert(idx) {
+                        doc_freq[idx] += 1;
+                    }
+                }
+            }
+        }
+        let idf: Vec&lt;f64&gt; = doc_freq
+            .iter()
+            .map(|&amp;df| (n_docs / (df as f64 + 1.0)).ln())
+            .collect();
+
+        TfIdfCalculator { vocabulary, word_to_idx, idf }
+    }
+
+    fn transform(&amp;self, document: &amp;str) -&gt; Vec&lt;f64&gt; {
+        let mut tf = vec![0.0f64; self.vocabulary.len()];
+        let mut total = 0usize;
+        for word in document.split_whitespace() {
+            if let Some(&amp;idx) = self.word_to_idx.get(word) {
+                tf[idx] += 1.0;
+                total += 1;
+            }
+        }
+        // 归一化 TF
+        if total &gt; 0 {
+            for v in &amp;mut tf {
+                *v /= total as f64;
+            }
+        }
+        // TF * IDF
+        tf.iter().zip(self.idf.iter()).map(|(&amp;t, &amp;i)| t * i).collect()
+    }
+}
+
+fn main() {
+    let docs = [
+        "rust is a systems programming language",
+        "rust focuses on safety and performance",
+        "python is a high level programming language",
+    ];
+
+    let tfidf = TfIdfCalculator::fit(&amp;docs);
+    println!("词汇表: {:?}", tfidf.vocabulary);
+
+    for doc in &amp;docs {
+        let vec = tfidf.transform(doc);
+        println!("文档: \"{}\"", doc);
+        for (word, val) in tfidf.vocabulary.iter().zip(vec.iter()) {
+            if *val &gt; 0.0 {
+                println!("  {} =&gt; {:.4}", word, val);
+            }
+        }
+    }
+}</code></pre>
+<h3 id="33-词嵌入word2vec"><a class="header" href="#33-词嵌入word2vec">3.3 词嵌入（Word2Vec）</a></h3>
+<p>词嵌入将每个词映射为一个低维稠密向量，使得语义相近的词在向量空间中距离更近。Word2Vec 是最经典的词嵌入方法，包含两种训练模式：</p>
+<ul>
+<li><strong>CBOW（Continuous Bag of Words）</strong>：用上下文预测中心词</li>
+<li><strong>Skip-gram</strong>：用中心词预测上下文</li>
+</ul>
+<p>Word2Vec 的核心思想可以用一个简单的神经网络来理解。给定中心词 $w_t$，其上下文窗口为 $C$，Skip-gram 模型的目标函数为：</p>
+<p>$$\mathcal{L} = \sum_{t=1}^{T} \sum_{-c \le j \le c, j \ne 0} \log P(w_{t+j} | w_t)$$</p>
+<p>其中条件概率通过 softmax 计算：</p>
+<p>$$P(w_{t+j} | w_t) = \frac{\exp(\mathbf{v}‘<em>{w</em>{t+j}} \cdot \mathbf{v}<em>{w_t})}{\sum</em>{w=1}^{V} \exp(\mathbf{v}’<em>w \cdot \mathbf{v}</em>{w_t})}$$</p>
+<pre class="playground"><code class="language-rust edition2024">/// 简化的 Skip-gram 词嵌入训练器
+use std::collections::HashMap;
+
+struct WordEmbedding {
+    word_to_idx: HashMap&lt;String, usize&gt;,
+    idx_to_word: Vec&lt;String&gt;,
+    // 词向量矩阵 W: vocab_size x embedding_dim
+    w: Vec&lt;Vec&lt;f64&gt;&gt;,
+    embedding_dim: usize,
+    learning_rate: f64,
+}
+
+impl WordEmbedding {
+    fn new(vocabulary: Vec&lt;String&gt;, embedding_dim: usize, lr: f64) -&gt; Self {
+        let vocab_size = vocabulary.len();
+        let word_to_idx: HashMap&lt;String, usize&gt; = vocabulary
+            .iter()
+            .enumerate()
+            .map(|(i, w)| (w.clone(), i))
+            .collect();
+        let idx_to_word = vocabulary.clone();
+
+        // 随机初始化词向量
+        let mut rng = rand_simple();
+        let w: Vec&lt;Vec&lt;f64&gt;&gt; = (0..vocab_size)
+            .map(|_| (0..embedding_dim).map(|_| rng.next_f64() * 0.1 - 0.05).collect())
+            .collect();
+
+        WordEmbedding { word_to_idx, idx_to_word, w, embedding_dim, learning_rate: lr }
+    }
+
+    /// 简化的 Skip-gram 训练步骤（负采样省略，使用朴素梯度）
+    fn train_step(&amp;mut self, center: &amp;str, context: &amp;str) {
+        if let (Some(&amp;ci), Some(&amp;oi)) = (self.word_to_idx.get(center), self.word_to_idx.get(context)) {
+            let dim = self.embedding_dim;
+            let lr = self.learning_rate;
+
+            // 简化：直接拉近中心词和上下文词的向量
+            let mut grad = vec![0.0; dim];
+            for d in 0..dim {
+                grad[d] = self.w[oi][d] - self.w[ci][d];
+            }
+            for d in 0..dim {
+                self.w[ci][d] += lr * grad[d] * 0.01;
+                self.w[oi][d] -= lr * grad[d] * 0.01;
+            }
+        }
+    }
+
+    fn get_vector(&amp;self, word: &amp;str) -&gt; Option&lt;&amp;Vec&lt;f64&gt;&gt; {
+        self.word_to_idx.get(word).map(|&amp;idx| &amp;self.w[idx])
+    }
+
+    /// 余弦相似度
+    fn cosine_similarity(a: &amp;[f64], b: &amp;[f64]) -&gt; f64 {
+        let dot: f64 = a.iter().zip(b.iter()).map(|(x, y)| x * y).sum();
+        let norm_a: f64 = a.iter().map(|x| x * x).sum::&lt;f64&gt;().sqrt();
+        let norm_b: f64 = b.iter().map(|x| x * x).sum::&lt;f64&gt;().sqrt();
+        if norm_a == 0.0 || norm_b == 0.0 { return 0.0; }
+        dot / (norm_a * norm_b)
+    }
+}
+
+/// 简易伪随机数生成器
+struct SimpleRng { state: u64 }
+fn rand_simple() -&gt; SimpleRng { SimpleRng { state: 42 } }
+impl SimpleRng {
+    fn next_f64(&amp;mut self) -&gt; f64 {
+        self.state = self.state.wrapping_mul(6364136223846793005).wrapping_add(1);
+        (self.state &gt;&gt; 33) as f64 / u32::MAX as f64
+    }
+}
+
+fn main() {
+    let vocab = vec![
+        "king".into(), "queen".into(), "man".into(), "woman".into(),
+        "prince".into(), "princess".into(),
+    ];
+    let mut emb = WordEmbedding::new(vocab, 10, 0.01);
+
+    // 模拟训练数据（中心词, 上下文词）
+    let pairs = [
+        ("king", "queen"), ("king", "man"), ("queen", "woman"),
+        ("man", "woman"), ("prince", "princess"), ("prince", "king"),
+        ("queen", "king"), ("woman", "man"), ("princess", "queen"),
+    ];
+
+    for _ in 0..100 {
+        for (c, o) in &amp;pairs {
+            emb.train_step(c, o);
+        }
+    }
+
+    // 计算相似度
+    if let (Some(v1), Some(v2)) = (emb.get_vector("king"), emb.get_vector("queen")) {
+        let sim = WordEmbedding::cosine_similarity(v1, v2);
+        println!("king 与 queen 的余弦相似度: {:.4}", sim);
+    }
+}</code></pre>
+<hr>
+<h2 id="四语言模型"><a class="header" href="#四语言模型">四、语言模型</a></h2>
+<p>语言模型是 NLP 的基石，它为一段文本分配概率，衡量该文本在语言中出现的合理性。</p>
+<h3 id="41-统计语言模型n-gram"><a class="header" href="#41-统计语言模型n-gram">4.1 统计语言模型（N-gram）</a></h3>
+<p>N-gram 模型基于马尔可夫假设：一个词的出现仅依赖于它前面的 $n-1$ 个词。</p>
+<p>$$P(w_1, w_2, \ldots, w_T) = \prod_{t=1}^{T} P(w_t | w_{t-n+1}, \ldots, w_{t-1})$$</p>
+<p>最常用的是 bigram（$n=2$）和 trigram（$n=3$）模型：</p>
+<p>$$P(w_t | w_{t-1}) = \frac{C(w_{t-1}, w_t)}{C(w_{t-1})}$$</p>
+<pre class="playground"><code class="language-rust edition2024">use std::collections::HashMap;
+
+/// Bigram 语言模型
+struct BigramModel {
+    /// 单词计数
+    unigram_counts: HashMap&lt;String, usize&gt;,
+    /// 相邻词对计数
+    bigram_counts: HashMap&lt;(String, String), usize&gt;,
+    /// 总词数
+    total_words: usize,
+}
+
+impl BigramModel {
+    fn new() -&gt; Self {
+        BigramModel {
+            unigram_counts: HashMap::new(),
+            bigram_counts: HashMap::new(),
+            total_words: 0,
+        }
+    }
+
+    /// 从文本训练模型
+    fn train(&amp;mut self, text: &amp;str) {
+        let words: Vec&lt;&amp;str&gt; = text.split_whitespace().collect();
+        for i in 0..words.len() {
+            *self.unigram_counts.entry(words[i].to_string()).or_insert(0) += 1;
+            self.total_words += 1;
+            if i &gt; 0 {
+                let key = (words[i - 1].to_string(), words[i].to_string());
+                *self.bigram_counts.entry(key).or_insert(0) += 1;
+            }
+        }
+    }
+
+    /// 计算句子概率（加1平滑）
+    fn sentence_probability(&amp;self, sentence: &amp;str) -&gt; f64 {
+        let words: Vec&lt;&amp;str&gt; = sentence.split_whitespace().collect();
+        let vocab_size = self.unigram_counts.len();
+        let mut log_prob = 0.0f64;
+
+        for i in 0..words.len() {
+            let unigram_count = self.unigram_counts.get(words[i]).unwrap_or(&amp;0) + 1;
+            if i &gt; 0 {
+                let bigram_count = self.bigram_counts
+                    .get(&amp;(words[i - 1].to_string(), words[i].to_string()))
+                    .unwrap_or(&amp;0) + 1;
+                let prob = (bigram_count as f64) / ((unigram_count + vocab_size) as f64);
+                log_prob += prob.ln();
+            } else {
+                let prob = unigram_count as f64 / (self.total_words + vocab_size) as f64;
+                log_prob += prob.ln();
+            }
+        }
+        log_prob
+    }
+
+    /// 预测下一个词
+    fn predict_next(&amp;self, word: &amp;str) -&gt; Option&lt;String&gt; {
+        let prefix = word.to_string();
+        let candidates: Vec&lt;_&gt; = self.bigram_counts
+            .iter()
+            .filter(|((w, _), _)| w == &amp;prefix)
+            .collect();
+
+        candidates.into_iter().max_by_key(|(_, &amp;count)| count).map(|((_, w), _)| w.clone())
+    }
+}
+
+fn main() {
+    let corpus = "I love Rust programming . Rust is a systems language . I love programming in Rust .";
+
+    let mut model = BigramModel::new();
+    model.train(corpus);
+
+    println!("'I love' 后面最可能的词: {:?}", model.predict_next("love"));
+    println!("'Rust is' 后面最可能的词: {:?}", model.predict_next("is"));
+
+    let prob = model.sentence_probability("I love Rust");
+    println!("句子概率 (log): {:.4}", prob);
+}</code></pre>
+<h3 id="42-神经网络语言模型"><a class="header" href="#42-神经网络语言模型">4.2 神经网络语言模型</a></h3>
+<p>神经网络语言模型用低维稠密向量替代了 N-gram 中的离散计数，能够更好地捕捉语义关系。从 Word2Vec 到 LSTM，再到 Transformer，神经网络语言模型逐步解决了长距离依赖和语义理解的问题。</p>
+<h3 id="43-transformer-与自注意力机制"><a class="header" href="#43-transformer-与自注意力机制">4.3 Transformer 与自注意力机制</a></h3>
+<p>Transformer 是 2017 年由 Vaswani 等人提出的革命性架构，完全基于注意力机制，抛弃了循环和卷积结构。它是当今所有主流大语言模型（GPT、BERT、Claude、DeepSeek 等）的基础。</p>
+<h4 id="自注意力机制"><a class="header" href="#自注意力机制">自注意力机制</a></h4>
+<p>自注意力的核心公式为：</p>
+<p>$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right) V$$</p>
+<p>其中：</p>
+<ul>
+<li>$Q$（Query）：查询矩阵，表示“我在找什么“</li>
+<li>$K$（Key）：键矩阵，表示“我有什么“</li>
+<li>$V$（Value）：值矩阵，表示“我的内容是什么“</li>
+<li>$d_k$：键向量的维度，用于缩放以防止梯度消失</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024">/// 自注意力机制的 Rust 实现
+struct Attention {
+    /// Q, K, V 权重矩阵 (d_model x d_k)
+    w_q: Vec&lt;Vec&lt;f64&gt;&gt;,
+    w_k: Vec&lt;Vec&lt;f64&gt;&gt;,
+    w_v: Vec&lt;Vec&lt;f64&gt;&gt;,
+    d_k: usize,
+    d_model: usize,
+}
+
+impl Attention {
+    fn new(d_model: usize, d_k: usize) -&gt; Self {
+        let mut rng = rand_simple();
+        let random_matrix = |rows, cols| -&gt; Vec&lt;Vec&lt;f64&gt;&gt; {
+            (0..rows)
+                .map(|_| (0..cols).map(|_| rng.next_f64() * 0.1 - 0.05).collect())
+                .collect()
+        };
+        Attention {
+            w_q: random_matrix(d_model, d_k),
+            w_k: random_matrix(d_model, d_k),
+            w_v: random_matrix(d_model, d_k),
+            d_k,
+            d_model,
+        }
+    }
+
+    /// 矩阵乘法 C = A * B^T
+    fn mat_mul(a: &amp;[Vec&lt;f64&gt;], b_t: &amp;[Vec&lt;f64&gt;]) -&gt; Vec&lt;Vec&lt;f64&gt;&gt; {
+        let m = a.len();
+        let n = b_t.len();
+        let k = a[0].len();
+        let mut c = vec![vec![0.0; n]; m];
+        for i in 0..m {
+            for j in 0..n {
+                for l in 0..k {
+                    c[i][j] += a[i][l] * b_t[j][l];
+                }
+            }
+        }
+        c
+    }
+
+    /// 矩阵乘以向量
+    fn mat_vec_mul(mat: &amp;[Vec&lt;f64&gt;], vec: &amp;[f64]) -&gt; Vec&lt;f64&gt; {
+        mat.iter()
+            .map(|row| row.iter().zip(vec.iter()).map(|(a, b)| a * b).sum())
+            .collect()
+    }
+
+    /// Softmax 函数
+    fn softmax(row: &amp;[f64]) -&gt; Vec&lt;f64&gt; {
+        let max_val = row.iter().cloned().fold(f64::NEG_INFINITY, f64::max);
+        let exps: Vec&lt;f64&gt; = row.iter().map(|x| (x - max_val).exp()).collect();
+        let sum: f64 = exps.iter().sum();
+        exps.iter().map(|x| x / sum).collect()
+    }
+
+    /// 计算自注意力
+    fn forward(&amp;self, input: &amp;[Vec&lt;f64&gt;]) -&gt; Vec&lt;Vec&lt;f64&gt;&gt; {
+        let seq_len = input.len();
+
+        // 计算 Q, K, V
+        let q: Vec&lt;Vec&lt;f64&gt;&gt; = input.iter().map(|x| Self::mat_vec_mul(&amp;self.w_q, x)).collect();
+        let k: Vec&lt;Vec&lt;f64&gt;&gt; = input.iter().map(|x| Self::mat_vec_mul(&amp;self.w_k, x)).collect();
+        let v: Vec&lt;Vec&lt;f64&gt;&gt; = input.iter().map(|x| Self::mat_vec_mul(&amp;self.w_v, x)).collect();
+
+        // QK^T / sqrt(d_k)
+        let scale = 1.0 / (self.d_k as f64).sqrt();
+        let mut scores = Self::mat_mul(&amp;q, &amp;k);
+        for row in &amp;mut scores {
+            for val in row {
+                *val *= scale;
+            }
+        }
+
+        // Softmax
+        let attention_weights: Vec&lt;Vec&lt;f64&gt;&gt; = scores.iter().map(|row| Self::softmax(row)).collect();
+
+        // Attention * V
+        let mut output = vec![vec![0.0; self.d_k]; seq_len];
+        for i in 0..seq_len {
+            for j in 0..self.d_k {
+                for l in 0..seq_len {
+                    output[i][j] += attention_weights[i][l] * v[l][j];
+                }
+            }
+        }
+        output
+    }
+}
+
+fn main() {
+    let d_model = 4;
+    let d_k = 4;
+    let attention = Attention::new(d_model, d_k);
+
+    // 输入：3个token，每个4维
+    let input = vec![
+        vec![1.0, 0.0, 1.0, 0.0],
+        vec![0.0, 1.0, 0.0, 1.0],
+        vec![1.0, 1.0, 0.0, 0.0],
+    ];
+
+    let output = attention.forward(&amp;input);
+    println!("自注意力输出:");
+    for (i, row) in output.iter().enumerate() {
+        println!("  token {}: {:?}", i, row.iter().map(|x| format!("{:.4}", x)).collect::&lt;Vec&lt;_&gt;&gt;());
+    }
+}</code></pre>
+<h4 id="transformer-的整体结构"><a class="header" href="#transformer-的整体结构">Transformer 的整体结构</a></h4>
+<p>Transformer 由编码器（Encoder）和解码器（Decoder）两部分组成：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>组件</th><th>功能</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>多头注意力（Multi-Head Attention）</strong></td><td>从多个子空间捕捉不同层面的语义关系</td></tr>
+<tr><td><strong>前馈神经网络（FFN）</strong></td><td>对每个位置进行非线性变换</td></tr>
+<tr><td><strong>层归一化（Layer Normalization）</strong></td><td>稳定训练过程</td></tr>
+<tr><td><strong>残差连接（Residual Connection）</strong></td><td>缓解梯度消失，促进信息流动</td></tr>
+<tr><td><strong>位置编码（Positional Encoding）</strong></td><td>为序列注入位置信息</td></tr>
+</tbody>
+</table>
+</div>
+<p>多头注意力的计算方式：</p>
+<p>$$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \ldots, \text{head}_h) W^O$$</p>
+<p>$$\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$$</p>
+<hr>
+<h2 id="五大语言模型llm"><a class="header" href="#五大语言模型llm">五、大语言模型（LLM）</a></h2>
+<h3 id="51-token-与词嵌入"><a class="header" href="#51-token-与词嵌入">5.1 Token 与词嵌入</a></h3>
+<p>大语言模型处理文本的基本单位是 Token（标记）。Token 不等于单词——它可以是单词、子词或字符。现代 LLM 普遍使用 BPE（Byte Pair Encoding）算法进行分词。</p>
+<p>BPE 的核心思想是：反复合并语料中出现频率最高的相邻字符对，逐步构建子词词汇表。</p>
+<pre class="playground"><code class="language-rust edition2024">use std::collections::HashMap;
+
+/// 简化的 BPE（Byte Pair Encoding）分词器
+struct BpeTokenizer {
+    merges: Vec&lt;(String, String)&gt;,  // 合并规则
+    vocab: Vec&lt;String&gt;,              // 词汇表
+}
+
+impl BpeTokenizer {
+    fn new() -&gt; Self {
+        BpeTokenizer { merges: Vec::new(), vocab: Vec::new() }
+    }
+
+    /// 从语料中学习合并规则
+    fn train(&amp;mut self, text: &amp;str, num_merges: usize) {
+        // 初始：按字符分词
+        let mut word_freq: HashMap&lt;Vec&lt;String&gt;, usize&gt; = HashMap::new();
+        for word in text.split_whitespace() {
+            let chars: Vec&lt;String&gt; = word.chars().map(|c| c.to_string()).collect();
+            *word_freq.entry(chars).or_insert(0) += 1;
+        }
+
+        for _ in 0..num_merges {
+            // 统计相邻符号对频率
+            let mut pair_freq: HashMap&lt;(String, String), usize&gt; = HashMap::new();
+            for (word, freq) in &amp;word_freq {
+                for i in 0..word.len().saturating_sub(1) {
+                    let pair = (word[i].clone(), word[i + 1].clone());
+                    *pair_freq.entry(pair).or_insert(0) += freq;
+                }
+            }
+
+            // 找到最高频的符号对
+            if let Some((&amp;best_pair, _)) = pair_freq.iter().max_by_key(|(_, &amp;f)| f) {
+                self.merges.push(best_pair.clone());
+
+                // 合并所有词中的该符号对
+                let mut new_word_freq = HashMap::new();
+                for (word, freq) in &amp;word_freq {
+                    let mut new_word = word.clone();
+                    let merged = format!("{}{}", best_pair.0, best_pair.1);
+                    let mut i = 0;
+                    while i &lt; new_word.len().saturating_sub(1) {
+                        if new_word[i] == best_pair.0 &amp;&amp; new_word[i + 1] == best_pair.1 {
+                            new_word[i] = merged.clone();
+                            new_word.remove(i + 1);
+                        } else {
+                            i += 1;
+                        }
+                    }
+                    *new_word_freq.entry(new_word).or_insert(0) += freq;
+                }
+                word_freq = new_word_freq;
+            } else {
+                break;
+            }
+        }
+
+        // 构建词汇表
+        let mut vocab_set = std::collections::BTreeSet::new();
+        for word in word_freq.keys() {
+            for token in word {
+                vocab_set.insert(token.clone());
+            }
+        }
+        self.vocab = vocab_set.into_iter().collect();
+    }
+
+    /// 编码文本为 token 序列
+    fn encode(&amp;self, text: &amp;str) -&gt; Vec&lt;String&gt; {
+        let mut tokens: Vec&lt;String&gt; = text.chars().map(|c| c.to_string()).collect();
+        for (a, b) in &amp;self.merges {
+            let merged = format!("{}{}", a, b);
+            let mut i = 0;
+            while i &lt; tokens.len().saturating_sub(1) {
+                if tokens[i] == *a &amp;&amp; tokens[i + 1] == *b {
+                    tokens[i] = merged.clone();
+                    tokens.remove(i + 1);
+                } else {
+                    i += 1;
+                }
+            }
+        }
+        tokens
+    }
+}
+
+fn main() {
+    let corpus = "low lower newest widest";
+    let mut tokenizer = BpeTokenizer::new();
+    tokenizer.train(corpus, 10);
+
+    println!("合并规则: {:?}", tokenizer.merges);
+    println!("词汇表: {:?}", tokenizer.vocab);
+
+    let test = "lower newest";
+    let encoded = tokenizer.encode(test);
+    println!("'{}' =&gt; {:?}", test, encoded);
+}</code></pre>
+<h3 id="52-ai-agent智能体"><a class="header" href="#52-ai-agent智能体">5.2 AI Agent（智能体）</a></h3>
+<p>AI Agent 是以大语言模型为“大脑“，能够自主感知环境、规划任务、调用工具并执行动作的智能系统。</p>
+<p>$$\text{Agent} = \text{LLM（大脑）} + \text{Memory（记忆）} + \text{Tools（工具）} + \text{Planning（规划）}$$</p>
+<pre class="playground"><code class="language-rust edition2024">/// 简化的 AI Agent 框架
+use std::collections::HashMap;
+
+/// 工具 trait：所有 Agent 可调用的工具都实现此 trait
+trait Tool {
+    fn name(&amp;self) -&gt; &amp;str;
+    fn description(&amp;self) -&gt; &amp;str;
+    fn execute(&amp;self, input: &amp;str) -&gt; String;
+}
+
+/// 计算器工具
+struct CalculatorTool;
+impl Tool for CalculatorTool {
+    fn name(&amp;self) -&gt; &amp;str { "calculator" }
+    fn description(&amp;self) -&gt; &amp;str { "执行数学计算，输入为数学表达式" }
+    fn execute(&amp;self, input: &amp;str) -&gt; String {
+        // 简化：仅支持两个数的四则运算
+        let parts: Vec&lt;&amp;str&gt; = input.split_whitespace().collect();
+        if parts.len() == 3 {
+            let a: f64 = parts[0].parse().unwrap_or(0.0);
+            let b: f64 = parts[2].parse().unwrap_or(0.0);
+            let result = match parts[1] {
+                "+" =&gt; a + b, "-" =&gt; a - b,
+                "*" =&gt; a * b, "/" =&gt; if b != 0.0 { a / b } else { f64::NAN },
+                _ =&gt; f64::NAN,
+            };
+            format!("{} {} {} = {}", a, parts[1], b, result)
+        } else {
+            "无法解析表达式".to_string()
+        }
+    }
+}
+
+/// 搜索工具
+struct SearchTool;
+impl Tool for SearchTool {
+    fn name(&amp;self) -&gt; &amp;str { "search" }
+    fn description(&amp;self) -&gt; &amp;str { "搜索信息，输入为查询关键词" }
+    fn execute(&amp;self, input: &amp;str) -&gt; String {
+        format!("搜索结果：关于 '{}' 的信息...", input)
+    }
+}
+
+/// Agent 结构体
+struct Agent {
+    tools: HashMap&lt;String, Box&lt;dyn Tool&gt;&gt;,
+    memory: Vec&lt;String&gt;,
+}
+
+impl Agent {
+    fn new() -&gt; Self {
+        let mut tools: HashMap&lt;String, Box&lt;dyn Tool&gt;&gt; = HashMap::new();
+        tools.insert("calculator".to_string(), Box::new(CalculatorTool));
+        tools.insert("search".to_string(), Box::new(SearchTool));
+        Agent { tools, memory: Vec::new() }
+    }
+
+    /// 模拟 Agent 的推理和工具调用过程
+    fn process(&amp;mut self, user_input: &amp;str) -&gt; String {
+        self.memory.push(user_input.to_string());
+
+        // 简化的意图识别
+        if user_input.contains("计算") || user_input.contains("+") || user_input.contains("*") {
+            let tool = self.tools.get("calculator").unwrap();
+            let expr = user_input
+                .replace("计算", "")
+                .replace("请", "")
+                .trim()
+                .to_string();
+            let result = tool.execute(&amp;expr);
+            self.memory.push(result.clone());
+            format!("[Agent] 调用工具 {} =&gt; {}", tool.name(), result)
+        } else if user_input.contains("搜索") || user_input.contains("查找") {
+            let tool = self.tools.get("search").unwrap();
+            let query = user_input
+                .replace("搜索", "")
+                .replace("查找", "")
+                .replace("请", "")
+                .trim()
+                .to_string();
+            let result = tool.execute(&amp;query);
+            self.memory.push(result.clone());
+            format!("[Agent] 调用工具 {} =&gt; {}", tool.name(), result)
+        } else {
+            "[Agent] 我理解了你的问题，但目前没有合适的工具来处理。".to_string()
+        }
+    }
+}
+
+fn main() {
+    let mut agent = Agent::new();
+
+    let queries = vec![
+        "请计算 123 + 456",
+        "搜索 Rust 语言特性",
+    ];
+
+    for q in &amp;queries {
+        println!("用户: {}", q);
+        println!("{}", agent.process(q));
+        println!();
+    }
+}</code></pre>
+<h3 id="53-典型大模型介绍"><a class="header" href="#53-典型大模型介绍">5.3 典型大模型介绍</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>模型</th><th>开发者</th><th>参数量</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>GPT-4o</strong></td><td>OpenAI</td><td>未公开</td><td>多模态、推理能力强</td></tr>
+<tr><td><strong>Claude</strong></td><td>Anthropic</td><td>未公开</td><td>安全对齐、长上下文、代码能力突出</td></tr>
+<tr><td><strong>DeepSeek</strong></td><td>DeepSeek</td><td>671B (MoE)</td><td>开源、MoE 架构、性价比极高</td></tr>
+<tr><td><strong>Qwen</strong></td><td>阿里云</td><td>72B+</td><td>中文能力强、开源生态完善</td></tr>
+<tr><td><strong>LLaMA</strong></td><td>Meta</td><td>8B–405B</td><td>开源标杆、社区生态丰富</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="六rust-nlp-生态"><a class="header" href="#六rust-nlp-生态">六、Rust NLP 生态</a></h2>
+<p>Rust 在 NLP 领域的生态正在快速发展，以下是一些重要的库和框架。</p>
+<h3 id="61-主要库一览"><a class="header" href="#61-主要库一览">6.1 主要库一览</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>库名</th><th>说明</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>rust-bert</strong></td><td>HuggingFace Transformers 的 Rust 移植</td><td>预训练模型推理（BERT、GPT-2 等）</td></tr>
+<tr><td><strong>candle</strong></td><td>HuggingFace 出品的轻量级 ML 框架</td><td>模型训练与推理、Transformer 实现</td></tr>
+<tr><td><strong>burn</strong></td><td>Rust 原生深度学习框架</td><td>灵活的模型构建与训练</td></tr>
+<tr><td><strong>rust-tokenizers</strong></td><td>HuggingFace Tokenizers 的 Rust 原生实现</td><td>高性能分词（BPE、WordPiece 等）</td></tr>
+<tr><td><strong>finalfusion</strong></td><td>Rust 词嵌入库</td><td>Word2Vec、FastText、GloVe 格式</td></tr>
+<tr><td><strong>rust-stemmers</strong></td><td>多语言词干提取</td><td>文本预处理</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="62-实战用-rust--candle-加载预训练模型"><a class="header" href="#62-实战用-rust--candle-加载预训练模型">6.2 实战：用 Rust + candle 加载预训练模型</a></h3>
+<pre class="playground"><code class="language-rust edition2024">// Cargo.toml 依赖:
+// [dependencies]
+// candle-core = "0.8"
+// candle-nn = "0.8"
+// candle-transformers = "0.8"
+
+use candle_core::{Device, Tensor};
+use candle_transformers::models::bert::{BertModel, Config};
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // 加载预训练 BERT 模型配置
+    let config = Config::bert_base_uncased();
+
+    // 创建随机初始化的模型（实际使用时加载权重文件）
+    let device = Device::Cpu;
+    let vb = candle_nn::VarBuilder::new_null(); // 实际使用 candle_nn::VarBuilder::from_pth()
+    let _model = BertModel::new(vb, &amp;config)?;
+
+    // 模拟输入
+    let input_ids = Tensor::new(&amp;[[101u32, 2023, 2003, 1037, 3376, 102]], &amp;device)?;
+    let attention_mask = Tensor::new(&amp;[[1u32; 7]], &amp;device)?;
+
+    println!("输入 token IDs: {:?}", input_ids.shape());
+    println!("注意力掩码: {:?}", attention_mask.shape());
+    println!("BERT 模型已准备就绪");
+
+    Ok(())
+}</code></pre>
+<h3 id="63-实战用-rust-实现完整的文本分类管道"><a class="header" href="#63-实战用-rust-实现完整的文本分类管道">6.3 实战：用 Rust 实现完整的文本分类管道</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use std::collections::HashMap;
+
+/// 文本分类器（基于 TF-IDF + 余弦相似度）
+struct TextClassifier {
+    tfidf: TfIdfCalculator,
+    /// 每个类别的 TF-IDF 质心向量
+    centroids: HashMap&lt;String, Vec&lt;f64&gt;&gt;,
+}
+
+impl TextClassifier {
+    fn train(documents: &amp;[(&amp;str, &amp;str)]) -&gt; Self {
+        let all_texts: Vec&lt;&amp;str&gt; = documents.iter().map(|(t, _)| *t).collect();
+        let tfidf = TfIdfCalculator::fit(&amp;all_texts);
+
+        // 按类别计算质心
+        let mut class_docs: HashMap&lt;String, Vec&lt;Vec&lt;f64&gt;&gt;&gt; = HashMap::new();
+        for (text, label) in documents {
+            let vec = tfidf.transform(text);
+            class_docs.entry(label.to_string()).or_default().push(vec);
+        }
+
+        let mut centroids = HashMap::new();
+        for (label, vecs) in class_docs {
+            let dim = vecs[0].len();
+            let n = vecs.len() as f64;
+            let centroid: Vec&lt;f64&gt; = (0..dim)
+                .map(|d| vecs.iter().map(|v| v[d]).sum::&lt;f64&gt;() / n)
+                .collect();
+            centroids.insert(label, centroid);
+        }
+
+        TextClassifier { tfidf, centroids }
+    }
+
+    fn predict(&amp;self, text: &amp;str) -&gt; String {
+        let vec = self.tfidf.transform(text);
+        let mut best_label = String::new();
+        let mut best_sim = f64::NEG_INFINITY;
+
+        for (label, centroid) in &amp;self.centroids {
+            let sim = cosine_similarity(&amp;vec, centroid);
+            if sim &gt; best_sim {
+                best_sim = sim;
+                best_label = label.clone();
+            }
+        }
+        best_label
+    }
+}
+
+fn cosine_similarity(a: &amp;[f64], b: &amp;[f64]) -&gt; f64 {
+    let dot: f64 = a.iter().zip(b.iter()).map(|(x, y)| x * y).sum();
+    let norm_a: f64 = a.iter().map(|x| x * x).sum::&lt;f64&gt;().sqrt();
+    let norm_b: f64 = b.iter().map(|x| x * x).sum::&lt;f64&gt;().sqrt();
+    if norm_a == 0.0 || norm_b == 0.0 { return 0.0; }
+    dot / (norm_a * norm_b)
+}
+
+fn main() {
+    let training_data: Vec&lt;(&amp;str, &amp;str)&gt; = vec![
+        ("rust is a great programming language", "tech"),
+        ("python is popular for data science", "tech"),
+        ("machine learning transforms industries", "tech"),
+        ("the stock market rose today", "finance"),
+        ("interest rates are increasing", "finance"),
+        ("investment portfolio diversification", "finance"),
+    ];
+
+    let classifier = TextClassifier::train(&amp;training_data);
+
+    let test_cases = vec![
+        "I love programming in rust",
+        "The economy is growing fast",
+    ];
+
+    for text in &amp;test_cases {
+        let label = classifier.predict(text);
+        println!("'{}' =&gt; 分类: {}", text, label);
+    }
+}</code></pre>
+<hr>
+<h2 id="七总结"><a class="header" href="#七总结">七、总结</a></h2>
+<h3 id="71-nlp-核心概念速查表"><a class="header" href="#71-nlp-核心概念速查表">7.1 NLP 核心概念速查表</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>说明</th><th>关键公式/方法</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>分词</strong></td><td>将文本切分为 token</td><td>字符级、词级别、BPE</td></tr>
+<tr><td><strong>词袋模型</strong></td><td>忽略词序，统计词频</td><td>$\text{BoW}(d) = [c_1, c_2, \ldots, c_m]$</td></tr>
+<tr><td><strong>TF-IDF</strong></td><td>词频 x 逆文档频率</td><td>$\text{TF-IDF} = \text{TF} \times \log\frac{N}{df+1}$</td></tr>
+<tr><td><strong>Word2Vec</strong></td><td>词嵌入，语义向量化</td><td>Skip-gram / CBOW</td></tr>
+<tr><td><strong>N-gram</strong></td><td>统计语言模型</td><td>$P(w_t | w_{t-1})$</td></tr>
+<tr><td><strong>Transformer</strong></td><td>自注意力架构</td><td>$\text{softmax}(\frac{QK^T}{\sqrt{d_k}})V$</td></tr>
+<tr><td><strong>BPE</strong></td><td>子词分词算法</td><td>迭代合并最高频字符对</td></tr>
+<tr><td><strong>LLM</strong></td><td>大规模预训练语言模型</td><td>GPT、BERT、Claude、DeepSeek</td></tr>
+<tr><td><strong>AI Agent</strong></td><td>LLM + 工具 + 规划</td><td>Agent = LLM + Memory + Tools + Planning</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="72-练习建议"><a class="header" href="#72-练习建议">7.2 练习建议</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>难度</th><th>练习内容</th><th>涉及知识点</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>入门</strong></td><td>实现一个英文文本清洗管道（去停用词、转小写、去标点）</td><td>文本预处理</td></tr>
+<tr><td><strong>入门</strong></td><td>用 Rust 实现 BoW 模型，计算两篇文档的余弦相似度</td><td>词袋模型、向量运算</td></tr>
+<tr><td><strong>进阶</strong></td><td>实现 TF-IDF 计算器，完成一个简单的新闻分类器</td><td>TF-IDF、文本分类</td></tr>
+<tr><td><strong>进阶</strong></td><td>用 Rust 从零实现 Bigram 语言模型，支持句子概率计算和下一个词预测</td><td>N-gram、概率计算</td></tr>
+<tr><td><strong>进阶</strong></td><td>实现简化版 BPE 分词器，对比不同合并次数对词汇表大小的影响</td><td>BPE、Tokenization</td></tr>
+<tr><td><strong>挑战</strong></td><td>用 Rust 从零实现多头自注意力机制，支持可变序列长度</td><td>Transformer、矩阵运算</td></tr>
+<tr><td><strong>挑战</strong></td><td>基于 candle 框架加载预训练 BERT 模型，完成情感分析推理任务</td><td>rust-bert/candle、预训练模型</td></tr>
+<tr><td><strong>挑战</strong></td><td>构建一个简易 AI Agent，支持多轮对话、工具调用和记忆管理</td><td>Agent 架构、工具系统</td></tr>
+</tbody>
+</table>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_36.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_38_cv.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_36.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_38_cv.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

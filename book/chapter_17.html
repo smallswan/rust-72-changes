@@ -1,0 +1,929 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第十七 位运算 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f08b2010.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第十七-位运算"><a class="header" href="#第十七-位运算">第十七 位运算</a></h1>
+<h2 id="位运算概述"><a class="header" href="#位运算概述">位运算概述</a></h2>
+<p>计算机底层数据以二进制形式存储，每一位（bit）只能是 0 或 1。位运算直接对二进制位进行操作，是计算机最底层的运算方式。与加减乘除等算术运算相比，位运算具有以下优势：</p>
+<ul>
+<li><strong>速度快</strong>：位运算是 CPU 原生支持的指令，通常只需一个时钟周期</li>
+<li><strong>空间省</strong>：一个位即可表示一个布尔状态，可用于紧凑的数据编码</li>
+<li><strong>用途广</strong>：权限控制、数据压缩、加密算法、图形处理等都离不开位运算</li>
+</ul>
+<p>Rust 作为一门系统级编程语言，完整支持所有位运算操作，并通过 <code>std::ops</code> 模块提供了对应的运算符 trait，允许用户自定义类型的位运算行为。</p>
+<p><a href="https://baike.baidu.com/item/%E4%BD%8D%E8%BF%90%E7%AE%97/6888804?fr=aladdin#2_5">位运算</a></p>
+<h3 id="六种基本位运算一览"><a class="header" href="#六种基本位运算一览">六种基本位运算一览</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>运算</th><th>运算符</th><th>Rust trait</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>与（AND）</td><td><code>&amp;</code></td><td><code>BitAnd</code></td><td>两位都为1，结果才为1</td></tr>
+<tr><td>或（OR）</td><td><code>|</code></td><td><code>BitOr</code></td><td>有一位为1，结果就为1</td></tr>
+<tr><td>非（NOT）</td><td><code>!</code> / <code>~</code></td><td><code>Not</code></td><td>按位取反</td></tr>
+<tr><td>异或（XOR）</td><td><code>^</code></td><td><code>BitXor</code></td><td>相同为0，不同为1</td></tr>
+<tr><td>左移（SHL）</td><td><code>&lt;&lt;</code></td><td><code>Shl</code></td><td>所有位向左移动</td></tr>
+<tr><td>右移（SHR）</td><td><code>&gt;&gt;</code></td><td><code>Shr</code></td><td>所有位向右移动</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="与and运算"><a class="header" href="#与and运算">与（AND）运算</a></h2>
+<p>运算符：<code>&amp;</code></p>
+<h3 id="真值表"><a class="header" href="#真值表">真值表</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>a</th><th>b</th><th>a &amp; b</th></tr>
+</thead>
+<tbody>
+<tr><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td>1</td><td>1</td></tr>
+</tbody>
+</table>
+</div>
+<p>只有当两个对应位都为 1 时，结果的该位才为 1，否则为 0。</p>
+<h3 id="常见用途"><a class="header" href="#常见用途">常见用途</a></h3>
+<h4 id="1-掩码mask提取特定位"><a class="header" href="#1-掩码mask提取特定位">1. 掩码（Mask）——提取特定位</a></h4>
+<p>掩码是与运算最经典的应用。通过构造一个特定的二进制数（掩码），可以提取目标数据中的指定位。</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let value: u8 = 0b1011_0110; // 182
+
+    // 提取低4位
+    let low_4 = value &amp; 0b0000_1111; // 0b0110 = 6
+    println!("低4位: {:04b} = {}", low_4, low_4);
+
+    // 提取高4位
+    let high_4 = (value &amp; 0b1111_0000) &gt;&gt; 4; // 0b1011 = 11
+    println!("高4位: {:04b} = {}", high_4, high_4);
+
+    // 提取第3位（从0开始计数）
+    let bit_3 = (value &gt;&gt; 3) &amp; 1;
+    println!("第3位: {}", bit_3);
+}</code></pre>
+<h4 id="2-清零特定位"><a class="header" href="#2-清零特定位">2. 清零特定位</a></h4>
+<p>要将某一位或某几位清零，只需构造一个掩码，目标位为 0，其余位为 1，然后做与运算。</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let mut flags: u8 = 0b1111_1111; // 所有标志位都开启
+
+    // 将第2位和第5位清零
+    let mask = !(0b0100_0100); // 0b1011_1011
+    flags = flags &amp; mask;
+    println!("清零后: {:08b}", flags); // 10111011
+}</code></pre>
+<h4 id="3-判断奇偶"><a class="header" href="#3-判断奇偶">3. 判断奇偶</a></h4>
+<p>一个数的二进制最低位决定了它的奇偶性：最低位为 1 是奇数，为 0 是偶数。</p>
+<pre class="playground"><code class="language-rust edition2024">fn is_odd(n: i32) -&gt; bool {
+    n &amp; 1 == 1
+}
+
+fn is_even(n: i32) -&gt; bool {
+    n &amp; 1 == 0
+}
+
+fn main() {
+    println!("5是奇数: {}", is_odd(5));   // true
+    println!("8是偶数: {}", is_even(8));  // true
+}</code></pre>
+<p>相比 <code>n % 2 == 0</code>，位运算方式避免了除法操作，效率更高。</p>
+<h3 id="brian-kernighan-算法"><a class="header" href="#brian-kernighan-算法">Brian Kernighan 算法</a></h3>
+<p>Brian Kernighan 算法是位运算中最优雅的技巧之一。核心思想是：<strong><code>n &amp; (n - 1)</code> 可以将 n 的二进制表示中最低位的 1 置为 0</strong>。</p>
+<p>原理分析：对于一个二进制数 <code>n</code>，<code>n - 1</code> 会将最低位的 1 变为 0，并将该位之后的所有 0 变为 1。因此 <code>n &amp; (n - 1)</code> 恰好消除了最低位的 1。</p>
+<p>$$n &amp; (n-1) \Rightarrow \text{消除最低位的 } 1$$</p>
+<pre class="playground"><code class="language-rust edition2024">/// 统计二进制中1的个数（Brian Kernighan算法）
+fn count_ones(n: u64) -&gt; u64 {
+    let mut n = n;
+    let mut count = 0;
+    while n != 0 {
+        n = n &amp; (n - 1); // 每次消除一个1
+        count += 1;
+    }
+    count
+}
+
+fn main() {
+    println!("15(1111)中1的个数: {}", count_ones(15));  // 4
+    println!("7(0111)中1的个数: {}", count_ones(7));    // 3
+    println!("0中1的个数: {}", count_ones(0));           // 0
+    println!("1024中1的个数: {}", count_ones(1024));     // 1
+}</code></pre>
+<p><strong>时间复杂度</strong>：$O(k)$，其中 $k$ 为二进制中 1 的个数，而非总位数。最坏情况下为 $O(\log n)$。</p>
+<h3 id="判断2的幂"><a class="header" href="#判断2的幂">判断2的幂</a></h3>
+<p>利用 Brian Kernighan 算法的思想，可以高效判断一个数是否为 2 的幂。2 的幂的二进制表示中有且仅有一个 1。</p>
+<p>$$n &amp; (n-1) == 0 \text{ 且 } n &gt; 0 \Rightarrow n \text{ 是2的幂}$$</p>
+<pre class="playground"><code class="language-rust edition2024">fn is_power_of_two(n: u32) -&gt; bool {
+    n != 0 &amp;&amp; (n &amp; (n - 1)) == 0
+}
+
+fn main() {
+    for i in 1..=32 {
+        if is_power_of_two(i) {
+            println!("{} 是2的幂", i);
+        }
+    }
+    // 输出: 1, 2, 4, 8, 16, 32
+}</code></pre>
+<hr>
+<h2 id="或or运算"><a class="header" href="#或or运算">或（OR）运算</a></h2>
+<p>运算符：<code>|</code></p>
+<h3 id="真值表-1"><a class="header" href="#真值表-1">真值表</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>a</th><th>b</th><th>a | b</th></tr>
+</thead>
+<tbody>
+<tr><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>1</td></tr>
+</tbody>
+</table>
+</div>
+<p>只要两个对应位中有一个为 1，结果的该位就为 1。</p>
+<h3 id="常见用途-1"><a class="header" href="#常见用途-1">常见用途</a></h3>
+<h4 id="1-置位set-bit"><a class="header" href="#1-置位set-bit">1. 置位（Set Bit）</a></h4>
+<p>要将某一位或某几位设置为 1，构造一个掩码，目标位为 1，其余位为 0，然后做或运算。</p>
+<pre class="playground"><code class="language-rust edition2024">fn set_bit(mut value: u8, bit_index: usize) -&gt; u8 {
+    value | (1 &lt;&lt; bit_index)
+}
+
+fn main() {
+    let mut x: u8 = 0b1010_0000;
+    x = set_bit(x, 0); // 设置第0位
+    println!("设置第0位后: {:08b}", x); // 10100001
+    x = set_bit(x, 3); // 设置第3位
+    println!("设置第3位后: {:08b}", x); // 10101001
+}</code></pre>
+<h4 id="2-权限组合位标志"><a class="header" href="#2-权限组合位标志">2. 权限组合（位标志）</a></h4>
+<p>位标志（bit flags）是或运算最典型的应用场景。每个标志占一个位，通过或运算可以组合多个标志。</p>
+<pre class="playground"><code class="language-rust edition2024">#[derive(Debug, Clone, Copy)]
+struct Permissions(u8);
+
+const READ: u8    = 0b0000_0001; // 1
+const WRITE: u8   = 0b0000_0010; // 2
+const EXECUTE: u8 = 0b0000_0100; // 4
+
+impl Permissions {
+    fn new() -&gt; Self {
+        Permissions(0)
+    }
+
+    fn add(&amp;mut self, perm: u8) {
+        self.0 |= perm;
+    }
+
+    fn has(&amp;self, perm: u8) -&gt; bool {
+        (self.0 &amp; perm) != 0
+    }
+
+    fn remove(&amp;mut self, perm: u8) {
+        self.0 &amp;= !perm;
+    }
+}
+
+fn main() {
+    let mut perms = Permissions::new();
+    perms.add(READ | WRITE); // 组合权限
+    println!("权限: {:08b}", perms.0); // 00000011
+
+    println!("可读: {}", perms.has(READ));    // true
+    println!("可写: {}", perms.has(WRITE));   // true
+    println!("可执行: {}", perms.has(EXECUTE)); // false
+
+    perms.remove(WRITE);
+    println!("移除写权限后可写: {}", perms.has(WRITE)); // false
+}</code></pre>
+<p>在实际开发中，Rust 的 <code>bitflags</code> crate 提供了更完善的位标志支持，可以安全、方便地定义和操作位标志。</p>
+<hr>
+<h2 id="非not运算"><a class="header" href="#非not运算">非（NOT）运算</a></h2>
+<p>运算符：<code>!</code>（Rust 中推荐使用）或 <code>~</code></p>
+<h3 id="真值表-2"><a class="header" href="#真值表-2">真值表</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>a</th><th>!a</th></tr>
+</thead>
+<tbody>
+<tr><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>0</td></tr>
+</tbody>
+</table>
+</div>
+<p>按位取反：将每一位 0 变 1、1 变 0。</p>
+<h3 id="补码表示"><a class="header" href="#补码表示">补码表示</a></h3>
+<p>在计算机中，有符号整数采用**补码（two’s complement）**表示。取反运算的结果需要结合补码来理解：</p>
+<p>$$\text{补码} = \text{原码取反} + 1$$</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let x: u8 = 0b0000_1111; // 15
+    let y = !x;
+    println!("!{:08b} = {:08b}", x, y); // !00001111 = 11110000 = 240
+
+    // 对于有符号数，!的结果是补码表示
+    let a: i8 = 5;  // 00000101
+    let b = !a;      // 11111010 = -6（补码）
+    println!("!{} = {}", a, b); // !5 = -6
+
+    let c: i8 = 60;
+    let d = !c;      // 11110011 = -61（补码）
+    println!("!{} = {}", c, d); // !60 = -61
+}</code></pre>
+<h3 id="rust-中的区别"><a class="header" href="#rust-中的区别">Rust 中的区别</a></h3>
+<p>Rust 中 <code>!</code> 运算符既用于按位取反（整数类型），也用于逻辑非（<code>bool</code> 类型），具体行为取决于操作数的类型：</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    // 整数类型：按位取反
+    let x: i32 = 0b0000_1111;
+    println!("按位取反: {}", !x); // -16
+
+    // bool类型：逻辑非
+    let flag = true;
+    println!("逻辑非: {}", !flag); // false
+
+    // ~ 运算符在Rust中已弃用，统一使用 !
+    // 旧版Rust中 ~ 用于整数取反，现已不推荐
+}</code></pre>
+<blockquote>
+<p><strong>注意</strong>：在 Rust 中，<code>~</code> 运算符已被弃用，统一使用 <code>!</code> 进行按位取反。这与 C/C++ 中 <code>~</code> 用于取反、<code>!</code> 用于逻辑非的惯例不同。</p>
+</blockquote>
+<hr>
+<h2 id="异或xor运算"><a class="header" href="#异或xor运算">异或（XOR）运算</a></h2>
+<p>运算符：<code>^</code></p>
+<h3 id="真值表-3"><a class="header" href="#真值表-3">真值表</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>a</th><th>b</th><th>a ^ b</th></tr>
+</thead>
+<tbody>
+<tr><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>0</td></tr>
+</tbody>
+</table>
+</div>
+<p>相同为 0，不同为 1。异或运算也称为“不进位加法“。</p>
+<p><a href="https://baike.baidu.com/item/%E5%BC%82%E6%88%96/10993677?fromtitle=%E5%BC%82%E6%88%96%E8%BF%90%E7%AE%97&amp;fromid=720417&amp;fr=aladdin">异或运算(XOR)</a></p>
+<p><a href="https://www.ruanyifeng.com/blog/2021/01/_xor.html">异或运算 XOR 教程</a></p>
+<h3 id="运算法则"><a class="header" href="#运算法则">运算法则</a></h3>
+<p>异或运算具有丰富的数学性质，是解决许多位运算问题的核心工具：</p>
+<ol>
+<li>
+<p><strong>归零律</strong>：$a \oplus a = 0$</p>
+<p>任何数异或其本身都等于 0。因为每一位都相同，按异或定义结果全为 0。</p>
+</li>
+<li>
+<p><strong>恒等律</strong>：$a \oplus 0 = a$</p>
+<p>任何数异或 0 都等于其本身。因为 0 不改变任何位的值。</p>
+</li>
+<li>
+<p><strong>交换律</strong>：$a \oplus b = b \oplus a$</p>
+<p>异或运算不依赖操作数的顺序，与加法类似。</p>
+</li>
+<li>
+<p><strong>结合律</strong>：$a \oplus b \oplus c = a \oplus (b \oplus c) = (a \oplus b) \oplus c$</p>
+<p>多个数连续异或时，可以任意调整计算顺序。</p>
+</li>
+<li>
+<p><strong>自反性</strong>：$a \oplus b \oplus a = b$</p>
+<p>由归零律和交换律推导：$a \oplus b \oplus a = a \oplus a \oplus b = 0 \oplus b = b$。这是异或交换变量的理论基础。</p>
+</li>
+<li>
+<p><strong>可逆性</strong>：若 $d = a \oplus b \oplus c$，则 $a = d \oplus b \oplus c$</p>
+<p>异或运算可以“撤销“：知道结果和除一个操作数外的所有操作数，可以恢复那个操作数。</p>
+</li>
+<li>
+<p><strong>逐位运算示例</strong>：若 $x = \text{0b0101}$，$y = \text{0b1011}$，则 $x \oplus y = \text{0b1110}$</p>
+<pre><code>0101
+1011
+----
+1110
+</code></pre>
+</li>
+<li>
+<p><strong>连续四整数归零</strong>：$\forall i \in \mathbb{Z}$，有 $4i \oplus (4i+1) \oplus (4i+2) \oplus (4i+3) = 0$</p>
+<p>四个连续整数异或结果为 0，因为它们覆盖了所有两位组合（00, 01, 10, 11），每一位上恰好有两个 0 和两个 1。</p>
+</li>
+</ol>
+<h3 id="常见用途-2"><a class="header" href="#常见用途-2">常见用途</a></h3>
+<h4 id="1-交换变量不用临时变量"><a class="header" href="#1-交换变量不用临时变量">1. 交换变量（不用临时变量）</a></h4>
+<p>利用自反性 $a \oplus b \oplus a = b$，可以在不借助临时变量的情况下交换两个数：</p>
+<pre class="playground"><code class="language-rust edition2024">fn xor_swap(a: &amp;mut i32, b: &amp;mut i32) {
+    *a ^= *b;
+    *b ^= *a;
+    *a ^= *b;
+}
+
+fn main() {
+    let mut x = 42;
+    let mut y = 99;
+    xor_swap(&amp;mut x, &amp;mut y);
+    println!("x = {}, y = {}", x, y); // x = 99, y = 42
+}</code></pre>
+<blockquote>
+<p><strong>注意</strong>：实际开发中建议使用 <code>std::mem::swap</code>，异或交换在两个变量指向同一内存地址时会产生错误结果（变为 0）。</p>
+</blockquote>
+<h4 id="2-加密解密"><a class="header" href="#2-加密解密">2. 加密解密</a></h4>
+<p>异或运算具有对称性：$A \oplus K = C$，$C \oplus K = A$。用同一个密钥加密和解密。</p>
+<pre class="playground"><code class="language-rust edition2024">fn xor_encrypt(plaintext: &amp;[u8], key: u8) -&gt; Vec&lt;u8&gt; {
+    plaintext.iter().map(|&amp;b| b ^ key).collect()
+}
+
+fn xor_decrypt(ciphertext: &amp;[u8], key: u8) -&gt; Vec&lt;u8&gt; {
+    // 解密和加密是同一操作
+    xor_encrypt(ciphertext, key)
+}
+
+fn main() {
+    let message = b"Hello, Rust!";
+    let key = 0x42;
+
+    let encrypted = xor_encrypt(message, key);
+    let decrypted = xor_decrypt(&amp;encrypted, key);
+
+    println!("原文: {:?}", String::from_utf8_lossy(message));
+    println!("密文: {:?}", encrypted);
+    println!("解密: {:?}", String::from_utf8_lossy(&amp;decrypted));
+}</code></pre>
+<h4 id="3-查找唯一数leetcode-实战"><a class="header" href="#3-查找唯一数leetcode-实战">3. 查找唯一数（LeetCode 实战）</a></h4>
+<p><strong>题目</strong>：<a href="https://leetcode-cn.com/problems/single-number/">136. 只出现一次的数字</a></p>
+<p>给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现一次的元素。</p>
+<p><strong>思路</strong>：利用归零律和交换律，所有出现两次的数异或后互相抵消为 0，最终结果就是唯一数。</p>
+<p>$$a \oplus a \oplus b \oplus b \oplus \cdots \oplus x = 0 \oplus 0 \oplus \cdots \oplus x = x$$</p>
+<pre class="playground"><code class="language-rust edition2024">pub fn single_number(nums: Vec&lt;i32&gt;) -&gt; i32 {
+    nums.into_iter().fold(0, |acc, x| acc ^ x)
+}
+
+fn main() {
+    let nums = vec![4, 1, 2, 1, 2];
+    println!("只出现一次的数字: {}", single_number(nums)); // 4
+}</code></pre>
+<p><strong>时间复杂度</strong>：$O(n)$，<strong>空间复杂度</strong>：$O(1)$。</p>
+<hr>
+<h2 id="左移shl运算"><a class="header" href="#左移shl运算">左移（SHL）运算</a></h2>
+<p>运算符：<code>&lt;&lt;</code></p>
+<h3 id="原理"><a class="header" href="#原理">原理</a></h3>
+<p>左移运算将所有位向左移动指定位数，右边空出的位补 0。左移 n 位等价于乘以 $2^n$：</p>
+<p>$$x \ll n = x \times 2^n$$</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let x: i32 = 5;
+    let y = x &lt;&lt; 1; // 5 * 2 = 10
+    let z = x &lt;&lt; 3; // 5 * 8 = 40
+    println!("{} &lt;&lt; 1 = {}", x, y); // 10
+    println!("{} &lt;&lt; 3 = {}", x, z); // 40
+
+    // 快速计算 2 的幂
+    println!("1 &lt;&lt; 10 = {}", 1 &lt;&lt; 10); // 1024
+    println!("1 &lt;&lt; 20 = {}", 1 &lt;&lt; 20); // 1048576
+}</code></pre>
+<h3 id="溢出处理"><a class="header" href="#溢出处理">溢出处理</a></h3>
+<p>左移时，如果移出的高位被丢弃，可能导致溢出。Rust 在 debug 模式下会检查整数溢出，在 release 模式下会自动回绕（wrapping）。</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let x: u8 = 128; // 10000000
+    let y = x &lt;&lt; 1;  // debug模式下panic，release模式下为0
+
+    // 使用wrapping方法显式处理溢出
+    let safe = x.wrapping_shl(1);
+    println!("wrapping左移: {}", safe); // 0
+
+    // 使用checked方法检查溢出
+    match x.checked_shl(1) {
+        Some(v) =&gt; println!("结果: {}", v),
+        None =&gt; println!("左移溢出！"),
+    }
+}</code></pre>
+<hr>
+<h2 id="右移shr运算"><a class="header" href="#右移shr运算">右移（SHR）运算</a></h2>
+<p>运算符：<code>&gt;&gt;</code></p>
+<h3 id="原理-1"><a class="header" href="#原理-1">原理</a></h3>
+<p>右移运算将所有位向右移动指定位数。右移 n 位等价于整除 $2^n$：</p>
+<p>$$x \gg n = \lfloor x / 2^n \rfloor$$</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    // 偶数右移
+    let x = 1024;
+    let y = x &gt;&gt; 1; // 1024 / 2 = 512
+    println!("{} &gt;&gt; 1 = {}", x, y); // 512
+
+    // 奇数右移（向下取整）
+    let x = 11;
+    let y = x &gt;&gt; 1; // 11 / 2 = 5（截断小数部分）
+    println!("{} &gt;&gt; 1 = {}", x, y); // 5
+
+    // 快速除以 8
+    let x = 1000;
+    let y = x &gt;&gt; 3; // 1000 / 8 = 125
+    println!("{} &gt;&gt; 3 = {}", x, y); // 125
+}</code></pre>
+<h3 id="算术右移-vs-逻辑右移"><a class="header" href="#算术右移-vs-逻辑右移">算术右移 vs 逻辑右移</a></h3>
+<p>右移分为两种：</p>
+<ul>
+<li><strong>逻辑右移</strong>：高位补 0（用于无符号数）</li>
+<li><strong>算术右移</strong>：高位补符号位（用于有符号数，保持正负不变）</li>
+</ul>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    // 无符号数：逻辑右移（高位补0）
+    let x: u8 = 0b1000_0000; // 128
+    let y = x &gt;&gt; 1;            // 0b0100_0000 = 64
+    println!("无符号右移: {:08b} -&gt; {:08b} ({} -&gt; {})", x, y, x, y);
+
+    // 有符号数：算术右移（高位补符号位）
+    let x: i8 = -128; // 10000000（补码）
+    let y = x &gt;&gt; 1;    // 11000000 = -64（高位补1）
+    println!("有符号右移: {} -&gt; {}", x, y);
+
+    // 正数有符号右移（高位补0）
+    let x: i8 = 127;  // 01111111
+    let y = x &gt;&gt; 1;    // 00111111 = 63
+    println!("正数有符号右移: {} -&gt; {}", x, y);
+}</code></pre>
+<hr>
+<h2 id="rust-中的位运算-trait"><a class="header" href="#rust-中的位运算-trait">Rust 中的位运算 trait</a></h2>
+<p>Rust 通过 <code>std::ops</code> 模块提供了一组 trait，允许自定义类型支持位运算操作符：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>trait</th><th>对应运算符</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><code>std::ops::BitAnd</code></td><td><code>&amp;</code></td><td>按位与</td></tr>
+<tr><td><code>std::ops::BitAndAssign</code></td><td><code>&amp;=</code></td><td>按位与赋值</td></tr>
+<tr><td><code>std::ops::BitOr</code></td><td><code>|</code></td><td>按位或</td></tr>
+<tr><td><code>std::ops::BitOrAssign</code></td><td><code>|=</code></td><td>按位或赋值</td></tr>
+<tr><td><code>std::ops::BitXor</code></td><td><code>^</code></td><td>按位异或</td></tr>
+<tr><td><code>std::ops::BitXorAssign</code></td><td><code>^=</code></td><td>按位异或赋值</td></tr>
+<tr><td><code>std::ops::Not</code></td><td><code>!</code></td><td>按位取反</td></tr>
+<tr><td><code>std::ops::Shl</code></td><td><code>&lt;&lt;</code></td><td>左移</td></tr>
+<tr><td><code>std::ops::ShlAssign</code></td><td><code>&lt;&lt;=</code></td><td>左移赋值</td></tr>
+<tr><td><code>std::ops::Shr</code></td><td><code>&gt;&gt;</code></td><td>右移</td></tr>
+<tr><td><code>std::ops::ShrAssign</code></td><td><code>&gt;&gt;=</code></td><td>右移赋值</td></tr>
+</tbody>
+</table>
+</div>
+<p><a href="https://doc.rust-lang.org/std/ops/trait.BitAnd.html">std::ops::BitAnd</a> The bitwise AND operator <code>&amp;</code>.
+<a href="https://doc.rust-lang.org/std/ops/trait.BitAndAssign.html">std::ops::BitAndAssign</a> The bitwise AND assignment operator <code>&amp;=</code>.
+<a href="https://doc.rust-lang.org/std/ops/trait.BitOr.html">std::ops::BitOr</a> The bitwise OR operator <code>|</code>.
+<a href="https://doc.rust-lang.org/std/ops/trait.BitOrAssign.html">std::ops::BitOrAssign</a> The bitwise OR assignment operator <code>|=</code>.
+<a href="https://doc.rust-lang.org/std/ops/trait.BitXor.html">std::ops::BitXor</a> The bitwise XOR operator <code>^</code>.
+<a href="https://doc.rust-lang.org/std/ops/trait.Not.html">std::ops::Not</a></p>
+<pre class="playground"><code class="language-rust edition2024">use std::ops::{BitAnd, BitOr, BitXor, Not};
+
+#[derive(Debug, Clone, Copy)]
+struct Flags(u8);
+
+impl BitAnd for Flags {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -&gt; Self::Output {
+        Flags(self.0 &amp; rhs.0)
+    }
+}
+
+impl BitOr for Flags {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -&gt; Self::Output {
+        Flags(self.0 | rhs.0)
+    }
+}
+
+impl BitXor for Flags {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -&gt; Self::Output {
+        Flags(self.0 ^ rhs.0)
+    }
+}
+
+impl Not for Flags {
+    type Output = Self;
+    fn not(self) -&gt; Self::Output {
+        Flags(!self.0)
+    }
+}
+
+fn main() {
+    let a = Flags(0b1100);
+    let b = Flags(0b1010);
+    println!("a &amp; b = {:?}", a &amp; b); // Flags(0b1000)
+    println!("a | b = {:?}", a | b); // Flags(0b1110)
+    println!("a ^ b = {:?}", a ^ b); // Flags(0b0110)
+    println!("!a    = {:?}", !a);     // Flags(0b0011)
+}</code></pre>
+<hr>
+<h2 id="位运算综合技巧"><a class="header" href="#位运算综合技巧">位运算综合技巧</a></h2>
+<h3 id="获取设置清除翻转特定位"><a class="header" href="#获取设置清除翻转特定位">获取、设置、清除、翻转特定位</a></h3>
+<p>以下是位操作的四大基本操作，是所有位运算技巧的基础：</p>
+<pre class="playground"><code class="language-rust edition2024">/// 获取第n位的值（0或1）
+fn get_bit(value: u32, n: usize) -&gt; u32 {
+    (value &gt;&gt; n) &amp; 1
+}
+
+/// 设置第n位为1
+fn set_bit(mut value: u32, n: usize) -&gt; u32 {
+    value | (1 &lt;&lt; n)
+}
+
+/// 清除第n位为0
+fn clear_bit(mut value: u32, n: usize) -&gt; u32 {
+    value &amp; !(1 &lt;&lt; n)
+}
+
+/// 翻转第n位
+fn toggle_bit(mut value: u32, n: usize) -&gt; u32 {
+    value ^ (1 &lt;&lt; n)
+}
+
+fn main() {
+    let mut x: u32 = 0b1010_0101;
+
+    println!("原始值: {:08b}", x);
+    println!("第2位: {}", get_bit(x, 2));   // 1
+    println!("设置第4位: {:08b}", set_bit(x, 4));    // 1011_0101
+    println!("清除第0位: {:08b}", clear_bit(x, 0));  // 1010_0100
+    println!("翻转第7位: {:08b}", toggle_bit(x, 7));  // 0010_0101
+}</code></pre>
+<h3 id="位段bit-field"><a class="header" href="#位段bit-field">位段（Bit Field）</a></h3>
+<p>位段是一种将多个小数据打包到一个整数中的技术，常用于协议头、寄存器配置等场景。</p>
+<pre class="playground"><code class="language-rust edition2024">/// IP协议头中的标志字段（3位）
+#[derive(Debug)]
+struct IpFlags {
+    reserved: bool,   // 1位
+    dont_fragment: bool, // 1位
+    more_fragments: bool, // 1位
+}
+
+impl IpFlags {
+    fn from_u8(value: u8) -&gt; Self {
+        IpFlags {
+            reserved: (value &amp; 0b100) != 0,
+            dont_fragment: (value &amp; 0b010) != 0,
+            more_fragments: (value &amp; 0b001) != 0,
+        }
+    }
+
+    fn to_u8(&amp;self) -&gt; u8 {
+        (self.reserved as u8) &lt;&lt; 2
+            | (self.dont_fragment as u8) &lt;&lt; 1
+            | (self.more_fragments as u8)
+    }
+}
+
+fn main() {
+    // DF=1, MF=0
+    let flags = IpFlags {
+        reserved: false,
+        dont_fragment: true,
+        more_fragments: false,
+    };
+    let packed = flags.to_u8();
+    println!("打包: {:03b} = {}", packed, packed); // 010 = 2
+
+    let unpacked = IpFlags::from_u8(0b110);
+    println!("解包: {:?}", unpacked);
+    // IpFlags { reserved: true, dont_fragment: true, more_fragments: false }
+}</code></pre>
+<hr>
+<h2 id="实战题目"><a class="header" href="#实战题目">实战题目</a></h2>
+<h3 id="191-位1的个数"><a class="header" href="#191-位1的个数">191. 位1的个数</a></h3>
+<p><a href="https://leetcode-cn.com/problems/number-of-1-bits/">191. 位1的个数</a></p>
+<p>编写一个函数，输入是一个无符号整数（以二进制串的形式），返回其二进制表达式中数字为 ‘1’ 的个数。</p>
+<pre class="playground"><code class="language-rust edition2024">pub fn hamming_weight(n: u32) -&gt; u32 {
+    let mut count = 0;
+    let mut n = n;
+    while n != 0 {
+        n &amp;= n - 1; // Brian Kernighan算法
+        count += 1;
+    }
+    count
+}
+
+fn main() {
+    println!("11(1011)中1的个数: {}", hamming_weight(11)); // 3
+    println!("128中1的个数: {}", hamming_weight(128));      // 1
+    println!("4294967293中1的个数: {}", hamming_weight(4294967293)); // 31
+}</code></pre>
+<h3 id="461-汉明距离"><a class="header" href="#461-汉明距离">461. 汉明距离</a></h3>
+<p><a href="https://leetcode-cn.com/problems/hamming-distance/">461. 汉明距离</a></p>
+<p>两个整数之间的汉明距离是指这两个数字二进制对应位不同的位置的数目。</p>
+<pre class="playground"><code class="language-rust edition2024">pub fn hamming_distance(x: i32, y: i32) -&gt; i32 {
+    let xor = x ^ y; // 不同位为1
+    let mut count = 0;
+    let mut n = xor;
+    while n != 0 {
+        n &amp;= n - 1;
+        count += 1;
+    }
+    count
+}
+
+fn main() {
+    println!("汉明距离(1,4): {}", hamming_distance(1, 4)); // 2
+    // 1 = 0001, 4 = 0100, xor = 0101, 有2个1
+}</code></pre>
+<h3 id="更多实战题目"><a class="header" href="#更多实战题目">更多实战题目</a></h3>
+<ul>
+<li><a href="https://leetcode-cn.com/problems/single-number/">136. 只出现一次的数字</a></li>
+<li><a href="https://leetcode-cn.com/problems/single-number-ii/">137. 只出现一次的数字 II</a></li>
+<li><a href="https://leetcode-cn.com/problems/bitwise-and-of-numbers-range/">201. 数字范围按位与</a></li>
+<li><a href="https://leetcode-cn.com/problems/power-of-two/">231. 2的幂</a></li>
+<li><a href="https://leetcode-cn.com/problems/single-number-iii/">260. 只出现一次的数字 III</a> 和 <a href="https://leetcode-cn.com/problems/shu-zu-zhong-shu-zi-chu-xian-de-ci-shu-lcof/">剑指 Offer 56 - I. 数组中数字出现的次数</a> 是同一题</li>
+<li><a href="https://leetcode-cn.com/problems/counting-bits/">338. 比特位计数</a></li>
+</ul>
+<hr>
+<h2 id="总结"><a class="header" href="#总结">总结</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>运算</th><th>运算符</th><th>核心规则</th><th>典型应用</th></tr>
+</thead>
+<tbody>
+<tr><td>与（AND）</td><td><code>&amp;</code></td><td>全1则1</td><td>掩码提取、清零位、判断奇偶</td></tr>
+<tr><td>或（OR）</td><td><code>|</code></td><td>有1则1</td><td>置位、权限组合</td></tr>
+<tr><td>非（NOT）</td><td><code>!</code></td><td>0变1，1变0</td><td>构造掩码、补码运算</td></tr>
+<tr><td>异或（XOR）</td><td><code>^</code></td><td>相同0，不同1</td><td>交换变量、加密解密、查找唯一数</td></tr>
+<tr><td>左移（SHL）</td><td><code>&lt;&lt;</code></td><td>右边补0</td><td>快速乘 $2^n$</td></tr>
+<tr><td>右移（SHR）</td><td><code>&gt;&gt;</code></td><td>无符号补0，有符号补符号位</td><td>快速除 $2^n$</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="练习题"><a class="header" href="#练习题">练习题</a></h2>
+<ol>
+<li>
+<p><strong>统计奇数位</strong>：给定一个 <code>u32</code>，统计其二进制中所有奇数位（第1、3、5…位）上 1 的个数。</p>
+</li>
+<li>
+<p><strong>翻转所有位</strong>：不使用 <code>!</code> 运算符，实现一个函数翻转一个 <code>u32</code> 的所有位。</p>
+</li>
+<li>
+<p><strong>两数交换</strong>：实现一个函数，仅使用异或运算交换两个 <code>i32</code> 变量的值，并分析其局限性。</p>
+</li>
+<li>
+<p><strong>位图实现</strong>：使用 <code>u64</code> 数组实现一个简单的位图（bitmap），支持 set、get、clear 操作，能表示 $[0, 1023]$ 范围内的整数集合。</p>
+</li>
+<li>
+<p><strong>只出现一次的数字 II</strong>（<a href="https://leetcode-cn.com/problems/single-number-ii/">LeetCode 137</a>）：给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现了三次。找出那个只出现一次的元素。提示：考虑每一位的统计。</p>
+</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_16.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_18.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_16.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_18.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

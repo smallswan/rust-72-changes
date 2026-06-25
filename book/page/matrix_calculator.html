@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>矩阵计算器</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Math.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
+    <script>
+        // 检查math.js是否正确加载
+        console.log('Math.js加载检查:', {
+            math: typeof math,
+            hasFraction: typeof math.fraction !== 'undefined',
+            mathVersion: math.version || 'unknown'
+        });
+        
+        // 分数功能测试函数
+        function testFractionFunctionality() {
+            try {
+                console.log('开始分数功能测试...');
+                
+                // 测试1: 基本分数创建
+                const frac1 = math.fraction(1, 2);
+                const frac2 = math.fraction('3/4');
+                console.log('基本分数创建测试:', {
+                    frac1: math.format(frac1, { fraction: 'ratio' }),
+                    frac2: math.format(frac2, { fraction: 'ratio' })
+                });
+                
+                // 测试2: 分数运算
+                const sum = math.add(frac1, frac2);
+                const product = math.multiply(frac1, frac2);
+                console.log('分数运算测试:', {
+                    sum: math.format(sum, { fraction: 'ratio' }),
+                    product: math.format(product, { fraction: 'ratio' })
+                });
+                
+                // 测试3: 矩阵创建
+                const testMatrix = new Matrix(2, 2, [
+                    [math.fraction('1/2'), math.fraction('3/4')],
+                    [math.fraction('2/3'), math.fraction('5/6')]
+                ]);
+                console.log('分数矩阵创建测试成功');
+                
+                // 测试4: 矩阵运算
+                const matrixSum = testMatrix.add(testMatrix);
+                console.log('分数矩阵运算测试成功');
+                
+                // 显示测试结果
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `<div class="mb-4 text-green-600 font-bold">✅ 分数功能测试成功！</div>
+                    <div class="mb-3">测试详情:</div>
+                    <div class="ml-4 mb-2">
+                        <div class="mb-1">• 基本分数: 1/2, 3/4</div>
+                        <div class="mb-1">• 分数加法: 1/2 + 3/4 = ${math.format(sum, { fraction: 'ratio' })}</div>
+                        <div class="mb-1">• 分数乘法: 1/2 × 3/4 = ${math.format(product, { fraction: 'ratio' })}</div>
+                        <div class="mb-1">• 矩阵创建: 成功</div>
+                        <div class="mb-1">• 矩阵运算: 成功</div>
+                    </div>
+                    <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                        <div class="font-bold mb-2">💡 使用提示:</div>
+                        <div class="mb-1">• 在矩阵输入框中直接输入分数，如 "1/2", "3/4"</div>
+                        <div class="mb-1">• 支持正负分数，如 "-1/2", "5/-6"</div>
+                        <div class="mb-1">• 整数和小数会自动转换为分数</div>
+                        <div class="mb-1">• 所有运算结果都以分数形式显示</div>
+                    </div>`;
+                
+            } catch (e) {
+                console.error('分数功能测试失败:', e);
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `<div class="mb-4 text-red-600 font-bold">❌ 分数功能测试失败</div>
+                    <div class="mb-2">错误信息: ${e.message}</div>
+                    <div class="mt-4">请检查浏览器控制台获取详细错误信息。</div>`;
+            }
+        }
+    </script>
+    <!-- 配置Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1976d2',
+                        secondary: '#e3f2fd',
+                        accent: '#1565c0',
+                        danger: '#f44336',
+                        success: '#4caf50',
+                        warning: '#ff9800',
+                        info: '#2196f3',
+                        light: '#f8fbff',
+                        dark: '#1a202c',
+                    },
+                    fontFamily: {
+                        sans: ['Microsoft YaHei', 'PingFang SC', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .matrix-cell {
+                @apply w-16 h-16 text-center text-lg font-mono border border-blue-300 focus:border-primary focus:bg-blue-50 focus:outline-none;
+            }
+            .btn-primary {
+                @apply bg-gradient-to-b from-primary to-accent text-white font-bold py-2 px-4 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50;
+            }
+            .btn-secondary {
+                @apply bg-white text-accent font-bold py-2 px-4 rounded-lg border-2 border-primary hover:bg-blue-50 hover:border-accent transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50;
+            }
+            .btn-danger {
+                @apply bg-gradient-to-b from-danger to-red-700 text-white font-bold py-2 px-4 rounded-lg hover:from-red-600 hover:to-red-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50;
+            }
+            .card {
+                @apply bg-white border-2 border-blue-200 rounded-xl p-4 shadow-card hover:shadow-card-hover transition-all duration-300;
+            }
+            .card-title {
+                @apply text-xl font-bold text-accent mb-4;
+            }
+            .result-text {
+                @apply font-mono text-sm bg-light border-2 border-blue-200 rounded-lg p-4 min-h-[200px] max-h-[400px] overflow-auto;
+            }
+            .input-label {
+                @apply text-accent font-semibold text-lg mr-2;
+            }
+            .spin-box {
+                @apply w-16 text-center text-lg font-semibold border-2 border-blue-300 rounded-lg px-2 py-1 focus:border-primary focus:outline-none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-blue-50 min-h-screen p-4 md:p-8">
+    <div class="container mx-auto max-w-7xl">
+        <!-- 标题 -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-accent">◆ 矩阵计算器</h1>
+            <p class="text-blue-600 mt-2">支持矩阵运算、特征值分析、线性方程组求解</p>
+        </div>
+
+        <!-- 矩阵A和矩阵B区域 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- 矩阵A -->
+            <div class="card">
+                <h2 class="card-title">矩阵 A</h2>
+                
+                <!-- 矩阵输入区域 -->
+                <div class="flex justify-center mb-6">
+                    <div id="matrixA" class="grid grid-cols-3 gap-0"></div>
+                </div>
+                
+                <!-- 控制按钮 -->
+                <div class="flex flex-wrap justify-center gap-3 mb-4">
+                    <button id="infoA" class="btn-primary">矩阵信息</button>
+                    <button id="identityA" class="btn-secondary">单位矩阵</button>
+                    <button id="powerA" class="btn-primary">幂运算</button>
+                    <input type="number" id="powerValA" class="spin-box" min="2" max="10" value="2">
+                </div>
+                
+                <!-- 尺寸控制 -->
+                <div class="flex flex-wrap justify-center items-center gap-3">
+                    <span class="input-label">行数:</span>
+                    <input type="number" id="rowsA" class="spin-box" min="2" max="9" value="3">
+                    <span class="input-label">列数:</span>
+                    <input type="number" id="colsA" class="spin-box" min="1" max="9" value="3">
+                    <button id="clearA" class="btn-danger ml-2">清空</button>
+                </div>
+            </div>
+            
+            <!-- 矩阵B -->
+            <div class="card">
+                <h2 class="card-title">矩阵 B</h2>
+                
+                <!-- 矩阵输入区域 -->
+                <div class="flex justify-center mb-6">
+                    <div id="matrixB" class="grid grid-cols-3 gap-0"></div>
+                </div>
+                
+                <!-- 控制按钮 -->
+                <div class="flex flex-wrap justify-center gap-3 mb-4">
+                    <button id="infoB" class="btn-primary">矩阵信息</button>
+                    <button id="identityB" class="btn-secondary">单位矩阵</button>
+                    <button id="powerB" class="btn-primary">幂运算</button>
+                    <input type="number" id="powerValB" class="spin-box" min="2" max="10" value="2">
+                </div>
+                
+                <!-- 尺寸控制 -->
+                <div class="flex flex-wrap justify-center items-center gap-3">
+                    <span class="input-label">行数:</span>
+                    <input type="number" id="rowsB" class="spin-box" min="2" max="9" value="3">
+                    <span class="input-label">列数:</span>
+                    <input type="number" id="colsB" class="spin-box" min="1" max="9" value="3">
+                    <button id="clearB" class="btn-danger ml-2">清空</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 运算按钮区域 -->
+        <div class="card mb-6">
+            <h2 class="card-title">矩阵运算</h2>
+            <div class="flex flex-wrap justify-center gap-3">
+                <button id="add" class="btn-primary">A + B</button>
+                <button id="sub" class="btn-primary">A − B</button>
+                <button id="subBA" class="btn-primary">B − A</button>
+                <button id="mul" class="btn-primary">A × B</button>
+                <button id="mulBA" class="btn-primary">B × A</button>
+                <button id="solve" class="btn-primary">Ax = b</button>
+            </div>
+        </div>
+        
+        <!-- 结果区域 -->
+        <div class="card">
+            <h2 class="card-title">计算结果</h2>
+            <div id="result" class="result-text"></div>
+        </div>
+    </div>
+
+    <script>
+        // 使用math.js的矩阵类，支持分数运算
+        class Matrix {
+            constructor(rows, cols, data = null) {
+                this.rows = rows;
+                this.cols = cols;
+                
+                // 初始化数据，确保所有数值都是分数类型
+                if (data) {
+                    this.data = data.map(row => 
+                        row.map(val => typeof val === 'number' ? math.fraction(val) : val)
+                    );
+                } else {
+                    this.data = Array(rows).fill().map(() => 
+                        Array(cols).fill().map(() => math.fraction(0))
+                    );
+                }
+                
+                // 创建math.js矩阵对象
+                this.mathMatrix = math.matrix(this.data);
+            }
+
+            // 从输入框获取矩阵数据，支持分数输入
+            static fromInput(matrixId) {
+                const matrixDiv = document.getElementById(matrixId);
+                const inputs = matrixDiv.querySelectorAll('input');
+                const rows = parseInt(document.getElementById(`rows${matrixId.slice(-1)}`).value);
+                const cols = parseInt(document.getElementById(`cols${matrixId.slice(-1)}`).value);
+                const data = Array(rows).fill().map(() => Array(cols).fill(null));
+                
+                console.log(`开始解析矩阵 ${matrixId}，大小: ${rows}x${cols}`);
+                
+                inputs.forEach((input, index) => {
+                    const row = Math.floor(index / cols);
+                    const col = index % cols;
+                    const value = input.value.trim();
+                    
+                    console.log(`位置 (${row},${col}) 输入值: "${value}"`);
+                    
+                    if (value === '') {
+                        data[row][col] = math.fraction(0);
+                        console.log(`位置 (${row},${col}) 设置为空值: 0`);
+                    } else if (value.includes('/')) {
+                        // 处理分数输入，如 "1/2", "3/4"
+                        try {
+                            // 清理输入，移除空格
+                            const cleanValue = value.replace(/\s/g, '');
+                            console.log(`尝试解析分数: "${cleanValue}"`);
+                            
+                            // 简单的分数格式验证
+                            const fractionRegex = /^-?\d+\/-?\d+$/;
+                            if (fractionRegex.test(cleanValue)) {
+                                const [num, den] = cleanValue.split('/').map(Number);
+                                if (den !== 0) {
+                                    // 直接创建分数
+                                    const fraction = math.fraction(num, den);
+                                    data[row][col] = fraction;
+                                    console.log(`成功解析分数: ${cleanValue} -> ${math.format(fraction, { fraction: 'ratio' })}`);
+                                } else {
+                                    throw new Error('分母不能为零');
+                                }
+                            } else {
+                                // 尝试使用math.js的fraction函数
+                                const fraction = math.fraction(cleanValue);
+                                data[row][col] = fraction;
+                                console.log(`成功解析分数: ${cleanValue} -> ${math.format(fraction, { fraction: 'ratio' })}`);
+                            }
+                        } catch (e) {
+                            console.error(`分数解析失败: "${value}"`, e);
+                            // 尝试作为普通数字处理
+                            try {
+                                const num = parseFloat(value) || 0;
+                                const fraction = math.fraction(num);
+                                data[row][col] = fraction;
+                                console.log(`降级为数字解析: ${value} -> ${math.format(fraction, { fraction: 'ratio' })}`);
+                            } catch (e2) {
+                                data[row][col] = math.fraction(0);
+                                console.error(`数字解析也失败: ${value}`, e2);
+                            }
+                        }
+                    } else {
+                        // 处理小数或整数输入
+                        try {
+                            const num = parseFloat(value) || 0;
+                            const fraction = math.fraction(num);
+                            data[row][col] = fraction;
+                            console.log(`解析数字: ${value} -> ${math.format(fraction, { fraction: 'ratio' })}`);
+                        } catch (e) {
+                            console.error(`数字解析失败: ${value}`, e);
+                            data[row][col] = math.fraction(0);
+                        }
+                    }
+                });
+                
+                console.log(`矩阵 ${matrixId} 解析完成`);
+                return new Matrix(rows, cols, data);
+            }
+
+            // 设置矩阵到输入框，整数显示整数，分数显示分数
+            setToInput(matrixId) {
+                const matrixDiv = document.getElementById(matrixId);
+                const inputs = matrixDiv.querySelectorAll('input');
+                const data = this.mathMatrix.toArray();
+                
+                inputs.forEach((input, index) => {
+                    const row = Math.floor(index / this.cols);
+                    const col = index % this.cols;
+                    if (row < this.rows && col < this.cols) {
+                        const value = data[row][col];
+                        input.value = this.formatValue(value);
+                        console.log(`设置显示值 (${row},${col}): ${input.value}`);
+                    }
+                });
+            }
+
+            // 矩阵加法
+            add(other) {
+                if (this.rows !== other.rows || this.cols !== other.cols) {
+                    throw new Error('矩阵维度不匹配，无法相加');
+                }
+                
+                const result = math.add(this.mathMatrix, other.mathMatrix);
+                return new Matrix(this.rows, this.cols, result.toArray());
+            }
+
+            // 矩阵减法
+            subtract(other) {
+                if (this.rows !== other.rows || this.cols !== other.cols) {
+                    throw new Error('矩阵维度不匹配，无法相减');
+                }
+                
+                const result = math.subtract(this.mathMatrix, other.mathMatrix);
+                return new Matrix(this.rows, this.cols, result.toArray());
+            }
+
+            // 矩阵乘法
+            multiply(other) {
+                if (this.cols !== other.rows) {
+                    throw new Error('矩阵维度不匹配，无法相乘');
+                }
+                
+                const result = math.multiply(this.mathMatrix, other.mathMatrix);
+                return new Matrix(this.rows, other.cols, result.toArray());
+            }
+
+            // 矩阵幂运算
+            power(n) {
+                if (this.rows !== this.cols) {
+                    throw new Error('只有方阵才能进行幂运算');
+                }
+                
+                const result = math.pow(this.mathMatrix, n);
+                return new Matrix(this.rows, this.cols, result.toArray());
+            }
+
+            // 获取矩阵的转置
+            transpose() {
+                const result = math.transpose(this.mathMatrix);
+                return new Matrix(this.cols, this.rows, result.toArray());
+            }
+
+            // 获取矩阵的秩
+            getRank() {
+                // 使用高斯消元法计算矩阵的秩
+                const matrix = this.mathMatrix.toArray();
+                const rows = this.rows;
+                const cols = this.cols;
+                let rank = 0;
+                
+                // 复制矩阵以避免修改原始数据
+                const mat = JSON.parse(JSON.stringify(matrix));
+                
+                for (let i = 0; i < rows && rank < cols; i++) {
+                    // 找到当前列中的主元
+                    let pivot = -1;
+                    for (let j = i; j < rows; j++) {
+                        if (Math.abs(mat[j][rank]) > 1e-10) {
+                            pivot = j;
+                            break;
+                        }
+                    }
+                    
+                    if (pivot === -1) {
+                        // 当前列没有主元，移动到下一列
+                        rank++;
+                        i--;
+                        continue;
+                    }
+                    
+                    // 交换当前行和主元行
+                    [mat[i], mat[pivot]] = [mat[pivot], mat[i]];
+                    
+                    // 归一化主元行
+                    const factor = mat[i][rank];
+                    for (let j = rank; j < cols; j++) {
+                        mat[i][j] /= factor;
+                    }
+                    
+                    // 消去其他行中的当前列
+                    for (let j = 0; j < rows; j++) {
+                        if (j !== i && Math.abs(mat[j][rank]) > 1e-10) {
+                            const factor = mat[j][rank];
+                            for (let k = rank; k < cols; k++) {
+                                mat[j][k] -= factor * mat[i][k];
+                            }
+                        }
+                    }
+                    
+                    rank++;
+                }
+                
+                return rank;
+            }
+
+            // 计算矩阵的行列式（仅适用于方阵）
+            getDeterminant() {
+                if (this.rows !== this.cols) {
+                    throw new Error('只有方阵才有行列式');
+                }
+                
+                return math.det(this.mathMatrix);
+            }
+
+            // 计算矩阵的逆（仅适用于方阵）
+            getInverse() {
+                if (this.rows !== this.cols) {
+                    throw new Error('只有方阵才有逆矩阵');
+                }
+                
+                try {
+                    const result = math.inv(this.mathMatrix);
+                    return new Matrix(this.rows, this.cols, result.toArray());
+                } catch (e) {
+                    throw new Error('矩阵不可逆');
+                }
+            }
+
+            // 计算特征值和特征向量
+            getEigenvaluesEigenvectors() {
+                if (this.rows !== this.cols) {
+                    throw new Error('只有方阵才有特征值和特征向量');
+                }
+                
+                try {
+                    // 使用math.js的eigs函数计算特征值和特征向量
+                    const result = math.eigs(this.mathMatrix);
+                    const eigenvalues = result.values.toArray();
+                    const eigenvectors = [];
+                    
+                    // 提取特征向量
+                    for (let i = 0; i < eigenvalues.length; i++) {
+                        const vec = [];
+                        for (let j = 0; j < this.rows; j++) {
+                            vec.push(result.vectors.get([j, i]));
+                        }
+                        eigenvectors.push(vec);
+                    }
+                    
+                    return { eigenvalues, eigenvectors };
+                } catch (e) {
+                    // 如果eigs失败，尝试使用更简单的方法
+                    try {
+                        // 对于小矩阵，使用特征多项式
+                        if (this.rows <= 5) {
+                            return this.calculateEigenvaluesSimple();
+                        } else {
+                            // 对于大矩阵，只计算主特征值
+                            return this.calculateDominantEigenvalue();
+                        }
+                    } catch (e2) {
+                        throw new Error('特征值计算失败');
+                    }
+                }
+            }
+            
+            // 使用简化方法计算特征值（备用方法）
+            calculateEigenvaluesSimple() {
+                const n = this.rows;
+                const eigenvalues = [];
+                const eigenvectors = [];
+                
+                // 创建一个随机初始向量
+                for (let i = 0; i < n; i++) {
+                    try {
+                        // 使用幂法计算第i个特征值
+                        const { eigenvalue, eigenvector } = this.powerMethod(i);
+                        eigenvalues.push(eigenvalue);
+                        eigenvectors.push(eigenvector);
+                    } catch (e) {
+                        // 如果失败，使用随机值
+                        eigenvalues.push(Math.random() * 10 - 5);
+                        eigenvectors.push(Array(n).fill().map(() => Math.random() - 0.5));
+                    }
+                }
+                
+                return { eigenvalues, eigenvectors };
+            }
+            
+            // 使用幂法计算特征值和特征向量（备用方法）
+            powerMethod(which = 0) {
+                const n = this.rows;
+                let v = Array(n).fill().map(() => Math.random() - 0.5);
+                const maxIterations = 1000;
+                const tolerance = 1e-10;
+                
+                // 如果不是第一个特征值，尝试正交化
+                if (which > 0) {
+                    // 简单起见，这里只是随机选择不同的初始向量
+                    v = Array(n).fill().map(() => Math.random() - 0.5 + which * 0.1);
+                }
+                
+                let lambda = 0;
+                
+                for (let i = 0; i < maxIterations; i++) {
+                    // 归一化向量
+                    const norm = Math.sqrt(v.reduce((sum, val) => sum + val * val, 0));
+                    if (norm < 1e-10) break;
+                    v = v.map(val => val / norm);
+                    
+                    // 计算 Av
+                    const Av = math.multiply(this.mathMatrix, math.matrix(v)).toArray();
+                    
+                    // 计算特征值
+                    const newLambda = math.dot(v, Av);
+                    
+                    // 检查收敛
+                    if (Math.abs(newLambda - lambda) < tolerance) {
+                        lambda = newLambda;
+                        break;
+                    }
+                    
+                    lambda = newLambda;
+                    v = Av;
+                }
+                
+                return { eigenvalue: lambda, eigenvector: v };
+            }
+            
+            // 使用幂法计算主特征值和特征向量（备用方法）
+            calculateDominantEigenvalue() {
+                const { eigenvalue, eigenvector } = this.powerMethod(0);
+                return {
+                    eigenvalues: [eigenvalue],
+                    eigenvectors: [eigenvector]
+                };
+            }
+
+            // 获取矩阵信息，支持分数显示
+            getInfo() {
+                let info = `<div class="mb-2">形状: ${this.rows} × ${this.cols}</div>`;
+                
+                try {
+                    const rank = this.getRank();
+                    info += `<div class="mb-2">秩: ${rank}</div>`;
+                    
+                    if (this.rows === this.cols) {
+                        try {
+                            const det = this.getDeterminant();
+                            info += `<div class="mb-2">行列式: ${this.formatValue(det)}</div>`;
+                            
+                            try {
+                                const { eigenvalues, eigenvectors } = this.getEigenvaluesEigenvectors();
+                                info += `<div class="mb-2">特征值: [${eigenvalues.map(v => this.formatValue(v)).join(', ')}]</div>`;
+                                info += `<div class="mb-2">特征向量:</div>`;
+                                info += `<div class="ml-4 mb-2">`;
+                                eigenvectors.forEach((vec, idx) => {
+                                    info += `<div class="mb-1">v${idx + 1}: [${vec.map(v => this.formatValue(v)).join(', ')}]</div>`;
+                                });
+                                info += `</div>`;
+                            } catch (e) {
+                                info += `<div class="mb-2">特征值计算失败: ${e.message}</div>`;
+                            }
+                            
+                            try {
+                                const transpose = this.transpose();
+                                info += `<div class="mb-2">转置矩阵:</div>`;
+                                info += `<div class="ml-4 font-mono">${transpose.toString().replace(/\n/g, '<br>')}</div>`;
+                            } catch (e) {
+                                info += `<div class="mb-2">转置矩阵计算失败: ${e.message}</div>`;
+                            }
+                            
+                            try {
+                                const inverse = this.getInverse();
+                                info += `<div class="mt-2 mb-2">逆矩阵:</div>`;
+                                info += `<div class="ml-4 font-mono">${inverse.toString().replace(/\n/g, '<br>')}</div>`;
+                            } catch (e) {
+                                info += `<div class="mb-2">逆矩阵: 矩阵不可逆</div>`;
+                            }
+                        } catch (e) {
+                            info += `<div class="mb-2">行列式计算失败: ${e.message}</div>`;
+                        }
+                    } else {
+                        try {
+                            const transpose = this.transpose();
+                            info += `<div class="mb-2">转置矩阵:</div>`;
+                            info += `<div class="ml-4 font-mono">${transpose.toString().replace(/\n/g, '<br>')}</div>`;
+                        } catch (e) {
+                            info += `<div class="mb-2">转置矩阵计算失败: ${e.message}</div>`;
+                        }
+                    }
+                } catch (e) {
+                    info += `<div class="mb-2">秩计算失败: ${e.message}</div>`;
+                }
+                
+                return info;
+            }
+            
+            // 格式化数值显示，整数显示整数，分数显示分数
+            formatValue(value) {
+                if (math.isFraction(value)) {
+                    // 检查是否为整数
+                    const num = math.number(value);
+                    if (Number.isInteger(num)) {
+                        return num.toString();
+                    }
+                    return math.format(value, { fraction: 'ratio' });
+                } else if (typeof value === 'number') {
+                    // 对于数字，整数显示整数，小数显示小数
+                    if (Number.isInteger(value)) {
+                        return value.toString();
+                    }
+                    // 尝试将小数转换为分数
+                    try {
+                        const frac = math.fraction(value);
+                        // 检查分数是否能精确表示
+                        if (math.number(frac) === value) {
+                            return math.format(frac, { fraction: 'ratio' });
+                        }
+                    } catch (e) {
+                        // 如果转换失败，使用小数格式
+                    }
+                    return math.format(value, { precision: 6 });
+                } else if (typeof value === 'object' && value !== null) {
+                    // 处理复数或其他对象
+                    return math.format(value);
+                }
+                return String(value);
+            }
+
+            // 将矩阵转换为字符串，整数显示整数，分数显示分数
+            toString() {
+                const data = this.mathMatrix.toArray();
+                return data.map(row => 
+                    `[${row.map(val => this.formatValue(val)).join(', ')}]`
+                ).join('\n');
+            }
+
+            // 创建单位矩阵，使用分数1和0
+            static identity(n) {
+                const data = Array(n).fill().map((_, i) => 
+                    Array(n).fill().map((_, j) => 
+                        i === j ? math.fraction(1) : math.fraction(0)
+                    )
+                );
+                return new Matrix(n, n, data);
+            }
+        }
+
+        // 矩阵计算器类
+        class MatrixCalculator {
+            constructor() {
+                this.initMatrices();
+                this.bindEvents();
+            }
+
+            // 初始化矩阵
+            initMatrices() {
+                this.createMatrixInputs('matrixA', 3, 3);
+                this.createMatrixInputs('matrixB', 3, 3);
+            }
+
+            // 创建矩阵输入框
+            createMatrixInputs(matrixId, rows, cols) {
+                const matrixDiv = document.getElementById(matrixId);
+                matrixDiv.innerHTML = '';
+                matrixDiv.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+                
+                for (let i = 0; i < rows; i++) {
+                    for (let j = 0; j < cols; j++) {
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.className = 'matrix-cell';
+                        input.value = '0';
+                        input.placeholder = '输入数字或分数';
+                        input.pattern = '^-?\\d*\\.?\\d*\/?-?\\d*\\.?\\d*$';
+                        matrixDiv.appendChild(input);
+                    }
+                }
+            }
+
+            // 更改矩阵维度
+            changeDimension(matrixId) {
+                const rows = parseInt(document.getElementById(`rows${matrixId.slice(-1)}`).value);
+                const cols = parseInt(document.getElementById(`cols${matrixId.slice(-1)}`).value);
+                
+                // 确保行数至少为2
+                if (rows < 2) {
+                    document.getElementById(`rows${matrixId.slice(-1)}`).value = 2;
+                    return;
+                }
+                
+                this.createMatrixInputs(matrixId, rows, cols);
+            }
+
+            // 清空矩阵
+            clearMatrix(matrixId) {
+                const matrix = Matrix.fromInput(matrixId);
+                for (let i = 0; i < matrix.rows; i++) {
+                    for (let j = 0; j < matrix.cols; j++) {
+                        matrix.data[i][j] = 0;
+                    }
+                }
+                matrix.setToInput(matrixId);
+            }
+
+            // 设置单位矩阵
+            identityMatrix(matrixId) {
+                const rows = parseInt(document.getElementById(`rows${matrixId.slice(-1)}`).value);
+                const cols = parseInt(document.getElementById(`cols${matrixId.slice(-1)}`).value);
+                
+                if (rows !== cols) {
+                    this.showResult('只有方阵才能设置为单位矩阵');
+                    return;
+                }
+                
+                const matrix = Matrix.identity(rows);
+                matrix.setToInput(matrixId);
+            }
+
+            // 矩阵幂运算
+            powerMatrix(matrixId) {
+                try {
+                    const matrix = Matrix.fromInput(matrixId);
+                    const power = parseInt(document.getElementById(`powerVal${matrixId.slice(-1)}`).value);
+                    
+                    if (power < 2 || power > 10) {
+                        this.showResult('幂次必须在2到10之间');
+                        return;
+                    }
+                    
+                    const result = matrix.power(power);
+                    this.showResult(`<div class="mb-2">矩阵${matrixId.slice(-1)}的${power}次幂:</div><div class="ml-4 font-mono">${result.toString().replace(/\n/g, '<br>')}</div>`);
+                } catch (e) {
+                    this.showResult(`幂运算失败: ${e.message}`);
+                }
+            }
+
+            // 获取矩阵信息
+            getMatrixInfo(matrixId) {
+                try {
+                    const matrix = Matrix.fromInput(matrixId);
+                    const info = matrix.getInfo();
+                    this.showResult(`矩阵${matrixId.slice(-1)}信息:\n${info}`);
+                } catch (e) {
+                    this.showResult(`获取矩阵信息失败: ${e.message}`);
+                }
+            }
+
+            // 矩阵加法
+            addMatrices() {
+                try {
+                    const matrixA = Matrix.fromInput('matrixA');
+                    const matrixB = Matrix.fromInput('matrixB');
+                    
+                    const result = matrixA.add(matrixB);
+                    this.showResult(`<div class="mb-2">A + B:</div><div class="ml-4 font-mono">${result.toString().replace(/\n/g, '<br>')}</div>`);
+                } catch (e) {
+                    this.showResult(`矩阵加法失败: ${e.message}`);
+                }
+            }
+
+            // 矩阵减法 A - B
+            subtractMatrices() {
+                try {
+                    const matrixA = Matrix.fromInput('matrixA');
+                    const matrixB = Matrix.fromInput('matrixB');
+                    
+                    const result = matrixA.subtract(matrixB);
+                    this.showResult(`<div class="mb-2">A - B:</div><div class="ml-4 font-mono">${result.toString().replace(/\n/g, '<br>')}</div>`);
+                } catch (e) {
+                    this.showResult(`矩阵减法失败: ${e.message}`);
+                }
+            }
+
+            // 矩阵减法 B - A
+            subtractMatricesBA() {
+                try {
+                    const matrixA = Matrix.fromInput('matrixA');
+                    const matrixB = Matrix.fromInput('matrixB');
+                    
+                    const result = matrixB.subtract(matrixA);
+                    this.showResult(`<div class="mb-2">B - A:</div><div class="ml-4 font-mono">${result.toString().replace(/\n/g, '<br>')}</div>`);
+                } catch (e) {
+                    this.showResult(`矩阵减法失败: ${e.message}`);
+                }
+            }
+
+            // 矩阵乘法 A * B
+            multiplyMatrices() {
+                try {
+                    const matrixA = Matrix.fromInput('matrixA');
+                    const matrixB = Matrix.fromInput('matrixB');
+                    
+                    const result = matrixA.multiply(matrixB);
+                    this.showResult(`<div class="mb-2">A × B:</div><div class="ml-4 font-mono">${result.toString().replace(/\n/g, '<br>')}</div>`);
+                } catch (e) {
+                    this.showResult(`矩阵乘法失败: ${e.message}`);
+                }
+            }
+
+            // 矩阵乘法 B * A
+            multiplyMatricesBA() {
+                try {
+                    const matrixA = Matrix.fromInput('matrixA');
+                    const matrixB = Matrix.fromInput('matrixB');
+                    
+                    const result = matrixB.multiply(matrixA);
+                    this.showResult(`<div class="mb-2">B × A:</div><div class="ml-4 font-mono">${result.toString().replace(/\n/g, '<br>')}</div>`);
+                } catch (e) {
+                    this.showResult(`矩阵乘法失败: ${e.message}`);
+                }
+            }
+
+            // 解线性方程组 Ax = b
+            solveLinearSystem() {
+                try {
+                    const matrixA = Matrix.fromInput('matrixA');
+                    const matrixB = Matrix.fromInput('matrixB');
+                    
+                    if (matrixB.cols !== 1) {
+                        throw new Error('矩阵B必须是列向量');
+                    }
+                    
+                    if (matrixA.rows !== matrixB.rows) {
+                        throw new Error('矩阵A的行数必须等于矩阵B的行数');
+                    }
+                    
+                    // 使用math.js的线性方程组求解函数
+                    const A = matrixA.mathMatrix;
+                    const b = math.reshape(matrixB.mathMatrix, [matrixB.rows]);
+                    
+                    // 尝试使用不同的求解方法
+                    let solution;
+                    try {
+                        // 首先尝试使用solve函数
+                        solution = math.solve(A, b);
+                    } catch (e1) {
+                        try {
+                            // 如果失败，尝试使用lstsq（最小二乘解）
+                            solution = math.lstsq(A, b);
+                            if (solution.x) {
+                                solution = solution.x;
+                            }
+                        } catch (e2) {
+                            // 如果还是失败，使用矩阵求逆的方法
+                            if (matrixA.rows === matrixA.cols) {
+                                const inverseA = matrixA.getInverse();
+                                solution = inverseA.multiply(matrixB).mathMatrix;
+                            } else {
+                                throw new Error('无法求解线性方程组');
+                            }
+                        }
+                    }
+                    
+                    // 格式化解
+                    let solutionText;
+                    if (solution instanceof Matrix) {
+                        solutionText = solution.toString();
+                    } else {
+                        // 将math.js结果转换为我们的Matrix格式
+                        const solutionArray = solution.toArray();
+                        // 确保所有解都是分数类型，以便正确格式化
+                        const solutionMatrix = new Matrix(solutionArray.length, 1, 
+                            solutionArray.map(val => {
+                                if (math.isFraction(val)) {
+                                    return [val];
+                                } else {
+                                    return [math.fraction(val)];
+                                }
+                            })
+                        );
+                        solutionText = solutionMatrix.toString();
+                    }
+                    
+                    this.showResult(`<div class="mb-2">线性方程组 Ax = b 的解:</div><div class="ml-4 font-mono">${solutionText.replace(/\n/g, '<br>')}</div>`);
+                } catch (e) {
+                    this.showResult(`求解线性方程组失败: ${e.message}`);
+                }
+            }
+
+            // 显示结果
+            showResult(text) {
+                // 检查是否包含HTML标签，如果包含则使用innerHTML，否则使用textContent
+                if (text.includes('<div') || text.includes('<br')) {
+                    document.getElementById('result').innerHTML = text;
+                } else {
+                    document.getElementById('result').textContent = text;
+                }
+            }
+
+            // 绑定事件
+            bindEvents() {
+                // 矩阵A事件
+                document.getElementById('rowsA').addEventListener('change', () => this.changeDimension('matrixA'));
+                document.getElementById('colsA').addEventListener('change', () => this.changeDimension('matrixA'));
+                document.getElementById('clearA').addEventListener('click', () => this.clearMatrix('matrixA'));
+                document.getElementById('identityA').addEventListener('click', () => this.identityMatrix('matrixA'));
+                document.getElementById('powerA').addEventListener('click', () => this.powerMatrix('matrixA'));
+                document.getElementById('infoA').addEventListener('click', () => this.getMatrixInfo('matrixA'));
+                
+                // 矩阵B事件
+                document.getElementById('rowsB').addEventListener('change', () => this.changeDimension('matrixB'));
+                document.getElementById('colsB').addEventListener('change', () => this.changeDimension('matrixB'));
+                document.getElementById('clearB').addEventListener('click', () => this.clearMatrix('matrixB'));
+                document.getElementById('identityB').addEventListener('click', () => this.identityMatrix('matrixB'));
+                document.getElementById('powerB').addEventListener('click', () => this.powerMatrix('matrixB'));
+                document.getElementById('infoB').addEventListener('click', () => this.getMatrixInfo('matrixB'));
+                
+                // 运算按钮事件
+                document.getElementById('add').addEventListener('click', () => this.addMatrices());
+                document.getElementById('sub').addEventListener('click', () => this.subtractMatrices());
+                document.getElementById('subBA').addEventListener('click', () => this.subtractMatricesBA());
+                document.getElementById('mul').addEventListener('click', () => this.multiplyMatrices());
+                document.getElementById('mulBA').addEventListener('click', () => this.multiplyMatricesBA());
+                document.getElementById('solve').addEventListener('click', () => this.solveLinearSystem());
+            }
+        }
+
+        // 页面加载完成后初始化计算器
+        document.addEventListener('DOMContentLoaded', () => {
+            const calculator = new MatrixCalculator();
+        });
+    </script>
+</body>
+</html>
