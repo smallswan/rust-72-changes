@@ -49,10 +49,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-f08b2010.js"></script>
+        <script src="toc-545e538a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -270,6 +270,25 @@ $$</p>
 <p>$$ S_n = a_1 \cdot \frac{1 - q^n}{1 - q} \quad (q \neq 1) $$</p>
 <p><strong>矩阵乘法规则：</strong></p>
 <p>$$ C[i,j] = \sum_{k=1}^{n} A[i,k] \cdot B[k,j] $$</p>
+<h3 id="用-rust-验证上述公式"><a class="header" href="#用-rust-验证上述公式">用 Rust 验证上述公式</a></h3>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    // 等差数列求和 1+2+...+n
+    let n = 100u64;
+    println!("1+2+...+{} = {}", n, n * (n + 1) / 2); // 5050
+
+    // 等比数列求和 a1 * (1 - q^n) / (1 - q)
+    let (a1, q, terms) = (1.0_f64, 2.0_f64, 10i32);
+    let geometric_sum = a1 * (1.0 - q.powi(terms)) / (1.0 - q);
+    println!("等比数列前 {} 项和 = {}", terms, geometric_sum); // 1023
+
+    // 均方误差 MSE
+    let y = [1.0f64, 2.0, 3.0];
+    let y_hat = [1.1f64, 1.9, 3.2];
+    let mse = y.iter().zip(&amp;y_hat)
+        .map(|(a, b)| (a - b).powi(2))
+        .sum::&lt;f64&gt;() / y.len() as f64;
+    println!("MSE = {:.4}", mse); // 0.0200
+}</code></pre>
 <hr>
 <h2 id="四常用度量衡"><a class="header" href="#四常用度量衡">四、常用度量衡</a></h2>
 <div class="table-wrapper">

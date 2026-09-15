@@ -49,10 +49,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-f08b2010.js"></script>
+        <script src="toc-545e538a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -278,27 +278,368 @@ $$</p>
 <li><a href="https://github.com/build-trust/ockam">ockam</a> — 端到端加密通信库</li>
 </ul>
 <hr>
-<h2 id="九经典问题索引"><a class="header" href="#九经典问题索引">九、经典问题索引</a></h2>
+<h2 id="九算法经典问题"><a class="header" href="#九算法经典问题">九、算法经典问题</a></h2>
+<h3 id="91-汉诺塔tower-of-hanoi"><a class="header" href="#91-汉诺塔tower-of-hanoi">9.1 汉诺塔（Tower of Hanoi）</a></h3>
+<p>将 $n$ 个大小不同的圆盘从一根柱子移动到另一根柱子，要求每次只移动一个圆盘，且大盘不能压在小盘上。</p>
+<p><strong>最少移动次数：</strong> $2^n - 1$</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn hanoi(n: u32, from: &amp;str, to: &amp;str, aux: &amp;str) {
+    if n == 0 { return; }
+    hanoi(n - 1, from, aux, to);
+    println!("移动圆盘 {} 从 {} 到 {}", n, from, to);
+    hanoi(n - 1, aux, to, from);
+}
+<span class="boring">}</span></code></pre>
+<h3 id="92-斐波那契数列"><a class="header" href="#92-斐波那契数列">9.2 斐波那契数列</a></h3>
+<p>$$F(n) = F(n-1) + F(n-2), \quad F(0)=0, ; F(1)=1$$</p>
+<p>数列：0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, …</p>
+<p>斐波那契数列与黄金分割比 $\varphi = \frac{1+\sqrt{5}}{2} \approx 1.618$ 密切相关：$\lim_{n\to\infty} \frac{F(n+1)}{F(n)} = \varphi$。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn fibonacci(n: u64) -&gt; u64 {
+    let (mut a, mut b) = (0u64, 1u64);
+    for _ in 0..n {
+        let tmp = a + b;
+        a = b;
+        b = tmp;
+    }
+    a
+}
+<span class="boring">}</span></code></pre>
+<h3 id="93-背包问题knapsack-problem"><a class="header" href="#93-背包问题knapsack-problem">9.3 背包问题（Knapsack Problem）</a></h3>
+<p>给定 $n$ 件物品，每件有重量 $w_i$ 和价值 $v_i$，背包容量为 $W$，求装入背包的最大总价值。</p>
+<p><strong>0-1 背包（动态规划）：</strong></p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn knapsack_01(weights: &amp;[usize], values: &amp;[usize], capacity: usize) -&gt; usize {
+    let n = weights.len();
+    let mut dp = vec![0usize; capacity + 1];
+    for i in 0..n {
+        for w in (weights[i]..=capacity).rev() {
+            dp[w] = dp[w].max(dp[w - weights[i]] + values[i]);
+        }
+    }
+    dp[capacity]
+}
+<span class="boring">}</span></code></pre>
+<h3 id="94-最长公共子序列lcs"><a class="header" href="#94-最长公共子序列lcs">9.4 最长公共子序列（LCS）</a></h3>
+<p>给定两个序列，求它们的最长公共子序列的长度。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn lcs_length(a: &amp;[char], b: &amp;[char]) -&gt; usize {
+    let (m, n) = (a.len(), b.len());
+    let mut dp = vec![vec![0usize; n + 1]; m + 1];
+    for i in 1..=m {
+        for j in 1..=n {
+            dp[i][j] = if a[i-1] == b[j-1] {
+                dp[i-1][j-1] + 1
+            } else {
+                dp[i-1][j].max(dp[i][j-1])
+            };
+        }
+    }
+    dp[m][n]
+}
+<span class="boring">}</span></code></pre>
+<h3 id="95-旅行商问题tsp"><a class="header" href="#95-旅行商问题tsp">9.5 旅行商问题（TSP）</a></h3>
+<p>给定 $n$ 个城市和它们之间的距离，求一条经过所有城市恰好一次并回到起点的最短回路。</p>
+<p>TSP 是经典的 <strong>NP-hard</strong> 问题。暴力求解时间复杂度为 $O(n!)$，动态规划（Held-Karp 算法）可优化至 $O(n^2 \cdot 2^n)$。</p>
+<h3 id="96-八皇后问题"><a class="header" href="#96-八皇后问题">9.6 八皇后问题</a></h3>
+<p>在 $8 \times 8$ 的国际象棋棋盘上放置 8 个皇后，使得任意两个皇后都不能互相攻击（不同行、不同列、不同对角线）。共有 <strong>92</strong> 种解法。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn solve_n_queens(n: usize) -&gt; Vec&lt;Vec&lt;usize&gt;&gt; {
+    let mut solutions = Vec::new();
+    let mut cols = vec![0usize; n];
+    backtrack(0, n, &amp;mut cols, &amp;mut solutions);
+    solutions
+}
+
+fn backtrack(row: usize, n: usize, cols: &amp;mut Vec&lt;usize&gt;, solutions: &amp;mut Vec&lt;Vec&lt;usize&gt;&gt;) {
+    if row == n {
+        solutions.push(cols.clone());
+        return;
+    }
+    for col in 0..n {
+        if is_safe(row, col, cols) {
+            cols[row] = col;
+            backtrack(row + 1, n, cols, solutions);
+        }
+    }
+}
+
+fn is_safe(row: usize, col: usize, cols: &amp;[usize]) -&gt; bool {
+    for i in 0..row {
+        if cols[i] == col
+            || (cols[i] as isize - col as isize).abs() == (row as isize - i as isize)
+        {
+            return false;
+        }
+    }
+    true
+}
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="十数据结构经典问题"><a class="header" href="#十数据结构经典问题">十、数据结构经典问题</a></h2>
+<h3 id="101-约瑟夫环josephus-problem"><a class="header" href="#101-约瑟夫环josephus-problem">10.1 约瑟夫环（Josephus Problem）</a></h3>
+<p>$n$ 个人围成一圈，从第 1 人开始报数，每报到 $m$ 的人出局，求最后幸存者的编号。</p>
+<p><strong>递推公式：</strong></p>
+<p>$$J(1) = 0, \quad J(n) = (J(n-1) + m) \bmod n$$</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn josephus(n: usize, m: usize) -&gt; usize {
+    let mut pos = 0usize;
+    for i in 2..=n {
+        pos = (pos + m) % i;
+    }
+    pos
+}
+<span class="boring">}</span></code></pre>
+<h3 id="102-表达式求值与逆波兰表示法"><a class="header" href="#102-表达式求值与逆波兰表示法">10.2 表达式求值与逆波兰表示法</a></h3>
+<p>将中缀表达式 <code>3 + 4 * 2</code> 转换为后缀表达式（逆波兰表示法）<code>3 4 2 * +</code>，可用栈高效求值。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn eval_rpn(tokens: &amp;[&amp;str]) -&gt; f64 {
+    let mut stack: Vec&lt;f64&gt; = Vec::new();
+    for &amp;token in tokens {
+        match token {
+            "+" | "-" | "*" | "/" =&gt; {
+                let b = stack.pop().unwrap();
+                let a = stack.pop().unwrap();
+                let result = match token {
+                    "+" =&gt; a + b,
+                    "-" =&gt; a - b,
+                    "*" =&gt; a * b,
+                    "/" =&gt; a / b,
+                    _ =&gt; unreachable!(),
+                };
+                stack.push(result);
+            }
+            _ =&gt; stack.push(token.parse().unwrap()),
+        }
+    }
+    stack.pop().unwrap()
+}
+<span class="boring">}</span></code></pre>
+<h3 id="103-图的遍历bfs-与-dfs"><a class="header" href="#103-图的遍历bfs-与-dfs">10.3 图的遍历：BFS 与 DFS</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>问题</th><th>类别</th><th>相关章节</th></tr>
+<tr><th>方法</th><th>数据结构</th><th>特点</th><th>典型应用</th></tr>
 </thead>
 <tbody>
-<tr><td>物不知数</td><td>数论/同余</td><td>第29章 行列式</td></tr>
-<tr><td>鸡兔同笼</td><td>线性方程组</td><td>第30章 矩阵</td></tr>
-<tr><td>引葭赴岸</td><td>几何/勾股定理</td><td>第28章 几何</td></tr>
-<tr><td>最速降线</td><td>微积分/变分法</td><td>第33章 微积分</td></tr>
-<tr><td>巴塞尔问题</td><td>级数求和</td><td>第33章 微积分</td></tr>
-<tr><td>素数计数</td><td>数论</td><td>第27章 代数</td></tr>
-<tr><td>生日悖论</td><td>概率论</td><td>第34章 概率论</td></tr>
+<tr><td><strong>BFS（广度优先）</strong></td><td>队列</td><td>逐层扩展，找最短路径</td><td>无权最短路径、连通分量</td></tr>
+<tr><td><strong>DFS（深度优先）</strong></td><td>栈/递归</td><td>深入探索，回溯</td><td>拓扑排序、环检测、迷宫</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::collections::VecDeque;
+
+fn bfs(adj: &amp;[Vec&lt;usize&gt;], start: usize) -&gt; Vec&lt;usize&gt; {
+    let n = adj.len();
+    let mut visited = vec![false; n];
+    let mut order = Vec::new();
+    let mut queue = VecDeque::new();
+    visited[start] = true;
+    queue.push_back(start);
+    while let Some(u) = queue.pop_front() {
+        order.push(u);
+        for &amp;v in &amp;adj[u] {
+            if !visited[v] {
+                visited[v] = true;
+                queue.push_back(v);
+            }
+        }
+    }
+    order
+}
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="十一计算理论与复杂度经典问题"><a class="header" href="#十一计算理论与复杂度经典问题">十一、计算理论与复杂度经典问题</a></h2>
+<h3 id="111-p-vs-np-问题"><a class="header" href="#111-p-vs-np-问题">11.1 P vs NP 问题</a></h3>
+<p><strong>P</strong>：能在多项式时间内求解的问题。</p>
+<p><strong>NP</strong>：能在多项式时间内验证解的问题。</p>
+<p>核心问题：$P = NP$ 是否成立？这是计算机科学最重要的未解之谜，也是克雷数学研究所七大千禧年难题之一（悬赏 100 万美元）。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类别</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>P</strong></td><td>排序、最短路径、最大流</td></tr>
+<tr><td><strong>NP</strong></td><td>旅行商、背包、布尔可满足性（SAT）</td></tr>
+<tr><td><strong>NP-complete</strong></td><td>3-SAT、图着色、子集和</td></tr>
+<tr><td><strong>NP-hard</strong></td><td>停机问题（不可判定）、TSP 优化版</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="112-停机问题halting-problem"><a class="header" href="#112-停机问题halting-problem">11.2 停机问题（Halting Problem）</a></h3>
+<p>1936 年，图灵证明：<strong>不存在一个通用算法，能判定任意程序在任意输入上是否会停机。</strong></p>
+<p>这是计算理论的核心结论，证明了计算的固有局限性。</p>
+<h3 id="113-复杂度类全景"><a class="header" href="#113-复杂度类全景">11.3 复杂度类全景</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>复杂度类</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>P</strong></td><td>多项式时间可解</td></tr>
+<tr><td><strong>NP</strong></td><td>多项式时间可验证</td></tr>
+<tr><td><strong>co-NP</strong></td><td>NP 问题的补集</td></tr>
+<tr><td><strong>PSPACE</strong></td><td>多项式空间可解</td></tr>
+<tr><td><strong>EXPTIME</strong></td><td>指数时间可解</td></tr>
+<tr><td><strong>BPP</strong></td><td>有界错误概率多项式时间</td></tr>
 </tbody>
 </table>
 </div>
 <hr>
-<h2 id="十学习资源"><a class="header" href="#十学习资源">十、学习资源</a></h2>
+<h2 id="十二操作系统与网络经典问题"><a class="header" href="#十二操作系统与网络经典问题">十二、操作系统与网络经典问题</a></h2>
+<h3 id="121-哲学家就餐问题"><a class="header" href="#121-哲学家就餐问题">12.1 哲学家就餐问题</a></h3>
+<p>5 位哲学家围坐圆桌，每人左右各有一根筷子。哲学家交替思考和进餐，进餐需同时拿到左右两根筷子。如何设计算法避免死锁？</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>策略</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>资源分级</td><td>给筷子编号，每人先拿小编号再拿大编号</td></tr>
+<tr><td>仲裁者</td><td>设一个服务员控制筷子的分配</td></tr>
+<tr><td>限制人数</td><td>最多允许 4 人同时拿筷子</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="122-生产者-消费者问题"><a class="header" href="#122-生产者-消费者问题">12.2 生产者-消费者问题</a></h3>
+<p>生产者向缓冲区写入数据，消费者从缓冲区读取数据。需要用信号量或条件变量同步，避免缓冲区溢出或下溢。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::sync::{Arc, Mutex, Condvar};
+use std::collections::VecDeque;
+
+struct Buffer&lt;T&gt; {
+    queue: Mutex&lt;VecDeque&lt;T&gt;&gt;,
+    capacity: usize,
+    not_full: Condvar,
+    not_empty: Condvar,
+}
+
+impl&lt;T&gt; Buffer&lt;T&gt; {
+    fn new(capacity: usize) -&gt; Self {
+        Buffer {
+            queue: Mutex::new(VecDeque::with_capacity(capacity)),
+            capacity,
+            not_full: Condvar::new(),
+            not_empty: Condvar::new(),
+        }
+    }
+
+    fn produce(&amp;self, item: T) {
+        let mut queue = self.queue.lock().unwrap();
+        while queue.len() &gt;= self.capacity {
+            queue = self.not_full.wait(queue).unwrap();
+        }
+        queue.push_back(item);
+        self.not_empty.notify_one();
+    }
+
+    fn consume(&amp;self) -&gt; T {
+        let mut queue = self.queue.lock().unwrap();
+        while queue.is_empty() {
+            queue = self.not_empty.wait(queue).unwrap();
+        }
+        let item = queue.pop_front().unwrap();
+        self.not_full.notify_one();
+        item
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="123-拜占庭将军问题"><a class="header" href="#123-拜占庭将军问题">12.3 拜占庭将军问题</a></h3>
+<p>在分布式系统中，部分节点可能故障或恶意作恶。如何在存在叛徒的情况下达成共识？</p>
+<p><strong>结论：</strong> 若系统有 $f$ 个故障节点，至少需要 $3f + 1$ 个节点才能达成共识（即容忍 $f$ 个叛徒需要总共 $n \geq 3f+1$ 个节点）。</p>
+<p>这是区块链共识算法（PoW、PoS、BFT）的理论基础。</p>
+<hr>
+<h2 id="十三人工智能与博弈经典问题"><a class="header" href="#十三人工智能与博弈经典问题">十三、人工智能与博弈经典问题</a></h2>
+<h3 id="131-图灵测试"><a class="header" href="#131-图灵测试">13.1 图灵测试</a></h3>
+<p>1950 年，图灵在论文《计算机器与智能》中提出：如果一台机器能在对话中让人类无法分辨对方是人还是机器，则可以认为该机器具有智能。</p>
+<h3 id="132-蒙特霍尔问题三门问题"><a class="header" href="#132-蒙特霍尔问题三门问题">13.2 蒙特霍尔问题（三门问题）</a></h3>
+<p>参赛者面对三扇门，其中一扇后有汽车，两扇后是山羊。参赛者选择一扇后，主持人打开另一扇有山羊的门，问：是否换门？</p>
+<p><strong>答案：换门。</strong> 换门后中奖概率从 $\frac{1}{3}$ 提升到 $\frac{2}{3}$。</p>
+<p>$$P(\text{换门赢}) = \frac{2}{3}, \quad P(\text{不换赢}) = \frac{1}{3}$$</p>
+<h3 id="133-极小化极大minimax与井字棋"><a class="header" href="#133-极小化极大minimax与井字棋">13.3 极小化极大（Minimax）与井字棋</a></h3>
+<p>Minimax 是博弈搜索的核心算法：假设对手采取最优策略，选择使自己收益最大化的行动。</p>
+<p>对于井字棋（Tic-Tac-Toe），完整博弈树仅有约 255,168 个节点，可以完全搜索得出最优策略——双方均最优时必然平局。</p>
+<hr>
+<h2 id="十四经典问题索引"><a class="header" href="#十四经典问题索引">十四、经典问题索引</a></h2>
+<h3 id="算法与数据结构"><a class="header" href="#算法与数据结构">算法与数据结构</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>问题</th><th>类别</th><th>难度</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>斐波那契数列</td><td>递归/动态规划</td><td>简单</td><td>递推关系与黄金分割</td></tr>
+<tr><td>汉诺塔</td><td>递归</td><td>简单</td><td>经典递归分治，最少 $2^n-1$ 步</td></tr>
+<tr><td>背包问题</td><td>动态规划</td><td>中等</td><td>0-1 背包、完全背包、多重背包</td></tr>
+<tr><td>最长公共子序列</td><td>动态规划</td><td>中等</td><td>序列比对的基础算法</td></tr>
+<tr><td>最长递增子序列</td><td>动态规划</td><td>中等</td><td>$O(n\log n)$ 二分优化</td></tr>
+<tr><td>编辑距离</td><td>动态规划</td><td>中等</td><td>字符串相似度度量</td></tr>
+<tr><td>旅行商问题</td><td>组合优化</td><td>困难</td><td>NP-hard，Held-Karp 算法 $O(n^2 2^n)$</td></tr>
+<tr><td>八皇后问题</td><td>回溯</td><td>中等</td><td>约束满足问题，92 种解</td></tr>
+<tr><td>约瑟夫环</td><td>数学/递推</td><td>简单</td><td>$O(n)$ 递推公式</td></tr>
+<tr><td>区间调度</td><td>贪心</td><td>简单</td><td>按结束时间排序的贪心选择</td></tr>
+<tr><td>Dijkstra 最短路径</td><td>图论</td><td>中等</td><td>单源最短路径，$O((V+E)\log V)$</td></tr>
+<tr><td>最小生成树</td><td>图论</td><td>中等</td><td>Kruskal 或 Prim 算法</td></tr>
+<tr><td>拓扑排序</td><td>图论</td><td>中等</td><td>DAG 的线性排序</td></tr>
+<tr><td>字符串匹配（KMP）</td><td>字符串</td><td>中等</td><td>$O(n+m)$ 模式匹配</td></tr>
+<tr><td>快速傅里叶变换</td><td>数值计算</td><td>困难</td><td>$O(n\log n)$ 多项式乘法</td></tr>
+<tr><td>并查集</td><td>数据结构</td><td>简单</td><td>近乎 $O(1)$ 的集合合并与查询</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="计算理论与数学"><a class="header" href="#计算理论与数学">计算理论与数学</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>问题</th><th>类别</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>P vs NP</td><td>复杂度理论</td><td>千禧年七大难题之一，悬赏百万美元</td></tr>
+<tr><td>停机问题</td><td>可计算性</td><td>图灵 1936 年证明，计算存在固有极限</td></tr>
+<tr><td>哥德尔不完备定理</td><td>数理逻辑</td><td>任何足够强的公理系统都存在无法证明的真命题</td></tr>
+<tr><td>四色定理</td><td>图论/组合</td><td>任何地图只需 4 种颜色即可着色（1976 年计算机辅助证明）</td></tr>
+<tr><td>费马大定理</td><td>数论</td><td>$x^n+y^n=z^n$ 在 $n\geq3$ 时无正整数解（1995 年证明）</td></tr>
+<tr><td>黎曼猜想</td><td>数论</td><td>素数分布与 ζ 函数零点的关系，悬赏百万美元</td></tr>
+<tr><td>生日悖论</td><td>概率论</td><td>23 人中两人同天生日的概率超过 50%</td></tr>
+<tr><td>蒙提霍尔问题</td><td>概率论</td><td>换门概率从 1/3 提升到 2/3</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="系统与工程"><a class="header" href="#系统与工程">系统与工程</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>问题</th><th>类别</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>哲学家就餐</td><td>并发/死锁</td><td>Dijkstra 提出的经典同步问题</td></tr>
+<tr><td>生产者-消费者</td><td>并发/同步</td><td>缓冲区同步的经典模型</td></tr>
+<tr><td>拜占庭将军问题</td><td>分布式系统</td><td>容错共识的理论基础</td></tr>
+<tr><td>两军问题</td><td>网络通信</td><td>不可靠信道上无法达成确定共识</td></tr>
+<tr><td>CAP 定理</td><td>分布式系统</td><td>一致性、可用性、分区容错性三者最多取其二</td></tr>
+<tr><td>FLP 不可能定理</td><td>分布式系统</td><td>异步系统中无法同时保证终止性和一致性</td></tr>
+<tr><td>缓存失效</td><td>计算机科学</td><td>“计算机科学只有两个难题：缓存失效和命名”</td></tr>
+<tr><td>千年虫问题</td><td>软件工程</td><td>两位年份表示导致的全球性软件危机</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="十五学习资源"><a class="header" href="#十五学习资源">十五、学习资源</a></h2>
 <ul>
 <li><a href="https://leetcode.cn">LeetCode</a></li>
+<li><a href="https://projecteuler.net/">Project Euler</a> — 数学与编程挑战</li>
+<li><a href="https://the-algorithms.com/">The Algorithms</a> — 开源算法实现集合</li>
 <li><a href="https://github.com/smallswan/rust-by-example">rust-by-example</a></li>
 <li><a href="https://github.com/smallswan/leetcode-rust">leetcode-rust</a></li>
 <li><a href="https://www.mindspore.cn">MindSpore 官方文档</a></li>

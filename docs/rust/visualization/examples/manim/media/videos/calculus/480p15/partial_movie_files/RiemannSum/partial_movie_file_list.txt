@@ -1,0 +1,12 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/calculus/480p15/partial_movie_files/RiemannSum/1584795214_3787604455_223132457.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/calculus/480p15/partial_movie_files/RiemannSum/4072820271_3673286798_2211875369.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/calculus/480p15/partial_movie_files/RiemannSum/4072820271_813345426_2529245990.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/calculus/480p15/partial_movie_files/RiemannSum/4072820271_3201849554_600263581.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/calculus/480p15/partial_movie_files/RiemannSum/4072820271_3674565963_130568531.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/calculus/480p15/partial_movie_files/RiemannSum/4072820271_807188262_3885741012.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/calculus/480p15/partial_movie_files/RiemannSum/4072820271_2347630224_2839067670.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/calculus/480p15/partial_movie_files/RiemannSum/4072820271_807188262_3794218228.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/calculus/480p15/partial_movie_files/RiemannSum/4072820271_995523145_50230145.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/calculus/480p15/partial_movie_files/RiemannSum/4072820271_807188262_632338931.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/calculus/480p15/partial_movie_files/RiemannSum/4072820271_1839128356_4005996523.mp4'

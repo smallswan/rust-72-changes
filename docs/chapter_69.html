@@ -1,0 +1,1457 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第六十九 编译器与解释器 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-545e538a.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第六十九-编译器与解释器"><a class="header" href="#第六十九-编译器与解释器">第六十九 编译器与解释器</a></h1>
+<p>程序员用人类能读懂的语言写下意图，CPU 却只认识一串串二进制机器码。把“给人看的“变成“给机器跑的“，就是**编译器（Compiler）<strong>和</strong>解释器（Interpreter）**的工作。可以说，整个软件世界都建立在这两个程序之上：没有编译器，C、C++、Rust、Go 无从谈起；没有解释器，Python、JavaScript、Shell 也不会存在。</p>
+<p>这一章我们将从零开始回答三个问题：<strong>编译器与解释器到底差在哪里</strong>、<strong>一个“翻译器“内部由哪些阶段组成</strong>，以及<strong>如何用 Rust 亲手写一个能跑的小语言</strong>。最后我们会看到一个有意思的事实：Rust 编译器 <code>rustc</code> 本身就是用 Rust 写的，它内部甚至还藏着一个解释器。</p>
+<hr>
+<h2 id="一为什么需要翻译"><a class="header" href="#一为什么需要翻译">一、为什么需要翻译</a></h2>
+<h3 id="11-机器的语言"><a class="header" href="#11-机器的语言">1.1 机器的语言</a></h3>
+<p>CPU 只执行指令：取数、加、比较、跳转。一条“把 rax 和 rbx 相加，结果写回 rax“的指令，在 x86-64 上就是三个字节：</p>
+<pre><code class="language-text">48 01 D8        ; 机器码：add rax, rbx
+</code></pre>
+<p>人当然不该这样写程序，于是有了三层抽象：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>层次</th><th>示例</th><th>由谁生成</th><th>可移植性</th></tr>
+</thead>
+<tbody>
+<tr><td>机器码</td><td><code>48 01 D8</code></td><td>编译器 / 汇编器</td><td>极差（换架构全废）</td></tr>
+<tr><td>汇编</td><td><code>add rax, rbx</code></td><td>汇编器</td><td>差（换架构要重写）</td></tr>
+<tr><td>高级语言</td><td><code>let c = a + b;</code></td><td>程序员</td><td>好（重新编译即可）</td></tr>
+<tr><td>DSL（领域语言）</td><td><code>SELECT ... FROM ...</code></td><td>程序员</td><td>取决于实现</td></tr>
+</tbody>
+</table>
+</div>
+<p>从上往下，人写得越来越舒服；从下往上，机器执行得越来越直接。<strong>编译器与解释器就是横在中间的那道桥</strong>：</p>
+<pre><code class="language-text">   人类可读                         机器可执行
+  高级语言源码  ←── 编译器/解释器 ──→  目标代码/动作
+     a + b                              add rax, rbx
+</code></pre>
+<h3 id="12-翻译的两种时机"><a class="header" href="#12-翻译的两种时机">1.2 翻译的两种时机</a></h3>
+<p>同样是翻译，方式可以完全不同。用一个类比最容易理解：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方式</th><th>类比</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>编译</strong>（Compile）</td><td>笔译：先把整本书译好、出版，读者直接读译本</td><td>一次翻译，多次执行</td></tr>
+<tr><td><strong>解释</strong>（Interpret）</td><td>同声传译：听一句、译一句，不做成书</td><td>每次执行都要重新翻译</td></tr>
+</tbody>
+</table>
+</div>
+<p>于是就有了两条经典路线：</p>
+<pre><code class="language-text">编译执行：
+  源码 ──[编译器]──► 可执行文件 ──[反复执行]──► 结果
+                      （翻译只做一次）
+
+解释执行：
+  源码 ──[解释器：读取 → 分析 → 执行]──► 结果
+                      （每次都重新翻译）
+</code></pre>
+<hr>
+<h2 id="二编译器与解释器对比"><a class="header" href="#二编译器与解释器对比">二、编译器与解释器对比</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>维度</th><th>编译器</th><th>解释器</th></tr>
+</thead>
+<tbody>
+<tr><td>翻译时机</td><td>运行之前，一次完成</td><td>运行时，逐句进行</td></tr>
+<tr><td>产物</td><td>目标代码（可执行文件、目标文件、字节码）</td><td>通常没有产物，只产生执行效果</td></tr>
+<tr><td>启动速度</td><td>慢（必须先编译完）</td><td>快（拿到源码就能跑）</td></tr>
+<tr><td>执行速度</td><td>快（可提前做全局优化）</td><td>慢（逐条翻译、无法全局优化）</td></tr>
+<tr><td>平台依赖</td><td>为每个平台各编译一次</td><td>只要有解释器就能跑</td></tr>
+<tr><td>错误发现</td><td>大量错误在编译期就被拦住</td><td>很多错误要运行到那一行才暴露</td></tr>
+<tr><td>优化空间</td><td>大（常量折叠、内联、向量化……）</td><td>小（只能做局部窥孔优化）</td></tr>
+<tr><td>调试与热更新</td><td>需要调试符号，改动要重新编译</td><td>天然支持 REPL 与热更新</td></tr>
+<tr><td>典型代表</td><td>gcc、clang、rustc、javac</td><td>CPython、Ruby、Shell、早期 JS</td></tr>
+</tbody>
+</table>
+</div>
+<p>一个经验判断：</p>
+<blockquote>
+<p>追求<strong>性能</strong>与<strong>部署独立性</strong>（只发可执行文件，不发源码）选编译；追求<strong>灵活</strong>、<strong>即时反馈</strong>（脚本、配置、插件、教学）选解释。</p>
+</blockquote>
+<h3 id="21-界线其实很模糊"><a class="header" href="#21-界线其实很模糊">2.1 界线其实很模糊</a></h3>
+<p>“编译型语言“和“解释型语言“只是一种方便的简称，现实中绝大多数实现都是混合体：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>实现</th><th>做法</th></tr>
+</thead>
+<tbody>
+<tr><td>CPython</td><td>先把 <code>.py</code> 编译成字节码（<code>.pyc</code>），再由解释器执行字节码</td></tr>
+<tr><td>JVM / Java</td><td><code>javac</code> 编译成字节码，运行期 HotSpot 用 JIT 把热点方法编译成机器码</td></tr>
+<tr><td>V8 / JavaScript</td><td>先用 Ignition 解释执行，热点函数交给 TurboFan 编译成机器码</td></tr>
+<tr><td>.NET</td><td>编译成 CIL，运行时 JIT 编译</td></tr>
+<tr><td>Rust</td><td><code>rustc</code> 编译成机器码；但 <code>const</code> 求值是运行在编译期的 MIR <strong>解释器</strong>完成的</td></tr>
+</tbody>
+</table>
+</div>
+<p>所以更准确的说法是：<strong>语言本身没有“编译/解释“属性，只有“实现“才有</strong>。同一个 Python 程序，CPython 靠解释器执行，Cython/Nuitka 则把它编译成本地代码。</p>
+<h3 id="22-三种执行模式"><a class="header" href="#22-三种执行模式">2.2 三种执行模式</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>模式</th><th>全称</th><th>何时翻译</th><th>典型</th></tr>
+</thead>
+<tbody>
+<tr><td>AOT</td><td>Ahead-Of-Time</td><td>部署前</td><td>C/C++、Rust、Go</td></tr>
+<tr><td>JIT</td><td>Just-In-Time</td><td>运行时（针对热点）</td><td>JVM、V8、PyPy</td></tr>
+<tr><td>纯解释</td><td>Interpreter</td><td>每条语句执行前</td><td>Shell、AWK、早期 BASIC</td></tr>
+</tbody>
+</table>
+</div>
+<p>JIT 是“既要启动快、又要跑得快“的折中：先解释运行，发现某个函数被反复调用（热点），就把它编译成机器码，下次直接跑机器码。代价是<strong>预热时间</strong>和<strong>内存占用</strong>，收益是<strong>长跑性能</strong>。这也是同一门语言在“跑 1 秒的脚本“和“跑 1 小时的服务“上表现差异巨大的原因。</p>
+<hr>
+<h2 id="三编译器的经典流水线"><a class="header" href="#三编译器的经典流水线">三、编译器的经典流水线</a></h2>
+<p>无论编译 C 还是 Rust，编译器内部大体都是这条流水线：</p>
+<pre><code class="language-text">      源程序（字符流）
+           │
+           ▼
+   ┌───────────────┐
+   │  词法分析     │  Lexer / Scanner
+   └───────┬───────┘
+           │ Token 流（关键字、标识符、字面量、运算符）
+           ▼
+   ┌───────────────┐
+   │  语法分析     │  Parser
+   └───────┬───────┘
+           │ 抽象语法树 AST
+           ▼
+   ┌───────────────┐
+   │  语义分析     │  符号表、类型检查、作用域检查
+   └───────┬───────┘
+           │ 带类型信息的 AST
+           ▼
+   ┌───────────────┐
+   │  中间代码生成 │  IR：三地址码 / SSA / 字节码 / LLVM IR
+   └───────┬───────┘
+           │
+           ▼
+   ┌───────────────┐
+   │  优化         │  常量折叠、死代码消除、内联、向量化……
+   └───────┬───────┘
+           │
+           ▼
+   ┌───────────────┐
+   │  代码生成     │  汇编 / 机器码 / 字节码
+   └───────┬───────┘
+           │
+           ▼
+   ┌───────────────┐
+   │  汇编与链接   │  Assembler &amp; Linker
+   └───────┬───────┘
+           │
+           ▼
+      可执行文件
+</code></pre>
+<p>各阶段的输入、输出与典型错误：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>阶段</th><th>输入</th><th>输出</th><th>该阶段能发现的错误</th></tr>
+</thead>
+<tbody>
+<tr><td>词法分析</td><td>字符流</td><td>Token 流</td><td>非法字符、未闭合的字符串</td></tr>
+<tr><td>语法分析</td><td>Token 流</td><td>AST</td><td>缺分号、括号不匹配、<code>if</code> 缺条件</td></tr>
+<tr><td>语义分析</td><td>AST</td><td>带语义信息的 AST</td><td>未声明变量、类型不匹配、重复定义</td></tr>
+<tr><td>中间代码</td><td>语义树</td><td>IR</td><td>（发现不了新错误，只是形式转换）</td></tr>
+<tr><td>优化</td><td>IR</td><td>更快的 IR</td><td>通常需要保证“不改变语义“</td></tr>
+<tr><td>代码生成</td><td>IR</td><td>目标代码</td><td>寄存器不足、指令不支持</td></tr>
+<tr><td>链接</td><td>目标文件</td><td>可执行文件</td><td>未定义符号、重复符号</td></tr>
+</tbody>
+</table>
+</div>
+<p>习惯上把前三阶段叫<strong>前端</strong>（Front End，与源语言相关），中间的 IR 与优化叫<strong>中端</strong>（Middle End，与语言和目标都无关），代码生成与链接叫<strong>后端</strong>（Back End，与目标机器相关）。这种划分的意义在于：新增一门语言只需要写前端，新增一种 CPU 只需要写后端，<code>M</code> 种语言 × <code>N</code> 种目标从 <code>M×N</code> 个编译器变成 <code>M+N</code> 个模块。<strong>LLVM 就是靠这条思路成为“编译器界的乐高“</strong>：C/C++/Rust/Swift 各自写前端，产出 LLVM IR，后端复用同一套优化与代码生成。</p>
+<p>顺便说一句：为什么现在的编译器报错这么友好？因为<strong>诊断信息本身就是流水线的副产品</strong>——每个阶段都知道自己手上的位置信息（行列号）、Token、语法结构，Rust 借用这套信息生成了“带下划线和修改建议“的错误提示；而错误在越靠前的阶段被拦住，用户得到的反馈就越清晰。</p>
+<hr>
+<h2 id="四词法分析把字符流切成-token"><a class="header" href="#四词法分析把字符流切成-token">四、词法分析：把字符流切成 Token</a></h2>
+<p>词法分析（Lexing / Scanning）的任务是把字符流切分成一个个<strong>记号（Token）</strong>。一个 Token 通常包含三部分：<strong>种类</strong>（关键字、标识符、数字……）、<strong>词素</strong>（源码中的原文）、<strong>位置</strong>（行号列号，用于报错）。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>记号类别</th><th>例子</th></tr>
+</thead>
+<tbody>
+<tr><td>关键字</td><td><code>let</code>、<code>if</code>、<code>fn</code></td></tr>
+<tr><td>标识符</td><td><code>count</code>、<code>total_sum</code></td></tr>
+<tr><td>字面量</td><td><code>42</code>、<code>3.14</code>、<code>"hello"</code></td></tr>
+<tr><td>运算符</td><td><code>+</code>、<code>==</code>、<code>*=</code></td></tr>
+<tr><td>分隔符</td><td><code>(</code>、<code>)</code>、<code>;</code>、<code>,</code></td></tr>
+<tr><td>结束符</td><td><code>EOF</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>理论上的做法是把每类 Token 描述成<strong>正则表达式</strong>，再用 Thompson 构造法转成 NFA、子集构造法转成 DFA，最后生成一个状态机自动机来扫描。工程上则常用<strong>手写扫描器</strong>（更快、错误提示更好）或用工具生成（<code>lex</code>/<code>flex</code>/<code>logos</code>）。两条必须遵守的规则：</p>
+<ol>
+<li><strong>最长匹配</strong>（maximal munch）：遇到 <code>&lt;=</code> 不能切成 <code>&lt;</code> 和 <code>=</code>，要尽量吞掉最长的合法记号。</li>
+<li><strong>优先级</strong>：<code>if</code> 既能匹配“标识符“也能匹配“关键字“，保留字优先。</li>
+</ol>
+<p>下面是一个手写词法分析器，约 50 行，覆盖了我们的迷你语言（数字、标识符、<code>+ - * / % ( ) = ;</code>）：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Debug, Clone, PartialEq)]
+enum Token {
+    Number(f64),
+    Ident(String),
+    Let,
+    Plus,
+    Minus,
+    Star,
+    Slash,
+    Percent,
+    LParen,
+    RParen,
+    Assign,
+    Semi,
+    Eof,
+}
+
+fn lex(src: &amp;str) -&gt; Result&lt;Vec&lt;Token&gt;, String&gt; {
+    let chars: Vec&lt;char&gt; = src.chars().collect();
+    let mut tokens = Vec::new();
+    let mut i = 0;
+
+    while i &lt; chars.len() {
+        let c = chars[i];
+        match c {
+            // 跳过空白
+            ' ' | '\t' | '\r' | '\n' =&gt; i += 1,
+
+            // 数字：连续的数字与小数点，最长匹配
+            '0'..='9' | '.' =&gt; {
+                let start = i;
+                while i &lt; chars.len() &amp;&amp; (chars[i].is_ascii_digit() || chars[i] == '.') {
+                    i += 1;
+                }
+                let text: String = chars[start..i].iter().collect();
+                let n = text.parse::&lt;f64&gt;().map_err(|_| format!("非法数字字面量: {text}"))?;
+                tokens.push(Token::Number(n));
+            }
+
+            // 标识符或关键字：字母/下划线开头
+            c if c.is_alphabetic() || c == '_' =&gt; {
+                let start = i;
+                while i &lt; chars.len() &amp;&amp; (chars[i].is_alphanumeric() || chars[i] == '_') {
+                    i += 1;
+                }
+                let text: String = chars[start..i].iter().collect();
+                tokens.push(if text == "let" { Token::Let } else { Token::Ident(text) });
+            }
+
+            // 单字符运算符与分隔符
+            '+' =&gt; { tokens.push(Token::Plus); i += 1; }
+            '-' =&gt; { tokens.push(Token::Minus); i += 1; }
+            '*' =&gt; { tokens.push(Token::Star); i += 1; }
+            '/' =&gt; { tokens.push(Token::Slash); i += 1; }
+            '%' =&gt; { tokens.push(Token::Percent); i += 1; }
+            '(' =&gt; { tokens.push(Token::LParen); i += 1; }
+            ')' =&gt; { tokens.push(Token::RParen); i += 1; }
+            '=' =&gt; { tokens.push(Token::Assign); i += 1; }
+            ';' =&gt; { tokens.push(Token::Semi); i += 1; }
+
+            _ =&gt; return Err(format!("无法识别的字符: {c}")),
+        }
+    }
+    tokens.push(Token::Eof); // 结束标记，让语法分析器有"哨兵"可用
+    Ok(tokens)
+}
+<span class="boring">}</span></code></pre>
+<p>对 <code>let a = 3 + 4 * 2;</code> 调用 <code>lex</code>，得到：</p>
+<pre><code class="language-text">[Let, Ident("a"), Assign, Number(3.0), Plus, Number(4.0), Star, Number(2.0), Semi, Eof]
+</code></pre>
+<hr>
+<h2 id="五语法分析从-token-流到语法树"><a class="header" href="#五语法分析从-token-流到语法树">五、语法分析：从 Token 流到语法树</a></h2>
+<h3 id="51-用文法描述语法"><a class="header" href="#51-用文法描述语法">5.1 用文法描述语法</a></h3>
+<p>语法规则用<strong>文法</strong>（Grammar）描述。BNF/EBNF 是最常见的写法，<code>{ }</code> 表示重复 0 次以上，<code>|</code> 表示或：</p>
+<pre><code class="language-ebnf">program   = { statement } ;
+statement = "let" ident "=" expr ";" | expr ";" ;
+expr      = term  { ("+" | "-") term } ;
+term      = unary { ("*" | "/" | "%") unary } ;
+unary     = "-" unary | primary ;
+primary   = number | ident | "(" expr ")" ;
+</code></pre>
+<p>这里的关键设计是<strong>把优先级编码进分层</strong>：<code>expr</code> 管加减、<code>term</code> 管乘除模、<code>unary</code> 管负号、<code>primary</code> 管括号和叶子节点。层次越深，优先级越高——这就是“<code>*</code> 比 <code>+</code> 先算“的来历。</p>
+<h3 id="52-解析方法一览"><a class="header" href="#52-解析方法一览">5.2 解析方法一览</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方法</th><th>思路</th><th>优点</th><th>缺点</th><th>代表</th></tr>
+</thead>
+<tbody>
+<tr><td>递归下降</td><td>每个非终结符写一个函数</td><td>直观、好写、错误提示好</td><td>文法受限（不能左递归）</td><td>GCC、Clang、rustc</td></tr>
+<tr><td>优先级爬升 / Pratt</td><td>递归下降 + 优先级表</td><td>处理表达式特别优雅</td><td>需要理解绑定力概念</td><td>rustc 的表达式解析</td></tr>
+<tr><td>LL(1)</td><td>查表、自顶向下</td><td>可自动生成</td><td>文法要求苛刻</td><td>教学用</td></tr>
+<tr><td>LR / LALR(1)</td><td>移进-归约、自底向上</td><td>能处理更多文法</td><td>报错难懂、工具链复杂</td><td>yacc、bison、JavaCC</td></tr>
+<tr><td>PEG</td><td>带优先级的递归下降</td><td>不需消除左递归</td><td>回溯可能变慢</td><td>pest</td></tr>
+<tr><td>GLR / Earley</td><td>并行处理多种可能</td><td>支持歧义文法</td><td>慢、实现复杂</td><td>自然语言、语言原型</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="53-抽象语法树ast"><a class="header" href="#53-抽象语法树ast">5.3 抽象语法树（AST）</a></h3>
+<p>解析的产物是一棵<strong>抽象语法树</strong>：只保留结构，丢掉多余的分隔符与括号。用 Rust 的枚举加上 <code>Box</code>，语法树可以写得非常自然：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Debug, Clone)]
+enum Expr {
+    Number(f64),                      // 字面量
+    Var(String),                      // 变量引用
+    Unary(char, Box&lt;Expr&gt;),           // 一元运算：-x
+    Binary(char, Box&lt;Expr&gt;, Box&lt;Expr&gt;), // 二元运算：a + b
+}
+
+#[derive(Debug, Clone)]
+enum Stmt {
+    Let(String, Expr),                // let x = ...;
+    Expr(Expr),                       // 表达式语句
+}
+<span class="boring">}</span></code></pre>
+<p><code>3 + 4 * 2</code> 会变成：</p>
+<pre><code class="language-text">        Binary('+')
+        /        \
+   Number(3)   Binary('*')
+               /        \
+         Number(4)   Number(2)
+</code></pre>
+<p><code>Box</code> 是必需的：<code>Expr</code> 里要放 <code>Expr</code>，直接内联会让类型大小无限递归，<code>Box</code> 把它变成指针，大小就固定了。</p>
+<h3 id="54-递归下降解析器"><a class="header" href="#54-递归下降解析器">5.4 递归下降解析器</a></h3>
+<p>照着文法的层次一节一个函数，就能写出解析器。乘法优先级高于加法，正是因为 <code>parse_expr</code> 先把 <code>term</code> 解析出来再组合：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct Parser {
+    tokens: Vec&lt;Token&gt;,
+    pos: usize,
+}
+
+impl Parser {
+    fn new(tokens: Vec&lt;Token&gt;) -&gt; Self {
+        Parser { tokens, pos: 0 }
+    }
+
+    fn peek(&amp;self) -&gt; &amp;Token {
+        &amp;self.tokens[self.pos]
+    }
+
+    fn bump(&amp;mut self) -&gt; Token {
+        let t = self.tokens[self.pos].clone();
+        self.pos += 1;
+        t
+    }
+
+    fn parse_program(&amp;mut self) -&gt; Result&lt;Vec&lt;Stmt&gt;, String&gt; {
+        let mut stmts = Vec::new();
+        while *self.peek() != Token::Eof {
+            stmts.push(self.parse_stmt()?);
+        }
+        Ok(stmts)
+    }
+
+    fn parse_stmt(&amp;mut self) -&gt; Result&lt;Stmt, String&gt; {
+        if *self.peek() == Token::Let {
+            self.bump();
+            let name = match self.bump() {
+                Token::Ident(name) =&gt; name,
+                other =&gt; return Err(format!("let 之后期望标识符，得到 {other:?}")),
+            };
+            if self.bump() != Token::Assign {
+                return Err("期望 =".to_string());
+            }
+            let value = self.parse_expr()?;
+            self.expect(Token::Semi)?;
+            Ok(Stmt::Let(name, value))
+        } else {
+            let value = self.parse_expr()?;
+            self.expect(Token::Semi)?;
+            Ok(Stmt::Expr(value))
+        }
+    }
+
+    fn expect(&amp;mut self, want: Token) -&gt; Result&lt;(), String&gt; {
+        let got = self.bump();
+        if got == want {
+            Ok(())
+        } else {
+            Err(format!("期望 {want:?}，得到 {got:?}"))
+        }
+    }
+
+    // expr := term (("+" | "-") term)*
+    fn parse_expr(&amp;mut self) -&gt; Result&lt;Expr, String&gt; {
+        let mut left = self.parse_term()?;
+        loop {
+            let op = match self.peek() {
+                Token::Plus =&gt; '+',
+                Token::Minus =&gt; '-',
+                _ =&gt; break,
+            };
+            self.bump();
+            let right = self.parse_term()?;
+            left = Expr::Binary(op, Box::new(left), Box::new(right));
+        }
+        Ok(left)
+    }
+
+    // term := unary (("*" | "/" | "%") unary)*
+    fn parse_term(&amp;mut self) -&gt; Result&lt;Expr, String&gt; {
+        let mut left = self.parse_unary()?;
+        loop {
+            let op = match self.peek() {
+                Token::Star =&gt; '*',
+                Token::Slash =&gt; '/',
+                Token::Percent =&gt; '%',
+                _ =&gt; break,
+            };
+            self.bump();
+            let right = self.parse_unary()?;
+            left = Expr::Binary(op, Box::new(left), Box::new(right));
+        }
+        Ok(left)
+    }
+
+    // unary := "-" unary | primary
+    fn parse_unary(&amp;mut self) -&gt; Result&lt;Expr, String&gt; {
+        if *self.peek() == Token::Minus {
+            self.bump();
+            let inner = self.parse_unary()?;
+            return Ok(Expr::Unary('-', Box::new(inner)));
+        }
+        self.parse_primary()
+    }
+
+    // primary := number | ident | "(" expr ")"
+    fn parse_primary(&amp;mut self) -&gt; Result&lt;Expr, String&gt; {
+        match self.bump() {
+            Token::Number(n) =&gt; Ok(Expr::Number(n)),
+            Token::Ident(name) =&gt; Ok(Expr::Var(name)),
+            Token::LParen =&gt; {
+                let inner = self.parse_expr()?;
+                self.expect(Token::RParen)?;
+                Ok(inner)
+            }
+            other =&gt; Err(format!("期望表达式，得到 {other:?}")),
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>两个值得注意的细节：</p>
+<ul>
+<li><strong>左递归要消除</strong>。文法若写成 <code>expr = expr "+" term</code>，函数会直接递归到栈溢出；改写成 <code>expr = term { ("+"|"-") term }</code>（即“先解析一个 term，再循环吃运算符“）就等价且不会左递归。上面的 <code>loop</code> 正是在做这件事。</li>
+<li><strong>左结合 vs 右结合</strong>。循环里 <code>left = Binary(op, left, right)</code> 让 <code>1 - 2 - 3</code> 解析成 <code>(1 - 2) - 3</code>；若改为递归处理运算符右侧，就变成右结合（<code>=</code>、<code>**</code> 通常是右结合）。</li>
+</ul>
+<hr>
+<h2 id="六语义分析语法正确不代表意思对"><a class="header" href="#六语义分析语法正确不代表意思对">六、语义分析：语法正确不代表意思对</a></h2>
+<p>语法分析只管“结构对不对“。<code>x * 2;</code> 语法完全合法，但如果 <code>x</code> 从未声明，程序就是错的——这是<strong>语义分析</strong>（Semantic Analysis）的职责。</p>
+<h3 id="61-符号表与作用域"><a class="header" href="#61-符号表与作用域">6.1 符号表与作用域</a></h3>
+<p>符号表（Symbol Table）记录“名字 → 类型/位置/作用域“，通常用哈希表或树实现。作用域则用链式结构表达：</p>
+<pre><code class="language-text">全局作用域
+  ├── fn main
+  │     ├── let a
+  │     └── 内层块
+  │           └── let b     ← 查找 b：从当前层向外层沿链查找
+</code></pre>
+<p>一个极简的“声明检查“就足以体现这一步的原理：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::collections::HashSet;
+
+fn check(expr: &amp;Expr, declared: &amp;HashSet&lt;String&gt;) -&gt; Result&lt;(), String&gt; {
+    match expr {
+        Expr::Number(_) =&gt; Ok(()),
+        Expr::Var(name) =&gt; {
+            if declared.contains(name) {
+                Ok(())
+            } else {
+                Err(format!("使用了未声明的变量 `{name}`"))
+            }
+        }
+        Expr::Unary(_, inner) =&gt; check(inner, declared),
+        Expr::Binary(_, l, r) =&gt; {
+            check(l, declared)?;
+            check(r, declared)
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="62-语义分析要做的四件事"><a class="header" href="#62-语义分析要做的四件事">6.2 语义分析要做的四件事</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>任务</th><th>说明</th><th>错误示例</th></tr>
+</thead>
+<tbody>
+<tr><td>名字解析</td><td>每个名字绑定到哪个声明</td><td>使用了未声明的变量</td></tr>
+<tr><td>类型检查</td><td>运算的操作数类型是否匹配</td><td><code>1 + "a"</code></td></tr>
+<tr><td>作用域与所有权检查</td><td>变量生命周期是否合法</td><td>Rust 的借用检查</td></tr>
+<tr><td>静态求值</td><td><code>const</code> 表达式在编译期算出值</td><td>除零、数组越界（<code>const</code> 场景）</td></tr>
+</tbody>
+</table>
+</div>
+<p>Rust 在语义分析上走得比多数语言远：<strong>借用检查器（Borrow Checker）</strong> 把“悬垂指针、数据竞争“这类传统上属于运行期的问题提前到了编译期。这也是 Rust 没有 GC 却能保证内存安全的关键——详见第六十二“操作系统“与第五十九“软件漏洞“两章。</p>
+<h3 id="63-同一个式子不同语言不同语义"><a class="header" href="#63-同一个式子不同语言不同语义">6.3 同一个式子，不同语言不同语义</a></h3>
+<p>语义由语言规范定义，而不是由“数学直觉“决定。最典型的坑是负数除法：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>表达式</th><th>Rust（截断除法）</th><th>Python（向下取整）</th></tr>
+</thead>
+<tbody>
+<tr><td><code>-7 / 2</code></td><td><code>-3</code></td><td><code>-4</code></td></tr>
+<tr><td><code>-7 % 2</code></td><td><code>-1</code></td><td><code>1</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>两者都自洽：Rust 的余数符号跟随<strong>被除数</strong>，Python 的余数符号跟随<strong>除数</strong>。写编译器的人必须对着规范表逐条实现，这也是“移植代码“最容易出错的地方之一。</p>
+<hr>
+<h2 id="七中间表示与优化"><a class="header" href="#七中间表示与优化">七、中间表示与优化</a></h2>
+<h3 id="71-为什么要再造一层-ir"><a class="header" href="#71-为什么要再造一层-ir">7.1 为什么要再造一层 IR</a></h3>
+<p>中间表示（Intermediate Representation，IR）是源程序和目标机器之间的“通用语“。好处是：</p>
+<ul>
+<li><strong>解耦</strong>：前端只关心源语言，后端只关心目标机器，<code>M</code> 种语言 + <code>N</code> 种目标只需 <code>M + N</code> 个模块。</li>
+<li><strong>便于优化</strong>：AST 太“像人话“，机器码太“像机器“；IR 处在合适的抽象层，各种分析（数据流、活跃变量）才好做。</li>
+<li><strong>便于验证</strong>：Rust 的类型检查、借用检查、常量求值都发生在自己的 IR 上。</li>
+</ul>
+<p>常见的 IR 形态：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>形态</th><th>特点</th><th>例子</th></tr>
+</thead>
+<tbody>
+<tr><td>三地址码</td><td>每条指令最多一个运算符，形如 <code>t1 = a + b</code></td><td>编译器教科书</td></tr>
+<tr><td>栈式字节码</td><td>操作数隐含在栈上</td><td>JVM、CPython、WebAssembly</td></tr>
+<tr><td>SSA</td><td>每个变量只被赋值一次，用 φ 函数合并分支</td><td>LLVM IR、Rust MIR、Go SSA</td></tr>
+<tr><td>高级 IR</td><td>保留结构信息便于检查和优化</td><td>Rust MIR</td></tr>
+</tbody>
+</table>
+</div>
+<p>SSA（Static Single Assignment）值得一提：在 SSA 形式下，每个变量只有唯一一次定义，<code>x</code> 被赋两次就拆成 <code>x1</code>、<code>x2</code>，分支汇合处用 φ 函数表示“到底用了哪条路径的值“。这让“某个值从哪来“变成图上的可达性问题，优化和检查都变简单了。</p>
+<p>用现成的编译器就能看到自己代码的 IR。以 Rust 为例，一条命令即可让 <code>rustc</code> 打印出各阶段产物：</p>
+<pre><code class="language-bash"># 查看 MIR（类型检查、借用检查、常量求值都在这一层）
+rustc --emit=mir -O src/main.rs
+
+# 查看 LLVM IR（优化与代码生成的输入）
+rustc --emit=llvm-ir -O src/main.rs
+
+# 查看汇编
+rustc --emit=asm -O src/main.rs
+</code></pre>
+<p>看 MIR 与 LLVM IR 的差别，是理解“前端关心语义、后端关心机器“最直观的方式。</p>
+<h3 id="72-常见优化"><a class="header" href="#72-常见优化">7.2 常见优化</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>优化</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>常量折叠</td><td>编译期算出 <code>2 + 3</code> 得 <code>5</code></td></tr>
+<tr><td>常量传播</td><td>把 <code>let x = 5;</code> 后的 <code>x</code> 直接替换为 <code>5</code></td></tr>
+<tr><td>死代码消除</td><td>删掉结果永不被使用的计算与永远为假的分支</td></tr>
+<tr><td>公共子表达式消除</td><td><code>a*b</code> 出现两次只算一次</td></tr>
+<tr><td>函数内联</td><td>把小函数的函数体搬进调用处，省掉调用开销</td></tr>
+<tr><td>循环优化</td><td>循环不变量外提、强度削减（<code>i*2</code> 变 <code>i+i</code>）</td></tr>
+<tr><td>向量化</td><td>用 SIMD 指令一次算多个元素</td></tr>
+<tr><td>逃逸分析</td><td>发现对象没有逃出函数，就分配到栈上</td></tr>
+</tbody>
+</table>
+</div>
+<p>常量折叠的实现非常直观——递归遍历语法树，只要子节点都是常量就直接算出结果：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 常量折叠：若子表达式全是常量，则在编译期直接算出结果
+fn fold(expr: Expr) -&gt; Expr {
+    match expr {
+        Expr::Binary(op, l, r) =&gt; {
+            let l = fold(*l);
+            let r = fold(*r);
+            if let (Expr::Number(a), Expr::Number(b)) = (&amp;l, &amp;r) {
+                let folded = match op {
+                    '+' =&gt; Some(a + b),
+                    '-' =&gt; Some(a - b),
+                    '*' =&gt; Some(a * b),
+                    '/' if *b != 0.0 =&gt; Some(a / b),
+                    _ =&gt; None,
+                };
+                if let Some(v) = folded {
+                    return Expr::Number(v);
+                }
+            }
+            Expr::Binary(op, Box::new(l), Box::new(r))
+        }
+        Expr::Unary(op, inner) =&gt; {
+            let inner = fold(*inner);
+            if op == '-' {
+                if let Expr::Number(n) = inner {
+                    return Expr::Number(-n);
+                }
+            }
+            Expr::Unary(op, Box::new(inner))
+        }
+        other =&gt; other,
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>对 <code>(2 + 3) * 4 + x * 1</code> 做折叠，<code>(2 + 3) * 4</code> 会变成常量 <code>20</code>，而 <code>x * 1</code> 因为含变量而保持原样：</p>
+<pre><code class="language-text">折叠前: Binary('+', Binary('*', Binary('+', Number(2), Number(3)), Number(4)),
+                     Binary('*', Var("x"), Number(1)))
+折叠后: Binary('+', Number(20), Binary('*', Var("x"), Number(1)))
+</code></pre>
+<blockquote>
+<p>优化必须<strong>保持语义等价</strong>。浮点数不满足结合律（<code>(a+b)+c ≠ a+(b+c)</code>），所以 <code>-O</code> 下编译器不会随意重排浮点运算；整数溢出的行为也要按语言规范处理（Rust 调试模式下直接 panic）。“优化“不是“改写”，边界由语言语义划定。</p>
+</blockquote>
+<hr>
+<h2 id="八解释器的两种实现路线"><a class="header" href="#八解释器的两种实现路线">八、解释器的两种实现路线</a></h2>
+<p>解释器怎么执行代码？最常见的两条路线是<strong>树遍历</strong>和<strong>字节码 + 虚拟机</strong>。</p>
+<h3 id="81-树遍历解释器tree-walking-interpreter"><a class="header" href="#81-树遍历解释器tree-walking-interpreter">8.1 树遍历解释器（Tree-Walking Interpreter）</a></h3>
+<p>最直接的实现：拿着 AST 递归求值，遇到加法就做加法。几十行就能跑起来，绝大多数“教学语言“和配置引擎都属于这一类。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::collections::HashMap;
+
+fn eval(expr: &amp;Expr, env: &amp;HashMap&lt;String, f64&gt;) -&gt; Result&lt;f64, String&gt; {
+    match expr {
+        Expr::Number(n) =&gt; Ok(*n),
+        Expr::Var(name) =&gt; env
+            .get(name)
+            .copied()
+            .ok_or_else(|| format!("未定义的变量: {name}")),
+        Expr::Unary(op, inner) =&gt; {
+            let v = eval(inner, env)?;
+            match op {
+                '-' =&gt; Ok(-v),
+                _ =&gt; Err(format!("未知一元运算符: {op}")),
+            }
+        }
+        Expr::Binary(op, l, r) =&gt; {
+            let a = eval(l, env)?;
+            let b = eval(r, env)?;
+            match op {
+                '+' =&gt; Ok(a + b),
+                '-' =&gt; Ok(a - b),
+                '*' =&gt; Ok(a * b),
+                '/' =&gt; {
+                    if b == 0.0 {
+                        Err("除以零".to_string())
+                    } else {
+                        Ok(a / b)
+                    }
+                }
+                '%' =&gt; {
+                    if b == 0.0 {
+                        Err("对零取模".to_string())
+                    } else {
+                        Ok(a % b)
+                    }
+                }
+                _ =&gt; Err(format!("未知二元运算符: {op}")),
+            }
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>缺点也很明显：每次执行 <code>1 + 2 + 3</code> 都要重新遍历一遍树、走一遍 <code>match</code> 分支，指针跳跃多、缓存不友好。</p>
+<h3 id="82-字节码解释器bytecode-vm"><a class="header" href="#82-字节码解释器bytecode-vm">8.2 字节码解释器（Bytecode VM）</a></h3>
+<p>成熟实现的做法是<strong>先把 AST 编译成一维指令序列（字节码），再用一个循环派发执行</strong>。这样把“结构“一次翻译成“动作“，执行时只需顺序扫描指令：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Debug, Clone)]
+enum Instr {
+    Push(f64),        // 压入常量
+    Load(String),     // 读取变量
+    Store(String),    // 写入变量
+    Neg,              // 取负
+    Add, Sub, Mul, Div, Rem,
+    Pop,              // 丢弃栈顶（语句的值）
+}
+
+// 编译：后序遍历 AST，先编译操作数，再发出运算指令
+fn compile(expr: &amp;Expr, code: &amp;mut Vec&lt;Instr&gt;) {
+    match expr {
+        Expr::Number(n) =&gt; code.push(Instr::Push(*n)),
+        Expr::Var(name) =&gt; code.push(Instr::Load(name.clone())),
+        Expr::Unary(_, inner) =&gt; {
+            compile(inner, code);
+            code.push(Instr::Neg);
+        }
+        Expr::Binary(op, l, r) =&gt; {
+            compile(l, code);
+            compile(r, code); // 注意顺序：先左后右，栈里就是 [左, 右]
+            code.push(match op {
+                '+' =&gt; Instr::Add,
+                '-' =&gt; Instr::Sub,
+                '*' =&gt; Instr::Mul,
+                '/' =&gt; Instr::Div,
+                '%' =&gt; Instr::Rem,
+                _ =&gt; unreachable!(),
+            });
+        }
+    }
+}
+
+fn run_vm(code: &amp;[Instr], env: &amp;mut HashMap&lt;String, f64&gt;) -&gt; Result&lt;f64, String&gt; {
+    let mut stack: Vec&lt;f64&gt; = Vec::new();
+
+    for instr in code {
+        match instr {
+            Instr::Push(n) =&gt; stack.push(*n),
+            Instr::Load(name) =&gt; {
+                let v = env
+                    .get(name)
+                    .copied()
+                    .ok_or_else(|| format!("未定义的变量: {name}"))?;
+                stack.push(v);
+            }
+            Instr::Neg =&gt; {
+                let v = stack.pop().ok_or("栈下溢")?;
+                stack.push(-v);
+            }
+            Instr::Pop =&gt; {
+                stack.pop();
+            }
+            _ =&gt; {
+                // 二元运算：弹出右操作数、左操作数，压回结果
+                let b = stack.pop().ok_or("栈下溢")?;
+                let a = stack.pop().ok_or("栈下溢")?;
+                let v = match instr {
+                    Instr::Add =&gt; a + b,
+                    Instr::Sub =&gt; a - b,
+                    Instr::Mul =&gt; a * b,
+                    Instr::Div =&gt; {
+                        if b == 0.0 {
+                            return Err("除以零".to_string());
+                        }
+                        a / b
+                    }
+                    Instr::Rem =&gt; {
+                        if b == 0.0 {
+                            return Err("对零取模".to_string());
+                        }
+                        a % b
+                    }
+                    _ =&gt; unreachable!(),
+                };
+                stack.push(v);
+            }
+        }
+    }
+    stack.pop().ok_or_else(|| "字节码为空".to_string())
+}
+<span class="boring">}</span></code></pre>
+<p>对于 <code>a * 10;</code>（假设 <code>a = 11</code>），编译结果是：</p>
+<pre><code class="language-text">指令序列: [Load("a"), Push(10.0), Mul]
+栈式求值: Ok(110.0)
+</code></pre>
+<p>三个指令就代替了一次树遍历。这种“后序遍历 + 栈“的编译策略，正是 JVM、CPython、WebAssembly 共同的选择。</p>
+<h3 id="83-栈式还是寄存器式"><a class="header" href="#83-栈式还是寄存器式">8.3 栈式还是寄存器式</a></h3>
+<p>字节码虚拟机又分两大流派：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>维度</th><th>栈式虚拟机</th><th>寄存器式虚拟机</th></tr>
+</thead>
+<tbody>
+<tr><td>操作数</td><td>隐含在操作数栈上</td><td>显式指定寄存器/槽位</td></tr>
+<tr><td>指令条数</td><td>多，但每条都短</td><td>少，但每条更长</td></tr>
+<tr><td>实现难度</td><td>低（编译与执行都简单）</td><td>较高（需分配寄存器）</td></tr>
+<tr><td>优化空间</td><td>小</td><td>大</td></tr>
+<tr><td>代表</td><td>JVM、CPython、WASM</td><td>Lua 5.x、Dalvik（Android）</td></tr>
+</tbody>
+</table>
+</div>
+<p>另外还有两个工程技巧值得知道：</p>
+<ul>
+<li><strong>派发方式决定性能</strong>。最朴素的 <code>match</code>/<code>switch</code> 派发每次都要做一次跳转；改用<strong>计算跳转（computed goto）</strong> 或<strong>直接线索化（direct threading）</strong>，把每个指令的处理地址放进一张表里，能显著减少分支预测失败，性能提升常常是成倍的。</li>
+<li><strong>JIT 的三种流派</strong>：<strong>方法 JIT</strong>（把热点函数整体编译，如 HotSpot 的 C1/C2、V8 的 TurboFan）、<strong>追踪 JIT</strong>（把热点执行路径连成的线性轨迹编译，如 LuaJIT、PyPy）、<strong>模板/copy-and-patch JIT</strong>（预先编译好指令模板再拼接，如 CPython 3.13 的实验性 JIT、WebAssembly 运行时）。它们都是“解释器的启动速度 + 编译器的执行速度“的折中产物。</li>
+</ul>
+<hr>
+<h2 id="九完整实现一个迷你语言的解释器"><a class="header" href="#九完整实现一个迷你语言的解释器">九、完整实现：一个迷你语言的解释器</a></h2>
+<p>把前面的零件拼起来：<strong>词法分析 → 语法分析 → 语义检查 → 树遍历求值</strong>。这个程序能处理变量声明与赋值、四则运算（含取模）、一元负号、括号优先级，并给出可读的错误信息。</p>
+<p>待解释的源码：</p>
+<pre><code class="language-text">let a = 3 + 4 * 2;
+let b = (3 + 4) * 2;
+let c = -a % 5;
+let d = a / b;
+a + b * c - d;
+</code></pre>
+<p>完整代码（单文件，可直接 <code>rustc interp.rs &amp;&amp; ./interp</code> 运行）：</p>
+<pre class="playground"><code class="language-rust edition2024">use std::collections::{HashMap, HashSet};
+
+// ---------- 1. 词法分析 ----------
+
+#[derive(Debug, Clone, PartialEq)]
+enum Token {
+    Number(f64),
+    Ident(String),
+    Let,
+    Plus,
+    Minus,
+    Star,
+    Slash,
+    Percent,
+    LParen,
+    RParen,
+    Assign,
+    Semi,
+    Eof,
+}
+
+fn lex(src: &amp;str) -&gt; Result&lt;Vec&lt;Token&gt;, String&gt; {
+    let chars: Vec&lt;char&gt; = src.chars().collect();
+    let mut tokens = Vec::new();
+    let mut i = 0;
+
+    while i &lt; chars.len() {
+        let c = chars[i];
+        match c {
+            ' ' | '\t' | '\r' | '\n' =&gt; i += 1,
+            '0'..='9' | '.' =&gt; {
+                let start = i;
+                while i &lt; chars.len() &amp;&amp; (chars[i].is_ascii_digit() || chars[i] == '.') {
+                    i += 1;
+                }
+                let text: String = chars[start..i].iter().collect();
+                let n = text.parse::&lt;f64&gt;().map_err(|_| format!("非法数字字面量: {text}"))?;
+                tokens.push(Token::Number(n));
+            }
+            c if c.is_alphabetic() || c == '_' =&gt; {
+                let start = i;
+                while i &lt; chars.len() &amp;&amp; (chars[i].is_alphanumeric() || chars[i] == '_') {
+                    i += 1;
+                }
+                let text: String = chars[start..i].iter().collect();
+                tokens.push(if text == "let" { Token::Let } else { Token::Ident(text) });
+            }
+            '+' =&gt; { tokens.push(Token::Plus); i += 1; }
+            '-' =&gt; { tokens.push(Token::Minus); i += 1; }
+            '*' =&gt; { tokens.push(Token::Star); i += 1; }
+            '/' =&gt; { tokens.push(Token::Slash); i += 1; }
+            '%' =&gt; { tokens.push(Token::Percent); i += 1; }
+            '(' =&gt; { tokens.push(Token::LParen); i += 1; }
+            ')' =&gt; { tokens.push(Token::RParen); i += 1; }
+            '=' =&gt; { tokens.push(Token::Assign); i += 1; }
+            ';' =&gt; { tokens.push(Token::Semi); i += 1; }
+            _ =&gt; return Err(format!("无法识别的字符: {c}")),
+        }
+    }
+    tokens.push(Token::Eof);
+    Ok(tokens)
+}
+
+// ---------- 2. 语法分析：AST ----------
+
+#[derive(Debug, Clone)]
+enum Expr {
+    Number(f64),
+    Var(String),
+    Unary(char, Box&lt;Expr&gt;),
+    Binary(char, Box&lt;Expr&gt;, Box&lt;Expr&gt;),
+}
+
+#[derive(Debug, Clone)]
+enum Stmt {
+    Let(String, Expr),
+    Expr(Expr),
+}
+
+struct Parser {
+    tokens: Vec&lt;Token&gt;,
+    pos: usize,
+}
+
+impl Parser {
+    fn new(tokens: Vec&lt;Token&gt;) -&gt; Self {
+        Parser { tokens, pos: 0 }
+    }
+
+    fn peek(&amp;self) -&gt; &amp;Token {
+        &amp;self.tokens[self.pos]
+    }
+
+    fn bump(&amp;mut self) -&gt; Token {
+        let t = self.tokens[self.pos].clone();
+        self.pos += 1;
+        t
+    }
+
+    fn parse_program(&amp;mut self) -&gt; Result&lt;Vec&lt;Stmt&gt;, String&gt; {
+        let mut stmts = Vec::new();
+        while *self.peek() != Token::Eof {
+            stmts.push(self.parse_stmt()?);
+        }
+        Ok(stmts)
+    }
+
+    fn parse_stmt(&amp;mut self) -&gt; Result&lt;Stmt, String&gt; {
+        if *self.peek() == Token::Let {
+            self.bump();
+            let name = match self.bump() {
+                Token::Ident(name) =&gt; name,
+                other =&gt; return Err(format!("let 之后期望标识符，得到 {other:?}")),
+            };
+            if self.bump() != Token::Assign {
+                return Err("期望 =".to_string());
+            }
+            let value = self.parse_expr()?;
+            self.expect(Token::Semi)?;
+            Ok(Stmt::Let(name, value))
+        } else {
+            let value = self.parse_expr()?;
+            self.expect(Token::Semi)?;
+            Ok(Stmt::Expr(value))
+        }
+    }
+
+    fn expect(&amp;mut self, want: Token) -&gt; Result&lt;(), String&gt; {
+        let got = self.bump();
+        if got == want {
+            Ok(())
+        } else {
+            Err(format!("期望 {want:?}，得到 {got:?}"))
+        }
+    }
+
+    // expr := term (("+" | "-") term)*
+    fn parse_expr(&amp;mut self) -&gt; Result&lt;Expr, String&gt; {
+        let mut left = self.parse_term()?;
+        loop {
+            let op = match self.peek() {
+                Token::Plus =&gt; '+',
+                Token::Minus =&gt; '-',
+                _ =&gt; break,
+            };
+            self.bump();
+            let right = self.parse_term()?;
+            left = Expr::Binary(op, Box::new(left), Box::new(right));
+        }
+        Ok(left)
+    }
+
+    // term := unary (("*" | "/" | "%") unary)*
+    fn parse_term(&amp;mut self) -&gt; Result&lt;Expr, String&gt; {
+        let mut left = self.parse_unary()?;
+        loop {
+            let op = match self.peek() {
+                Token::Star =&gt; '*',
+                Token::Slash =&gt; '/',
+                Token::Percent =&gt; '%',
+                _ =&gt; break,
+            };
+            self.bump();
+            let right = self.parse_unary()?;
+            left = Expr::Binary(op, Box::new(left), Box::new(right));
+        }
+        Ok(left)
+    }
+
+    // unary := "-" unary | primary
+    fn parse_unary(&amp;mut self) -&gt; Result&lt;Expr, String&gt; {
+        if *self.peek() == Token::Minus {
+            self.bump();
+            let inner = self.parse_unary()?;
+            return Ok(Expr::Unary('-', Box::new(inner)));
+        }
+        self.parse_primary()
+    }
+
+    // primary := number | ident | "(" expr ")"
+    fn parse_primary(&amp;mut self) -&gt; Result&lt;Expr, String&gt; {
+        match self.bump() {
+            Token::Number(n) =&gt; Ok(Expr::Number(n)),
+            Token::Ident(name) =&gt; Ok(Expr::Var(name)),
+            Token::LParen =&gt; {
+                let inner = self.parse_expr()?;
+                self.expect(Token::RParen)?;
+                Ok(inner)
+            }
+            other =&gt; Err(format!("期望表达式，得到 {other:?}")),
+        }
+    }
+}
+
+// ---------- 3. 语义分析：声明检查 ----------
+
+fn check(expr: &amp;Expr, declared: &amp;HashSet&lt;String&gt;) -&gt; Result&lt;(), String&gt; {
+    match expr {
+        Expr::Number(_) =&gt; Ok(()),
+        Expr::Var(name) =&gt; {
+            if declared.contains(name) {
+                Ok(())
+            } else {
+                Err(format!("使用了未声明的变量 `{name}`"))
+            }
+        }
+        Expr::Unary(_, inner) =&gt; check(inner, declared),
+        Expr::Binary(_, l, r) =&gt; {
+            check(l, declared)?;
+            check(r, declared)
+        }
+    }
+}
+
+// ---------- 4. 树遍历求值 ----------
+
+fn eval(expr: &amp;Expr, env: &amp;HashMap&lt;String, f64&gt;) -&gt; Result&lt;f64, String&gt; {
+    match expr {
+        Expr::Number(n) =&gt; Ok(*n),
+        Expr::Var(name) =&gt; env
+            .get(name)
+            .copied()
+            .ok_or_else(|| format!("未定义的变量: {name}")),
+        Expr::Unary(op, inner) =&gt; {
+            let v = eval(inner, env)?;
+            match op {
+                '-' =&gt; Ok(-v),
+                _ =&gt; Err(format!("未知一元运算符: {op}")),
+            }
+        }
+        Expr::Binary(op, l, r) =&gt; {
+            let a = eval(l, env)?;
+            let b = eval(r, env)?;
+            match op {
+                '+' =&gt; Ok(a + b),
+                '-' =&gt; Ok(a - b),
+                '*' =&gt; Ok(a * b),
+                '/' =&gt; {
+                    if b == 0.0 {
+                        Err("除以零".to_string())
+                    } else {
+                        Ok(a / b)
+                    }
+                }
+                '%' =&gt; {
+                    if b == 0.0 {
+                        Err("对零取模".to_string())
+                    } else {
+                        Ok(a % b)
+                    }
+                }
+                _ =&gt; Err(format!("未知二元运算符: {op}")),
+            }
+        }
+    }
+}
+
+// ---------- 5. 驱动：源码 -&gt; 结果 ----------
+
+fn run(src: &amp;str) -&gt; Result&lt;f64, String&gt; {
+    let tokens = lex(src)?;
+    let stmts = Parser::new(tokens).parse_program()?;
+
+    // 语义分析：按顺序收集已声明变量，并检查引用的合法性
+    let mut declared = HashSet::new();
+    for stmt in &amp;stmts {
+        match stmt {
+            Stmt::Let(name, value) =&gt; {
+                check(value, &amp;declared)?;
+                declared.insert(name.clone());
+            }
+            Stmt::Expr(e) =&gt; check(e, &amp;declared)?,
+        }
+    }
+
+    // 解释执行
+    let mut env = HashMap::new();
+    let mut last = 0.0;
+    for stmt in &amp;stmts {
+        match stmt {
+            Stmt::Let(name, value) =&gt; {
+                let v = eval(value, &amp;env)?;
+                env.insert(name.clone(), v);
+                last = v;
+            }
+            Stmt::Expr(e) =&gt; last = eval(e, &amp;env)?,
+        }
+    }
+    Ok(last)
+}
+
+fn main() {
+    let src = r#"
+        let a = 3 + 4 * 2;
+        let b = (3 + 4) * 2;
+        let c = -a % 5;
+        let d = a / b;
+        a + b * c - d;
+    "#;
+
+    match run(src) {
+        Ok(v) =&gt; println!("结果 = {v}"),
+        Err(e) =&gt; eprintln!("错误: {e}"),
+    }
+
+    // 故意写错，看看错误提示
+    for bad in ["1 + ;", "x * 2;", "1 / 0;"] {
+        match run(bad) {
+            Ok(v) =&gt; println!("{bad:&gt;8} =&gt; {v}"),
+            Err(e) =&gt; println!("{bad:&gt;8} =&gt; 错误: {e}"),
+        }
+    }
+}</code></pre>
+<p>运行结果：</p>
+<pre><code class="language-text">结果 = -3.7857142857142856
+   1 + ; =&gt; 错误: 期望表达式，得到 Semi
+  x * 2; =&gt; 错误: 使用了未声明的变量 `x`
+  1 / 0; =&gt; 错误: 除以零
+</code></pre>
+<p>对照着看这一步步发生了什么：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>语句</th><th>求值过程</th><th>结果</th></tr>
+</thead>
+<tbody>
+<tr><td><code>let a = 3 + 4 * 2;</code></td><td>先算 <code>4 * 2 = 8</code>，再算 <code>3 + 8</code></td><td><code>a = 11</code></td></tr>
+<tr><td><code>let b = (3 + 4) * 2;</code></td><td>括号提升优先级</td><td><code>b = 14</code></td></tr>
+<tr><td><code>let c = -a % 5;</code></td><td><code>-11 % 5</code>（Rust 语义：余数取被除数符号）</td><td><code>c = -1</code></td></tr>
+<tr><td><code>let d = a / b;</code></td><td><code>11 / 14</code></td><td><code>d ≈ 0.7857</code></td></tr>
+<tr><td><code>a + b * c - d;</code></td><td><code>11 + 14 × (-1) - 0.7857</code></td><td><code>-3.7857…</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>想把它变成一个<strong>字节码解释器</strong>，只需把 <code>run</code> 里的 <code>eval(value, &amp;env)</code> 换成“<code>compile</code> 成 <code>Vec&lt;Instr&gt;</code> 再 <code>run_vm</code>“——第 8.2 节的代码可以直接接上去。</p>
+<p><strong>如何继续扩展这门语言</strong>？四步走，缺一不可：</p>
+<ol>
+<li>加 Token（比如 <code>If</code>、<code>While</code>、<code>LBrace</code>、<code>RBrace</code>）；</li>
+<li>加 AST 节点（<code>Stmt::If(Expr, Vec&lt;Stmt&gt;, Vec&lt;Stmt&gt;)</code>）；</li>
+<li>在 <code>Parser</code> 里加对应的解析函数（<code>parse_if</code>、<code>parse_block</code>）；</li>
+<li>在 <code>eval</code> / <code>check</code> 里加对应的分支（注意：<code>if</code> 的条件与分支要单独检查，循环要考虑是否会死循环）。</li>
+</ol>
+<p>再往下走，函数调用需要引入<strong>栈帧</strong>和<strong>环境链</strong>（局部变量不再是一个 <code>HashMap</code>，而是每层调用一个），闭包则需要<strong>捕获环境</strong>；这些概念与第三十二“函数“、第二十四“λ演算“两章一脉相承。</p>
+<hr>
+<h2 id="十rust-编译器生态"><a class="header" href="#十rust-编译器生态">十、Rust 编译器生态</a></h2>
+<p>Rust 社区几乎把编译原理的每个环节都做了一遍，而且很多工具本身就是用 Rust 写的（这点很像 C 语言：写编译器的语言，往往就是被编译的语言）。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Crate / 项目</th><th>用途</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://crates.io/crates/logos">logos</a></td><td>用派生宏生成高性能词法分析器</td></tr>
+<tr><td><a href="https://crates.io/crates/lalrpop">lalrpop</a></td><td>从文法生成 LALR(1) 语法分析器</td></tr>
+<tr><td><a href="https://crates.io/crates/pest">pest</a></td><td>PEG 文法解析，文法写在 <code>.pest</code> 文件里</td></tr>
+<tr><td><a href="https://crates.io/crates/nom">nom</a></td><td>解析器组合子，字节流解析的常用选择</td></tr>
+<tr><td><a href="https://crates.io/crates/chumsky">chumsky</a></td><td>组合子风格，错误恢复与诊断友好</td></tr>
+<tr><td><a href="https://crates.io/crates/syn">syn</a> / <a href="https://crates.io/crates/quote">quote</a> / <a href="https://crates.io/crates/proc-macro2">proc-macro2</a></td><td>解析与生成 Rust 代码（过程宏三件套）</td></tr>
+<tr><td><a href="https://crates.io/crates/cranelift-codegen">cranelift-codegen</a></td><td>纯 Rust 代码生成后端，易于内嵌</td></tr>
+<tr><td><a href="https://crates.io/crates/inkwell">inkwell</a> / <a href="https://crates.io/crates/llvm-sys">llvm-sys</a></td><td>LLVM 的 Rust 绑定</td></tr>
+<tr><td><a href="https://crates.io/crates/wasmtime">wasmtime</a> / <a href="https://crates.io/crates/wasmer">wasmer</a></td><td>WebAssembly 运行时（JIT/AOT）</td></tr>
+<tr><td><a href="https://github.com/RustPython/RustPython">rustpython</a></td><td>用 Rust 实现的 Python 解释器</td></tr>
+<tr><td><a href="https://github.com/boa-dev/boa">boa</a></td><td>用 Rust 实现的 JavaScript 引擎</td></tr>
+<tr><td><a href="https://crates.io/crates/rhai">rhai</a></td><td>可嵌入应用做脚本/规则的轻量语言</td></tr>
+<tr><td><a href="https://crates.io/crates/codespan-reporting">codespan-reporting</a> / <a href="https://crates.io/crates/ariadne">ariadne</a></td><td>带下划线与彩色标记的错误报告渲染</td></tr>
+</tbody>
+</table>
+</div>
+<p>用这些工具，写一个 DSL 的成本可以低到“一个下午“：<code>logos</code> 出 Token 流、<code>chumsky</code> 或 <code>lalrpop</code> 出 AST、自己写几百行求值器，就是一个可用的规则引擎或配置语言。</p>
+<h3 id="101-关于-rustc-本身"><a class="header" href="#101-关于-rustc-本身">10.1 关于 rustc 本身</a></h3>
+<p>Rust 编译器的几个事实，对照本章的流水线看会很有味道：</p>
+<ul>
+<li><strong>自举（Bootstrapping）</strong>：<code>rustc</code> 是 Rust 写的。编译器从哪来？官方发布一个预编译的编译器（stage0）作为种子，用它编译出 stage1，再用 stage1 编译出正式的 stage2。为了确认自举结果可信，构建系统还会用不同阶段互相编译并比对产物。这就是“鸡生蛋“问题的标准答案。</li>
+<li><strong>多级 IR</strong>：源码先降级成 <strong>HIR</strong>（高层 IR，保留语法结构），再降级成 <strong>MIR</strong>（中层 IR，SSA 形式），类型检查、借用检查、常量求值都发生在 MIR 上，最后翻译成 <strong>LLVM IR</strong> 交给 LLVM 做优化与代码生成。所以 Rust 的<strong>编译期</strong>也跑着一个解释器：<code>const</code> 表达式由 MIR 解释器直接求值。</li>
+<li><strong>后端可替换</strong>：既然中间隔着 LLVM IR 与 MIR，后端就能换。<code>rustc_codegen_cranelift</code> 用 Cranelift 替代 LLVM，换来<strong>更快的编译速度</strong>（代价是生成代码略慢）；增加一个 CPU 架构，也主要是写一个后端。</li>
+<li><strong>目标三元组</strong>：<code>&lt;架构&gt;-&lt;厂商&gt;-&lt;系统&gt;-&lt;ABI&gt;</code>，例如 <code>x86_64-unknown-linux-gnu</code>、<code>aarch64-apple-darwin</code>、<code>wasm32-unknown-unknown</code>。交叉编译就是把前端换成“为别的三元组生成代码“。</li>
+</ul>
+<blockquote>
+<p>编译器是“零成本抽象“神话的兑现者：迭代器、<code>Option</code>、泛型在源码层面都是高级抽象，但经过内联与单态化之后，生成的机器码可以与手写循环几乎一致。抽象不花钱，是因为编译器替你花了功夫。</p>
+</blockquote>
+<hr>
+<h2 id="十一总结与练习"><a class="header" href="#十一总结与练习">十一、总结与练习</a></h2>
+<h3 id="本章小结"><a class="header" href="#本章小结">本章小结</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>知识点</th><th>要点</th></tr>
+</thead>
+<tbody>
+<tr><td>为什么翻译</td><td>CPU 只认机器码，高级语言需要“桥“</td></tr>
+<tr><td>编译器</td><td>运行前一次性翻译，产物是目标代码，跑得快、启动慢</td></tr>
+<tr><td>解释器</td><td>运行时逐句翻译，启动快、跑得慢，天然支持 REPL</td></tr>
+<tr><td>界线模糊</td><td>字节码 + JIT 已成主流，语言无“编译/解释“属性，实现才有</td></tr>
+<tr><td>流水线</td><td>词法 → 语法 → 语义 → IR → 优化 → 代码生成 → 链接</td></tr>
+<tr><td>词法分析</td><td>正则/DFA 或手写扫描器；最长匹配、保留字优先</td></tr>
+<tr><td>语法分析</td><td>递归下降最常见；用分层（或 Pratt）编码优先级；注意左递归</td></tr>
+<tr><td>语义分析</td><td>符号表、作用域、类型检查；Rust 的借用检查是运行期问题编译期化</td></tr>
+<tr><td>IR 与优化</td><td>三地址码 / SSA / 字节码；常量折叠、内联、死代码消除……</td></tr>
+<tr><td>解释器实现</td><td>树遍历最简单；字节码 + 虚拟机更快；栈式 vs 寄存器式</td></tr>
+<tr><td>JIT</td><td>方法 JIT、追踪 JIT、模板 JIT；用预热时间换长期性能</td></tr>
+<tr><td>Rust 生态</td><td>logos、lalrpop、pest、nom、chumsky、cranelift、wasmtime</td></tr>
+<tr><td>rustc</td><td>自举；HIR → MIR → LLVM IR；后端可替换；交叉编译靠目标三元组</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
+<ol>
+<li><strong>加语法</strong>：给第九节的迷你语言加上 <code>if</code>/<code>else</code> 与 <code>while</code>，注意在词法、AST、解析、求值四处都要动。</li>
+<li><strong>加字符串与比较</strong>：引入 <code>String</code> 与 <code>&lt;</code>、<code>==</code> 运算符，把 <code>f64</code> 值域扩展成枚举，体会“类型检查“为什么必须放在求值之前。</li>
+<li><strong>改成字节码</strong>：用第 8.2 节的 <code>compile</code> + <code>run_vm</code> 替换树遍历求值，实现 <code>if</code> 的跳转指令（<code>JumpIfZero</code>、<code>Jump</code>），再对比两种实现的代码量与运行速度。</li>
+<li><strong>写个常量折叠并验证正确性</strong>：对随机生成的表达式树分别做“折叠后求值“与“直接求值“，断言结果一致——这就是最朴素的编译器测试方法。</li>
+<li><strong>看真实的 IR</strong>：写一个循环求和函数，用 <code>rustc --emit=mir</code> 与 <code>--emit=llvm-ir</code> 打印出来，观察 <code>-O</code> 前后 MIR 与 LLVM IR 的差异。</li>
+<li><strong>借力工具</strong>：用 <code>logos</code> 重写第九节的词法分析器，再用 <code>chumsky</code> 或 <code>lalrpop</code> 重写语法分析器，比较手写与生成的代码在可读性、错误提示、性能上的差别。</li>
+<li><strong>进阶挑战</strong>：实现一个支持函数定义与调用的解释器（需要栈帧与环境链），再试着支持<strong>闭包</strong>——你会发现“作用域“从静态概念变成了需要在运行时捕获的数据结构。</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_68.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_70.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_68.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_70.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

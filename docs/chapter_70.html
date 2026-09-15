@@ -1,0 +1,1170 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第七十 芯片 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-545e538a.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第七十-芯片"><a class="header" href="#第七十-芯片">第七十 芯片</a></h1>
+<p>芯片（Chip），学名<strong>集成电路</strong>（Integrated Circuit, IC）。它是把成千上万乃至万亿个晶体管、电阻、连线，用微米乃至纳米级的工艺“雕刻“在一小片硅上的产物。指甲盖大小，却承载着整个信息社会的算力：手机里的 SoC、服务器里的 CPU/GPU、内存条上的 DRAM、固态硬盘里的 NAND、汽车里的 MCU、耳机里的蓝牙芯片……本章沿着“沙子 → 晶圆 → 晶体管 → 电路 → 芯片 → 系统“这条链条，讲清楚芯片是什么、怎么做出来、怎么分类、怎么设计，以及软件工程师为什么也应该懂一点芯片；最后用 Rust 写几段与芯片打交道的代码。</p>
+<hr>
+<h2 id="一从沙子到芯片"><a class="header" href="#一从沙子到芯片">一、从沙子到芯片</a></h2>
+<p>芯片的原料是<strong>沙子</strong>。这不是比喻：沙子（石英砂）的主要成分是二氧化硅 $\mathrm{SiO_2}$，而硅正是半导体工业的基石。</p>
+<pre><code class="language-text">  石英砂（SiO2）
+      │  高温还原：SiO2 + 2C → Si + 2CO↑
+      ▼
+  冶金级硅（纯度 ~98%）
+      │  西门子法提纯
+      ▼
+  电子级硅（纯度 99.9999999%，即 9N，杂质以十亿分之一计）
+      │  直拉法（Czochralski）：籽晶旋转提拉，长成单晶硅棒
+      ▼
+  单晶硅锭（直径 300 mm，长约 2 m）
+      │  切片 → 研磨 → 抛光
+      ▼
+  晶圆（Wafer，厚约 0.775 mm，表面平整到原子级）
+      │  光刻 + 刻蚀 + 掺杂 + 沉积 …… 反复上百次
+      ▼
+  布满芯片的晶圆（每片可容纳数百到上万个 die）
+      │  测试 → 切割（Dicing）
+      ▼
+  晶粒（Die）
+      │  封装（Packaging）→ 引线键合 / 倒装 / 2.5D / 3D
+      ▼
+  芯片（Chip）
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>晶圆（Wafer）</strong></td><td>硅单晶切片，主流尺寸 300 mm（12 英寸），面积越大单片可产的芯片越多、单位成本越低</td></tr>
+<tr><td><strong>晶粒（Die）</strong></td><td>晶圆上独立的一颗芯片，切下来就是“裸片“</td></tr>
+<tr><td><strong>良率（Yield）</strong></td><td>合格晶粒占全部晶粒的比例，直接决定成本</td></tr>
+<tr><td><strong>封装（Package）</strong></td><td>把裸片保护起来，引出引脚，并兼顾散热、供电与信号完整性</td></tr>
+<tr><td><strong>制程（Process Node）</strong></td><td>常说的 7 nm / 5 nm / 3 nm，是一代工艺的名称</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>一个常被忽略的事实：<strong>芯片的面积就是钱</strong>。良率随面积呈指数下降（缺陷落在哪颗晶粒上是随机的），所以“把芯片做大“从来不是免费的，这正是后面要讲的 Chiplet（芯粒）路线兴起的根本原因。</p>
+</blockquote>
+<p>每片晶圆能切出多少颗芯片，有个经典近似公式（$d$ 为晶圆直径，$A$ 为单颗面积，$d_{\text{edge}}$ 为边缘不可用宽度）：</p>
+<p>$$
+N_{\text{die}} \approx \frac{\pi \left(\frac{d}{2}\right)^2}{A} - \frac{\pi d}{\sqrt{2A}}
+$$</p>
+<p>第一项是“按面积能放多少“，第二项是圆形边缘的损失。若缺陷密度为 $D$，面积 $A$ 的泊松良率模型为：</p>
+<p>$$
+Y \approx e^{-A \cdot D}
+$$</p>
+<p>面积翻倍，良率就按指数衰减——这就是为什么先进节点的超大芯片（如 GPU）价格高昂，而小芯片（如 MCU）可以便宜到几毛钱。</p>
+<hr>
+<h2 id="二晶体管芯片的开关"><a class="header" href="#二晶体管芯片的开关">二、晶体管：芯片的“开关“</a></h2>
+<h3 id="21-从电子管到集成电路"><a class="header" href="#21-从电子管到集成电路">2.1 从电子管到集成电路</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>年份</th><th>事件</th><th>意义</th></tr>
+</thead>
+<tbody>
+<tr><td>1904</td><td>真空电子管（弗莱明）</td><td>第一代电子器件，体积大、发热高、寿命短</td></tr>
+<tr><td>1947</td><td>贝尔实验室发明<strong>点接触晶体管</strong>（巴丁、布拉顿，肖克利理论奠基）</td><td>固体器件取代电子管，可控、可靠、省电</td></tr>
+<tr><td>1958</td><td>基尔比（TI）做出第一块<strong>集成电路</strong></td><td>元件与连线集成在一块材料上</td></tr>
+<tr><td>1959</td><td>诺伊斯（仙童）发明<strong>硅平面工艺</strong></td><td>用氧化层与光刻实现“印刷式“布线，可量产</td></tr>
+<tr><td>1971</td><td>Intel 4004</td><td>第一颗商用微处理器：2300 个晶体管，10 μm 工艺</td></tr>
+<tr><td>2011</td><td>Intel 22 nm FinFET</td><td>晶体管从“平面“走向“立体“</td></tr>
+<tr><td>2022</td><td>三星 3 nm GAA（环栅）量产</td><td>栅极四面环绕沟道，继续缩小</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="22-mosfet-如何当开关"><a class="header" href="#22-mosfet-如何当开关">2.2 MOSFET 如何当开关</a></h3>
+<p>数字电路只需要两种状态：0 和 1。<strong>MOSFET</strong>（金属-氧化物-半导体场效应晶体管）正好是一个电压控制的开关：</p>
+<pre><code class="language-text">        栅极 G（Gate）
+          │   ← 加电压，形成电场
+     ┌────┴────┐
+     │ 绝缘氧化层 │        栅压足够高 → 下方感应出导电沟道
+     └────┬────┘
+  源极 S ──┴── 漏极 D     沟道导通 → 电流可流 → 逻辑 1
+    (Source)  (Drain)     沟道截止 → 电流不通 → 逻辑 0
+
+   衬底 / 体（Body，通常接地）
+</code></pre>
+<p>把它接成互补的一对（PMOS + NMOS）就是 <strong>CMOS</strong> 反相器：输入为高时 NMOS 导通、PMOS 截止，输出被拉到低；输入为低时相反。CMOS 的妙处是<strong>稳态几乎不耗电</strong>，只有翻转时才有动态功耗——这让“几十亿个开关塞进指甲盖“成为可能。</p>
+<h3 id="23-为什么要把晶体管做小"><a class="header" href="#23-为什么要把晶体管做小">2.3 为什么要把晶体管做小</a></h3>
+<p>动态功耗的经典公式是：</p>
+<p>$$
+P_{\text{dynamic}} = \alpha C V^2 f
+$$</p>
+<p>（$\alpha$ 为翻转活动率，$C$ 为负载电容，$V$ 为电压，$f$ 为频率）。把尺寸缩小到原来的 $1/k$，电容 $C$ 和电压 $V$ 都会下降，于是同样的电路<strong>更快也更省电</strong>——这就是整条产业链拼命缩小的动力。</p>
+<h3 id="24-摩尔定律与它的黄昏"><a class="header" href="#24-摩尔定律与它的黄昏">2.4 摩尔定律与它的黄昏</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>定律 / 效应</th><th>内容</th><th>现状</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>摩尔定律</strong></td><td>摩尔 1965 年提出“集成电路上晶体管数量每年翻一番“，1975 年修正为约每两年翻一番</td><td>经济与物理双重压力下明显放缓，但“每代密度提升“仍在继续</td></tr>
+<tr><td><strong>登纳德缩放</strong></td><td>尺寸缩小时，功率密度保持不变（电压与尺寸同步等比缩小）</td><td>约 2005—2007 年前后失效，因为它需要电压持续下降，而阈值电压不能无限降</td></tr>
+<tr><td><strong>频率墙</strong></td><td>主频不再是性能增长的主引擎</td><td>2004 年前后 Intel 放弃 4 GHz 的 Pentium 4 后续计划，主频长期停留在数 GHz</td></tr>
+<tr><td><strong>多核时代</strong></td><td>既然不能更快，就把更多核放在一起</td><td>从单核到多核、到异构（大核 + 小核 + 加速器）</td></tr>
+</tbody>
+</table>
+</div>
+<p>登纳德缩放失效的直接后果是**“暗硅”（Dark Silicon）<strong>：芯片上的晶体管多到无法同时全速开动，否则散热根本压不住。于是设计者转向两件事——<strong>专用化</strong>（为特定任务造专用电路）与</strong>三维化**（堆叠、Chiplet、先进封装）。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>年代</th><th>代表芯片</th><th>晶体管数</th><th>制程</th></tr>
+</thead>
+<tbody>
+<tr><td>1971</td><td>Intel 4004</td><td>2,300</td><td>10 μm</td></tr>
+<tr><td>1978</td><td>Intel 8086</td><td>29,000</td><td>3 μm</td></tr>
+<tr><td>1993</td><td>Intel Pentium</td><td>3,100,000</td><td>0.8 μm</td></tr>
+<tr><td>2000</td><td>Pentium 4</td><td>42,000,000</td><td>180 nm</td></tr>
+<tr><td>2006</td><td>Core 2 Duo</td><td>291,000,000</td><td>65 nm</td></tr>
+<tr><td>2022</td><td>NVIDIA H100（GPU）</td><td>约 800 亿</td><td>4 nm</td></tr>
+<tr><td>2023</td><td>Apple M2 Ultra</td><td>约 1340 亿</td><td>5 nm</td></tr>
+</tbody>
+</table>
+</div>
+<p>从 2300 到上千亿，五十年间翻了近八位数。</p>
+<hr>
+<h2 id="三芯片是怎么造出来的"><a class="header" href="#三芯片是怎么造出来的">三、芯片是怎么造出来的</a></h2>
+<p>制造一颗芯片，要在晶圆上反复“盖楼“上百次。工序可分为<strong>前道（Front-End，做器件）<strong>与</strong>后道（Back-End，做连线与封装）</strong>。</p>
+<pre><code class="language-text">   循环 100+ 次（每层图案重复一遍）：
+   ┌──────────────────────────────────────────────┐
+   │ ① 氧化/沉积  生长或淀积一层薄膜（SiO2、SiN…） │
+   │ ② 涂胶       旋涂光刻胶                       │
+   │ ③ 光刻       掩膜版图案 → 曝光 → 显影         │  ← 最关键、最贵
+   │ ④ 刻蚀       把图案"刻"进材料（干法/湿法）    │
+   │ ⑤ 掺杂       离子注入，形成 n 型 / p 型区域   │
+   │ ⑥ 退火      修复晶格损伤、激活掺杂            │
+   │ ⑦ 平坦化    化学机械抛光（CMP），为下一层铺平 │
+   └──────────────────────────────────────────────┘
+                     │
+                     ▼
+   后道：金属互连（铜，十几层）→ 晶圆测试 → 切割 → 封装 → 成品测试
+</code></pre>
+<h3 id="31-光刻把图案印到硅上"><a class="header" href="#31-光刻把图案印到硅上">3.1 光刻：把图案“印“到硅上</a></h3>
+<p>光刻（Lithography）的原理和洗照片类似：光刻胶见光变质，显影后留下图案，再用它当“模具“去刻蚀。因为光学衍射极限，能印多细的线取决于光的波长：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>技术</th><th>光源波长</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>早期紫外（g/i-line）</td><td>436 / 365 nm</td><td>微米时代</td></tr>
+<tr><td>DUV（KrF / ArF）</td><td>248 / 193 nm</td><td>配合<strong>浸没式</strong>（用水提高数值孔径）、<strong>多重曝光</strong>，撑到了 7 nm 时代</td></tr>
+<tr><td><strong>EUV</strong>（极紫外）</td><td><strong>13.5 nm</strong></td><td>全反射镜系统，真空环境，目前先进节点的唯一选择</td></tr>
+</tbody>
+</table>
+</div>
+<p>EUV 光刻机的复杂程度堪称人类工业之最：把锡液滴用高功率激光轰击成等离子体发出 13.5 nm 极紫外光，再经多层反射镜（不能用透镜，因为 EUV 会被空气和玻璃吸收）聚焦到晶圆上。目前 EUV 光刻机由 ASML 独家供应。</p>
+<h3 id="32-洁净设备与产业链"><a class="header" href="#32-洁净设备与产业链">3.2 洁净、设备与产业链</a></h3>
+<ul>
+<li><strong>洁净度</strong>：先进制程要求 ISO 1~3 级洁净室（每立方米 ≥0.1 μm 的尘埃粒子不超过 10 个）。作为参照，一根头发直径约 70 μm——一颗灰尘落在晶圆上，就等于一颗芯片报废。</li>
+<li><strong>设备</strong>：光刻（ASML）、刻蚀与沉积（泛林 Lam、应用材料 AMAT、东京电子 TEL）、量测与检测（KLA）、离子注入（AMAT/AIBT）等。</li>
+<li><strong>掩膜版（Photomask）</strong>：每层图案需要一块光罩，一套先进节点掩膜的成本可达数百万甚至上千万美元，<strong>开模就是赌注</strong>，所以初创公司常用 MPW（多项目晶圆，几家共用一次流片）来摊薄费用。</li>
+</ul>
+<hr>
+<h2 id="四制程节点名字与现实的差距"><a class="header" href="#四制程节点名字与现实的差距">四、制程节点：名字与现实的差距</a></h2>
+<p>“7 nm”“5 nm”“3 nm”<strong>并不是</strong>某个晶体管尺寸，而是<strong>一代工艺的营销名称</strong>。真实指标要看<strong>金属间距、鳍片间距、接触栅间距、标准单元高度</strong>等参数。比如所谓“3 nm“，其金属间距仍在 20 nm 量级。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>世代</th><th>晶体管结构</th><th>大致年代</th><th>代表</th></tr>
+</thead>
+<tbody>
+<tr><td>≥ 32 nm</td><td>平面（Planar）</td><td>至 2011 年</td><td>各类传统 CMOS</td></tr>
+<tr><td>22 nm ~ 3 nm 级</td><td><strong>FinFET</strong>（鳍式，栅极包三面）</td><td>2011—2022</td><td>Intel 22 nm 起，台积电/三星延续</td></tr>
+<tr><td>3 nm 及以下</td><td><strong>GAA / 纳米片</strong>（栅极四面环栅）</td><td>2022 起</td><td>三星 3 nm、台积电 2 nm 一代</td></tr>
+<tr><td>未来方向</td><td>CFET（上下堆叠互补器件）</td><td>研发中</td><td>3D 晶体管</td></tr>
+</tbody>
+</table>
+</div>
+<p>当“缩小“越来越难，产业链转向几条新路：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>路线</th><th>思路</th><th>例子</th></tr>
+</thead>
+<tbody>
+<tr><td>More Moore</td><td>继续缩尺寸、换结构</td><td>GAA、CFET、High-K 金属栅、应变硅</td></tr>
+<tr><td>More than Moore</td><td>不缩尺寸，改做功能集成</td><td>先进封装、Chiplet、3D 堆叠</td></tr>
+<tr><td>专用化</td><td>为特定任务定制电路</td><td>NPU/TPU、ISP、视频编解码器、加密引擎</td></tr>
+<tr><td>新材料</td><td>替代受限的材料</td><td>铜互连、低 k 介质、新沟道材料</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>一个有趣的转变：随着尺寸缩小，<strong>连线（互连）的延迟</strong>已经超过晶体管本身的开关延迟。芯片性能的瓶颈从“器件“变成了“布线“——这也是 3D 堆叠与 Chiplet 越来越重要的原因。</p>
+</blockquote>
+<hr>
+<h2 id="五芯片家族通用与专用的光谱"><a class="header" href="#五芯片家族通用与专用的光谱">五、芯片家族：通用与专用的光谱</a></h2>
+<p>芯片千差万别，但可以用两把尺子衡量：<strong>通用性</strong>（能不能跑任意程序）与<strong>能效（每瓦性能）</strong>。二者通常相互矛盾：</p>
+<pre><code class="language-text">   通用 ←────────────────────────────────────────────→ 专用
+   灵活低效                                          高效死板
+
+   CPU ──── GPU ──── DSP ──── FPGA ──── ASIC
+   任意程序  数据并行  信号处理  可编程硬件  固定功能
+
+   每瓦性能：低 ────────────────────────────────→ 高
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型</th><th>全称/含义</th><th>特点</th><th>典型用途</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>CPU</strong></td><td>Central Processing Unit</td><td>通用、强控制流、大缓存、乱序执行</td><td>服务器、PC、手机主核</td></tr>
+<tr><td><strong>GPU</strong></td><td>Graphics Processing Unit</td><td>海量简单核心、SIMT 并行、高带宽显存</td><td>图形、AI 训练/推理</td></tr>
+<tr><td><strong>NPU / TPU</strong></td><td>神经网络处理器</td><td>矩阵乘加阵列、低精度量化、极省电</td><td>手机 AI、数据中心推理</td></tr>
+<tr><td><strong>DSP</strong></td><td>Digital Signal Processor</td><td>乘加指令、定点优化、实时性</td><td>音频、通信基带、电机控制</td></tr>
+<tr><td><strong>FPGA</strong></td><td>现场可编程门阵列</td><td>硬件可编程、可反复改、吞吐极高</td><td>原型验证、网络加速、小批量</td></tr>
+<tr><td><strong>ASIC</strong></td><td>专用集成电路</td><td>为单一任务定制，性能功耗最优</td><td>矿机、加密引擎、视频编解码</td></tr>
+<tr><td><strong>MCU</strong></td><td>微控制器</td><td>CPU + Flash + RAM + 外设，低成本低功耗</td><td>家电、汽车电子、工业控制</td></tr>
+<tr><td><strong>SoC</strong></td><td>System on Chip</td><td>把 CPU/GPU/NPU/基带/内存控制器等整合在一颗芯片上</td><td>手机、平板、IoT</td></tr>
+<tr><td><strong>PMIC</strong></td><td>电源管理芯片</td><td>电压转换、时序控制、电量计</td><td>一切电子设备</td></tr>
+<tr><td><strong>射频芯片</strong></td><td>RF</td><td>收发、功放、滤波</td><td>通信、Wi-Fi、蓝牙、雷达</td></tr>
+<tr><td><strong>CMOS 图像传感器</strong></td><td>CIS</td><td>光电转换</td><td>摄像头、手机、车载</td></tr>
+</tbody>
+</table>
+</div>
+<p>以一颗手机 SoC 为例，它内部大致是这样一个“片上城市“：</p>
+<pre><code class="language-text">                ┌───────────── 手机 SoC ─────────────┐
+                │  CPU 集群（大核 + 小核）            │
+                │  GPU（图形与通用并行计算）           │
+                │  NPU（AI 推理）                    │
+                │  ISP（图像信号处理，拍照用）         │
+                │  DSP / 音频编解码                  │
+                │  基带 / 射频接口                    │
+                │  内存控制器（LPDDR）                │
+                │  安全岛（安全启动、密钥存储）        │
+                │  各种 IO：USB、PCIe、显示、摄像头    │
+                └────────────────────────────────────┘
+</code></pre>
+<hr>
+<h2 id="六存储器芯片与存储层次"><a class="header" href="#六存储器芯片与存储层次">六、存储器芯片与存储层次</a></h2>
+<p>计算芯片负责“算“，存储芯片负责“记“。二者工艺路线完全不同：<strong>逻辑芯片追求速度，存储芯片追求密度</strong>（单位面积存更多比特），所以逻辑与存储通常分开制造，再通过先进封装拼在一起。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型</th><th>存储原理</th><th>易失性</th><th>速度</th><th>容量/成本</th><th>典型用途</th><th>擦写寿命</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>SRAM</strong></td><td>6 个晶体管组成的双稳态触发器</td><td>易失</td><td>极快（约 1 ns）</td><td>单位面积贵</td><td>CPU 的 L1/L2/L3 缓存</td><td>无限</td></tr>
+<tr><td><strong>DRAM</strong></td><td>1 晶体管 + 1 电容，靠电荷存储</td><td>易失（需刷新）</td><td>快（约 50~100 ns）</td><td>中等</td><td>主存</td><td>无限</td></tr>
+<tr><td><strong>NAND Flash</strong></td><td>浮栅/电荷陷阱存电荷，按页读写、按块擦除</td><td>非易失</td><td>慢（μs 级）</td><td>便宜、密度高</td><td>SSD、U 盘、手机存储</td><td>约 10³~10⁴ 次/块</td></tr>
+<tr><td><strong>NOR Flash</strong></td><td>同上，但支持随机按字节读</td><td>非易失</td><td>较快</td><td>较贵</td><td>单片机程序存储、固件</td><td>约 10⁴~10⁵ 次</td></tr>
+<tr><td><strong>HBM</strong></td><td>DRAM 裸片垂直堆叠 + TSV 硅通孔</td><td>易失</td><td>极快、带宽极高</td><td>很贵</td><td>AI 加速卡、高端 GPU</td><td>无限</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>DRAM 的“易失“来自它的存储方式：信息是电容上的一点点电荷，会漏掉，所以必须周期性刷新（JEDEC 通常规定 64 ms 内把全部行刷新一遍）。这也是“内存断电就丢数据“的物理原因。</p>
+</blockquote>
+<h3 id="61-存储层次金字塔"><a class="header" href="#61-存储层次金字塔">6.1 存储层次金字塔</a></h3>
+<p>计算机用“容量越大越慢越便宜“的多层结构，把少量快存储放在离 CPU 最近的地方：</p>
+<pre><code class="language-text">        容量 / 延迟 / 成本                      存储介质
+   ┌──────────────────────────┐
+   │  寄存器        几百字节   │  &lt; 1 ns    （位于 CPU 内部）
+   ├──────────────────────────┤
+   │  L1 缓存       几十 KB    │  ~1 ns     SRAM
+   ├──────────────────────────┤
+   │  L2 缓存       几百 KB~几 MB │ ~5 ns    SRAM
+   ├──────────────────────────┤
+   │  L3 缓存       几 MB~几十 MB │ ~15 ns   SRAM
+   ├──────────────────────────┤
+   │  主存（DRAM）  几 GB~几 TB │ ~100 ns    DRAM
+   ├──────────────────────────┤
+   │  SSD（NAND）   几百 GB~几 TB │ ~100 μs   NAND Flash
+   ├──────────────────────────┤
+   │  HDD / 网络存储  TB~PB 级  │ ~10 ms    磁盘
+   └──────────────────────────┘
+        越靠上：越快、越小、越贵
+</code></pre>
+<p>这套结构之所以有效，靠的是<strong>局部性原理</strong>：程序在一段时间内倾向于访问<strong>最近访问过的</strong>数据（时间局部性）和<strong>邻近的</strong>数据（空间局部性）。硬件据此按**缓存行（Cache Line，通常 64 字节）**整块搬运，而不是按字节搬运。</p>
+<h3 id="62-亲测存储层次的延迟阶梯"><a class="header" href="#62-亲测存储层次的延迟阶梯">6.2 亲测：存储层次的延迟阶梯</a></h3>
+<p>教科书上的数字到底对不对？自己量一遍最清楚。<strong>顺序扫描测不出层次差异</strong>（CPU 预取器会把延迟隐藏掉），要用<strong>指针追逐</strong>：让每次访问的地址依赖上一次的结果，预取器就无能为力了。</p>
+<pre class="playground"><code class="language-rust edition2024">use std::time::Instant;
+
+/// 用线性同余发生器生成一个 0..n 的伪随机排列（Fisher–Yates 洗牌）
+fn permutation(n: usize, seed: u64) -&gt; Vec&lt;usize&gt; {
+    let mut idx: Vec&lt;usize&gt; = (0..n).collect();
+    let mut state = seed;
+    let mut next = move || {
+        state = state
+            .wrapping_mul(6364136223846793005)
+            .wrapping_add(1442695040888963407);
+        (state &gt;&gt; 33) as usize
+    };
+    for i in (1..n).rev() {
+        let j = next() % (i + 1);
+        idx.swap(i, j);
+    }
+    idx
+}
+
+/// 指针追逐：访问顺序随机，且下一次访问的地址依赖上一次的结果，
+/// 因此 CPU 无法预取，测到的是真实的存储层次延迟。
+fn chase_ns_per_access(bytes: usize, rounds: usize) -&gt; f64 {
+    let n = bytes / std::mem::size_of::&lt;usize&gt;();
+    let perm = permutation(n, 0x9E37_79B9);
+
+    // link[k] 指向"随机序列中 k 的下一个元素"，把查表变成链表
+    let mut link = vec![0usize; n];
+    for k in 0..n {
+        link[perm[k]] = perm[(k + 1) % n];
+    }
+
+    let mut cur = 0usize;
+    // 预热一遍
+    for _ in 0..n {
+        cur = link[cur];
+    }
+
+    let mut best = f64::MAX;
+    for _ in 0..rounds {
+        let start = Instant::now();
+        for _ in 0..n {
+            cur = link[cur]; // 依赖加载：必须等上一次读回结果
+        }
+        let ns = start.elapsed().as_nanos() as f64 / n as f64;
+        if ns &lt; best {
+            best = ns;
+        }
+    }
+    std::hint::black_box(cur);
+    best
+}
+
+fn main() {
+    let sizes: [(usize, &amp;str); 5] = [
+        (16 * 1024, "16 KB    L1 数据缓存"),
+        (256 * 1024, "256 KB   L2 缓存"),
+        (4 * 1024 * 1024, "4 MB     L3 缓存"),
+        (32 * 1024 * 1024, "32 MB    L3 / 主存交界"),
+        (256 * 1024 * 1024, "256 MB   主存"),
+    ];
+
+    println!("{:&lt;26} {:&gt;12}", "工作集", "每次访问(ns)");
+    for (bytes, label) in sizes {
+        println!("{:&lt;26} {:&gt;12.1}", label, chase_ns_per_access(bytes, 3));
+    }
+}</code></pre>
+<p>在一台普通台式机上的实测结果：</p>
+<pre><code class="language-text">工作集                            每次访问(ns)
+16 KB    L1 数据缓存                    1.4
+256 KB   L2 缓存                      5.5
+4 MB     L3 缓存                     12.3
+32 MB    L3 / 主存交界                109.9
+256 MB   主存                       149.7
+</code></pre>
+<p>阶梯清晰可见：L1 约 1.4 ns，L2 约 5.5 ns（5 倍），L3 约 12 ns（10 倍），一旦超出缓存容量跌到主存，就是 <strong>100 ns 以上（约 100 倍）</strong>。这也解释了为什么“算法复杂度相同、常数不同“的两个实现，性能可能相差十倍——差别往往在<strong>访问模式是否对缓存友好</strong>。</p>
+<blockquote>
+<p>由此派生的两个工程结论：<strong>(1)</strong> 遍历数组比遍历链表快，因为数组是连续访问、链表是随机跳跃；<strong>(2)</strong> 多线程时若两个线程频繁写同一缓存行里的不同变量，缓存行会在核间来回“乒乓“，性能反而比单线程更差——这叫<strong>伪共享（False Sharing）</strong>，通常用填充（padding）把变量对齐到不同缓存行来解决。</p>
+</blockquote>
+<h3 id="63-往三维要空间"><a class="header" href="#63-往三维要空间">6.3 往三维要空间</a></h3>
+<p>当平面缩放变难，存储芯片转向“向上长“与“叠起来“：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>技术</th><th>做法</th><th>效果</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>3D NAND</strong></td><td>把存储单元垂直堆叠成上百层</td><td>密度大幅提升，成本持续下降</td></tr>
+<tr><td><strong>TSV（硅通孔）</strong></td><td>在裸片上打孔穿金属，把多层垂直连通</td><td>缩短互连长度，提高带宽与能效</td></tr>
+<tr><td><strong>HBM</strong></td><td>多层 DRAM 用 TSV 叠在硅中介层上，紧邻 GPU</td><td>位宽从 32/64 bit 跃升到上千 bit，带宽达 TB/s 级</td></tr>
+<tr><td><strong>Chiplet</strong></td><td>把不同功能的小芯片（含存储）用先进封装拼装</td><td>良率更高、可混用不同工艺</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="七芯片是怎么设计出来的"><a class="header" href="#七芯片是怎么设计出来的">七、芯片是怎么设计出来的</a></h2>
+<p>制造是“盖楼“，设计则是“画图纸“。一颗复杂芯片的设计流程大致如下：</p>
+<pre><code class="language-text">  ① 需求与规格       功耗、性能、面积、成本（PPA）目标
+        ▼
+  ② 架构 / 微架构    多少核？缓存多大？几条流水线？
+        ▼
+  ③ RTL 设计         用 Verilog / VHDL / Chisel 写"硬件的行为"
+        ▼
+  ④ 功能仿真验证     跑海量测试用例，比对期望结果（验证占大量工时）
+        ▼
+  ⑤ 逻辑综合         RTL → 门级网表（用代工厂提供的标准单元库）
+        ▼
+  ⑥ DFT 插入         扫描链、内建自测（BIST），保证可测性
+        ▼
+  ⑦ 布局布线（PnR）  把百万级门与连线摆到版图上
+        ▼
+  ⑧ 签核（Sign-off） 时序收敛、功耗、DRC/LVS、电磁与热分析
+        ▼
+  ⑨ GDSII 交付       交给代工厂（称为"流片"，Tape-out）
+</code></pre>
+<p>用 Rust 的流水线类比：<strong>RTL 是源码，综合是编译，布局布线是最优化加目标码生成，签核是测试与审计</strong>——软件工程师其实很熟悉这套思维方式（可对照第六十九“编译器与解释器“）。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>环节</th><th>说明</th><th>工具/语言</th></tr>
+</thead>
+<tbody>
+<tr><td>前端（Front-End）</td><td>规格、RTL 编写、功能验证</td><td>Verilog/VHDL/SystemVerilog、Chisel、仿真器</td></tr>
+<tr><td>验证</td><td>占项目工作量的大头，甚至超过设计本身</td><td>UVM 方法学、形式化验证、FPGA 原型</td></tr>
+<tr><td>后端（Back-End）</td><td>综合、布局布线、时序与物理验证</td><td>EDA 工具链</td></tr>
+<tr><td>版图与制造</td><td>GDSII、掩膜、光刻</td><td>代工厂</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="71-eda芯片设计的编译器"><a class="header" href="#71-eda芯片设计的编译器">7.1 EDA：芯片设计的“编译器“</a></h3>
+<p>设计几十亿晶体管的芯片，人手工画是不可能的，全靠 <strong>EDA（Electronic Design Automation）</strong> 工具。这个市场高度集中：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>厂商</th><th>代表工具</th><th>领域</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Synopsys</strong></td><td>Design Compiler、VCS、PrimeTime</td><td>综合、仿真、时序签核</td></tr>
+<tr><td><strong>Cadence</strong></td><td>Innovus、Virtuoso、Palladium</td><td>布局布线、模拟设计、硬件仿真</td></tr>
+<tr><td><strong>Siemens EDA</strong>（原 Mentor）</td><td>Calibre、Questa</td><td>物理验证、仿真验证</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>EDA 是芯片产业链上最容易被忽视、却最难替代的一环：它同时依赖半导体工艺知识、算法与几十年的工程积累，被称为“卡脖子的卡脖子“。</p>
+</blockquote>
+<h3 id="72-商业模式谁设计谁制造"><a class="header" href="#72-商业模式谁设计谁制造">7.2 商业模式：谁设计、谁制造</a></h3>
+<p>一颗芯片从想法到成品，往往要经过多家公司：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>模式</th><th>含义</th><th>代表</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>IDM</strong></td><td>设计、制造、封测全都自己做</td><td>Intel、三星、德州仪器</td></tr>
+<tr><td><strong>Fabless</strong></td><td>只设计，不建厂</td><td>NVIDIA、AMD、高通、苹果、华为海思</td></tr>
+<tr><td><strong>Foundry</strong></td><td>只代工制造</td><td>台积电、三星、格罗方德、中芯国际</td></tr>
+<tr><td><strong>OSAT</strong></td><td>只做封装测试</td><td>日月光、安靠、长电科技、通富微电</td></tr>
+<tr><td><strong>EDA / IP</strong></td><td>卖工具与可复用模块</td><td>Synopsys、Cadence、ARM（IP）</td></tr>
+<tr><td><strong>设备 / 材料</strong></td><td>卖光刻机、刻蚀机、硅片、光刻胶</td><td>ASML、泛林、应用材料、信越、沪硅产业</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>IP 复用</strong>是现代芯片设计的基石：ARM 卖 CPU 核（Cortex 系列），RISC-V 提供开放指令集，内存控制器、PCIe 控制器、SerDes 等都可以买现成的 IP，Fabless 公司只需把注意力集中在差异化部分。可以说，<strong>芯片设计已经变成“搭积木 + 少量自研“</strong>。</p>
+<h3 id="73-一次流片要花多少钱"><a class="header" href="#73-一次流片要花多少钱">7.3 一次流片要花多少钱</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>项目</th><th>量级</th></tr>
+</thead>
+<tbody>
+<tr><td>先进节点（如 5 nm）完整设计投入</td><td>数亿美元（含人力、EDA 授权、IP 授权、验证）</td></tr>
+<tr><td>一套先进节点掩膜</td><td>数百万 ~ 上千万美元</td></tr>
+<tr><td>一次 MPW 试验流片</td><td>几十万 ~ 数百万美元（多家共享晶圆）</td></tr>
+<tr><td>成熟节点（如 180 nm MCU）</td><td>从几万到几十万美元起</td></tr>
+</tbody>
+</table>
+</div>
+<p>所以芯片行业的规律是：<strong>流片一次，就是一次无法回退的下注</strong>。这也解释了为什么仿真验证要如此“过度“——与其在硅片上发现 bug，不如在电脑里发现。</p>
+<hr>
+<h2 id="八指令集架构芯片与软件的契约"><a class="header" href="#八指令集架构芯片与软件的契约">八、指令集架构：芯片与软件的契约</a></h2>
+<p>硬件与软件之间有一份“契约“，它就是<strong>指令集架构（Instruction Set Architecture, ISA）</strong>：软件按 ISA 编写，硬件按 ISA 实现。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>含义</th><th>例子</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>ISA（架构）</strong></td><td>程序员与编译器看到的抽象：有哪些指令、寄存器、内存模型、异常机制</td><td>x86-64、ARMv9、RISC-V</td></tr>
+<tr><td><strong>微架构（Microarchitecture）</strong></td><td>ISA 的具体实现：流水线级数、缓存大小、乱序窗口宽度</td><td>Zen 5、Golden Cove、Neoverse</td></tr>
+</tbody>
+</table>
+</div>
+<p>同一个 ISA 可以有完全不同的微架构——就像同一份 C 源码可以被不同编译器编译出不同机器码。<strong>ISA 管兼容，微架构管性能</strong>：只要 ISA 不变，换一代 CPU 老程序仍能跑（这叫二进制兼容）。</p>
+<h3 id="81-cisc-与-risc"><a class="header" href="#81-cisc-与-risc">8.1 CISC 与 RISC</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>维度</th><th>CISC（复杂指令集）</th><th>RISC（精简指令集）</th></tr>
+</thead>
+<tbody>
+<tr><td>指令数量与长度</td><td>多、不等长、功能复杂</td><td>少、定长、职责单一</td></tr>
+<tr><td>内存访问</td><td>许多指令可直接操作内存</td><td>只有 load/store 能访存</td></tr>
+<tr><td>实现风格</td><td>微码译码，硬件更复杂</td><td>硬布线，利于流水线与编译器优化</td></tr>
+<tr><td>功耗效率</td><td>相对低</td><td>相对高</td></tr>
+<tr><td>代表</td><td>x86（Intel/AMD）</td><td>ARM、RISC-V、LoongArch</td></tr>
+</tbody>
+</table>
+</div>
+<p>如今两者已互相借鉴：x86 内部把复杂指令译成类似 RISC 的微操作执行，而 ARM 也在不断扩展指令集。</p>
+<h3 id="82-三大阵营与授权模式"><a class="header" href="#82-三大阵营与授权模式">8.2 三大阵营与授权模式</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>阵营</th><th>开放性</th><th>授权方式</th><th>生态</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>x86</strong></td><td>封闭</td><td>Intel 与 AMD 交叉授权，外部几乎无法进入</td><td>PC / 服务器软件生态最厚</td></tr>
+<tr><td><strong>ARM</strong></td><td>半开放</td><td>内核 IP 授权（用 Cortex 核）或架构授权（自研核）</td><td>手机、嵌入式、云原生服务器</td></tr>
+<tr><td><strong>RISC-V</strong></td><td>开放</td><td>指令集标准开放，可自由扩展与自研核</td><td>IoT、嵌入式、新型加速器、教学</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>授权模式对产业格局影响巨大：买 ARM 的 Cortex 核就像买成套家具，省事但差异化空间小；买架构授权就像买建材自己设计，投入大但可以做苹果 M 系列那样的自研核；而 RISC-V 则像开源硬件——门槛低、可定制，但需要自建生态。</p>
+</blockquote>
+<h3 id="83-指令在芯片里怎么跑流水线"><a class="header" href="#83-指令在芯片里怎么跑流水线">8.3 指令在芯片里怎么跑：流水线</a></h3>
+<p>CPU 执行一条指令，要经历多个阶段。把多个阶段重叠起来，就像工厂流水线一样，每个时钟周期都能完成一条指令：</p>
+<pre><code class="language-text"> 时钟   T1    T2    T3    T4    T5    T6
+ ────┼─────┼─────┼─────┼─────┼─────┼─────
+ 指令1│ 取指 │ 译码 │ 执行 │ 访存 │ 写回 │
+ 指令2│     │ 取指 │ 译码 │ 执行 │ 访存 │ 写回
+ 指令3│     │     │ 取指 │ 译码 │ 执行 │ 访存
+ 指令4│     │     │     │ 取指 │ 译码 │ 执行
+</code></pre>
+<p>但当遇到分支与依赖时，流水线会“停转“。现代高性能处理器用一整套技术填补这些空拍：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>技术</th><th>解决的问题</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>分支预测</strong></td><td>不知道下一条指令是哪条？先猜（准确率可达 99% 以上）</td></tr>
+<tr><td><strong>乱序执行（OoO）</strong></td><td>指令互相依赖时，先执行不受影响的那些</td></tr>
+<tr><td><strong>超标量 / 多发射</strong></td><td>一个周期同时发射多条指令</td></tr>
+<tr><td><strong>SIMD 向量指令</strong></td><td>一条指令算多个数据（SSE/AVX/NEON/SVE）</td></tr>
+<tr><td><strong>同时多线程（SMT）</strong></td><td>一个物理核呈现为两个逻辑核，填满执行单元</td></tr>
+<tr><td><strong>多级缓存</strong></td><td>用片上高速缓存掩盖主存延迟</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="84-一个简得不能再简的性能模型"><a class="header" href="#84-一个简得不能再简的性能模型">8.4 一个简得不能再简的性能模型</a></h3>
+<p>处理器性能可以用时间公式拆开（第六十九“编译器“与第三十六“神经网络“里的优化都绕不开它）：</p>
+<p>$$
+T = \frac{IC \times CPI}{f} = IC \times CPI \times T_{\text{cycle}}
+$$</p>
+<p>其中 $IC$ 是指令条数（编译器与算法决定）、$CPI$ 是每条指令平均周期数（微架构决定）、$f$ 是主频（工艺与功耗决定）。<strong>三者往反方向拉</strong>：指令越复杂 $IC$ 可能越少但 $CPI$ 升高；主频越高但功耗与散热成本急剧上升（$P \propto V^2 f$）。硬件与编译器的所有优化，本质上都是在调这三个量。</p>
+<hr>
+<h2 id="九芯片中的功耗并行与安全"><a class="header" href="#九芯片中的功耗并行与安全">九、芯片中的功耗、并行与安全</a></h2>
+<h3 id="91-功耗与散热真正的物理限制"><a class="header" href="#91-功耗与散热真正的物理限制">9.1 功耗与散热：真正的物理限制</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>设备</th><th>典型功耗</th><th>散热方式</th></tr>
+</thead>
+<tbody>
+<tr><td>单片机（MCU）</td><td>毫瓦级</td><td>自然散热</td></tr>
+<tr><td>手机 SoC</td><td>几瓦 ~ 十几瓦</td><td>石墨/热管，无风扇</td></tr>
+<tr><td>笔记本 CPU</td><td>15 ~ 45 W</td><td>风扇 + 热管</td></tr>
+<tr><td>服务器 CPU</td><td>200 ~ 400 W</td><td>大型散热器 + 风道</td></tr>
+<tr><td>训练用 GPU</td><td>700 W 以上</td><td>加速卡散热/液冷</td></tr>
+<tr><td>数据中心机柜</td><td>数十 kW</td><td>机房级液冷与电力调度</td></tr>
+</tbody>
+</table>
+</div>
+<p>相应的工程手段有：<strong>DVFS</strong>（动态调频调压，按负载升降频）、<strong>时钟门控与电源门控</strong>（不用的模块直接断电）、<strong>大小核异构</strong>（轻载用小核省电）。</p>
+<p>当频率与功耗都碰到墙，剩下的路子就是<strong>并行</strong>：多核、SIMD、多卡。但要记住 <strong>Amdahl 定律</strong>：若程序中只有比例 $p$ 可以并行，那么再多核也把总加速比卡在 $1/(1-p)$——通讯、同步、数据划分这些“串行尾巴“永远是并行计算的天花板。</p>
+<h3 id="92-芯片里的安全"><a class="header" href="#92-芯片里的安全">9.2 芯片里的安全</a></h3>
+<p>芯片是信任链的<strong>根</strong>。如果芯片本身不可信，上面跑的一切安全机制都像沙子上的城堡。主要威胁与对策如下：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型</th><th>例子</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>微架构侧信道</strong></td><td>Spectre（2018）、Meltdown（2018）</td><td>利用分支预测、乱序执行等微架构行为泄露内存内容；修复往往要牺牲性能</td></tr>
+<tr><td><strong>硬件故障攻击</strong></td><td>Rowhammer（2014）</td><td>频繁读写一行 DRAM，导致相邻行位翻转（“比特翻转”），可被利用提权</td></tr>
+<tr><td><strong>侧信道分析</strong></td><td>功耗分析、电磁分析、时序分析</td><td>智能卡、银行卡常用于防它；靠旁法推断密钥</td></tr>
+<tr><td><strong>故障注入</strong></td><td>电压尖脉冲、激光照射、时钟毛刺</td><td>使芯片在关键步骤算错，绕过安全校验</td></tr>
+<tr><td><strong>物理逆向</strong></td><td>开盖（decap）、微探针、电子显微镜拍照</td><td>读出版图与存储内容，或改写电路（FIB）</td></tr>
+<tr><td><strong>硬件木马 / 伪劣芯片</strong></td><td>在设计中植入触发式后门；回收件翻新</td><td>根源于供应链不透明</td></tr>
+</tbody>
+</table>
+</div>
+<p>防护思路可以分成“硬件筑坝“与“软件校验“两类：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>对策</th><th>内容</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>安全启动与信任根（RoT）</strong></td><td>从不可变的 ROM 开始，逐级校验固件签名后才交出控制权</td></tr>
+<tr><td><strong>安全岛 / TEE</strong></td><td>ARM TrustZone、Intel SGX/TDX、AMD SEV：在芯片内划出隔离世界</td></tr>
+<tr><td><strong>硬件密钥与加密引擎</strong></td><td>密钥永不出芯片（如安全元件 SE、TPM）；总线和内存加密</td></tr>
+<tr><td><strong>物理防护</strong></td><td>屏蔽层、传感器（光照/电压/温度异常检测）、防篡改封装</td></tr>
+<tr><td><strong>可审计的开放硅厂</strong></td><td>OpenTitan 等开放硅信任根项目，让“根“可以被公开审视</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>对软件工程师的实际含义：<strong>不要把安全机制建在“硬件一定可信“的假设上</strong>。Spectre/Meltdown 之后，跨权限边界的数据泄露不再只靠软件 bug 就能避免；这也是第五十九“软件漏洞“、第六十“网络安全“、第六十一“数据安全“三章反复强调“分层防御“的原因。</p>
+</blockquote>
+<hr>
+<h2 id="十rust-与芯片"><a class="header" href="#十rust-与芯片">十、Rust 与芯片</a></h2>
+<p>芯片需要的是<strong>确定性</strong>：不能意外分配内存、不能有运行期 GC 抖动、不能有隐藏的异常抛出。这正是 Rust 的强项——它既能像 C 一样贴近硬件，又在编译期拦住了大量内存与并发错误。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>维度</th><th>C</th><th>Rust</th></tr>
+</thead>
+<tbody>
+<tr><td>内存安全</td><td>靠程序员自律，未定义行为风险高</td><td>编译期借用检查；越界、悬垂、二次释放很难写出来</td></tr>
+<tr><td>并发安全</td><td>靠约定与审查</td><td><code>Send</code>/<code>Sync</code> + 所有权，<strong>数据竞争在编译期就被拦截</strong></td></tr>
+<tr><td>抽象成本</td><td>宏、函数指针、代码生成</td><td>泛型、<code>trait</code>、内联：零成本抽象</td></tr>
+<tr><td>依赖与构建</td><td>往往手工集成第三方库</td><td><code>cargo</code> + crates.io，交叉编译一条命令</td></tr>
+<tr><td>运行环境</td><td>极小</td><td><code>#![no_std]</code> 下同样可以没有运行时</td></tr>
+<tr><td>生态成熟度</td><td>几十年积累，驱动与参考代码最丰富</td><td>增长很快，部分外设与老旧平台仍缺现成库</td></tr>
+</tbody>
+</table>
+</div>
+<p>Rust 在嵌入式领域的做法是“<strong>把 <code>unsafe</code> 关进笼子</strong>“：直接操作寄存器的代码集中在 PAC/HAL 库里，应用层代码全是安全 Rust。即使必须写 <code>unsafe</code>，也能用 <code>#[repr(C)]</code>、<code>core::ptr::read_volatile</code> 等工具把边界划得清清楚。</p>
+<h3 id="101-rust-嵌入式与芯片生态"><a class="header" href="#101-rust-嵌入式与芯片生态">10.1 Rust 嵌入式与芯片生态</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Crate / 项目</th><th>用途</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://crates.io/crates/cortex-m">cortex-m</a> / <a href="https://crates.io/crates/cortex-m-rt">cortex-m-rt</a></td><td>Cortex-M 内核访问与启动运行时</td></tr>
+<tr><td><a href="https://crates.io/crates/riscv">riscv</a> / <a href="https://crates.io/crates/riscv-rt">riscv-rt</a></td><td>RISC-V 指令/CSR 与启动运行时</td></tr>
+<tr><td><a href="https://crates.io/crates/embedded-hal">embedded-hal</a> / <a href="https://crates.io/crates/embedded-nal">embedded-nal</a></td><td>硬件抽象层 trait 标准（写一遍驱动，跑遍各种板子）</td></tr>
+<tr><td><a href="https://crates.io/crates/svd2rust">svd2rust</a></td><td>从 SVD 描述文件生成外设寄存器访问层（PAC）</td></tr>
+<tr><td><a href="https://github.com/stm32-rs">stm32-rs</a></td><td>各大 STM32 型号的 PAC 与 HAL 集合</td></tr>
+<tr><td><a href="https://crates.io/crates/embassy-executor">embassy</a></td><td>异步嵌入式框架（async/await 写裸机并发）</td></tr>
+<tr><td><a href="https://rtic.rs/">RTIC</a></td><td>基于中断优先级的并发框架，静态保证无数据竞争</td></tr>
+<tr><td><a href="https://crates.io/crates/esp-hal">esp-hal</a> / <a href="https://crates.io/crates/rp-hal">rp-hal</a></td><td>ESP32 / RP2040 的 HAL</td></tr>
+<tr><td><a href="https://probe.rs/">probe-rs</a> / <code>cargo-embed</code></td><td>烧录与调试（替代 OpenOCD）</td></tr>
+<tr><td><a href="https://crates.io/crates/defmt">defmt</a></td><td>极低开销的嵌入式日志框架</td></tr>
+<tr><td><a href="https://crates.io/crates/heapless">heapless</a></td><td>无堆内存容器（固定容量 <code>Vec</code>/<code>String</code>/<code>Map</code>）</td></tr>
+<tr><td><a href="https://crates.io/crates/bitflags">bitflags</a> / <a href="https://crates.io/crates/modular-bitfield">modular-bitfield</a></td><td>位标志与位域</td></tr>
+<tr><td><a href="https://crates.io/crates/crc">crc</a></td><td>各类 CRC 校验算法</td></tr>
+<tr><td><a href="https://crates.io/crates/embedded-graphics">embedded-graphics</a></td><td>小屏显示的 2D 图形库</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="102-与寄存器打交道位域与校验"><a class="header" href="#102-与寄存器打交道位域与校验">10.2 与寄存器打交道：位域与校验</a></h3>
+<p>芯片编程的日常就是“按位读改写“：配置寄存器里的某个位域，或从寄存器里解出一个有符号数值。下面的例子还顺手实现了嵌入式通信最常用的 CRC-32：</p>
+<pre class="playground"><code class="language-rust edition2024">// ---------- 位域读写 ----------
+
+/// 把 value 写入 reg 的 [high:low] 位，其余位保持不变
+fn set_bits(reg: &amp;mut u32, high: u32, low: u32, value: u32) {
+    let width = high - low + 1;
+    let mask = ((1u32 &lt;&lt; width) - 1) &lt;&lt; low;
+    *reg = (*reg &amp; !mask) | ((value &lt;&lt; low) &amp; mask);
+}
+
+/// 从 reg 中取出 [high:low] 位
+fn get_bits(reg: u32, high: u32, low: u32) -&gt; u32 {
+    let width = high - low + 1;
+    (reg &gt;&gt; low) &amp; ((1u32 &lt;&lt; width) - 1)
+}
+
+/// 芯片温度寄存器：低 12 位是补码，1 LSB = 0.0625 °C
+fn parse_temperature(raw: u16) -&gt; f64 {
+    let value = (raw &amp; 0x0FFF) as i16; // 只保留低 12 位
+    let signed = if value &amp; 0x0800 != 0 {
+        value - 4096 // 最高位为 1：负数，做符号扩展
+    } else {
+        value
+    };
+    signed as f64 * 0.0625
+}
+
+// ---------- CRC-32 校验 ----------
+
+/// CRC-32（IEEE 802.3，与 zip / 以太网一致）
+fn crc32(data: &amp;[u8]) -&gt; u32 {
+    let mut crc = 0xFFFF_FFFFu32;
+    for &amp;byte in data {
+        crc ^= byte as u32;
+        for _ in 0..8 {
+            let lsb = crc &amp; 1;
+            crc &gt;&gt;= 1;
+            if lsb == 1 {
+                crc ^= 0xEDB8_8320; // 反射后的生成多项式
+            }
+        }
+    }
+    !crc
+}
+
+fn main() {
+    // 位域：配置一个控制寄存器
+    let mut ctrl = 0u32;
+    set_bits(&amp;mut ctrl, 3, 0, 0b1010); // 低 4 位：分频系数
+    set_bits(&amp;mut ctrl, 7, 4, 0b0110); // 次 4 位：模式
+    println!("ctrl = {ctrl:#010X} (0b{ctrl:010b})");
+    println!("分频 = {}, 模式 = {}", get_bits(ctrl, 3, 0), get_bits(ctrl, 7, 4));
+
+    // 修改中间位域而不影响其他位
+    set_bits(&amp;mut ctrl, 7, 4, 0b1111);
+    println!("改模式后 ctrl = 0b{ctrl:010b}, 分频仍是 {}", get_bits(ctrl, 3, 0));
+
+    // 温度：0x03C0 -&gt; 60 °C，0x0FC0 -&gt; -4 °C
+    for raw in [0x03C0u16, 0x0FC0, 0x0640] {
+        println!("raw = {raw:#06X} -&gt; {:.4} °C", parse_temperature(raw));
+    }
+
+    println!("CRC-32(\"123456789\") = {:#010X}", crc32(b"123456789"));
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">ctrl = 0x0000006A (0b0001101010)
+分频 = 10, 模式 = 6
+改模式后 ctrl = 0b0011111010, 分频仍是 10
+raw = 0x03C0 -&gt; 60.0000 °C
+raw = 0x0FC0 -&gt; -4.0000 °C
+raw = 0x0640 -&gt; 100.0000 °C
+CRC-32("123456789") = 0xCBF43926
+</code></pre>
+<blockquote>
+<p>最后一行是 CRC-32 的标准“校验值“（check value）：输入字符串 <code>123456789</code> 得到 <code>0xCBF43926</code>，与所有标准实现一致。写通信协议时，先拿这个值验证自己的 CRC 实现，是能省掉大量调试的老经验。</p>
+</blockquote>
+<h3 id="103-抽象隔离芯片差异hal-与测试替身"><a class="header" href="#103-抽象隔离芯片差异hal-与测试替身">10.3 抽象隔离芯片差异：HAL 与测试替身</a></h3>
+<p>嵌入式开发最痛苦的事之一是“换个芯片就重写“。Rust 的 <code>trait</code> 把“外设能做什么“抽象出来，驱动只依赖抽象，于是<strong>同一份驱动能跑遍所有芯片</strong>，而且<strong>在电脑上就能测</strong>：</p>
+<pre class="playground"><code class="language-rust edition2024">/// 最小化的 SPI 抽象（对应 embedded-hal 的 SpiDevice trait）
+trait SpiDevice {
+    fn transfer(&amp;mut self, read: &amp;mut [u8], write: &amp;[u8]) -&gt; Result&lt;(), &amp;'static str&gt;;
+}
+
+/// 传感器驱动：只依赖抽象，不依赖任何具体芯片
+struct Sensor&lt;S: SpiDevice&gt; {
+    spi: S,
+}
+
+impl&lt;S: SpiDevice&gt; Sensor&lt;S&gt; {
+    fn new(spi: S) -&gt; Self {
+        Sensor { spi }
+    }
+
+    /// 读取 WHO_AM_I 寄存器（0x0F），用于确认通信链路正常
+    fn who_am_i(&amp;mut self) -&gt; Result&lt;u8, &amp;'static str&gt; {
+        let mut buf = [0u8; 1];
+        // 最高位置 1 表示读操作
+        self.spi.transfer(&amp;mut buf, &amp;[0x80 | 0x0F, 0x00])?;
+        Ok(buf[0])
+    }
+}
+
+/// 真实硬件：把读写交给芯片的 SPI 外设寄存器（此处为示意）
+#[allow(dead_code)]
+struct HardwareSpi {
+    base: usize,
+}
+
+impl SpiDevice for HardwareSpi {
+    fn transfer(&amp;mut self, read: &amp;mut [u8], write: &amp;[u8]) -&gt; Result&lt;(), &amp;'static str&gt; {
+        // 真实实现里会写 SPI 数据寄存器、轮询状态位、读回数据，
+        // 例如（示意）：
+        //   let dr = (self.base + 0x0C) as *mut u32;
+        //   unsafe { core::ptr::write_volatile(dr, write[0] as u32) };
+        let _ = (self.base, write);
+        read[0] = 0x00;
+        Ok(())
+    }
+}
+
+/// 测试替身：完全不需要硬件，就能验证驱动的协议是否正确
+struct MockSpi {
+    id: u8,
+    written: Vec&lt;u8&gt;,
+}
+
+impl SpiDevice for MockSpi {
+    fn transfer(&amp;mut self, read: &amp;mut [u8], write: &amp;[u8]) -&gt; Result&lt;(), &amp;'static str&gt; {
+        self.written.extend_from_slice(write);
+        read[0] = self.id;
+        Ok(())
+    }
+}
+
+fn main() {
+    let mut sensor = Sensor::new(MockSpi {
+        id: 0x6B,
+        written: Vec::new(),
+    });
+    println!("WHO_AM_I = {:#04X}", sensor.who_am_i().unwrap());
+    println!("驱动发出的字节 = {:02X?}", sensor.spi.written);
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">WHO_AM_I = 0x6B
+驱动发出的字节 = [8F, 00]
+</code></pre>
+<p>这里有两个实用结论：**（1）<strong>驱动里的协议逻辑（读寄存器要置高位、发两个字节）在电脑上就验证完了，真正上板子的只剩 HAL 那几十行；</strong>（2）**同样的思路可以推广到 I²C、SPI、串口、网络层——<code>embedded-hal</code> 正是把这种模式做成了社区标准。</p>
+<h3 id="104-裸机点灯no_std-与寄存器映射"><a class="header" href="#104-裸机点灯no_std-与寄存器映射">10.4 裸机点灯：<code>no_std</code> 与寄存器映射</a></h3>
+<p>最经典的入门例程：直接写寄存器，让一颗 LED 闪起来。注意所有外设都是“内存映射“的，每个寄存器就是一块固定地址，所以只需要往确定的地址写值：</p>
+<pre class="playground"><code class="language-rust edition2024">#![no_std]
+#![no_main]
+
+use core::panic::PanicInfo;
+use core::ptr::{read_volatile, write_volatile};
+
+// 以 STM32 风格的 GPIOA 为例（具体地址随型号不同，务必查对数据手册）
+const GPIOA_MODER: *mut u32 = 0x4800_0000 as *mut u32;
+const GPIOA_BSRR: *mut u32 = 0x4800_0018 as *mut u32;
+
+fn delay(cycles: u32) {
+    for _ in 0..cycles {
+        core::hint::spin_loop();
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn main() -&gt; ! {
+    unsafe {
+        // PA5 配置为通用输出模式（MODER5 = 0b01）
+        let moder = read_volatile(GPIOA_MODER);
+        write_volatile(GPIOA_MODER, (moder &amp; !(0b11 &lt;&lt; 10)) | (0b01 &lt;&lt; 10));
+
+        loop {
+            write_volatile(GPIOA_BSRR, 1 &lt;&lt; 5); // 置高：点亮
+            delay(1_000_000);
+            write_volatile(GPIOA_BSRR, 1 &lt;&lt; (5 + 16)); // 置低：熄灭
+            delay(1_000_000);
+        }
+    }
+}
+
+#[panic_handler]
+fn panic(_info: &amp;PanicInfo) -&gt; ! {
+    loop {
+        core::hint::spin_loop();
+    }
+}</code></pre>
+<p>交叉编译到 Cortex-M4F，得到目标文件：</p>
+<pre><code class="language-bash">rustup target add thumbv7em-none-eabihf
+rustc --target thumbv7em-none-eabihf -C panic=abort --emit=obj -o blink.o blink.rs
+</code></pre>
+<p>几个必须理解的细节：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>细节</th><th>为什么必须这样</th></tr>
+</thead>
+<tbody>
+<tr><td><code>#![no_std]</code></td><td>裸机没有操作系统，没有 <code>std</code>（没有文件、线程、堆）</td></tr>
+<tr><td><code>#![no_main]</code></td><td>启动流程由芯片的复位向量与启动代码接管，不是 <code>std</code> 的 <code>main</code></td></tr>
+<tr><td><code>#[panic_handler]</code></td><td><code>no_std</code> 下必须自己定义 panic 行为（通常死死机或复位）</td></tr>
+<tr><td><code>read_volatile</code> / <code>write_volatile</code></td><td>寄存器值可能被硬件改变（或被硬件读到），编译器不允许把它优化掉</td></tr>
+<tr><td><code>unsafe</code></td><td>解引用裸指针本身就是不安全操作；这部分应当尽量局限在 PAC/HAL 层</td></tr>
+<tr><td><code>-C panic=abort</code></td><td>不展开栈（裸机通常没有栈展开的运行时支持）</td></tr>
+<tr><td>链接脚本（<code>memory.x</code>）</td><td>告诉链接器 Flash 与 RAM 的地址范围，把代码和数据放到正确位置</td></tr>
+<tr><td>烧录与调试</td><td>用 <code>probe-rs</code>/<code>cargo-embed</code>（基于 SWD/JTAG）代替 OpenOCD，且自带 <code>defmt</code> 日志</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>真实项目不要直接写这种魔数地址：用 <code>svd2rust</code> 从厂家提供的 SVD 文件生成类型安全的 PAC，或用 <code>embassy</code>/<code>RTIC</code> 这类框架，既保留零成本，又拿回类型检查与并发安全。</p>
+</blockquote>
+<h3 id="105-芯片设计侧的-rust"><a class="header" href="#105-芯片设计侧的-rust">10.5 芯片设计侧的 Rust</a></h3>
+<p>Rust 正在从“写固件“渗透到“造芯片“的工具链里：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方向</th><th>项目</th></tr>
+</thead>
+<tbody>
+<tr><td>硬件描述语言工具链</td><td><a href="https://veryl-lang.org/">Veryl</a>（用 Rust 实现的现代 HDL 工具链）、<a href="https://github.com/kraigher/rust_hdl">rust_hdl</a>（VHDL 解析器与语言服务器）</td></tr>
+<tr><td>硅根信任与量产工具</td><td>OpenTitan 的宿主端工具库（如 <code>opentitanlib</code>）用 Rust 编写</td></tr>
+<tr><td>RISC-V 工具与模拟</td><td><code>riscv</code>、<code>riscv-rt</code> 等 crate；可用于指令编解码、模拟器与固件开发</td></tr>
+<tr><td>Σ 部安全与功能安全</td><td>Tock OS（面向嵌入式的安全操作系统，见第六十二“操作系统“）</td></tr>
+<tr><td>测试/验证加速</td><td>用 Rust 写测试平台、协议模拟器与固件回归测试</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>一句话总结芯片与软件的关系：<strong>芯片是软件的地基，软件是芯片的价值实现</strong>。同一个算法，写成 C 还是 Rust、访存是连续还是随机、能否搞成 SIMD/多核，性能可能差出十倍；而这十倍往往不是算法的事，是“知不知道下面那块硅是怎么工作的“的事。懂一点芯片，就不会再让缓存行白白报废。</p>
+</blockquote>
+<hr>
+<h2 id="十一总结与练习"><a class="header" href="#十一总结与练习">十一、总结与练习</a></h2>
+<h3 id="本章小结"><a class="header" href="#本章小结">本章小结</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>知识点</th><th>要点</th></tr>
+</thead>
+<tbody>
+<tr><td>原料与制造</td><td>沙子 → 电子级硅 → 单晶锭 → 晶圆（300 mm）→ die → 封装</td></tr>
+<tr><td>晶体管</td><td>MOSFET 是电压控制的开关，CMOS 稳态几乎不耗电</td></tr>
+<tr><td>摩尔定律</td><td>密度增长放缓；登纳德缩放失效 + 频率墙 → 多核与专用化</td></tr>
+<tr><td>制造流程</td><td>氧化/沉积 → 光刻 → 刻蚀 → 掺杂 → CMP，反复上百次；EUV 13.5 nm 是当前关键</td></tr>
+<tr><td>制程节点</td><td>3 nm/5 nm 是代数名称而非尺寸；结构从平面 → FinFET → GAA</td></tr>
+<tr><td>芯片分类</td><td>CPU/GPU/NPU/DSP/FPGA/ASIC/MCU/SoC；通用性与能效相互矛盾</td></tr>
+<tr><td>存储层次</td><td>SRAM/DRAM/NAND/HBM；局部性原理 + 64 字节缓存行；L1≈1 ns，主存≈100 ns</td></tr>
+<tr><td>设计流程</td><td>RTL → 仿真验证 → 综合 → 布局布线 → 签核 → 流片；EDA 三巨头</td></tr>
+<tr><td>商业模式</td><td>IDM / Fabless / Foundry / OSAT / EDA+IP；IP 复用是现代设计基石</td></tr>
+<tr><td>ISA</td><td>架构（兼容性）与微架构（性能）分离；x86 / ARM / RISC-V 三大阵营</td></tr>
+<tr><td>性能模型</td><td>$T = IC \times CPI / f$；Amdahl 定律限制并行收益</td></tr>
+<tr><td>芯片安全</td><td>Spectre/Meltdown、Rowhammer、侧信道、硬件木马；安全启动/安全岛/密钥不出芯片</td></tr>
+<tr><td>Rust 与芯片</td><td><code>no_std</code>、PAC/HAL 抽象、<code>volatile</code> 寄存器、<code>probe-rs</code>、<code>defmt</code>、<code>embassy</code>/<code>RTIC</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
+<ol>
+<li><strong>位域驱动</strong>：为某个真实传感器（如加速度计）写一个寄存器映射模块，把“读 XYZ 轴数据“封装成 <code>read_accel() -&gt; (f32, f32, f32)</code>，并用 12/16 位补码处理符号。</li>
+<li><strong>验证 CRC 实现</strong>：用第 10.2 节的代码算出 <code>123456789</code> 的 CRC-32，确认结果是 <code>0xCBF43926</code>；再试着改成 CRC-16/CCITT，用于串口协议。</li>
+<li><strong>画出你机器上的延迟阶梯</strong>：把第 6.2 节的指针追逐程序改成多线程、多步长版本，找出你机器 L1/L2/L3 的实际容量（观察延迟突变的拐点）。</li>
+<li><strong>伪共享实验</strong>：两个线程各写一个变量，分别放在“同一缓存行相邻位置“与“间隔 64 字节“两种布局下，比较总耗时。</li>
+<li><strong>交叉编译一个 <code>no_std</code> 程序</strong>：为 <code>thumbv7em-none-eabihf</code> 或 <code>riscv32imac-unknown-none-elf</code> 编译第 10.4 节的代码，再用 <code>probe-rs</code> 或模拟器（如 QEMU）跑起来。</li>
+<li><strong>读懂一张数据手册</strong>：任选一颗 MCU，找到时钟树、GPIO 寄存器基地址与位定义，手算出“把 PA5 设成输出并拉高“需要对哪几个地址写什么值。</li>
+<li><strong>算一笔成本账</strong>：用第一节的两个公式（$N_{\text{die}}$ 与 $Y = e^{-AD}$），估算一个 300 mm 晶圆上、面积 100 mm²、缺陷密度 0.1 个/cm² 的芯片的良品数量与单位成本。</li>
+<li><strong>安全思考</strong>：查一下 Spectre 的公开资料，回答两个问题：它利用的是芯片的哪个微架构特性？为什么“修改软件“很难彻底修好它？</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_69.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_71.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_69.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_71.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

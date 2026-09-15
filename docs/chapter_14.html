@@ -49,10 +49,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-f08b2010.js"></script>
+        <script src="toc-545e538a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -217,6 +217,37 @@ fn main() {
 <p>$$ (a + b)\mod n = ((a\mod n) + (b\mod n)) \mod n $$
 $$ (a - b)\mod n = ((a\mod n) - (b\mod n)) \mod n $$
 $$ (a * b)\mod n = ((a\mod n) * (b\mod n)) \mod n $$</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let a: i64 = 12345;
+    let b: i64 = 6789;
+    let n: i64 = 97;
+
+    // Rust 的 % 是“余数”（可能为负），要得到真正的“模”需用 rem_euclid，
+    // 否则当中间结果为负时上述性质不严格成立。
+    assert_eq!((a + b).rem_euclid(n), (a.rem_euclid(n) + b.rem_euclid(n)).rem_euclid(n));
+    assert_eq!((a - b).rem_euclid(n), (a.rem_euclid(n) - b.rem_euclid(n)).rem_euclid(n));
+    assert_eq!((a * b).rem_euclid(n), (a.rem_euclid(n) * b.rem_euclid(n)).rem_euclid(n));
+
+    println!("(a+b) mod n = {}", (a + b).rem_euclid(n));
+    println!("(a-b) mod n = {}", (a - b).rem_euclid(n));
+    println!("(a*b) mod n = {}", (a * b).rem_euclid(n));
+    println!("模运算三条性质均已验证 ✅");
+}</code></pre>
+<h2 id="整数溢出处理"><a class="header" href="#整数溢出处理">整数溢出处理</a></h2>
+<p>当运算结果超出类型范围时，Rust 提供了四种显式的溢出处理方式（Debug 模式下直接算术溢出会 panic）：</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let a: u8 = 250;
+    let b: u8 = 10;
+
+    // 1. checked_*：溢出返回 None
+    println!("checked_add:     {:?}", a.checked_add(b)); // None
+    // 2. wrapping_*：溢出回绕（模 2^n）
+    println!("wrapping_add:    {}", a.wrapping_add(b));  // 4  (260 - 256)
+    // 3. saturating_*：溢出饱和到边界值
+    println!("saturating_add:  {}", a.saturating_add(b)); // 255
+    // 4. overflowing_*：返回（结果, 是否溢出）
+    println!("overflowing_add: {:?}", a.overflowing_add(b)); // (4, true)
+}</code></pre>
 <h2 id="三角函数反三角函数"><a class="header" href="#三角函数反三角函数">三角函数，反三角函数</a></h2>
 <pre class="playground"><code class="language-rust edition2024">use std::f64::consts::PI;
 

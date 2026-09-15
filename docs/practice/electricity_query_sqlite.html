@@ -267,6 +267,48 @@
         .loading-text { font-size: 15px; color: #666; }
         .loading-sub { font-size: 13px; color: #999; }
 
+        /* ===== 费用公示 ===== */
+        .notice-hint { font-size: 12px; color: #999; margin-top: 12px; line-height: 1.6; }
+        .notice-hint code {
+            background: #eef3fb; color: #1a6fc4; padding: 1px 6px;
+            border-radius: 4px; font-size: 12px;
+        }
+        .notice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        .notice-item {
+            border: 1px solid #e0e8f0;
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            background: #fff;
+            transition: all 0.2s;
+        }
+        .notice-item:hover {
+            border-color: #1a6fc4;
+            box-shadow: 0 4px 14px rgba(26,111,196,0.12);
+            transform: translateY(-2px);
+        }
+        .notice-icon { font-size: 34px; line-height: 1; flex-shrink: 0; }
+        .notice-body { flex: 1; min-width: 0; }
+        .notice-title { font-size: 15px; font-weight: 600; color: #333; margin-bottom: 8px; word-break: break-all; }
+        .notice-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+        .notice-cat { font-size: 12px; padding: 2px 10px; border-radius: 12px; font-weight: 600; }
+        .notice-date { font-size: 12px; color: #999; }
+        .notice-size { font-size: 12px; color: #bbb; }
+        .notice-download {
+            display: inline-flex; align-items: center; gap: 6px;
+            height: 32px; padding: 0 16px; border-radius: 6px;
+            background: linear-gradient(135deg, #1a6fc4, #0d4b8e);
+            color: #fff; text-decoration: none; font-size: 13px; font-weight: 600;
+            transition: opacity 0.2s;
+        }
+        .notice-download:hover { opacity: 0.88; }
+
         @media (max-width: 700px) {
             .main { padding: 12px; }
             .filter-row { gap: 10px; }
@@ -290,6 +332,8 @@
 <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('list')">&#128203; 电费明细查询</button>
     <button class="tab-btn" onclick="switchTab('chart')">&#128200; 累计费用图表</button>
+    <button class="tab-btn" onclick="switchTab('elevator')">&#128727; 电梯维护费</button>
+    <button class="tab-btn" onclick="switchTab('notice')">&#128196; 费用公示</button>
 </div>
 
 <div class="main">
@@ -457,6 +501,122 @@
             <div id="chartContainer" class="chart-container"></div>
         </div>
     </div>
+
+    <!-- ===== 费用公示面板 ===== -->
+    <div id="panel-notice" class="panel">
+        <div class="card">
+            <div class="card-title">费用公示文件</div>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>费用类别</label>
+                    <select id="noticeCategory" onchange="renderNotices()">
+                        <option value="">全部类别</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>关键字</label>
+                    <input type="text" id="noticeSearch" placeholder="按标题 / 年份搜索" oninput="renderNotices()" style="min-width:220px;">
+                </div>
+                <div class="filter-group">
+                    <label>&nbsp;</label>
+                    <div class="stat-item" style="padding:8px 16px;min-width:120px;">
+                        <span class="stat-label">公示文件</span>
+                        <span class="stat-value" id="noticeCount">-</span>
+                    </div>
+                </div>
+            </div>
+            <div class="notice-hint">&#128161; 公示文件请存放于本页面同级的 <code>notices/</code> 目录中；文件清单在脚本的 <code>NOTICE_FILES</code> 配置项中维护（含电费、卫生费、电梯费、水费等类别）。</div>
+        </div>
+
+        <div class="card">
+            <div id="noticeGrid" class="notice-grid"></div>
+            <div id="noticeEmpty" class="no-data" style="display:none;">暂无符合条件的公示文件</div>
+        </div>
+    </div>
+
+    <!-- ===== 电梯维护费面板 ===== -->
+    <div id="panel-elevator" class="panel">
+        <div class="card">
+            <div class="card-title">查询条件</div>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>开始日期</label>
+                    <input type="month" id="elevStart" value="2019-01">
+                </div>
+                <div class="filter-group">
+                    <label>结束日期</label>
+                    <input type="month" id="elevEnd" value="2024-12">
+                </div>
+                <div class="filter-group">
+                    <label>房号</label>
+                    <select id="elevRoom"><option value="">全部房号</option></select>
+                </div>
+                <div class="filter-group">
+                    <label>户主关键字</label>
+                    <input type="text" id="elevOwner" placeholder="按户主姓名搜索" style="min-width:150px;">
+                </div>
+                <div class="filter-group">
+                    <label>&nbsp;</label>
+                    <div style="display:flex;gap:8px;">
+                        <button class="btn btn-primary" onclick="elevSearch()">&#128269; 查询</button>
+                        <button class="btn btn-reset" onclick="elevReset()">&#8635; 重置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-label">缴费记录</span>
+                    <span class="stat-value" id="elevStatTotal">-</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">已交合计（元）</span>
+                    <span class="stat-value" id="elevStatPaid">-</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">涉及房号数</span>
+                    <span class="stat-value" id="elevStatRooms">-</span>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th onclick="elevSortBy('d')">日期 <span class="sort-icon" id="elev-sort-d">&#9660;</span></th>
+                            <th onclick="elevSortBy('r')">房号 <span class="sort-icon" id="elev-sort-r"></span></th>
+                            <th>户主</th>
+                            <th onclick="elevSortBy('a')">已交（元）<span class="sort-icon" id="elev-sort-a"></span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="elevTableBody">
+                        <tr><td colspan="4" class="no-data">正在加载数据库...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <div class="page-info" id="elevPageInfo"></div>
+                <div class="page-btns">
+                    <span style="font-size:13px;color:#888;">每页</span>
+                    <select class="page-size-select" id="elevPageSizeSelect" onchange="elevChangePageSize()">
+                        <option value="20">20</option>
+                        <option value="50" selected>50</option>
+                        <option value="100">100</option>
+                        <option value="200">200</option>
+                    </select>
+                    <span style="font-size:13px;color:#888;">条</span>
+                    <button class="page-btn" id="elevBtnFirst" onclick="elevGoPage(1)">&#171;</button>
+                    <button class="page-btn" id="elevBtnPrev" onclick="elevGoPage(elevCurPage-1)">&#8249;</button>
+                    <span id="elevPageNums"></span>
+                    <button class="page-btn" id="elevBtnNext" onclick="elevGoPage(elevCurPage+1)">&#8250;</button>
+                    <button class="page-btn" id="elevBtnLast" onclick="elevGoPage(elevTotalPages)">&#187;</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -481,8 +641,8 @@ async function initDatabase() {
             locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.12.0/${file}`
         });
 
-        // 下载数据库文件
-        const response = await fetch(DB_URL);
+        // 下载数据库文件（cache: 'reload' 强制从网络获取最新数据库，避免浏览器缓存旧文件导致 no such table）
+        const response = await fetch(DB_URL, { cache: 'reload' });
         if (!response.ok) {
             throw new Error(`无法加载数据库文件: ${response.status} ${response.statusText}`);
         }
@@ -506,11 +666,21 @@ async function initDatabase() {
             chartRoomSel.innerHTML += '<option value="' + r + '">' + r + '</option>';
         });
 
+        // 加载电梯维护费房号列表
+        const elevRoomResult = db.exec("SELECT DISTINCT room FROM elevator_records ORDER BY room");
+        const elevRoomSel = document.getElementById('elevRoom');
+        if (elevRoomResult.length > 0) {
+            elevRoomResult[0].values.forEach(function(row) {
+                elevRoomSel.innerHTML += '<option value="' + row[0] + '">' + row[0] + '</option>';
+            });
+        }
+
         // 隐藏加载界面
         document.getElementById('loadingOverlay').classList.add('hidden');
 
         // 执行初始查询
         doSearch();
+        elevSearch();
 
     } catch (err) {
         console.error('数据库初始化失败:', err);
@@ -715,11 +885,91 @@ function changePageSize() {
 
 // ==================== 标签切换 ====================
 function switchTab(tab) {
+    var tabs = ['list', 'chart', 'elevator', 'notice'];
     document.querySelectorAll('.tab-btn').forEach(function(b, i) {
-        b.classList.toggle('active', (i===0 && tab==='list') || (i===1 && tab==='chart'));
+        b.classList.toggle('active', tabs[i] === tab);
     });
     document.getElementById('panel-list').classList.toggle('active', tab === 'list');
     document.getElementById('panel-chart').classList.toggle('active', tab === 'chart');
+    document.getElementById('panel-elevator').classList.toggle('active', tab === 'elevator');
+    document.getElementById('panel-notice').classList.toggle('active', tab === 'notice');
+    if (tab === 'notice') renderNotices();
+}
+
+// ==================== 费用公示 ====================
+const NOTICE_DIR = 'notices/';   // 公示文件存放目录（与本 HTML 同级）
+// 公示文件清单：category 类别 / title 标题 / date 日期 / file 文件名 / type 类型(pdf/excel/word/image/zip) / size 可选大小
+const NOTICE_FILES = [
+    { category: '电费',     title: '2024年度公共用电费用分摊公示', date: '2025-01-10', file: '2024年度公共用电费用分摊公示.pdf',   type: 'pdf' },
+    { category: '电费',     title: '2023年度公共用电费用分摊公示', date: '2024-01-12', file: '2023年度公共用电费用分摊公示.pdf',   type: 'pdf' },
+    { category: '卫生费',   title: '2024年度卫生保洁费收支公示',   date: '2025-01-10', file: '2024年度卫生保洁费收支公示.xlsx',   type: 'excel' },
+    { category: '卫生费',   title: '2023年度卫生保洁费收支公示',   date: '2024-01-12', file: '2023年度卫生保洁费收支公示.xlsx',   type: 'excel' },
+    { category: '电梯费',   title: '2024年度电梯维护费用公示',     date: '2025-01-10', file: '2024年度电梯维护费用公示.pdf',     type: 'pdf' },
+    { category: '电梯费',   title: '电梯年检报告（2024）',         date: '2024-11-20', file: '电梯年检报告2024.pdf',            type: 'pdf' },
+    { category: '水费',     title: '2024年度公共用水费用公示',     date: '2025-01-10', file: '2024年度公共用水费用公示.xlsx',     type: 'excel' },
+    { category: '公共维修', title: '公共设施维修基金使用公示（2024）', date: '2024-12-31', file: '公共设施维修基金使用公示2024.pdf', type: 'pdf' },
+    { category: '其他',     title: '物业费用综合收支明细（2024）',  date: '2025-01-10', file: '物业费用综合收支明细2024.xlsx',    type: 'excel' },
+    { category: '电费',     title: '2026.6月份电费公示.xls', date: '2026-07-12', file: '2026.6月份电费公示.xls',   type: 'excel' },
+    { category: '电费',     title: '2026.7月份电费公示.xls', date: '2026-08-12', file: '2026.7月份电费公示.xls',   type: 'excel' },
+    { category: '公共维修', title: '2026.7月份水泵压力变送仪器仪表配件费320元', date: '2026-08-01', file: '2026.7月份水泵压力变送仪器仪表配件费320元.xls', type: 'excel' },
+
+];
+
+const NOTICE_TYPE_ICON = { pdf: '\u{1F4C4}', excel: '\u{1F4CA}', word: '\u{1F4DD}', image: '\u{1F5BC}\u{FE0F}', zip: '\u{1F5DC}\u{FE0F}' };
+const NOTICE_CAT_COLOR = { '电费': '#e85d04', '卫生费': '#2a9d8f', '电梯费': '#5c6bc0', '水费': '#1a6fc4', '公共维修': '#9c27b0', '其他': '#888' };
+
+function hexToBg(hex) {
+    var r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+    return 'rgba(' + r + ',' + g + ',' + b + ',0.12)';
+}
+
+function initNotices() {
+    var sel = document.getElementById('noticeCategory');
+    var cats = [];
+    NOTICE_FILES.forEach(function(f) { if (cats.indexOf(f.category) < 0) cats.push(f.category); });
+    cats.forEach(function(c) { sel.innerHTML += '<option value="' + c + '">' + c + '</option>'; });
+}
+
+function renderNotices() {
+    var cat = document.getElementById('noticeCategory').value;
+    var kw = document.getElementById('noticeSearch').value.trim().toLowerCase();
+    var grid = document.getElementById('noticeGrid');
+    var empty = document.getElementById('noticeEmpty');
+
+    var list = NOTICE_FILES.filter(function(f) {
+        if (cat && f.category !== cat) return false;
+        if (kw && (f.title + ' ' + f.category + ' ' + f.date).toLowerCase().indexOf(kw) < 0) return false;
+        return true;
+    });
+    list.sort(function(a, b) { return a.date < b.date ? 1 : (a.date > b.date ? -1 : 0); });
+
+    document.getElementById('noticeCount').textContent = list.length + ' 个';
+
+    if (list.length === 0) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+    }
+    empty.style.display = 'none';
+
+    grid.innerHTML = list.map(function(f) {
+        var icon = NOTICE_TYPE_ICON[f.type] || '\u{1F4C1}';
+        var color = NOTICE_CAT_COLOR[f.category] || '#888';
+        var href = NOTICE_DIR + encodeURIComponent(f.file);
+        var sizeStr = f.size ? '<span class="notice-size">' + f.size + '</span>' : '';
+        return '<div class="notice-item">'
+            + '<div class="notice-icon">' + icon + '</div>'
+            + '<div class="notice-body">'
+            + '<div class="notice-title">' + f.title + '</div>'
+            + '<div class="notice-meta">'
+            + '<span class="notice-cat" style="background:' + hexToBg(color) + ';color:' + color + '">' + f.category + '</span>'
+            + '<span class="notice-date">&#128197; ' + f.date + '</span>'
+            + sizeStr
+            + '</div>'
+            + '<a class="notice-download" href="' + href + '" download="' + f.file + '">&#11015; 下载</a>'
+            + '</div>'
+            + '</div>';
+    }).join('');
 }
 
 // ==================== 图表功能 ====================
@@ -913,7 +1163,156 @@ function drawChart() {
     chartInstance.resize();
 }
 
+// ==================== 电梯维护费查询 ====================
+let elevData = [];
+let elevSortField = 'd';
+let elevSortDir = -1;
+let elevCurPage = 1;
+let elevPageSize = 50;
+let elevTotalPages = 1;
+
+function elevSearch() {
+    if (!db) return;
+    var startD = document.getElementById('elevStart').value;
+    var endD = document.getElementById('elevEnd').value;
+    var room = document.getElementById('elevRoom').value;
+    var owner = document.getElementById('elevOwner').value.trim();
+
+    var sql = "SELECT record_date as d, room as r, owner as o, paid as a FROM elevator_records WHERE 1=1";
+    var params = [];
+    if (startD) { sql += " AND record_date >= ?"; params.push(startD); }
+    if (endD)   { sql += " AND record_date <= ?"; params.push(endD); }
+    if (room)   { sql += " AND room = ?"; params.push(room); }
+    if (owner)  { sql += " AND owner LIKE ?"; params.push('%' + owner + '%'); }
+
+    var stmt = db.prepare(sql);
+    stmt.bind(params);
+    elevData = [];
+    while (stmt.step()) {
+        var row = stmt.getAsObject();
+        elevData.push({
+            d: row.d, r: row.r, o: row.o,
+            a: row.a !== null && row.a !== undefined ? parseFloat(row.a) : null
+        });
+    }
+    stmt.free();
+
+    elevApplySort();
+    elevCurPage = 1;
+    elevRenderTable();
+    elevRenderStats();
+}
+
+function elevReset() {
+    document.getElementById('elevStart').value = '2019-01';
+    document.getElementById('elevEnd').value = '2024-12';
+    document.getElementById('elevRoom').value = '';
+    document.getElementById('elevOwner').value = '';
+    elevSearch();
+}
+
+function elevSortBy(field) {
+    if (elevSortField === field) { elevSortDir *= -1; }
+    else { elevSortField = field; elevSortDir = field === 'd' ? -1 : 1; }
+    ['d', 'r', 'a'].forEach(function(f) {
+        var el = document.getElementById('elev-sort-' + f);
+        if (el) { el.innerHTML = ''; el.style.opacity = '0.3'; }
+    });
+    var icon = document.getElementById('elev-sort-' + field);
+    if (icon) { icon.innerHTML = elevSortDir === 1 ? '&#9650;' : '&#9660;'; icon.style.opacity = '1'; }
+    elevApplySort();
+    elevCurPage = 1;
+    elevRenderTable();
+}
+
+function elevApplySort() {
+    var sf = elevSortField, sd = elevSortDir;
+    elevData.sort(function(a, b) {
+        var va = a[sf], vb = b[sf];
+        if (va === null || va === undefined) va = sd > 0 ? Infinity : -Infinity;
+        if (vb === null || vb === undefined) vb = sd > 0 ? Infinity : -Infinity;
+        if (typeof va === 'string') return sd * va.localeCompare(vb);
+        return sd * (va - vb);
+    });
+}
+
+function elevRenderStats() {
+    var total = elevData.length;
+    var sumA = 0;
+    var roomSet = new Set();
+    elevData.forEach(function(r) {
+        if (r.a !== null) sumA += r.a;
+        roomSet.add(r.r);
+    });
+    document.getElementById('elevStatTotal').textContent = total.toLocaleString() + ' 条';
+    document.getElementById('elevStatPaid').textContent = sumA.toFixed(2);
+    document.getElementById('elevStatRooms').textContent = roomSet.size + ' 户';
+}
+
+function elevRenderTable() {
+    elevPageSize = parseInt(document.getElementById('elevPageSizeSelect').value);
+    elevTotalPages = Math.max(1, Math.ceil(elevData.length / elevPageSize));
+    if (elevCurPage > elevTotalPages) elevCurPage = elevTotalPages;
+
+    var start = (elevCurPage - 1) * elevPageSize;
+    var pageData = elevData.slice(start, start + elevPageSize);
+    var tbody = document.getElementById('elevTableBody');
+
+    if (elevData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="no-data">暂无符合条件的数据</td></tr>';
+        document.getElementById('elevPageInfo').textContent = '';
+        document.getElementById('elevPageNums').innerHTML = '';
+        return;
+    }
+
+    var rows = pageData.map(function(r) {
+        return '<tr>'
+            + '<td>' + r.d + '</td>'
+            + '<td class="room">' + r.r + '</td>'
+            + '<td>' + (r.o ? r.o : '<span class="null-val">-</span>') + '</td>'
+            + '<td class="' + (r.a !== null ? 'paid' : 'null-val') + '">' + (r.a !== null ? r.a.toFixed(2) : '-') + '</td>'
+            + '</tr>';
+    });
+    tbody.innerHTML = rows.join('');
+
+    document.getElementById('elevPageInfo').textContent = '共 ' + elevData.length + ' 条，第 ' + elevCurPage + ' / ' + elevTotalPages + ' 页';
+
+    var pages = [];
+    if (elevTotalPages <= 7) {
+        for (var i = 1; i <= elevTotalPages; i++) pages.push(i);
+    } else {
+        pages = [1];
+        var lo = Math.max(2, elevCurPage - 2), hi = Math.min(elevTotalPages - 1, elevCurPage + 2);
+        if (lo > 2) pages.push('...');
+        for (var j = lo; j <= hi; j++) pages.push(j);
+        if (hi < elevTotalPages - 1) pages.push('...');
+        pages.push(elevTotalPages);
+    }
+    var nums = pages.map(function(p) {
+        if (p === '...') return '<span style="padding:0 4px;color:#aaa">&#8230;</span>';
+        return '<button class="page-btn' + (p === elevCurPage ? ' active' : '') + '" onclick="elevGoPage(' + p + ')">' + p + '</button>';
+    }).join('');
+    document.getElementById('elevPageNums').innerHTML = nums;
+    document.getElementById('elevBtnFirst').disabled = elevCurPage === 1;
+    document.getElementById('elevBtnPrev').disabled = elevCurPage === 1;
+    document.getElementById('elevBtnNext').disabled = elevCurPage === elevTotalPages;
+    document.getElementById('elevBtnLast').disabled = elevCurPage === elevTotalPages;
+}
+
+function elevGoPage(p) {
+    if (p < 1 || p > elevTotalPages || p === elevCurPage) return;
+    elevCurPage = p;
+    elevRenderTable();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function elevChangePageSize() {
+    elevCurPage = 1;
+    elevRenderTable();
+}
+
 // ==================== 启动应用 ====================
+initNotices();
 initDatabase();
 </script>
 </body>

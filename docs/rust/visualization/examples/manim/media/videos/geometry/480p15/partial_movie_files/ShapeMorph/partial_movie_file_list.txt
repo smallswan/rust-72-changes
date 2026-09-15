@@ -1,0 +1,10 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/geometry/480p15/partial_movie_files/ShapeMorph/1584795214_2297977634_223132457.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/geometry/480p15/partial_movie_files/ShapeMorph/4072820271_807188262_1288983424.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/geometry/480p15/partial_movie_files/ShapeMorph/4072820271_1763406198_27335724.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/geometry/480p15/partial_movie_files/ShapeMorph/4072820271_807188262_179378574.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/geometry/480p15/partial_movie_files/ShapeMorph/4072820271_4162136674_1040483262.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/geometry/480p15/partial_movie_files/ShapeMorph/4072820271_807188262_3585828329.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/geometry/480p15/partial_movie_files/ShapeMorph/4072820271_208300527_3217771911.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/geometry/480p15/partial_movie_files/ShapeMorph/4072820271_1478445520_4167118099.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/geometry/480p15/partial_movie_files/ShapeMorph/4072820271_1839128356_297425145.mp4'

@@ -49,10 +49,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-f08b2010.js"></script>
+        <script src="toc-545e538a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -334,6 +334,7 @@
 <tr><th>工具</th><th>用途</th></tr>
 </thead>
 <tbody>
+<tr><td><a href="https://doc.rust-lang.org/cargo/">cargo</a></td><td>Rust 包管理器</td></tr>
 <tr><td><a href="https://nalgebra.rs/">nalgebra</a></td><td>线性代数库</td></tr>
 <tr><td><a href="https://github.com/plotters-rs/plotters">plotters</a></td><td>数据绘图库</td></tr>
 <tr><td><a href="https://github.com/apache/arrow">Apache Arrow</a></td><td>内存列式数据格式</td></tr>
@@ -346,6 +347,8 @@
 <tr><td><a href="https://github.com/rustls/rustls">Rustls</a></td><td>TLS 库</td></tr>
 <tr><td><a href="https://www.dimforge.com/">dimforge</a></td><td>科学计算库集合</td></tr>
 <tr><td><a href="https://github.com/Hmbown/CodeWhale">CodeWhale</a></td><td>Rust 在线学习平台</td></tr>
+<tr><td><a href="https://ffmpeg.org/">ffmpeg</a></td><td>多媒体处理库</td></tr>
+<tr><td><a href="https://github.com/zmwangx/rust-ffmpeg">ffmpeg-next</a></td><td>多媒体处理库的 Rust 绑定</td></tr>
 </tbody>
 </table>
 </div>
@@ -381,7 +384,179 @@
 </div>
 <hr>
 <h2 id="八学习资源"><a class="header" href="#八学习资源">八、学习资源</a></h2>
-<h3 id="视频教程"><a class="header" href="#视频教程">视频教程</a></h3>
+<h3 id="81-经典书籍"><a class="header" href="#81-经典书籍">8.1 经典书籍</a></h3>
+<h4 id="计算机科学经典"><a class="header" href="#计算机科学经典">计算机科学经典</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>书名</th><th>作者</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>《计算机程序设计艺术》(TAOCP)</td><td>Donald Knuth</td><td>算法圣经，共四卷</td></tr>
+<tr><td>《算法导论》(CLRS)</td><td>Cormen 等</td><td>最经典的算法教材</td></tr>
+<tr><td>《深入理解计算机系统》(CSAPP)</td><td>Bryant &amp; O’Hallaron</td><td>程序员视角理解计算机</td></tr>
+<tr><td>《计算机程序的构造和解释》(SICP)</td><td>Abelson &amp; Sussman</td><td>MIT 经典，Scheme 语言</td></tr>
+<tr><td>《代码大全》</td><td>Steve McConnell</td><td>软件构建实践百科</td></tr>
+<tr><td>《程序员修炼之道》</td><td>Hunt &amp; Thomas</td><td>务实程序员指南</td></tr>
+<tr><td>《设计模式》</td><td>GoF 四人组</td><td>23 种经典设计模式</td></tr>
+<tr><td>《重构：改善既有代码的设计》</td><td>Martin Fowler</td><td>代码重构方法论</td></tr>
+<tr><td>《编译原理》（龙书）</td><td>Aho 等</td><td>编译器构造经典</td></tr>
+<tr><td>《计算机组成与设计》</td><td>Patterson &amp; Hennessy</td><td>硬件与软件的接口</td></tr>
+<tr><td>《操作系统概念》（恐龙书）</td><td>Silberschatz 等</td><td>操作系统教材</td></tr>
+<tr><td>《计算机网络：自顶向下方法》</td><td>Kurose &amp; Ross</td><td>网络经典教材</td></tr>
+<tr><td>《数据库系统概念》</td><td>Silberschatz 等</td><td>数据库教材</td></tr>
+<tr><td>《人工智能：一种现代方法》(AIMA)</td><td>Russell &amp; Norvig</td><td>AI 领域权威教材</td></tr>
+<tr><td>《深度学习》（花书）</td><td>Goodfellow 等</td><td>深度学习圣经</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="rust-编程"><a class="header" href="#rust-编程">Rust 编程</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>书名</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://doc.rust-lang.org/book/">《The Rust Programming Language》</a></td><td>Rust 官方教程（Klabnik &amp; Nichols）</td></tr>
+<tr><td><a href="https://doc.rust-lang.org/rust-by-example/">《Rust By Example》</a></td><td>通过示例学 Rust</td></tr>
+<tr><td><a href="https://github.com/rust-lang/rustlings">《Rustlings》</a></td><td>交互式 Rust 练习</td></tr>
+<tr><td><a href="https://www.oreilly.com/library/view/programming-rust-2nd/9781492052586/">《Programming Rust》</a></td><td>O’Reilly 深入版（Blandy &amp; Orendorff）</td></tr>
+<tr><td><a href="https://www.manning.com/books/rust-in-action">《Rust in Action》</a></td><td>系统编程实战（McNamara）</td></tr>
+<tr><td><a href="https://www.zero2prod.com/">《Zero to Production in Rust》</a></td><td>后端工程实战（Palmiro）</td></tr>
+<tr><td><a href="https://rust-for-rustaceans.com/">《Rust for Rustaceans》</a></td><td>进阶 Rust（Gjengset）</td></tr>
+<tr><td><a href="https://www.oreilly.com/library/view/command-line-rust/9781098109424/">《Command-Line Rust》</a></td><td>CLI 工具开发</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="算法与数据结构"><a class="header" href="#算法与数据结构">算法与数据结构</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>书名</th><th>作者</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>《算法》(Algorithms)</td><td>Sedgewick</td><td>配合可视化，Java 版</td></tr>
+<tr><td>《算法图解》</td><td>Bhargava</td><td>入门友好，插图丰富</td></tr>
+<tr><td>《剑指 Offer》</td><td>何海涛</td><td>面试算法经典</td></tr>
+<tr><td>《编程珠玑》</td><td>Bentley</td><td>算法思维训练</td></tr>
+<tr><td>《算法竞赛入门经典》</td><td>刘汝佳</td><td>竞赛算法（紫书）</td></tr>
+<tr><td>《数据结构与算法分析》</td><td>Weiss</td><td>C/C++/Java 多版本</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="数学与密码学"><a class="header" href="#数学与密码学">数学与密码学</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>书名</th><th>作者</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>《具体数学》</td><td>Knuth 等</td><td>计算机数学基础</td></tr>
+<tr><td>《离散数学及其应用》</td><td>Rosen</td><td>离散数学经典教材</td></tr>
+<tr><td>《线性代数应该这样学》</td><td>Axler</td><td>抽象线性代数</td></tr>
+<tr><td>《概率论与数理统计》</td><td>陈希孺</td><td>概率统计</td></tr>
+<tr><td>《数论概论》</td><td>Silverman</td><td>数论入门</td></tr>
+<tr><td>《密码学原理与实践》</td><td>Stinson</td><td>密码学教材</td></tr>
+<tr><td>《应用密码学》</td><td>Schneier</td><td>密码学百科全书</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="82-在线教程与课程"><a class="header" href="#82-在线教程与课程">8.2 在线教程与课程</a></h3>
+<h4 id="公开课与-mooc"><a class="header" href="#公开课与-mooc">公开课与 MOOC</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>资源</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://ocw.mit.edu/">MIT OpenCourseWare</a></td><td>MIT 免费课程（6.006 算法、6.828 OS 等）</td></tr>
+<tr><td><a href="https://cs50.harvard.edu/">CS50</a></td><td>哈佛计算机科学入门课</td></tr>
+<tr><td><a href="https://www.coursera.org/">Coursera</a></td><td>斯坦福、密歇根等名校课程</td></tr>
+<tr><td><a href="https://www.edx.org/">edX</a></td><td>MIT/哈佛/伯克利在线课程</td></tr>
+<tr><td><a href="https://online.stanford.edu/">Stanford Online</a></td><td>斯坦福在线课程</td></tr>
+<tr><td><a href="https://www.bilibili.com/">B站学习区</a></td><td>大量中文字幕翻译课程</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="交互式学习"><a class="header" href="#交互式学习">交互式学习</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>资源</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://github.com/rust-lang/rustlings">Rustlings</a></td><td>Rust 交互式练习</td></tr>
+<tr><td><a href="https://practice.rs/">Rust By Practice</a></td><td>Rust 实战练习</td></tr>
+<tr><td><a href="https://leetcode.cn/">LeetCode</a></td><td>算法刷题平台</td></tr>
+<tr><td><a href="https://exercism.org/">Exercism</a></td><td>多语言编程练习</td></tr>
+<tr><td><a href="https://www.codecademy.com/">Codecademy</a></td><td>交互式编程学习</td></tr>
+<tr><td><a href="https://www.freecodecamp.org/">freeCodeCamp</a></td><td>免费全栈开发课程</td></tr>
+<tr><td><a href="https://www.khanacademy.org/">Khan Academy</a></td><td>数学与计算机科学免费课程</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="83-算法与竞赛平台"><a class="header" href="#83-算法与竞赛平台">8.3 算法与竞赛平台</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>平台</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://leetcode.cn/">LeetCode</a></td><td>最流行的算法面试刷题平台</td></tr>
+<tr><td><a href="https://leetcode.cn/">力扣</a></td><td>LeetCode 中文站</td></tr>
+<tr><td><a href="https://codeforces.com/">Codeforces</a></td><td>竞技编程竞赛平台</td></tr>
+<tr><td><a href="https://atcoder.jp/">AtCoder</a></td><td>日本竞赛平台，题目质量高</td></tr>
+<tr><td><a href="https://www.luogu.com.cn/">洛谷</a></td><td>国内最大算法竞赛社区</td></tr>
+<tr><td><a href="https://www.nowcoder.com/">牛客网</a></td><td>面试笔试 + 竞赛</td></tr>
+<tr><td><a href="https://projecteuler.net/">Project Euler</a></td><td>数学+编程挑战（600+ 题）</td></tr>
+<tr><td><a href="https://www.hackerrank.com/">HackerRank</a></td><td>企业招聘+算法练习</td></tr>
+<tr><td><a href="https://www.spoj.com/">SPOJ</a></td><td>经典在线评测系统</td></tr>
+<tr><td><a href="https://onlinejudge.org/">UVa Online Judge</a></td><td>紫书配套题目</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="84-开发者文档与手册"><a class="header" href="#84-开发者文档与手册">8.4 开发者文档与手册</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>资源</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://doc.rust-lang.org/">Rust 官方文档</a></td><td>标准库、Book、Reference</td></tr>
+<tr><td><a href="https://doc.rust-lang.org/std/">Rust std 文档</a></td><td>标准库 API 文档</td></tr>
+<tr><td><a href="https://doc.rust-lang.org/rust-by-example/">Rust by Example</a></td><td>示例驱动学习</td></tr>
+<tr><td><a href="https://doc.rust-lang.org/cargo/">Cargo Book</a></td><td>Cargo 包管理器手册</td></tr>
+<tr><td><a href="https://rust-lang-nursery.github.io/rust-cookbook/">Rust Cookbook</a></td><td>Rust 编程示例集</td></tr>
+<tr><td><a href="https://developer.mozilla.org/zh-CN/">MDN Web Docs</a></td><td>Web 开发权威文档</td></tr>
+<tr><td><a href="https://devdocs.io/">DevDocs</a></td><td>聚合多个 API 文档</td></tr>
+<tr><td><a href="https://cheatography.com/"> cheatsheets </a></td><td>各类速查表</td></tr>
+<tr><td><a href="https://overapi.com/">OverAPI</a></td><td>编程语言速查表集合</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="85-开发者社区与资讯"><a class="header" href="#85-开发者社区与资讯">8.5 开发者社区与资讯</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>社区</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://github.com/">GitHub</a></td><td>全球最大代码托管与协作平台</td></tr>
+<tr><td><a href="https://stackoverflow.com/">Stack Overflow</a></td><td>程序员问答社区</td></tr>
+<tr><td><a href="https://www.reddit.com/r/rust/">Reddit r/rust</a></td><td>Rust 社区讨论</td></tr>
+<tr><td><a href="https://www.reddit.com/r/programming/">Reddit r/programming</a></td><td>编程综合讨论</td></tr>
+<tr><td><a href="https://news.ycombinator.com/">Hacker News</a></td><td>技术新闻与讨论</td></tr>
+<tr><td><a href="https://www.reddit.com/r/cpp/">Reddit r/cpp</a></td><td>C++ 社区</td></tr>
+<tr><td><a href="https://users.rust-lang.org/">users.rust-lang.org</a></td><td>Rust 官方论坛</td></tr>
+<tr><td><a href="https://www.v2ex.com/">V2EX</a></td><td>国内开发者社区</td></tr>
+<tr><td><a href="https://juejin.cn/">掘金</a></td><td>中文技术社区</td></tr>
+<tr><td><a href="https://www.cnblogs.com/">博客园</a></td><td>中文技术博客</td></tr>
+<tr><td><a href="https://www.infoq.cn/">InfoQ</a></td><td>技术资讯与深度文章</td></tr>
+<tr><td><a href="https://this-week-in-rust.org/">This Week in Rust</a></td><td>Rust 每周资讯</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="86-视频教程"><a class="header" href="#86-视频教程">8.6 视频教程</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -391,11 +566,51 @@
 <tr><td><a href="https://www.3blue1brown.com/">3Blue1Brown 官网</a></td><td>数学可视化讲解</td></tr>
 <tr><td><a href="https://space.bilibili.com/88461692">3Blue1Brown B站</a></td><td>中文字幕版</td></tr>
 <tr><td><a href="https://space.bilibili.com/88461692/lists/1528931?type=series">微积分的本质</a></td><td>微积分可视化系列</td></tr>
-<tr><td><a href="https://rust-lang-nursery.github.io/rust-cookbook/">Rust Cookbook</a></td><td>Rust 编程示例</td></tr>
+<tr><td><a href="https://space.bilibili.com/88461692/lists/1528931?type=series">线性代数的本质</a></td><td>线性代数可视化系列</td></tr>
+<tr><td><a href="https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/">MIT 6.006 算法导论</a></td><td>Erik Demaine 教授主讲</td></tr>
+<tr><td><a href="https://www.youtube.com/playlist?list=PL8dPuuaLjXtPNZwz5_o_5uirJ8gQXnhEO">Crash Course Computer Science</a></td><td>计算机科学速成 40 集</td></tr>
+<tr><td><a href="https://www.youtube.com/@jonhoo">Jon Gjengset YouTube</a></td><td>Rust 深度直播</td></tr>
+<tr><td><a href="https://www.youtube.com/@letsgetrusty">Let’s Get Rusty</a></td><td>Rust 教程频道</td></tr>
 </tbody>
 </table>
 </div>
-<h3 id="交互式工具"><a class="header" href="#交互式工具">交互式工具</a></h3>
+<h3 id="87-技术博客与资讯"><a class="header" href="#87-技术博客与资讯">8.7 技术博客与资讯</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>资源</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://martinfowler.com/">Martin Fowler 博客</a></td><td>软件架构与重构大师</td></tr>
+<tr><td><a href="https://www.joelonsoftware.com/">Joel on Software</a></td><td>Stack Overflow 创始人博客</td></tr>
+<tr><td><a href="http://www.paulgraham.com/articles.html">Paul Graham 文集</a></td><td>YC 创始人，创业与编程</td></tr>
+<tr><td><a href="https://blog.pragmaticengineer.com/">The Pragmatic Engineer</a></td><td>工程实践深度文章</td></tr>
+<tr><td><a href="https://lobste.rs/">Lobsters</a></td><td>高质量技术链接聚合</td></tr>
+<tr><td><a href="https://daily.dev/">Daily.dev</a></td><td>开发者个性化技术资讯</td></tr>
+<tr><td><a href="https://www.ruanyifeng.com/blog/">阮一峰的网络日志</a></td><td>科技爱好者周刊</td></tr>
+<tr><td><a href="https://coolshell.cn/">酷壳 CoolShell</a></td><td>陈皓的技术博客</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="88-开源与协作平台"><a class="header" href="#88-开源与协作平台">8.8 开源与协作平台</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>平台</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://github.com/">GitHub</a></td><td>全球最大代码托管平台</td></tr>
+<tr><td><a href="https://gitlab.com/">GitLab</a></td><td>DevOps 一体化平台</td></tr>
+<tr><td><a href="https://gitee.com/">Gitee</a></td><td>国内代码托管平台</td></tr>
+<tr><td><a href="https://bitbucket.org/">Bitbucket</a></td><td>Atlassian 代码托管</td></tr>
+<tr><td><a href="https://codeberg.org/">Codeberg</a></td><td>非营利开源协作平台</td></tr>
+<tr><td><a href="https://crates.io/"> crates.io </a></td><td>Rust 包注册中心</td></tr>
+<tr><td><a href="https://docs.rs/">docs.rs</a></td><td>Rust crate 自动文档</td></tr>
+<tr><td><a href="https://lib.rs/">lib.rs</a></td><td>Rust crate 发现与推荐</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="89-交互式工具"><a class="header" href="#89-交互式工具">8.9 交互式工具</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -404,6 +619,26 @@
 <tbody>
 <tr><td><a href="./page/matrix_calculator.html">matrix_calculator</a></td><td>矩阵计算器</td></tr>
 <tr><td><a href="https://polypad.amplify.com/">Polypad</a></td><td>数学画布</td></tr>
+<tr><td><a href="https://play.rust-lang.org/">Rust Playground</a></td><td>在线运行 Rust 代码</td></tr>
+<tr><td><a href="https://godbolt.org/">Compiler Explorer</a></td><td>查看编译后的汇编代码</td></tr>
+<tr><td><a href="https://pythontutor.com/">Python Tutor</a></td><td>代码可视化执行（支持多语言）</td></tr>
+<tr><td>[Wolfram</td><td>Alpha](https://www.wolframalpha.com/)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="810-数据库"><a class="header" href="#810-数据库">8.10 数据库</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>资源</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://www.sqlite.org/">SQLite</a></td><td>嵌入式数据库</td></tr>
+<tr><td><a href="https://www.gaia-gis.it/fossil/libspatialite/index">SpatiaLite</a></td><td>地理空间数据支持</td></tr>
+<tr><td><a href="https://www.zetetic.net/sqlcipher/">SQLCipher</a></td><td>加密的 SQLite 数据库</td></tr>
+<tr><td><a href="https://www.postgresql.org/">PostgreSQL</a></td><td>功能强大的开源关系数据库</td></tr>
+<tr><td><a href="https://redis.io/">Redis</a></td><td>内存键值数据库</td></tr>
+<tr><td><a href="https://duckdb.org/">DuckDB</a></td><td>嵌入式分析型数据库</td></tr>
 </tbody>
 </table>
 </div>

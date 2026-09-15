@@ -1,0 +1,729 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第六十六 机器人 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-545e538a.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第六十六-机器人"><a class="header" href="#第六十六-机器人">第六十六 机器人</a></h1>
+<p>机器人（Robot）是能够感知环境、自主决策并执行物理动作的机器。从工厂流水线的机械臂到家庭扫地机器人，从手术机器人到正在崛起的人形机器人，机器人是人工智能与物理世界交互的载体，也是“具身智能“的核心形态。</p>
+<hr>
+<h2 id="一机器人概述"><a class="header" href="#一机器人概述">一、机器人概述</a></h2>
+<h3 id="11-机器人的定义"><a class="header" href="#11-机器人的定义">1.1 机器人的定义</a></h3>
+<p>根据国际标准化组织（ISO 8373），机器人是“具有一定程度的自主能力，可在其环境内运动以执行预期任务的执行机构“。</p>
+<p>一个完整的机器人系统由四大部件组成：</p>
+<pre><code>┌────────────┐   ┌────────────┐   ┌────────────┐   ┌────────────┐
+│  传感器     │ → │  控制器     │ → │  执行器     │ → │  工作环境   │
+│ (感知)     │   │ (决策)     │   │ (行动)     │   │ (物理世界) │
+└────────────┘   └────────────┘   └────────────┘   └────────────┘
+       ↑                                            │
+       └────────────── 反馈闭环 ────────────────────┘
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>部件</th><th>说明</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>传感器</strong></td><td>感知自身与环境状态</td><td>摄像头、激光雷达、IMU、编码器</td></tr>
+<tr><td><strong>控制器</strong></td><td>处理信息、做出决策</td><td>CPU/GPU、MCU、AI 芯片</td></tr>
+<tr><td><strong>执行器</strong></td><td>产生运动与力</td><td>电机、液压缸、气动装置</td></tr>
+<tr><td><strong>电源</strong></td><td>提供能量</td><td>电池、电源管理</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="12-机器人发展简史"><a class="header" href="#12-机器人发展简史">1.2 机器人发展简史</a></h3>
+<pre><code>1920  捷克作家恰佩克在戏剧中首次使用"Robot"一词
+1954  乔治·德沃尔申请第一项工业机器人专利
+1961  Unimate 在通用汽车工厂上岗，工业机器人元年
+1968  斯坦福研究所研制出第一台移动机器人 Shakey
+1973  第一台电动六轴机械臂（KUKA）问世
+1997  探路者号火星车；深蓝击败国际象棋世界冠军
+2002  iRobot 推出 Roomba，家用机器人普及
+2011  Watson 赢得《危险边缘》；Festo 仿生机器人兴起
+2013  波士顿动力 Atlas 人形机器人亮相
+2020s  人形机器人爆发：Optimus、Figure、宇树等
+</code></pre>
+<h3 id="13-机器人三定律阿西莫夫"><a class="header" href="#13-机器人三定律阿西莫夫">1.3 机器人三定律（阿西莫夫）</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>定律</th><th>内容</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>第一定律</strong></td><td>机器人不得伤害人类，或因不作为而让人类受到伤害</td></tr>
+<tr><td><strong>第二定律</strong></td><td>机器人必须服从人类命令，除非与第一定律冲突</td></tr>
+<tr><td><strong>第三定律</strong></td><td>机器人必须保护自身存在，除非与前两条冲突</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>三定律是科幻设定，但对今天的机器人安全设计仍有启发意义。</p>
+</blockquote>
+<hr>
+<h2 id="二机器人的分类"><a class="header" href="#二机器人的分类">二、机器人的分类</a></h2>
+<h3 id="21-按应用场景分类"><a class="header" href="#21-按应用场景分类">2.1 按应用场景分类</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型</th><th>说明</th><th>代表</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>工业机器人</strong></td><td>工厂中焊接、搬运、装配</td><td>机械臂（KUKA、ABB、发那科）</td></tr>
+<tr><td><strong>服务机器人</strong></td><td>服务人类生活</td><td>扫地机器人、送餐机器人</td></tr>
+<tr><td><strong>医疗机器人</strong></td><td>辅助手术、康复</td><td>达芬奇手术机器人</td></tr>
+<tr><td><strong>特种机器人</strong></td><td>危险环境作业</td><td>排爆、消防、水下机器人</td></tr>
+<tr><td><strong>物流机器人</strong></td><td>仓储分拣、配送</td><td>AGV、Kiva 机器人</td></tr>
+<tr><td><strong>农业机器人</strong></td><td>播种、采摘、喷洒</td><td>植保无人机、采摘机器人</td></tr>
+<tr><td><strong>人形机器人</strong></td><td>双足行走、拟人形态</td><td>Optimus、Atlas、宇树 H1</td></tr>
+<tr><td><strong>仿生机器人</strong></td><td>模仿生物形态</td><td>机器狗（Spot）、机器鱼、机器鸟</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="22-按运动方式分类"><a class="header" href="#22-按运动方式分类">2.2 按运动方式分类</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>运动方式</th><th>特点</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>轮式</strong></td><td>简单高效，适合平坦地形</td><td>扫地机器人、AGV</td></tr>
+<tr><td><strong>履带式</strong></td><td>越野能力强</td><td>排爆机器人</td></tr>
+<tr><td><strong>足式</strong></td><td>复杂地形适应强，控制难</td><td>四足机器狗、双足人形</td></tr>
+<tr><td><strong>飞行</strong></td><td>三维机动</td><td>无人机</td></tr>
+<tr><td><strong>水下</strong></td><td>防水耐压</td><td>深海探测机器人</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="23-人形机器人的优势与挑战"><a class="header" href="#23-人形机器人的优势与挑战">2.3 人形机器人的优势与挑战</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>优势</th><th>挑战</th></tr>
+</thead>
+<tbody>
+<tr><td>适配人类环境（楼梯、门把手、工具）</td><td>双足平衡控制困难</td></tr>
+<tr><td>自然融入人类社会（交互、情感）</td><td>成本高昂、量产困难</td></tr>
+<tr><td>直接复用人类工具与流程</td><td>续航、散热、可靠性不足</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="三机器人的核心技术"><a class="header" href="#三机器人的核心技术">三、机器人的核心技术</a></h2>
+<h3 id="31-感知perception"><a class="header" href="#31-感知perception">3.1 感知（Perception）</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>传感器</th><th>原理</th><th>用途</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>摄像头</strong></td><td>光学成像</td><td>视觉识别、SLAM</td></tr>
+<tr><td><strong>激光雷达（LiDAR）</strong></td><td>激光测距点云</td><td>高精度三维建图</td></tr>
+<tr><td><strong>毫米波雷达</strong></td><td>电磁波测距</td><td>远距离测速测距</td></tr>
+<tr><td><strong>IMU</strong>（惯性测量单元）</td><td>加速度计+陀螺仪</td><td>姿态估计</td></tr>
+<tr><td><strong>编码器</strong></td><td>电机角度测量</td><td>关节位置反馈</td></tr>
+<tr><td><strong>力/触觉传感器</strong></td><td>压力、力矩感知</td><td>抓取力控制</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="32-决策decision"><a class="header" href="#32-决策decision">3.2 决策（Decision）</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方法</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>状态机</strong></td><td>有限状态切换，简单可靠</td></tr>
+<tr><td><strong>行为树</strong></td><td>分层组织行为，可扩展</td></tr>
+<tr><td><strong>路径规划</strong></td><td>A*、Dijkstra、RRT 等算法</td></tr>
+<tr><td><strong>强化学习</strong></td><td>从奖励中学习策略（见第 39 章）</td></tr>
+<tr><td><strong>模仿学习</strong></td><td>从人类示范中学习（Teleop→学习）</td></tr>
+<tr><td><strong>大模型 + VLA</strong></td><td>视觉-语言-动作模型（如 RT-2）</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="33-控制control"><a class="header" href="#33-控制control">3.3 控制（Control）</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>控制方式</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>PID 控制</strong></td><td>比例-积分-微分，最经典的控制算法</td></tr>
+<tr><td><strong>MPC</strong>（模型预测控制）</td><td>滚动优化未来轨迹</td></tr>
+<tr><td><strong>LQR</strong></td><td>线性二次型最优控制</td></tr>
+<tr><td><strong>阻抗/导纳控制</strong></td><td>柔顺控制，适合人机交互</td></tr>
+<tr><td><strong>模型预测 + RL</strong></td><td>学习与优化结合</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// PID 控制器示意
+struct Pid {
+    kp: f64, ki: f64, kd: f64,
+    integral: f64,
+    prev_error: f64,
+}
+
+impl Pid {
+    fn update(&amp;mut self, error: f64, dt: f64) -&gt; f64 {
+        self.integral += error * dt;
+        let derivative = (error - self.prev_error) / dt;
+        self.prev_error = error;
+        self.kp * error + self.ki * self.integral + self.kd * derivative
+    }
+}
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="四运动学与动力学"><a class="header" href="#四运动学与动力学">四、运动学与动力学</a></h2>
+<h3 id="41-正运动学与逆运动学"><a class="header" href="#41-正运动学与逆运动学">4.1 正运动学与逆运动学</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>正运动学</strong></td><td>已知关节角度，求末端位置（唯一解）</td></tr>
+<tr><td><strong>逆运动学</strong></td><td>已知末端目标位置，求关节角度（可能多解/无解）</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code>         关节 2（肩）
+        ╱│
+    L1 ╱  │ 关节 3（肘）
+      ╱    ╱
+    ╱    ╱ L2
+  ╱    ╱
+关节1  末端执行器（手）
+</code></pre>
+<h3 id="42-自由度dof"><a class="header" href="#42-自由度dof">4.2 自由度（DOF）</a></h3>
+<p>机器人每个可独立运动的关节就是一个自由度。典型配置：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>机器人</th><th>自由度</th></tr>
+</thead>
+<tbody>
+<tr><td>平面两关节臂</td><td>2 DOF</td></tr>
+<tr><td>工业六轴机械臂</td><td>6 DOF</td></tr>
+<tr><td>四足机器狗</td><td>12 DOF</td></tr>
+<tr><td>人形机器人</td><td>30~50+ DOF</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>六自由度</strong>足以让末端到达三维空间中的任意位置和姿态，这也是工业机械臂多为六轴的原因。</p>
+</blockquote>
+<h3 id="43-位姿表示"><a class="header" href="#43-位姿表示">4.3 位姿表示</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>表示</th><th>说明</th><th>优点/缺点</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>旋转矩阵</strong></td><td>3×3 矩阵</td><td>直观，有冗余（9 个参数）</td></tr>
+<tr><td><strong>欧拉角</strong></td><td>绕轴依次旋转（roll/pitch/yaw）</td><td>直观，有万向节锁问题</td></tr>
+<tr><td><strong>四元数</strong></td><td>4 参数（w,x,y,z）</td><td>无奇点、插值平滑，广泛使用</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="五slam-与自主导航"><a class="header" href="#五slam-与自主导航">五、SLAM 与自主导航</a></h2>
+<h3 id="51-slam-是什么"><a class="header" href="#51-slam-是什么">5.1 SLAM 是什么</a></h3>
+<p>SLAM（Simultaneous Localization and Mapping，同步定位与建图）：机器人在未知环境中一边构建地图，一边确定自身位置。</p>
+<pre><code>传感器数据（激光/视觉）
+      │
+      ▼
+┌───────────────┐
+│ 前端：帧间匹配 │ ──&gt; 位姿估计
+└───────┬───────┘
+        │
+┌───────▼───────┐
+│ 后端：图优化   │ ──&gt; 全局一致轨迹
+└───────┬───────┘
+        │
+┌───────▼───────┐
+│ 建图：占据栅格 │ ──&gt; 环境地图
+└───────────────┘
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方案</th><th>传感器</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>激光 SLAM</strong></td><td>激光雷达</td><td>精度高，室外强光鲁棒</td></tr>
+<tr><td><strong>视觉 SLAM</strong></td><td>摄像头</td><td>成本低，纹理依赖</td></tr>
+<tr><td><strong>视觉-惯性</strong></td><td>摄像头+IMU</td><td>弱纹理场景互补（VINS）</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="52-自主导航流程"><a class="header" href="#52-自主导航流程">5.2 自主导航流程</a></h3>
+<pre><code>建图 → 定位 → 全局路径规划 → 局部避障 → 运动控制
+  │       │          │            │
+  │       │          │            └─ 实时躲避动态障碍
+  │       │          └─ A*/Dijkstra 找全局路径
+  │       └─ AMCL/粒子滤波 实时定位
+  └─ SLAM 构建环境地图
+</code></pre>
+<h3 id="53-路径规划算法"><a class="header" href="#53-路径规划算法">5.3 路径规划算法</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Dijkstra</strong></td><td>找最短路径，遍历多</td></tr>
+<tr><td><strong>A*</strong></td><td>启发式搜索，高效实用</td></tr>
+<tr><td><strong>RRT</strong></td><td>随机采样，适合高维空间</td></tr>
+<tr><td><strong>DWA</strong>（动态窗口法）</td><td>局部避障，考虑速度约束</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="六机器人操作系统ros"><a class="header" href="#六机器人操作系统ros">六、机器人操作系统（ROS）</a></h2>
+<h3 id="61-ros-是什么"><a class="header" href="#61-ros-是什么">6.1 ROS 是什么</a></h3>
+<p>ROS（Robot Operating System）不是真正的操作系统，而是一套面向机器人的<strong>分布式通信框架</strong>：节点（Node）通过话题（Topic）、服务（Service）、动作（Action）通信。</p>
+<pre><code>┌─────────┐ 发布 /odom  ┌─────────┐  订阅 /cmd_vel  ┌─────────┐
+│ 里程计节点 │ ──────────&gt; │ 主节点    │ ──────────────&gt; │ 运动控制 │
+└─────────┘  话题       └─────────┘                 └─────────┘
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>通信方式</th><th>模式</th><th>适用</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Topic（话题）</strong></td><td>发布/订阅，异步</td><td>高频传感器数据</td></tr>
+<tr><td><strong>Service（服务）</strong></td><td>请求/响应，同步</td><td>一次性调用</td></tr>
+<tr><td><strong>Action（动作）</strong></td><td>长时任务 + 反馈</td><td>导航、机械臂运动</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="62-ros-版本"><a class="header" href="#62-ros-版本">6.2 ROS 版本</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>版本</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>ROS 1（Noetic）</strong></td><td>经典版本，生态成熟，已停止维护</td></tr>
+<tr><td><strong>ROS 2（Humble/Iron）</strong></td><td>新一代，基于 DDS，支持实时与多机器人</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="63-ros-2-与-rust"><a class="header" href="#63-ros-2-与-rust">6.3 ROS 2 与 Rust</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Crate</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://github.com/ros2-rust/ros2_rust">rclrs</a></td><td>ROS 2 官方 Rust 客户端库</td></tr>
+<tr><td><a href="https://crates.io/crates/ros2-client">ros2-client</a></td><td>轻量级 ROS 2 客户端</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">// rclrs 发布节点示意（简化）
+use rclrs::*;
+
+fn main() -&gt; Result&lt;(), RclrsError&gt; {
+    let context = Context::new(std::env::args())?;
+    let node = context.create_node("rust_publisher")?;
+    let publisher = node.create_publisher::&lt;std_msgs::msg::String&gt;("chatter", 10)?;
+    loop {
+        publisher.publish(StringMsg::default());
+        std::thread::sleep(std::time::Duration::from_millis(500));
+    }
+}</code></pre>
+<hr>
+<h2 id="七机器人中的-ai"><a class="header" href="#七机器人中的-ai">七、机器人中的 AI</a></h2>
+<h3 id="71-具身智能embodied-ai"><a class="header" href="#71-具身智能embodied-ai">7.1 具身智能（Embodied AI）</a></h3>
+<p>具身智能 = 大模型（大脑）+ 机器人（身体）：让 AI 在物理世界中感知、推理、行动。</p>
+<pre><code>VLA 模型（Vision-Language-Action）
+   │ 输入：图像 + 语言指令
+   ▼
+输出：动作指令（关节角度/末端轨迹）
+   ▼
+机器人执行 → 传感器反馈 → 闭环迭代
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>模型</th><th>提出者</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>RT-2</strong></td><td>Google DeepMind</td><td>视觉-语言-动作大模型</td></tr>
+<tr><td><strong>PaLM-E</strong></td><td>Google</td><td>具身多模态大模型</td></tr>
+<tr><td><strong>Figure 01</strong></td><td>Figure + OpenAI</td><td>与人类对话并执行任务</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="72-机器人学习范式"><a class="header" href="#72-机器人学习范式">7.2 机器人学习范式</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>范式</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>示范学习</strong></td><td>从人类遥操作数据中学习</td></tr>
+<tr><td><strong>强化学习</strong></td><td>在仿真/现实中试错学习</td></tr>
+<tr><td><strong>仿真到现实</strong>（Sim2Real）</td><td>仿真训练后迁移到真机</td></tr>
+<tr><td><strong>世界模型</strong></td><td>在内部模拟环境预演行动</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="73-仿真平台"><a class="header" href="#73-仿真平台">7.3 仿真平台</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>平台</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>MuJoCo</strong></td><td>高效物理仿真（DeepMind）</td></tr>
+<tr><td><strong>Isaac Sim</strong></td><td>NVIDIA 机器人仿真与合成数据</td></tr>
+<tr><td><strong>Gazebo</strong></td><td>ROS 常用开源仿真器</td></tr>
+<tr><td><strong>Matterport/合成数据</strong></td><td>训练感知模型</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="八机器人安全与伦理"><a class="header" href="#八机器人安全与伦理">八、机器人安全与伦理</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>议题</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>物理安全</strong></td><td>力控、急停、安全距离（ISO 10218 等标准）</td></tr>
+<tr><td><strong>隐私</strong></td><td>家庭/医疗机器人的数据采集边界</td></tr>
+<tr><td><strong>责任</strong></td><td>机器人造成损害时谁负责（厂商/用户/算法）</td></tr>
+<tr><td><strong>就业</strong></td><td>自动化替代与再就业</td></tr>
+<tr><td><strong>武器化</strong></td><td>自主武器系统的伦理争议</td></tr>
+<tr><td><strong>人机信任</strong></td><td>过度依赖与情感依附问题</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="九rust-机器人生态"><a class="header" href="#九rust-机器人生态">九、Rust 机器人生态</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Crate</th><th>用途</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://github.com/ros2-rust/ros2_rust">rclrs</a></td><td>ROS 2 Rust 客户端</td></tr>
+<tr><td><a href="https://crates.io/crates/ev3dev-lang-rust">ev3dev</a></td><td>LEGO EV3 机器人</td></tr>
+<tr><td><a href="https://crates.io/crates/embedded-hal">embedded-hal</a></td><td>嵌入式硬件抽象层</td></tr>
+<tr><td><a href="https://crates.io/crates/tokio-serial">tokio-serial</a></td><td>串口异步通信</td></tr>
+<tr><td><a href="https://crates.io/crates/nalgebra">nalgebra</a></td><td>线性代数（运动学计算）</td></tr>
+<tr><td><a href="https://crates.io/crates/k">k</a></td><td>机械臂运动学库</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 用 k 库计算机械臂逆运动学（示意）
+use k::Chain;
+use nalgebra::Isometry3;
+
+fn ik_example() {
+    let chain = Chain::from_urdf_file("robot.urdf").unwrap();
+    // 设定目标位姿
+    let target = Isometry3::translation(0.5, 0.0, 0.5);
+    // 逆运动学求解（迭代）
+    let solutions = chain.iter_joint_positions().collect::&lt;Vec&lt;_&gt;&gt;();
+    println!("关节数: {}", solutions.len());
+}
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="十总结与练习"><a class="header" href="#十总结与练习">十、总结与练习</a></h2>
+<h3 id="本章小结"><a class="header" href="#本章小结">本章小结</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>知识点</th><th>要点</th></tr>
+</thead>
+<tbody>
+<tr><td>机器人构成</td><td>传感器、控制器、执行器、电源</td></tr>
+<tr><td>分类</td><td>工业/服务/医疗/特种/人形/仿生</td></tr>
+<tr><td>核心技术</td><td>感知、决策、控制（PID/MPC）</td></tr>
+<tr><td>运动学</td><td>正运动学、逆运动学、自由度、四元数</td></tr>
+<tr><td>SLAM</td><td>同步定位与建图（激光/视觉）</td></tr>
+<tr><td>导航</td><td>全局规划 + 局部避障</td></tr>
+<tr><td>ROS</td><td>节点、话题、服务、动作</td></tr>
+<tr><td>具身智能</td><td>VLA 模型、强化学习、Sim2Real</td></tr>
+<tr><td>安全伦理</td><td>物理安全、隐私、责任、武器化</td></tr>
+<tr><td>Rust 生态</td><td>rclrs、k、nalgebra、embedded-hal</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
+<ol>
+<li><strong>PID 调参</strong>：写一个 PID 控制器模拟小车直线行驶，调节 kp/ki/kd 观察过冲、震荡与稳态误差。</li>
+<li><strong>逆运动学实现</strong>：用 nalgebra 为两关节平面机械臂实现逆运动学求解，画出末端轨迹。</li>
+<li><strong>A* 寻路</strong>：实现 A* 算法在一个栅格地图上找最短路径，并用字符画可视化。</li>
+<li><strong>仿真实验</strong>：在 MuJoCo 或 Isaac Sim 中加载一个简单机器人，用强化学习训练它完成一个任务。</li>
+<li><strong>ROS 2 初探</strong>：安装 ROS 2，用 rclrs 创建一个发布/订阅对，实现话题通信。</li>
+<li><strong>机器人伦理讨论</strong>：针对“人形机器人进入家庭“的场景，从隐私、责任、情感三个角度写一份风险分析报告。</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_65.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_67.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_65.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_67.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

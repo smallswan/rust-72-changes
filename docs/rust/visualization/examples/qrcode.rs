@@ -42,6 +42,7 @@ fn combine_qr_codes_horizontally(
 }
 
 fn main() {
+    // 收款码
     // 1. 生成两个二维码图像，尺寸设为 200x200
     let qr1 = generate_qr_image("https://qr.alipay.com/fkx18203840eqbo648wdo95", 200);
     let qr2 = generate_qr_image("wxp://f2f0QuWokq-0iWOJrBOVHz7vVLoOhrChnMI28COpdSmFzRs", 200);
@@ -50,5 +51,5 @@ fn main() {
     let combined = combine_qr_codes_horizontally(&qr1, &qr2, 20);
 
     // 3. 保存最终图片
-    combined.save("/tmp/combined_qr_codes.png").unwrap();
+    combined.save("examples/combined_qr_codes.png").unwrap();
 }

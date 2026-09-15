@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>第十三 数据与代码 - Rust七十二变（Rust 72 Changes）</title>
+        <title>第十三 压缩 - Rust七十二变（Rust 72 Changes）</title>
 
 
         <!-- Custom HTML head -->
@@ -49,10 +49,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-f08b2010.js"></script>
+        <script src="toc-545e538a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -447,9 +447,7 @@ fn main() {
 </div>
 <p><strong>DCT 变换的核心思想：</strong></p>
 <p>DCT（Discrete Cosine Transform，离散余弦变换）将空间域的图像数据转换到频率域。图像的能量主要集中在低频部分，高频部分（代表细节和噪声）可以被大量量化甚至丢弃而不明显影响视觉质量。</p>
-<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// JPEG 质量因子与压缩率的示意
+<pre class="playground"><code class="language-rust edition2024">// JPEG 质量因子与压缩率的示意
 fn jpeg_compression_info() {
     let qualities = [
         (95, "极佳", "几乎无损"),
@@ -466,7 +464,11 @@ fn jpeg_compression_info() {
         println!("{:&lt;10} {:&lt;10} {:&lt;20}", q, effect, desc);
     }
 }
-<span class="boring">}</span></code></pre>
+
+fn main() {
+    jpeg_compression_info();
+}
+</code></pre>
 <h3 id="32-mp3-音频压缩原理"><a class="header" href="#32-mp3-音频压缩原理">3.2 MP3 音频压缩原理</a></h3>
 <p>MP3（MPEG-1 Audio Layer III）是最流行的有损音频压缩格式。</p>
 <p><strong>MP3 压缩的核心技术：</strong></p>
@@ -517,7 +519,11 @@ fn jpeg_compression_info() {
 flate2 = "1.0"
 </code></pre>
 <p><strong>Gzip 压缩与解压：</strong></p>
-<pre class="playground"><code class="language-rust edition2024">use flate2::write::{GzEncoder, GzDecoder};
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+flate2 = "1.1.5"
+*/
+use flate2::write::{GzEncoder, GzDecoder};
 use flate2::Compression;
 use std::io::{self, Write};
 
@@ -620,7 +626,11 @@ fn decompress_file(input_path: &amp;str, output_path: &amp;str) -&gt; io::Result
 zip = "0.6"
 </code></pre>
 <p><strong>创建 ZIP 压缩文件：</strong></p>
-<pre class="playground"><code class="language-rust edition2024">use std::fs::File;
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+zip = "0.6"
+*/
+use std::fs::File;
 use std::io::{self, Read, Write};
 use zip::write::FileOptions;
 use zip::CompressionMethod;
@@ -706,9 +716,7 @@ fn main() -&gt; io::Result&lt;()&gt; {
 </table>
 </div>
 <p><strong>不同压缩算法的对比：</strong></p>
-<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>fn compression_comparison() {
+<pre class="playground"><code class="language-rust edition2024">fn compression_comparison() {
     let algorithms = [
         ("Gzip (flate2)", "通用，兼容性好", "中等", "高"),
         ("LZ4", "极速压缩解压", "低", "很高"),
@@ -723,7 +731,10 @@ fn main() -&gt; io::Result&lt;()&gt; {
         println!("{:&lt;15} {:&lt;30} {:&lt;10} {:&lt;10}", name, feature, ratio, speed);
     }
 }
-<span class="boring">}</span></code></pre>
+
+fn main() {
+    compression_comparison();
+}</code></pre>
 <h3 id="44-内存中的压缩与解压示例"><a class="header" href="#44-内存中的压缩与解压示例">4.4 内存中的压缩与解压示例</a></h3>
 <pre class="playground"><code class="language-rust edition2024">use flate2::{read::ZlibDecoder, write::ZlibEncoder, Compression};
 use std::io::{self, Read, Write};

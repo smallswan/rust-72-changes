@@ -49,10 +49,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-f08b2010.js"></script>
+        <script src="toc-545e538a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -289,6 +289,7 @@ fn main() {
 <pre class="playground"><code class="language-rust edition2024">// 注意：rand 0.9+ 的 StdRng 实际使用 ChaCha8 算法，而非梅森旋转器
 // 如需使用梅森旋转器，需要额外的 rand_mt crate
 use rand::RngExt;
+use rand::SeedableRng;
 
 fn main() {
     // rand::rng() 默认使用 ThreadRng，内部基于 ChaCha8
@@ -304,6 +305,7 @@ fn main() {
 $$\text{output} = \text{rotate}(x_{n+1} \oplus (x_{n+1} &gt;&gt; r), x_{n+1} &gt;&gt; s)$$</p>
 <p><strong>Xoshiro</strong> 系列由 Sebastiano Vigna 提出，基于 XOR-shift/rotate 操作，速度极快且统计质量优秀。</p>
 <pre class="playground"><code class="language-rust edition2024">use rand::RngExt;
+use rand::SeedableRng;
 
 fn main() {
     // 使用 StdRng（ChaCha8 算法）

@@ -1,0 +1,601 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第六十五 通用人工智能 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-545e538a.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第六十五-通用人工智能"><a class="header" href="#第六十五-通用人工智能">第六十五 通用人工智能</a></h1>
+<p>通用人工智能（Artificial General Intelligence, AGI）指具备与人类相当甚至超越人类的通用认知能力的人工智能——能够理解、学习、推理、规划并应对任意领域任务的智能。与只擅长单一任务的**狭义人工智能（ANI）**不同，AGI 追求的是“像人一样思考、什么都能做“。</p>
+<hr>
+<h2 id="一从-ani-到-agi"><a class="header" href="#一从-ani-到-agi">一、从 ANI 到 AGI</a></h2>
+<h3 id="11-人工智能的三个层次"><a class="header" href="#11-人工智能的三个层次">1.1 人工智能的三个层次</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>层次</th><th>全称</th><th>能力</th><th>现状</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>ANI</strong></td><td>狭义人工智能</td><td>只擅长特定任务（下棋、翻译、识图）</td><td>已实现，遍地都是</td></tr>
+<tr><td><strong>AGI</strong></td><td>通用人工智能</td><td>任何智力任务都能胜任</td><td>尚未完全实现，正在逼近</td></tr>
+<tr><td><strong>ASI</strong></td><td>超级人工智能</td><td>全面超越人类智能</td><td>理论构想</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="12-ani-与-agi-的对比"><a class="header" href="#12-ani-与-agi-的对比">1.2 ANI 与 AGI 的对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>维度</th><th>ANI</th><th>AGI</th></tr>
+</thead>
+<tbody>
+<tr><td>任务范围</td><td>单一/窄范围</td><td>任意任务</td></tr>
+<tr><td>迁移能力</td><td>换任务需重新训练</td><td>举一反三，快速迁移</td></tr>
+<tr><td>常识推理</td><td>基本没有</td><td>需要具备</td></tr>
+<tr><td>自主学习</td><td>依赖标注数据</td><td>从少量样本/经验学习</td></tr>
+<tr><td>代表</td><td>AlphaGo、人脸识别、机器翻译</td><td>ChatGPT、GPT-4 等（接近）</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code>          能力
+           ▲
+           │        AGI（目标）
+           │      ╱
+           │    ╱  大语言模型（当前）
+           │  ╱
+           │╱────────── ANI（已实现）
+           └───────────────────────▶ 任务广度
+</code></pre>
+<hr>
+<h2 id="二agi-的能力维度"><a class="header" href="#二agi-的能力维度">二、AGI 的能力维度</a></h2>
+<h3 id="21-核心能力"><a class="header" href="#21-核心能力">2.1 核心能力</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>能力</th><th>说明</th><th>相关技术</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>理解</strong></td><td>理解自然语言、图像、语音等</td><td>大模型、多模态</td></tr>
+<tr><td><strong>推理</strong></td><td>逻辑推理、数学计算、因果分析</td><td>CoT（思维链）、推理模型</td></tr>
+<tr><td><strong>规划</strong></td><td>分解目标、制定多步计划</td><td>Agent、树搜索</td></tr>
+<tr><td><strong>学习</strong></td><td>从数据、反馈、交互中改进</td><td>预训练、微调、RLHF</td></tr>
+<tr><td><strong>记忆</strong></td><td>长期存储与检索知识</td><td>RAG、记忆系统</td></tr>
+<tr><td><strong>创造</strong></td><td>生成新的内容与方案</td><td>生成式模型</td></tr>
+<tr><td><strong>交互</strong></td><td>使用工具、与人协作</td><td>Function Calling、Agent</td></tr>
+<tr><td><strong>自我意识</strong></td><td>理解自身状态与目标</td><td>尚属研究前沿</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="22-评估-agi-的测试"><a class="header" href="#22-评估-agi-的测试">2.2 评估 AGI 的测试</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>测试</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>图灵测试</strong></td><td>机器能否让人类无法分辨其与人类的对话（1950）</td></tr>
+<tr><td><strong>ARC</strong>（抽象推理语料库）</td><td>测试流体智力：从少量示例归纳规律</td></tr>
+<tr><td><strong>MMLU</strong>（大规模多任务语言理解）</td><td>57 个学科的综合知识测试</td></tr>
+<tr><td><strong>AGIEval</strong></td><td>面向人类的标准化考试（高考、LSAT、SAT 等）</td></tr>
+<tr><td><strong>GPQA</strong>（研究生级问答）</td><td>博士级科学问题的推理能力</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="三大语言模型agi-的路线"><a class="header" href="#三大语言模型agi-的路线">三、大语言模型：AGI 的路线</a></h2>
+<h3 id="31-为什么大模型被认为是-agi-的雏形"><a class="header" href="#31-为什么大模型被认为是-agi-的雏形">3.1 为什么大模型被认为是 AGI 的雏形</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>涌现能力</strong></td><td>模型规模超过阈值后出现小模型没有的能力</td></tr>
+<tr><td><strong>上下文学习</strong></td><td>不更新参数，仅凭提示词中的示例学会新任务</td></tr>
+<tr><td><strong>思维链</strong></td><td>通过“逐步思考“提升推理能力</td></tr>
+<tr><td><strong>工具使用</strong></td><td>调用代码、搜索、API 扩展能力边界</td></tr>
+<tr><td><strong>多模态</strong></td><td>统一处理文本、图像、音频、视频</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="32-关键里程碑"><a class="header" href="#32-关键里程碑">3.2 关键里程碑</a></h3>
+<pre><code>1950   图灵提出"机器能否思考"（图灵测试）
+1956   达特茅斯会议：人工智能学科诞生
+2012   AlexNet 在 ImageNet 夺冠，深度学习崛起
+2017   Transformer 架构问世（"Attention Is All You Need"）
+2018   GPT-1 发布，预训练+微调范式确立
+2020   GPT-3 展示涌现能力（1750 亿参数）
+2022   ChatGPT 发布，AGI 讨论进入大众视野
+2023   GPT-4 通过多模态与复杂推理测试
+2024   推理模型（o1、DeepSeek-R1）出现，强化学习+思维链爆发
+2025   Agent 元年：AI 自主执行多步骤真实任务
+</code></pre>
+<h3 id="33-scaling-law规模定律"><a class="header" href="#33-scaling-law规模定律">3.3 Scaling Law（规模定律）</a></h3>
+<p>大模型的能力随<strong>参数量、数据量、计算量</strong>的增大而可预测地提升：</p>
+<pre><code>模型能力 ∝ 参数规模 × 数据规模 × 算力
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>要素</th><th>含义</th><th>代价</th></tr>
+</thead>
+<tbody>
+<tr><td>参数</td><td>模型内部权重数量</td><td>训练成本指数增长</td></tr>
+<tr><td>数据</td><td>训练语料质量与数量</td><td>高质量数据接近枯竭</td></tr>
+<tr><td>算力</td><td>GPU 训练计算量</td><td>电力与硬件成本</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>但 Scaling Law 并非无限有效：需要<strong>算法创新</strong>（如思维链、强化学习、稀疏模型）与<strong>架构创新</strong>（如 MoE、MLA）来持续突破瓶颈。</p>
+</blockquote>
+<hr>
+<h2 id="四agi-的技术路线"><a class="header" href="#四agi-的技术路线">四、AGI 的技术路线</a></h2>
+<h3 id="41-主要路线对比"><a class="header" href="#41-主要路线对比">4.1 主要路线对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>路线</th><th>思路</th><th>代表</th><th>现状</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>大语言模型</strong></td><td>海量文本预测下一个词</td><td>GPT 系列、DeepSeek</td><td>最接近 AGI</td></tr>
+<tr><td><strong>多模态大模型</strong></td><td>统一文本/图像/音频/视频</td><td>GPT-4o、Gemini</td><td>快速推进</td></tr>
+<tr><td><strong>具身智能</strong></td><td>智能体在物理世界中行动</td><td>人形机器人、自动驾驶</td><td>早期</td></tr>
+<tr><td><strong>世界模型</strong></td><td>在内部建模真实世界的规律</td><td>Sora、Genie</td><td>探索阶段</td></tr>
+<tr><td><strong>神经符号</strong></td><td>神经网络+符号逻辑结合</td><td>研究前沿</td><td>争议较大</td></tr>
+<tr><td><strong>强化学习</strong></td><td>从交互与奖励中学习</td><td>AlphaGo、DeepSeek-R1</td><td>重要组成</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="42-智能体agent"><a class="header" href="#42-智能体agent">4.2 智能体（Agent）</a></h3>
+<p>Agent 是 AGI 落地的重要形态：大模型作为“大脑“，通过工具与环境交互，自主完成任务。</p>
+<pre><code>用户目标
+   │
+   ▼
+┌──────────────┐  规划    ┌──────────┐
+│  大模型(大脑)  │ ───────&gt; │ 任务分解   │
+└──────┬───────┘          └────┬─────┘
+       │ 观察反馈                │ 调用
+       ▼                        ▼
+┌──────────────┐            ┌──────────┐
+│ 工具/环境     │ &lt;───────── │ 搜索/代码/ │
+│（浏览器、API） │            │ 终端/API   │
+└──────────────┘            └──────────┘
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>组件</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>规划</strong></td><td>把大目标拆成可执行的小步骤</td></tr>
+<tr><td><strong>记忆</strong></td><td>上下文记忆 + 长期记忆（向量数据库）</td></tr>
+<tr><td><strong>工具</strong></td><td>调用搜索引擎、代码执行器、外部 API</td></tr>
+<tr><td><strong>反思</strong></td><td>根据结果修正计划（ReAct、Self-Refine）</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="43-思维链chain-of-thought"><a class="header" href="#43-思维链chain-of-thought">4.3 思维链（Chain of Thought）</a></h3>
+<p>让模型“先思考再回答“，显著提升复杂推理能力：</p>
+<pre><code>普通提示:  27 × 13 = ?
+直接回答:  351
+
+思维链提示:
+27 × 13 = 27 × (10 + 3)
+        = 270 + 81
+        = 351
+</code></pre>
+<hr>
+<h2 id="五对齐与安全"><a class="header" href="#五对齐与安全">五、对齐与安全</a></h2>
+<h3 id="51-为什么需要对齐"><a class="header" href="#51-为什么需要对齐">5.1 为什么需要对齐</a></h3>
+<p>AGI 的能力越强，其目标与人类不一致的风险就越大——这就是<strong>对齐问题（Alignment Problem）</strong>：如何确保 AI 的目标、行为与人类价值观一致。</p>
+<h3 id="52-对齐技术"><a class="header" href="#52-对齐技术">5.2 对齐技术</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>技术</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>RLHF</strong>（人类反馈强化学习）</td><td>用人类偏好数据训练奖励模型，再微调模型</td></tr>
+<tr><td><strong>DPO</strong>（直接偏好优化）</td><td>无需奖励模型，直接优化偏好</td></tr>
+<tr><td><strong>红队测试</strong></td><td>专门攻击模型找出漏洞与偏见</td></tr>
+<tr><td><strong>宪法式 AI</strong></td><td>用一组原则约束模型行为</td></tr>
+<tr><td><strong>可解释性</strong></td><td>理解模型内部表征（稀疏自编码器等）</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="53-安全风险"><a class="header" href="#53-安全风险">5.3 安全风险</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>风险</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>幻觉</strong></td><td>一本正经地编造错误事实</td></tr>
+<tr><td><strong>偏见</strong></td><td>训练数据中的歧视性观点</td></tr>
+<tr><td><strong>越狱</strong></td><td>提示词攻击绕过安全限制</td></tr>
+<tr><td><strong>滥用</strong></td><td>深度伪造、自动化攻击、虚假信息</td></tr>
+<tr><td><strong>失控</strong></td><td>能力超过人类控制范围（长期风险）</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="六agi-的影响"><a class="header" href="#六agi-的影响">六、AGI 的影响</a></h2>
+<h3 id="61-经济与就业"><a class="header" href="#61-经济与就业">6.1 经济与就业</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>影响</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>替代</strong></td><td>重复性、标准化工作被自动化</td></tr>
+<tr><td><strong>增强</strong></td><td>人机协作，提升生产力</td></tr>
+<tr><td><strong>新职业</strong></td><td>提示词工程、AI 训练师、模型治理</td></tr>
+<tr><td><strong>财富集中</strong></td><td>算力与数据集中可能加剧不平等</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="62-科学加速"><a class="header" href="#62-科学加速">6.2 科学加速</a></h3>
+<p>AGI 可以加速科学研究：蛋白质结构预测（AlphaFold）、新材料发现、药物研发、数学证明（AlphaProof）——“AI 科学家“正在成为现实。</p>
+<h3 id="63-治理与监管"><a class="header" href="#63-治理与监管">6.3 治理与监管</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>举措</th><th>地区/组织</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>《人工智能法案》</strong></td><td>欧盟（按风险分级监管）</td></tr>
+<tr><td><strong>《生成式人工智能服务管理暂行办法》</strong></td><td>中国</td></tr>
+<tr><td><strong>AI 安全峰会</strong></td><td>英国、韩国等（国际协调）</td></tr>
+<tr><td><strong>OpenAI/Anthropic 安全承诺</strong></td><td>前沿实验室自律</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="七agi-的时间线之争"><a class="header" href="#七agi-的时间线之争">七、AGI 的时间线之争</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>观点</th><th>代表人物/机构</th><th>预测</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>乐观派</strong></td><td>Sam Altman（OpenAI）</td><td>AGI 可能在未来几年到十年内出现</td></tr>
+<tr><td><strong>谨慎派</strong></td><td>Geoffrey Hinton、Yoshua Bengio</td><td>安全风险巨大，需暂停前沿研发</td></tr>
+<tr><td><strong>怀疑派</strong></td><td>Gary Marcus 等</td><td>当前大模型只是“聪明的鹦鹉“，非真 AGI</td></tr>
+<tr><td><strong>工程派</strong></td><td>Dario Amodei（Anthropic）</td><td>强大 AI 十年内可达，规模是关键</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>无论时间线如何，**从“能聊天“到“能干活“再到“能自主决策“**的每一步，都伴随工程与伦理的双重挑战。</p>
+</blockquote>
+<hr>
+<h2 id="八rust-与-agi-生态"><a class="header" href="#八rust-与-agi-生态">八、Rust 与 AGI 生态</a></h2>
+<h3 id="81-rust-在-ai-领域的优势"><a class="header" href="#81-rust-在-ai-领域的优势">8.1 Rust 在 AI 领域的优势</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>优势</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>性能</strong></td><td>接近 C/C++，适合推理引擎与训练基础设施</td></tr>
+<tr><td><strong>内存安全</strong></td><td>无 GC、无悬垂指针，适合高并发推理服务</td></tr>
+<tr><td><strong>部署</strong></td><td>单二进制分发，云原生友好（见第 63 章）</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="82-rust-ai-生态"><a class="header" href="#82-rust-ai-生态">8.2 Rust AI 生态</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Crate</th><th>用途</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://github.com/huggingface/candle">candle</a></td><td>HuggingFace 的 Rust 深度学习框架</td></tr>
+<tr><td><a href="https://github.com/tracel-ai/burn">burn</a></td><td>灵活通用的 Rust 深度学习框架</td></tr>
+<tr><td><a href="https://crates.io/crates/ort">ort</a></td><td>ONNX Runtime 绑定（模型推理）</td></tr>
+<tr><td><a href="https://crates.io/crates/tch-rs">tch-rs</a></td><td>PyTorch C++ 库绑定</td></tr>
+<tr><td><a href="https://crates.io/crates/tokenizers">tokenizers</a></td><td>HuggingFace Tokenizer（极快）</td></tr>
+<tr><td><a href="https://github.com/ggml-org/llama.cpp">llama.cpp</a></td><td>C/C++ 推理引擎（Rust 可 FFI 调用）</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">// 用 candle 加载模型做推理的示意（简化）
+use candle_core::{Device, Tensor};
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let device = Device::Cpu;
+    // 创建 2×3 矩阵并计算 softmax
+    let a = Tensor::randn(0f32, 1.0, (2, 3), &amp;device)?;
+    let b = a.softmax(1)?;
+    println!("{b:?}");
+    Ok(())
+}</code></pre>
+<hr>
+<h2 id="九总结与练习"><a class="header" href="#九总结与练习">九、总结与练习</a></h2>
+<h3 id="本章小结"><a class="header" href="#本章小结">本章小结</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>知识点</th><th>要点</th></tr>
+</thead>
+<tbody>
+<tr><td>智能层次</td><td>ANI（已实现）→ AGI（正在逼近）→ ASI（构想）</td></tr>
+<tr><td>核心能力</td><td>理解、推理、规划、学习、记忆、创造、交互</td></tr>
+<tr><td>大模型路线</td><td>涌现能力、思维链、多模态、工具使用</td></tr>
+<tr><td>技术路线</td><td>大模型、具身智能、世界模型、神经符号</td></tr>
+<tr><td>Agent</td><td>规划 + 记忆 + 工具 + 反思</td></tr>
+<tr><td>对齐与安全</td><td>RLHF、红队测试、幻觉、偏见、越狱</td></tr>
+<tr><td>影响</td><td>就业、科学加速、监管治理</td></tr>
+<tr><td>Rust 生态</td><td>candle、burn、ort、tokenizers</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
+<ol>
+<li><strong>思维链实验</strong>：给一个开源模型（如 DeepSeek、Qwen）出同一道数学题，分别用“直接回答“和“逐步思考“提示，对比准确率。</li>
+<li><strong>Agent 设计</strong>：用 Function Calling 实现一个“查天气并安排行程“的 Agent，画出规划-调用-反馈的流程图。</li>
+<li><strong>幻觉检测</strong>：让大模型回答 10 个事实性问题，逐个验证答案真实性，总结幻觉出现的规律。</li>
+<li><strong>越狱与防御</strong>：尝试构造 3 种越狱提示，分析其原理，再用系统提示词加固模型。</li>
+<li><strong>本地推理</strong>：用 llama.cpp 或 candle 在本地部署一个小模型，测量不同量化精度下的速度与质量。</li>
+<li><strong>伦理辩论</strong>：围绕“AGI 出现后谁该为它的行为负责“写一篇短文，从技术、法律、伦理三个角度论证。</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_64.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_66.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_64.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_66.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

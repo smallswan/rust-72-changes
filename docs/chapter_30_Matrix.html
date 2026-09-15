@@ -49,10 +49,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-f08b2010.js"></script>
+        <script src="toc-545e538a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -296,7 +296,9 @@ fn main() {
 </div>
 <h3 id="25-矩阵的转置"><a class="header" href="#25-矩阵的转置">2.5 矩阵的转置</a></h3>
 <p>将矩阵的行和列互换：</p>
-<p>$$(A^T)<em>{ij} = A</em>{ji}$$</p>
+<ul>
+<li>$(A^T)[i,j] = A[j,i]$</li>
+</ul>
 <p><strong>转置的性质：</strong></p>
 <ul>
 <li>$(A^T)^T = A$</li>
@@ -473,7 +475,7 @@ fn main() {
 <p>若 $n$ 阶矩阵 $A$ 有 $n$ 个线性无关的特征向量，则 $A$ 可以<strong>对角化</strong>：</p>
 <p>$$P^{-1}AP = \Lambda = \text{diag}(\lambda_1, \lambda_2, \ldots, \lambda_n)$$</p>
 <p>其中 $P$ 的列是 $A$ 的特征向量，$\Lambda$ 是对角矩阵。</p>
-<pre class="playground"><code class="language-rust edition2024">use nalgebra::{Matrix2, Vector2};
+<pre class="playground"><code class="language-rust edition2024">use nalgebra::{Matrix2};
 
 fn main() {
     let a = Matrix2::new(3.0, 1.0, 1.0, 3.0);

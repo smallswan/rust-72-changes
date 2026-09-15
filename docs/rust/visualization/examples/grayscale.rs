@@ -1,4 +1,7 @@
+use image::imageops::fast_blur;
 use image::{DynamicImage, Luma, Rgb};
+use imageproc::edges::canny;
+use imageproc::filter::gaussian_blur_f32;
 
 fn to_grayscale(img: &DynamicImage) -> image::GrayImage {
     let rgb = img.to_rgb8();
@@ -17,12 +20,37 @@ fn to_grayscale(img: &DynamicImage) -> image::GrayImage {
 }
 
 fn main() {
-    let img = image::open("/tmp/image/romanesco.jpg").unwrap();
+    let img = image::open("examples/image/romanesco.jpg").unwrap();
     let gray = to_grayscale(&img);
-    gray.save("/tmp/image/grayscale.png").unwrap();
+    gray.save("examples/image/grayscale.png").unwrap();
     println!("灰度图像已保存");
 
     // image crate 也内置了灰度转换
     let gray2 = img.to_luma8();
-    gray2.save("/tmp/image/grayscale_builtin.png").unwrap();
+    gray2.save("examples/image/grayscale_builtin.png").unwrap();
+
+    // 高斯模糊
+    let blurred = gaussian_blur_f32(&gray, 5.0);
+    blurred.save("examples/image/romanesco_blurred.png").unwrap();
+    println!("高斯模糊图像已保存");
+
+    // 快速模糊
+    let fast_blurred = fast_blur(&gray, 5.0);
+    fast_blurred
+        .save("examples/image/romanesco_fast_blurred.png")
+        .unwrap();
+    println!("快速模糊图像已保存");
+
+    // 边缘检测
+    let edges = canny(&gray, 10.0, 30.0);
+    edges.save("examples/image/romanesco_edges.png").unwrap();
+    println!("边缘检测图像已保存");
+
+
+     // 边缘检测
+    let img = image::open("examples/image/fern.jpg").unwrap();
+    let gray3 = img.to_luma8();
+    let edges = canny(&gray3, 10.0, 30.0);
+    edges.save("examples/image/fern_edges.png").unwrap();
+    println!("边缘检测图像已保存");
 }

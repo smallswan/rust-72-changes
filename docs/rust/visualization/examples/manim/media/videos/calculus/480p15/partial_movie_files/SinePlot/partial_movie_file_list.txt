@@ -1,0 +1,7 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/calculus/480p15/partial_movie_files/SinePlot/1584795214_1793768728_223132457.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/calculus/480p15/partial_movie_files/SinePlot/4072820271_2394466545_2564484210.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/calculus/480p15/partial_movie_files/SinePlot/4072820271_3201849554_3450147922.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/calculus/480p15/partial_movie_files/SinePlot/4072820271_1276355124_102404861.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/calculus/480p15/partial_movie_files/SinePlot/4072820271_1322342033_2560246988.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/calculus/480p15/partial_movie_files/SinePlot/4072820271_1839128356_4152749109.mp4'

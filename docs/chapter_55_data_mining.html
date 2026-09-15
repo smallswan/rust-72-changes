@@ -1,0 +1,825 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第五十五 数据挖掘 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-545e538a.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第五十五-数据挖掘"><a class="header" href="#第五十五-数据挖掘">第五十五 数据挖掘</a></h1>
+<p>数据挖掘（Data Mining）是从大规模数据集中自动发现隐藏的、有价值的模式与知识的过程。它是连接数据库、统计学和机器学习的桥梁，在商业决策、科学研究、医疗健康、金融风控等领域有着广泛应用。Rust 以其卓越的性能和内存安全特性，正逐渐成为构建高性能数据处理管线的优选语言。本章将系统介绍数据挖掘的核心概念、经典算法，并展示如何用 Rust 实现关键的数据挖掘任务。</p>
+<hr>
+<h2 id="一什么是数据挖掘"><a class="header" href="#一什么是数据挖掘">一、什么是数据挖掘</a></h2>
+<h3 id="11-定义与目标"><a class="header" href="#11-定义与目标">1.1 定义与目标</a></h3>
+<p>数据挖掘是从大量数据中提取隐含的、先前未知的、潜在有用信息的过程。它不是简单的数据查询或统计，而是通过算法自动发现数据中隐藏的<strong>模式（Pattern）</strong>、<strong>关联（Association）</strong>、<strong>异常（Anomaly）<strong>和</strong>趋势（Trend）</strong>。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>数据（Data）</strong></td><td>原始的事实和数字</td></tr>
+<tr><td><strong>信息（Information）</strong></td><td>经过组织和结构化的数据</td></tr>
+<tr><td><strong>知识（Knowledge）</strong></td><td>从信息中提炼出的规律和洞察</td></tr>
+<tr><td><strong>智慧（Wisdom）</strong></td><td>将知识应用于决策和行动</td></tr>
+</tbody>
+</table>
+</div>
+<p>数据挖掘的核心目标是将<strong>数据</strong>转化为<strong>知识</strong>。</p>
+<h3 id="12-kdd-过程"><a class="header" href="#12-kdd-过程">1.2 KDD 过程</a></h3>
+<p>数据挖掘通常是**知识发现（Knowledge Discovery in Databases, KDD）**过程的核心步骤之一。完整的 KDD 流程包括：</p>
+<pre><code>数据选择 → 数据预处理 → 数据变换 → 数据挖掘 → 模式评估 → 知识表示
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>步骤</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>数据选择</strong></td><td>从数据源中选取与任务相关的数据子集</td></tr>
+<tr><td><strong>数据预处理</strong></td><td>处理缺失值、噪声、异常值，保证数据质量</td></tr>
+<tr><td><strong>数据变换</strong></td><td>归一化、离散化、特征工程，使数据适合挖掘算法</td></tr>
+<tr><td><strong>数据挖掘</strong></td><td>应用算法提取模式</td></tr>
+<tr><td><strong>模式评估</strong></td><td>评估发现的模式是否有意义、有价值</td></tr>
+<tr><td><strong>知识表示</strong></td><td>以可理解的方式呈现挖掘结果</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="二数据挖掘的核心任务"><a class="header" href="#二数据挖掘的核心任务">二、数据挖掘的核心任务</a></h2>
+<p>数据挖掘的任务可分为两大类：<strong>描述性任务</strong>和<strong>预测性任务</strong>。</p>
+<h3 id="21-描述性任务"><a class="header" href="#21-描述性任务">2.1 描述性任务</a></h3>
+<p>描述性任务旨在发现数据中的内在结构和模式。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>任务</th><th>说明</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>聚类分析</strong></td><td>将数据划分为若干组，组内相似、组间相异</td><td>客户分群、文档归类</td></tr>
+<tr><td><strong>关联规则</strong></td><td>发现数据项之间的共现关系</td><td>购物篮分析：“买啤酒的人也常买尿布”</td></tr>
+<tr><td><strong>异常检测</strong></td><td>识别偏离正常模式的异常数据点</td><td>信用卡欺诈检测、网络入侵检测</td></tr>
+<tr><td><strong>频繁模式挖掘</strong></td><td>发现数据中频繁出现的模式</td><td>网页访问模式、序列模式</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="22-预测性任务"><a class="header" href="#22-预测性任务">2.2 预测性任务</a></h3>
+<p>预测性任务利用已知数据预测未知属性或未来趋势。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>任务</th><th>说明</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>分类</strong></td><td>根据已有特征预测类别标签</td><td>邮件垃圾过滤、疾病诊断</td></tr>
+<tr><td><strong>回归</strong></td><td>预测连续数值</td><td>房价预测、销量预测</td></tr>
+<tr><td><strong>时间序列预测</strong></td><td>基于历史时序数据预测未来值</td><td>股票走势、天气预报</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="三经典数据挖掘算法"><a class="header" href="#三经典数据挖掘算法">三、经典数据挖掘算法</a></h2>
+<h3 id="31-关联规则apriori-算法"><a class="header" href="#31-关联规则apriori-算法">3.1 关联规则：Apriori 算法</a></h3>
+<p>Apriori 算法是挖掘频繁项集和关联规则的经典算法。其核心思想是：<strong>如果一个项集是频繁的，那么它的所有子集也必须是频繁的</strong>（Apriori 性质）。</p>
+<p>关键指标：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>指标</th><th>公式</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>支持度（Support）</strong></td><td>$\text{sup}(X) = \frac{\text{包含 X 的事务数}}{\text{总事务数}}$</td><td>项集出现的频率</td></tr>
+<tr><td><strong>置信度（Confidence）</strong></td><td>$\text{conf}(X \Rightarrow Y) = \frac{\text{sup}(X \cup Y)}{\text{sup}(X)}$</td><td>规则的可靠程度</td></tr>
+<tr><td><strong>提升度（Lift）</strong></td><td>$\text{lift}(X \Rightarrow Y) = \frac{\text{conf}(X \Rightarrow Y)}{\text{sup}(Y)}$</td><td>规则的实际关联强度</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::collections::{HashMap, HashSet};
+
+/// 统计候选项集的支持度计数
+fn scan_transactions(
+    transactions: &amp;[HashSet&lt;&amp;str&gt;],
+    candidates: &amp;[HashSet&lt;&amp;str&gt;],
+) -&gt; HashMap&lt;HashSet&lt;String&gt;, usize&gt; {
+    let mut counts: HashMap&lt;HashSet&lt;String&gt;, usize&gt; = HashMap::new();
+    for candidate in candidates {
+        let mut count = 0;
+        for transaction in transactions {
+            if candidate.is_subset(transaction) {
+                count += 1;
+            }
+        }
+        counts.insert(
+            candidate.iter().map(|s| s.to_string()).collect(),
+            count,
+        );
+    }
+    counts
+}
+
+/// 生成频繁项集（简化版 Apriori）
+fn apriori_frequent_itemsets(
+    transactions: &amp;[HashSet&lt;&amp;str&gt;],
+    min_support: f64,
+) -&gt; Vec&lt;(HashSet&lt;String&gt;, f64)&gt; {
+    let total = transactions.len() as f64;
+
+    // 第一步：找出所有频繁 1-项集
+    let mut item_counts: HashMap&lt;&amp;str, usize&gt; = HashMap::new();
+    for t in transactions {
+        for item in t {
+            *item_counts.entry(item).or_insert(0) += 1;
+        }
+    }
+
+    let frequent_1: Vec&lt;HashSet&lt;String&gt;&gt; = item_counts
+        .iter()
+        .filter(|(_, &amp;count)| count as f64 / total &gt;= min_support)
+        .map(|(&amp;item, _)| {
+            let mut set = HashSet::new();
+            set.insert(item.to_string());
+            set
+        })
+        .collect();
+
+    let mut result: Vec&lt;(HashSet&lt;String&gt;, f64)&gt; = frequent_1
+        .iter()
+        .map(|itemset| {
+            let support = item_counts[&amp;*itemset.iter().next().unwrap()] as f64 / total;
+            (itemset.clone(), support)
+        })
+        .collect();
+
+    // 后续步骤：逐步生成 k-项集（简化，仅展示 2-项集）
+    let mut prev_frequent = frequent_1;
+    let mut k = 2;
+
+    loop {
+        let mut candidates: Vec&lt;HashSet&lt;String&gt;&gt; = Vec::new();
+        let prev_vec: Vec&lt;&amp;HashSet&lt;String&gt;&gt; = prev_frequent.iter().collect();
+        for i in 0..prev_vec.len() {
+            for j in (i + 1)..prev_vec.len() {
+                let mut candidate = prev_vec[i].clone();
+                candidate.extend(prev_vec[j].clone());
+                if candidate.len() == k &amp;&amp; !candidates.contains(&amp;candidate) {
+                    candidates.push(candidate);
+                }
+            }
+        }
+
+        if candidates.is_empty() {
+            break;
+        }
+
+        let candidate_refs: Vec&lt;HashSet&lt;&amp;str&gt;&gt; = candidates
+            .iter()
+            .map(|c| c.iter().map(|s| s.as_str()).collect())
+            .collect();
+
+        let counts = scan_transactions(transactions, &amp;candidate_refs);
+
+        prev_frequent.clear();
+        for (itemset, count) in &amp;counts {
+            let support = *count as f64 / total;
+            if support &gt;= min_support {
+                result.push((itemset.clone(), support));
+                prev_frequent.push(itemset.clone());
+            }
+        }
+
+        if prev_frequent.is_empty() {
+            break;
+        }
+        k += 1;
+    }
+
+    result
+}
+<span class="boring">}</span></code></pre>
+<h3 id="32-聚类分析k-means-算法"><a class="header" href="#32-聚类分析k-means-算法">3.2 聚类分析：K-Means 算法</a></h3>
+<p>K-Means 是最常用的划分聚类算法。它将 n 个数据点划分为 k 个簇，使得每个点到其所属簇中心的距离之和最小。</p>
+<p>算法步骤：</p>
+<ol>
+<li>随机选择 k 个点作为初始簇中心</li>
+<li>将每个点分配到最近的簇中心</li>
+<li>重新计算每个簇的中心</li>
+<li>重复步骤 2-3 直到收敛</li>
+</ol>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// 二维数据点
+#[derive(Debug, Clone, Copy)]
+struct Point {
+    x: f64,
+    y: f64,
+}
+
+impl Point {
+    fn distance(&amp;self, other: &amp;Point) -&gt; f64 {
+        ((self.x - other.x).powi(2) + (self.y - other.y).powi(2)).sqrt()
+    }
+}
+
+/// K-Means 聚类
+fn kmeans(data: &amp;[Point], k: usize, max_iters: usize) -&gt; Vec&lt;(Point, Vec&lt;usize&gt;)&gt; {
+    let n = data.len();
+    // 初始化：选择前 k 个点作为初始中心
+    let mut centroids: Vec&lt;Point&gt; = data[..k].to_vec();
+    let mut assignments = vec![0usize; n];
+
+    for _ in 0..max_iters {
+        // 分配：将每个点分配到最近的簇中心
+        let mut changed = false;
+        for (i, point) in data.iter().enumerate() {
+            let nearest = centroids
+                .iter()
+                .enumerate()
+                .min_by(|(_, a), (_, b)| {
+                    a.distance(point).partial_cmp(&amp;b.distance(point)).unwrap()
+                })
+                .map(|(idx, _)| idx)
+                .unwrap();
+            if assignments[i] != nearest {
+                assignments[i] = nearest;
+                changed = true;
+            }
+        }
+
+        if !changed {
+            break; // 已收敛
+        }
+
+        // 更新：重新计算每个簇的中心
+        let mut sums = vec![(0.0f64, 0.0f64); k];
+        let mut counts = vec![0usize; k];
+        for (i, point) in data.iter().enumerate() {
+            let c = assignments[i];
+            sums[c].0 += point.x;
+            sums[c].1 += point.y;
+            counts[c] += 1;
+        }
+        for (j, centroid) in centroids.iter_mut().enumerate() {
+            if counts[j] &gt; 0 {
+                centroid.x = sums[j].0 / counts[j] as f64;
+                centroid.y = sums[j].1 / counts[j] as f64;
+            }
+        }
+    }
+
+    // 组装结果
+    let mut clusters: Vec&lt;(Point, Vec&lt;usize&gt;)&gt; = centroids
+        .into_iter()
+        .map(|c| (c, Vec::new()))
+        .collect();
+    for (i, &amp;cluster_id) in assignments.iter().enumerate() {
+        clusters[cluster_id].1.push(i);
+    }
+    clusters
+}
+<span class="boring">}</span></code></pre>
+<h3 id="33-异常检测基于-z-score-的方法"><a class="header" href="#33-异常检测基于-z-score-的方法">3.3 异常检测：基于 Z-Score 的方法</a></h3>
+<p>异常检测旨在识别偏离正常模式的数据点。Z-Score 方法是一种简单有效的统计方法。</p>
+<p>$$Z = \frac{X - \mu}{\sigma}$$</p>
+<p>其中 $\mu$ 为均值，$\sigma$ 为标准差。$|Z| &gt; 3$ 通常被视为异常点。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// 计算均值
+fn mean(data: &amp;[f64]) -&gt; f64 {
+    data.iter().sum::&lt;f64&gt;() / data.len() as f64
+}
+
+/// 计算标准差
+fn std_dev(data: &amp;[f64]) -&gt; f64 {
+    let m = mean(data);
+    let variance = data.iter().map(|x| (x - m).powi(2)).sum::&lt;f64&gt;() / data.len() as f64;
+    variance.sqrt()
+}
+
+/// Z-Score 异常检测
+fn detect_anomalies_zscore(data: &amp;[f64], threshold: f64) -&gt; Vec&lt;(usize, f64, f64)&gt; {
+    let m = mean(data);
+    let s = std_dev(data);
+    let mut anomalies = Vec::new();
+
+    if s == 0.0 {
+        return anomalies;
+    }
+
+    for (i, &amp;value) in data.iter().enumerate() {
+        let z = (value - m) / s;
+        if z.abs() &gt; threshold {
+            anomalies.push((i, value, z));
+        }
+    }
+    anomalies
+}
+<span class="boring">}</span></code></pre>
+<h3 id="34-分类决策树"><a class="header" href="#34-分类决策树">3.4 分类：决策树</a></h3>
+<p>决策树是一种直观的分类算法，通过一系列 if-then 规则对数据进行分类。构建决策树的关键是选择最优划分属性，常用指标包括：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>指标</th><th>公式/说明</th><th>目标</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>信息增益（Information Gain）</strong></td><td>基于信息熵的减少量</td><td>选择使熵减少最多的属性</td></tr>
+<tr><td><strong>基尼系数（Gini Index）</strong></td><td>$\text{Gini}(D) = 1 - \sum_{k=1}^{K} p_k^2$</td><td>选择使基尼系数最小的属性</td></tr>
+</tbody>
+</table>
+</div>
+<p>信息熵：</p>
+<p>$$H(D) = -\sum_{k=1}^{K} p_k \log_2 p_k$$</p>
+<p>其中 $p_k$ 是第 $k$ 类样本在数据集中的比例。</p>
+<hr>
+<h2 id="四数据预处理"><a class="header" href="#四数据预处理">四、数据预处理</a></h2>
+<p>数据质量直接决定挖掘结果的好坏。“垃圾进，垃圾出”（Garbage In, Garbage Out）是数据挖掘领域的经典格言。</p>
+<h3 id="41-缺失值处理"><a class="header" href="#41-缺失值处理">4.1 缺失值处理</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>策略</th><th>说明</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td>删除行</td><td>直接删除含缺失值的记录</td><td>缺失比例小</td></tr>
+<tr><td>均值/中位数填充</td><td>用统计量替代缺失值</td><td>数值型数据</td></tr>
+<tr><td>众数填充</td><td>用出现最多的值替代</td><td>分类型数据</td></tr>
+<tr><td>插值法</td><td>根据相邻值推算</td><td>时间序列数据</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="42-数据归一化"><a class="header" href="#42-数据归一化">4.2 数据归一化</a></h3>
+<p>不同特征的量纲差异会影响算法效果，需要进行标准化处理。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方法</th><th>公式</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Min-Max 归一化</strong></td><td>$x’ = \frac{x - x_{\min}}{x_{\max} - x_{\min}}$</td><td>映射到 [0, 1] 区间</td></tr>
+<tr><td><strong>Z-Score 标准化</strong></td><td>$x’ = \frac{x - \mu}{\sigma}$</td><td>均值为 0，标准差为 1</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// Min-Max 归一化
+fn min_max_normalize(data: &amp;[f64]) -&gt; Vec&lt;f64&gt; {
+    let min = data.iter().cloned().fold(f64::INFINITY, f64::min);
+    let max = data.iter().cloned().fold(f64::NEG_INFINITY, f64::max);
+    let range = max - min;
+    if range == 0.0 {
+        return vec![0.0; data.len()];
+    }
+    data.iter().map(|x| (x - min) / range).collect()
+}
+
+/// Z-Score 标准化
+fn zscore_standardize(data: &amp;[f64]) -&gt; Vec&lt;f64&gt; {
+    let m = mean(data);
+    let s = std_dev(data);
+    if s == 0.0 {
+        return vec![0.0; data.len()];
+    }
+    data.iter().map(|x| (x - m) / s).collect()
+}
+<span class="boring">}</span></code></pre>
+<h3 id="43-特征工程"><a class="header" href="#43-特征工程">4.3 特征工程</a></h3>
+<p>特征工程是数据挖掘中最关键的环节之一，好的特征往往比好的算法更重要。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>技术</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>特征选择</strong></td><td>从原始特征中筛选出最有价值的子集</td></tr>
+<tr><td><strong>特征提取</strong></td><td>通过变换生成新的特征（如 PCA 降维）</td></tr>
+<tr><td><strong>特征构造</strong></td><td>基于领域知识组合或变换现有特征</td></tr>
+<tr><td><strong>特征编码</strong></td><td>将类别特征转换为数值表示（One-Hot、Label Encoding）</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="五模型评估"><a class="header" href="#五模型评估">五、模型评估</a></h2>
+<h3 id="51-分类评估指标"><a class="header" href="#51-分类评估指标">5.1 分类评估指标</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>指标</th><th>公式</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>准确率（Accuracy）</strong></td><td>$\frac{TP + TN}{TP + TN + FP + FN}$</td><td>正确预测的比例</td></tr>
+<tr><td><strong>精确率（Precision）</strong></td><td>$\frac{TP}{TP + FP}$</td><td>预测为正的样本中真正为正的比例</td></tr>
+<tr><td><strong>召回率（Recall）</strong></td><td>$\frac{TP}{TP + FN}$</td><td>真正为正的样本中被正确预测的比例</td></tr>
+<tr><td><strong>F1 分数</strong></td><td>$2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$</td><td>精确率和召回率的调和平均</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="52-交叉验证"><a class="header" href="#52-交叉验证">5.2 交叉验证</a></h3>
+<p>交叉验证（Cross-Validation）是评估模型泛化能力的标准方法。最常用的是 <strong>k 折交叉验证</strong>：将数据分为 k 份，依次用每一份作为验证集，其余 k-1 份作为训练集，取 k 次评估的平均值作为最终结果。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// k 折交叉验证的索引划分
+fn k_fold_indices(n: usize, k: usize) -&gt; Vec&lt;(Vec&lt;usize&gt;, Vec&lt;usize&gt;)&gt; {
+    let fold_size = n / k;
+    let mut folds = Vec::new();
+
+    for i in 0..k {
+        let start = i * fold_size;
+        let end = if i == k - 1 { n } else { (i + 1) * fold_size };
+        let val_indices: Vec&lt;usize&gt; = (start..end).collect();
+        let train_indices: Vec&lt;usize&gt; = (0..start).chain(end..n).collect();
+        folds.push((train_indices, val_indices));
+    }
+    folds
+}
+<span class="boring">}</span></code></pre>
+<h3 id="53-混淆矩阵"><a class="header" href="#53-混淆矩阵">5.3 混淆矩阵</a></h3>
+<p>混淆矩阵是分类模型评估的基础工具：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th></th><th>预测为正</th><th>预测为负</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>实际为正</strong></td><td>TP（真正例）</td><td>FN（假反例）</td></tr>
+<tr><td><strong>实际为负</strong></td><td>FP（假正例）</td><td>TN（真反例）</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="六rust-数据挖掘生态"><a class="header" href="#六rust-数据挖掘生态">六、Rust 数据挖掘生态</a></h2>
+<p>Rust 生态中有多个可用于数据挖掘任务的 crate：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Crate</th><th>功能</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>polars</strong></td><td>高性能 DataFrame 库</td><td>数据加载、清洗、变换</td></tr>
+<tr><td><strong>linfa</strong></td><td>机器学习框架</td><td>分类、回归、聚类</td></tr>
+<tr><td><strong>smartcore</strong></td><td>机器学习算法库</td><td>决策树、SVM、KNN 等</td></tr>
+<tr><td><strong>ndarray</strong></td><td>多维数组</td><td>数值计算、矩阵运算</td></tr>
+<tr><td><strong>statrs</strong></td><td>统计函数库</td><td>概率分布、假设检验</td></tr>
+<tr><td><strong>csv</strong></td><td>CSV 读写</td><td>数据导入导出</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="61-使用-polars-进行数据处理"><a class="header" href="#61-使用-polars-进行数据处理">6.1 使用 Polars 进行数据处理</a></h3>
+<p>Polars 是 Rust 生态中最强大的数据处理库，类似于 Python 的 Pandas，但性能更优。</p>
+<pre class="playground"><code class="language-rust edition2024">use polars::prelude::*;
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // 读取 CSV 文件
+    let df = CsvReadOptions::default()
+        .try_into_reader_with_file_path(Some("data.csv".into()))?
+        .finish()?;
+
+    // 基本统计信息
+    println!("数据形状: {} 行 × {} 列", df.height(), df.width());
+    println!("{}", df.describe(None)?);
+
+    // 过滤和选择
+    let filtered = df.clone().lazy()
+        .filter(col("age").gt(lit(18)))
+        .select([col("name"), col("age"), col("income")])
+        .collect()?;
+
+    println!("过滤后:\n{}", filtered);
+    Ok(())
+}</code></pre>
+<h3 id="62-使用-linfa-进行聚类"><a class="header" href="#62-使用-linfa-进行聚类">6.2 使用 Linfa 进行聚类</a></h3>
+<p>Linfa 提供了多种机器学习算法的 Rust 原生实现。</p>
+<pre class="playground"><code class="language-rust edition2024">use linfa::prelude::*;
+use linfa_clustering::KMeans;
+use ndarray::Array2;
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // 构造数据
+    let data = Array2::from_shape_vec((6, 2), vec![
+        1.0, 2.0,  1.5, 1.8,  5.0, 8.0,
+        8.0, 8.0,  1.0, 0.6,  9.0, 11.0,
+    ])?;
+
+    let dataset = Dataset::from(data);
+
+    // K-Means 聚类，k=2
+    let model = KMeans::params(2)
+        .max_n_iterations(100)
+        .fit(&amp;dataset)?;
+
+    println!("簇中心:\n{}", model.centroids());
+
+    // 预测新数据点的簇归属
+    let prediction = model.predict(
+        &amp;Array2::from_shape_vec((1, 2), vec![2.0, 1.5])?
+    );
+    println!("新点所属簇: {:?}", prediction);
+
+    Ok(())
+}</code></pre>
+<hr>
+<h2 id="七数据挖掘的应用场景"><a class="header" href="#七数据挖掘的应用场景">七、数据挖掘的应用场景</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>领域</th><th>应用</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>电商零售</strong></td><td>推荐系统、购物篮分析</td><td>基于用户行为和商品关联进行个性化推荐</td></tr>
+<tr><td><strong>金融风控</strong></td><td>信用评分、欺诈检测</td><td>识别异常交易模式和高风险用户</td></tr>
+<tr><td><strong>医疗健康</strong></td><td>疾病预测、药物发现</td><td>从电子病历中挖掘疾病风险因素</td></tr>
+<tr><td><strong>社交网络</strong></td><td>社区发现、影响力分析</td><td>识别社交网络中的群体结构和关键节点</td></tr>
+<tr><td><strong>网络安全</strong></td><td>入侵检测、日志分析</td><td>从网络流量中发现异常行为</td></tr>
+<tr><td><strong>智能制造</strong></td><td>预测性维护、质量控制</td><td>通过传感器数据预测设备故障</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="八总结与练习"><a class="header" href="#八总结与练习">八、总结与练习</a></h2>
+<h3 id="本章小结"><a class="header" href="#本章小结">本章小结</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>知识点</th><th>要点</th></tr>
+</thead>
+<tbody>
+<tr><td>KDD 过程</td><td>数据选择 → 预处理 → 变换 → 挖掘 → 评估 → 知识表示</td></tr>
+<tr><td>核心任务</td><td>分类、回归、聚类、关联规则、异常检测</td></tr>
+<tr><td>Apriori 算法</td><td>基于支持度和置信度挖掘频繁项集与关联规则</td></tr>
+<tr><td>K-Means 聚类</td><td>迭代划分数据点使簇内距离最小化</td></tr>
+<tr><td>异常检测</td><td>Z-Score 等统计方法识别异常数据点</td></tr>
+<tr><td>数据预处理</td><td>缺失值处理、归一化、特征工程是挖掘的基础</td></tr>
+<tr><td>模型评估</td><td>准确率、精确率、召回率、F1、交叉验证</td></tr>
+<tr><td>Rust 生态</td><td>Polars（数据处理）、Linfa（机器学习）、SmartCore（算法库）</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
+<ol>
+<li><strong>购物篮分析</strong>：用 Rust 实现 Apriori 算法，对一组交易数据挖掘频繁项集和关联规则，分析哪些商品经常一起被购买。</li>
+<li><strong>客户分群</strong>：生成模拟的客户数据（年龄、收入、消费金额），使用 K-Means 进行聚类，分析不同客户群体的特征。</li>
+<li><strong>异常检测器</strong>：实现 Z-Score 和 IQR（四分位距）两种异常检测方法，对比它们在含噪声数据上的检测效果。</li>
+<li><strong>数据清洗管线</strong>：使用 Polars 读取 CSV 文件，完成缺失值填充、重复行删除、数据类型转换，输出清洗后的数据。</li>
+<li><strong>分类器比较</strong>：用 Linfa 或 SmartCore 分别训练决策树和 KNN 分类器，使用交叉验证比较它们在鸢尾花数据集上的表现。</li>
+<li><strong>端到端挖掘项目</strong>：选择一个公开数据集（如 Kaggle 上的泰坦尼克号数据集），完成从数据加载、探索性分析、特征工程到模型训练和评估的完整流程。</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_54_quantum_cryptography.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_56_code.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_54_quantum_cryptography.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_56_code.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -49,10 +49,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-f08b2010.js"></script>
+        <script src="toc-545e538a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -224,7 +224,12 @@
 <li><strong>非加密哈希（Non-cryptographic Hash）</strong>：追求速度，用于哈希表、数据校验、布隆过滤器等场景。不要求抗碰撞性等密码学安全性质。</li>
 <li><strong>加密哈希（Cryptographic Hash）</strong>：追求安全性，用于密码存储、数字签名、消息认证等场景。必须满足单向性和抗碰撞性。</li>
 </ol>
-<pre class="playground"><code class="language-rust edition2024">// 非加密哈希 vs 加密哈希的简单对比示例
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+ sha2 = "0.11.0-rc.3"
+ hex = "0.4.3"
+*/
+// 非加密哈希 vs 加密哈希的简单对比示例
 use std::collections::HashMap;
 use sha2::{Sha256, Digest};
 
@@ -296,7 +301,10 @@ fn main() {
 <h3 id="xxhash--xxh3"><a class="header" href="#xxhash--xxh3">XxHash / XXH3</a></h3>
 <p><a href="https://www.5axxw.com/wiki/content/8g09uv">XxHash</a> 是一种非常快速的非加密哈希算法，由 Yann Collet 设计。XXH3 是其最新版本，在大数据量场景下性能极为出色。</p>
 <p><a href="https://github.com/shepmaster/twox-hash">twox-hash</a> 是 XxHash 的 Rust 实现，XxHash是一种非常快速的哈希算法。</p>
-<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: xxhash-rust = { version = "0.8", features = ["xxh3"] }
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+xxhash-rust = { version = "0.8", features = ["xxh3"] }
+*/
 use xxhash_rust::xxh3::xxh3_128;
 
 fn main() {
@@ -306,9 +314,10 @@ fn main() {
 <h3 id="highwayhash"><a class="header" href="#highwayhash">HighwayHash</a></h3>
 <p><a href="https://github.com/google/highwayhash">HighwayHash</a> 是 Google 开发的一种高速哈希算法，设计目标是能够在短字符串和长字符串上都达到极高的吞吐量。它支持 64 位、128 位和 256 位输出。</p>
 <p><a href="https://github.com/nickbabcock/highway-rs">highway-rs</a> 是 HighwayHash 的 Rust 实现。</p>
-<pre class="playground"><code class="language-rust edition2024">// Cargo.toml dependencies:
-// highway = "1"
-
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+highway = "1"
+*/
 use highway::{HighwayHash, HighwayHasher, Key};
 
 fn main() {
@@ -364,7 +373,11 @@ fn main() {
 </ul>
 <h3 id="md5"><a class="header" href="#md5">MD5</a></h3>
 <p><a href="https://baike.baidu.com/link?url=rqoWQjzXxNj-EcP5xwsA9wUgTfjgpmuUT_i9xeWSCYHjpBf16kMFv7Z5ECpdzLTo">MD5</a>（Message-Digest Algorithm 5）由 Ronald Rivest 于 1991 年设计，输出 128 位（16 字节）哈希值。MD5 曾广泛用于文件校验和数字签名，但<strong>现已不安全</strong>——2004 年王小云教授团队发现了 MD5 的碰撞攻击方法，此后 MD5 不再被推荐用于任何安全敏感场景。</p>
-<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: md-5 = "0.10"
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+md-5 = "0.10"
+hex = "0.4.3"
+*/
 use md5::{Md5, Digest};
 
 fn main() {
@@ -423,7 +436,12 @@ fn main() {
 </ol>
 <p>$$Keccak<a href="M">r, c, d</a> = Sponge[f, pad, r](M, d)$$</p>
 <p>其中 $r$ 为比特率（rate），$c$ 为容量（capacity），$d$ 为输出长度。安全性与容量 $c$ 成正比。</p>
-<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: sha3 = "0.10"
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+ sha3 = "0.10"
+ hex = "0.4.3"
+*/
+// Cargo.toml: sha3 = "0.10"
 use sha3::{Sha3_256, Digest};
 
 fn main() {
@@ -440,7 +458,11 @@ fn main() {
 <li><strong>多功能</strong>：支持哈希、密钥派生（KDF）、可扩展输出（XOF）</li>
 <li><strong>安全性</strong>：基于 BLAKE2s 的安全证明</li>
 </ul>
-<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: blake3 = "1"
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+blake3 = "1"
+hex = "0.4.3"
+*/
 use blake3::Hasher;
 
 fn main() {
@@ -457,7 +479,7 @@ fn main() {
 
     // 密钥派生
     let key = blake3::derive_key("my-app-key", b"some-derivation-context");
-    println!("Derived key: {}", hex::encode(key.as_bytes()));
+    println!("Derived key: {}", hex::encode(key));
 }</code></pre>
 <h3 id="sm3"><a class="header" href="#sm3">SM3</a></h3>
 <p><a href="https://www.oscca.gov.cn/sca/xxgk/2010-12/17/1002389/files/302a3ada057c4a73830536d03e683110.pdf">SM3</a> 是中国国家密码管理局发布的密码杂凑算法，属于国密（SM）标准体系的一部分。SM3 输出 256 位哈希值，安全性 comparable to SHA-256，在金融、政务等场景中被广泛使用。</p>

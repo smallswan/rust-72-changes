@@ -1,0 +1,863 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第五十六 代码 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-545e538a.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第五十六-代码"><a class="header" href="#第五十六-代码">第五十六 代码</a></h1>
+<p>代码（Code）是人类与计算机沟通的桥梁，是软件世界的基石。从 1940 年代的第一台电子计算机至今，编程语言经历了从机器码到高级语言的漫长演化，软件工程也从个人作坊发展成为支撑现代文明的庞大产业。开源运动的兴起更是深刻改变了整个技术生态。本章将纵览编程语言的发展脉络，介绍主流语言的特性与范式，并探讨软件工程与开源文化的核心知识。</p>
+<hr>
+<h2 id="一编程语言的演化"><a class="header" href="#一编程语言的演化">一、编程语言的演化</a></h2>
+<h3 id="11-语言发展简史"><a class="header" href="#11-语言发展简史">1.1 语言发展简史</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>年代</th><th>里程碑</th><th>代表语言</th></tr>
+</thead>
+<tbody>
+<tr><td>1940s</td><td>机器码与汇编</td><td>机器指令、汇编语言</td></tr>
+<tr><td>1950s</td><td>高级语言诞生</td><td>Fortran（科学计算）、LISP（人工智能）、COBOL（商业）</td></tr>
+<tr><td>1960s</td><td>结构化编程</td><td>ALGOL、BASIC</td></tr>
+<tr><td>1970s</td><td>系统级语言</td><td>C、Pascal、Smalltalk（面向对象）</td></tr>
+<tr><td>1980s</td><td>面向对象兴起</td><td>C++、Objective-C、Perl</td></tr>
+<tr><td>1990s</td><td>互联网时代</td><td>Java、JavaScript、Python、PHP、Ruby</td></tr>
+<tr><td>2000s</td><td>现代语言</td><td>C#、Scala、Groovy</td></tr>
+<tr><td>2010s</td><td>系统语言复兴</td><td>Go、Rust、Swift、Kotlin、TypeScript</td></tr>
+<tr><td>2020s</td><td>AI 辅助编程</td><td>Copilot、Cursor、AI Agent</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="12-语言的层次"><a class="header" href="#12-语言的层次">1.2 语言的层次</a></h3>
+<p>编程语言按抽象层次可分为：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>层次</th><th>说明</th><th>代表</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>机器码</strong></td><td>CPU 直接执行的二进制指令</td><td>0x89 0xC3</td></tr>
+<tr><td><strong>汇编语言</strong></td><td>机器码的符号化表示</td><td>x86 ASM、ARM ASM</td></tr>
+<tr><td><strong>低级语言</strong></td><td>接近硬件，手动管理内存</td><td>C、Zig</td></tr>
+<tr><td><strong>中级语言</strong></td><td>兼顾性能与抽象</td><td>C++、Rust、Go</td></tr>
+<tr><td><strong>高级语言</strong></td><td>高度抽象，易于使用</td><td>Python、JavaScript、Ruby</td></tr>
+<tr><td><strong>领域特定语言（DSL）</strong></td><td>针对特定领域设计</td><td>SQL、Regex、HTML/CSS</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="二编程范式"><a class="header" href="#二编程范式">二、编程范式</a></h2>
+<p>编程范式（Programming Paradigm）是编程的基本风格和方法论，决定了代码的组织和思维方式。</p>
+<h3 id="21-命令式编程"><a class="header" href="#21-命令式编程">2.1 命令式编程</a></h3>
+<p>命令式编程通过一系列语句显式描述<strong>如何做</strong>，逐步改变程序状态。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 命令式：计算数组元素之和
+fn sum_imperative(arr: &amp;[i32]) -&gt; i32 {
+    let mut total = 0;
+    for &amp;x in arr {
+        total += x;
+    }
+    total
+}
+<span class="boring">}</span></code></pre>
+<p>C、Pascal、BASIC 是典型的命令式语言。</p>
+<h3 id="22-面向对象编程oop"><a class="header" href="#22-面向对象编程oop">2.2 面向对象编程（OOP）</a></h3>
+<p>面向对象编程将数据和操作数据的方法封装在<strong>对象</strong>中，通过对象之间的交互来构建程序。核心概念包括：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>封装</strong></td><td>隐藏内部实现细节，暴露公共接口</td></tr>
+<tr><td><strong>继承</strong></td><td>子类复用父类的属性和方法</td></tr>
+<tr><td><strong>多态</strong></td><td>同一接口在不同对象上有不同实现</td></tr>
+</tbody>
+</table>
+</div>
+<p>Java、C#、C++ 是典型的 OOP 语言。Rust 使用 trait 而非传统继承来实现多态。</p>
+<h3 id="23-函数式编程"><a class="header" href="#23-函数式编程">2.3 函数式编程</a></h3>
+<p>函数式编程将计算视为<strong>数学函数的求值</strong>，强调不可变数据和纯函数（无副作用）。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 函数式：计算数组元素之和
+fn sum_functional(arr: &amp;[i32]) -&gt; i32 {
+    arr.iter().sum()
+}
+
+// 函数式风格：链式操作
+fn process(data: &amp;[i32]) -&gt; Vec&lt;i32&gt; {
+    data.iter()
+        .filter(|&amp;&amp;x| x &gt; 0)          // 筛选正数
+        .map(|&amp;x| x * x)               // 求平方
+        .take(10)                       // 取前 10 个
+        .collect()                      // 收集结果
+}
+<span class="boring">}</span></code></pre>
+<p>Haskell、Erlang、Clojure 是纯函数式语言。Rust、Scala、Swift 融合了函数式特性。</p>
+<h3 id="24-逻辑编程"><a class="header" href="#24-逻辑编程">2.4 逻辑编程</a></h3>
+<p>逻辑编程通过定义<strong>事实和规则</strong>来描述问题，由推理引擎自动求解。Prolog 是最著名的逻辑编程语言。</p>
+<h3 id="25-范式对比"><a class="header" href="#25-范式对比">2.5 范式对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>范式</th><th>核心思想</th><th>优势</th><th>劣势</th></tr>
+</thead>
+<tbody>
+<tr><td>命令式</td><td>逐步指令</td><td>直观、高效</td><td>代码冗长、易出错</td></tr>
+<tr><td>面向对象</td><td>对象封装</td><td>易于建模复杂系统</td><td>过度抽象、继承层级过深</td></tr>
+<tr><td>函数式</td><td>纯函数、不可变</td><td>易于并发、可测试</td><td>学习曲线陡峭</td></tr>
+<tr><td>逻辑式</td><td>规则推理</td><td>声明式、自动求解</td><td>适用范围有限</td></tr>
+</tbody>
+</table>
+</div>
+<p>现代语言大多支持多范式融合，Rust 就是典型的命令式 + 函数式 + 泛型编程的混合体。</p>
+<hr>
+<h2 id="三主流编程语言巡礼"><a class="header" href="#三主流编程语言巡礼">三、主流编程语言巡礼</a></h2>
+<h3 id="31-系统级语言"><a class="header" href="#31-系统级语言">3.1 系统级语言</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>语言</th><th>诞生年份</th><th>核心特性</th><th>典型应用</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>C</strong></td><td>1972</td><td>极简、高效、贴近硬件</td><td>操作系统内核、嵌入式、驱动</td></tr>
+<tr><td><strong>C++</strong></td><td>1985</td><td>多范式、零成本抽象</td><td>游戏引擎、浏览器、高频交易</td></tr>
+<tr><td><strong>Rust</strong></td><td>2015</td><td>内存安全、所有权系统、无 GC</td><td>系统工具、WebAssembly、区块链</td></tr>
+<tr><td><strong>Go</strong></td><td>2009</td><td>简洁、goroutine 并发、快速编译</td><td>微服务、云基础设施、DevOps 工具</td></tr>
+<tr><td><strong>Zig</strong></td><td>2016</td><td>无隐藏控制流、编译期计算</td><td>嵌入式、替代 C 的系统编程</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="rust-的核心优势"><a class="header" href="#rust-的核心优势">Rust 的核心优势</a></h4>
+<p>Rust 通过**所有权系统（Ownership）**在编译期保证内存安全，无需垃圾回收（GC）：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn ownership_demo() {
+    let s1 = String::from("hello");
+    let s2 = s1; // s1 的所有权转移到 s2，s1 不再可用
+    // println!("{}", s1); // 编译错误！s1 已被移动
+    println!("{}", s2); // 正常：s2 拥有所有权
+}
+
+fn borrow_demo() {
+    let s = String::from("hello");
+    let r1 = &amp;s;      // 不可变借用：只读
+    let r2 = &amp;s;      // 可以同时有多个不可变借用
+    println!("{}, {}", r1, r2);
+    // let r3 = &amp;mut s; // 编译错误！存在不可变借用时不能可变借用
+}
+<span class="boring">}</span></code></pre>
+<h3 id="32-应用级语言"><a class="header" href="#32-应用级语言">3.2 应用级语言</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>语言</th><th>诞生年份</th><th>核心特性</th><th>典型应用</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Java</strong></td><td>1995</td><td>跨平台（JVM）、强类型、企业生态</td><td>企业后端、Android 应用</td></tr>
+<tr><td><strong>C#</strong></td><td>2000</td><td>.NET 平台、语法优雅、游戏开发</td><td>Windows 应用、Unity 游戏</td></tr>
+<tr><td><strong>Python</strong></td><td>1991</td><td>语法简洁、生态丰富、胶水语言</td><td>AI/ML、数据分析、脚本自动化</td></tr>
+<tr><td><strong>JavaScript</strong></td><td>1995</td><td>浏览器原生、事件驱动、全栈</td><td>Web 前端、Node.js 后端</td></tr>
+<tr><td><strong>TypeScript</strong></td><td>2012</td><td>JavaScript + 类型系统</td><td>大型 Web 应用</td></tr>
+<tr><td><strong>Kotlin</strong></td><td>2011</td><td>与 Java 互操作、简洁安全</td><td>Android 开发、后端</td></tr>
+<tr><td><strong>Swift</strong></td><td>2014</td><td>Apple 生态、安全、现代语法</td><td>iOS/macOS 应用</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="33-脚本与动态语言"><a class="header" href="#33-脚本与动态语言">3.3 脚本与动态语言</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>语言</th><th>特点</th><th>典型应用</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Python</strong></td><td>可读性强、库极其丰富</td><td>科学计算、AI、自动化</td></tr>
+<tr><td><strong>Ruby</strong></td><td>开发者友好、Rails 框架</td><td>Web 开发</td></tr>
+<tr><td><strong>Perl</strong></td><td>正则表达式强大</td><td>文本处理、系统管理</td></tr>
+<tr><td><strong>Lua</strong></td><td>极轻量、易嵌入</td><td>游戏脚本、配置</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="34-函数式语言"><a class="header" href="#34-函数式语言">3.4 函数式语言</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>语言</th><th>特点</th><th>典型应用</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Haskell</strong></td><td>纯函数式、惰性求值、强类型系统</td><td>编译器、形式化验证</td></tr>
+<tr><td><strong>Erlang</strong></td><td>容错、热更新、Actor 模型</td><td>电信系统、即时通讯</td></tr>
+<tr><td><strong>Elixir</strong></td><td>Erlang VM 上的现代语言</td><td>Web 应用、分布式系统</td></tr>
+<tr><td><strong>Clojure</strong></td><td>Lisp 方言、运行在 JVM 上</td><td>数据处理、并发编程</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="35-语言选择的考量"><a class="header" href="#35-语言选择的考量">3.5 语言选择的考量</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>因素</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>性能需求</strong></td><td>实时系统选 C/C++/Rust；一般应用选 Java/Go；脚本选 Python</td></tr>
+<tr><td><strong>团队技能</strong></td><td>选择团队熟悉或容易招聘的语言</td></tr>
+<tr><td><strong>生态与库</strong></td><td>库和框架的丰富程度直接影响开发效率</td></tr>
+<tr><td><strong>平台限制</strong></td><td>iOS 选 Swift，Android 选 Kotlin，嵌入式选 C/Rust</td></tr>
+<tr><td><strong>长期维护</strong></td><td>类型系统强的语言更适合大型项目长期维护</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="四软件工程"><a class="header" href="#四软件工程">四、软件工程</a></h2>
+<h3 id="41-软件开发生命周期"><a class="header" href="#41-软件开发生命周期">4.1 软件开发生命周期</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>阶段</th><th>活动</th><th>产出</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>需求分析</strong></td><td>明确要做什么</td><td>需求文档</td></tr>
+<tr><td><strong>设计</strong></td><td>决定怎么做</td><td>架构设计、接口定义</td></tr>
+<tr><td><strong>编码</strong></td><td>将设计转化为代码</td><td>源代码</td></tr>
+<tr><td><strong>测试</strong></td><td>验证正确性</td><td>测试报告</td></tr>
+<tr><td><strong>部署</strong></td><td>交付给用户</td><td>运行环境</td></tr>
+<tr><td><strong>维护</strong></td><td>修复问题、迭代更新</td><td>补丁、新版本</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="42-设计原则"><a class="header" href="#42-设计原则">4.2 设计原则</a></h3>
+<p><strong>SOLID 原则</strong>是面向对象设计的五大原则：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>原则</th><th>名称</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>S</strong></td><td>单一职责（SRP）</td><td>一个类只做一件事</td></tr>
+<tr><td><strong>O</strong></td><td>开闭原则（OCP）</td><td>对扩展开放，对修改关闭</td></tr>
+<tr><td><strong>L</strong></td><td>里氏替换（LSP）</td><td>子类可以替换父类而不破坏程序行为</td></tr>
+<tr><td><strong>I</strong></td><td>接口隔离（ISP）</td><td>不强迫实现不需要的接口</td></tr>
+<tr><td><strong>D</strong></td><td>依赖倒置（DIP）</td><td>依赖抽象而非具体实现</td></tr>
+</tbody>
+</table>
+</div>
+<p>其他重要原则：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>原则</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>DRY</strong>（Don’t Repeat Yourself）</td><td>避免重复代码</td></tr>
+<tr><td><strong>KISS</strong>（Keep It Simple, Stupid）</td><td>保持简单</td></tr>
+<tr><td><strong>YAGNI</strong>（You Aren’t Gonna Need It）</td><td>不要过度设计，只实现当前需要的</td></tr>
+<tr><td><strong>关注点分离</strong></td><td>将不同职责的代码分离到不同模块</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="43-代码质量"><a class="header" href="#43-代码质量">4.3 代码质量</a></h3>
+<p>好代码的标准：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>标准</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>可读性</strong></td><td>命名清晰、结构合理、他人能快速理解</td></tr>
+<tr><td><strong>可维护性</strong></td><td>易于修改和扩展，修改不会引入新 bug</td></tr>
+<tr><td><strong>可测试性</strong></td><td>便于编写自动化测试</td></tr>
+<tr><td><strong>性能</strong></td><td>在满足正确性的前提下高效运行</td></tr>
+<tr><td><strong>安全性</strong></td><td>防御注入、越权、内存泄漏等安全风险</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 差代码：命名模糊、逻辑混乱
+fn f(a: &amp;[i32]) -&gt; i32 {
+    let mut r = 0;
+    for i in 0..a.len() { if a[i] &gt; r { r = a[i]; } }
+    r
+}
+
+// 好代码：命名清晰、意图明确
+fn find_highest_score(scores: &amp;[i32]) -&gt; Option&lt;i32&gt; {
+    scores.iter().max().copied()
+}
+<span class="boring">}</span></code></pre>
+<h3 id="44-架构模式"><a class="header" href="#44-架构模式">4.4 架构模式</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>模式</th><th>说明</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>单体架构</strong></td><td>所有功能在一个进程中</td><td>小型项目、快速原型</td></tr>
+<tr><td><strong>微服务</strong></td><td>拆分为独立服务，通过 API 通信</td><td>大型系统、团队协作</td></tr>
+<tr><td><strong>事件驱动</strong></td><td>通过事件/消息异步通信</td><td>高并发、解耦系统</td></tr>
+<tr><td><strong>CQRS</strong></td><td>读写分离，命令与查询独立模型</td><td>复杂业务逻辑</td></tr>
+<tr><td><strong>Serverless</strong></td><td>函数即服务，按需执行</td><td>轻量任务、突发流量</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="五版本控制与-git"><a class="header" href="#五版本控制与-git">五、版本控制与 Git</a></h2>
+<h3 id="51-版本控制的意义"><a class="header" href="#51-版本控制的意义">5.1 版本控制的意义</a></h3>
+<p>版本控制系统（VCS）记录文件的变更历史，使团队能够协同开发、回溯历史、并行工作。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型</th><th>代表</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td>集中式</td><td>SVN、CVS</td><td>单一中央仓库，依赖网络</td></tr>
+<tr><td>分布式</td><td>Git、Mercurial</td><td>每个开发者拥有完整仓库副本</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="52-git-核心概念"><a class="header" href="#52-git-核心概念">5.2 Git 核心概念</a></h3>
+<p>Git 是目前最主流的版本控制系统，由 Linux 之父 Linus Torvalds 于 2005 年创建。</p>
+<pre><code class="language-text">工作区（Working Directory）
+    ↓ git add
+暂存区（Staging Area / Index）
+    ↓ git commit
+本地仓库（Local Repository）
+    ↓ git push
+远程仓库（Remote Repository）
+</code></pre>
+<h3 id="53-git-常用命令"><a class="header" href="#53-git-常用命令">5.3 Git 常用命令</a></h3>
+<pre><code class="language-bash"># 初始化与克隆
+git init                    # 初始化仓库
+git clone &lt;url&gt;             # 克隆远程仓库
+
+# 日常操作
+git status                  # 查看状态
+git add .                   # 添加所有变更到暂存区
+git commit -m "描述信息"     # 提交
+git log --oneline           # 查看精简提交历史
+
+# 分支
+git branch feature          # 创建分支
+git checkout feature        # 切换分支
+git checkout -b feature     # 创建并切换分支
+git merge feature           # 合并分支
+
+# 远程协作
+git remote add origin &lt;url&gt; # 添加远程仓库
+git push origin main        # 推送到远程
+git pull origin main        # 拉取远程更新
+
+# 撤销与修复
+git revert &lt;commit&gt;         # 创建新提交来撤销指定提交
+git rebase -i HEAD~3        # 交互式变基（整理最近 3 个提交）
+</code></pre>
+<h3 id="54-分支策略"><a class="header" href="#54-分支策略">5.4 分支策略</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>策略</th><th>说明</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Git Flow</strong></td><td>main/develop/feature/release/hotfix 五类分支</td><td>有发布周期的项目</td></tr>
+<tr><td><strong>GitHub Flow</strong></td><td>只有 main + feature 分支</td><td>持续部署的项目</td></tr>
+<tr><td><strong>Trunk Based</strong></td><td>所有人在 main 上开发</td><td>小团队、高频发布</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="55-提交信息规范"><a class="header" href="#55-提交信息规范">5.5 提交信息规范</a></h3>
+<p>好的提交信息应当清晰描述变更内容：</p>
+<pre><code class="language-text">&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;
+
+type: feat(新功能) | fix(修复) | docs(文档) | refactor(重构) | test(测试) | chore(杂项)
+scope: 影响范围（可选）
+subject: 简短描述
+</code></pre>
+<p>示例：</p>
+<pre><code class="language-text">feat(auth): 添加 JWT Token 刷新机制
+fix(parser): 修复 Unicode 字符解析错误
+docs(readme): 更新安装指南
+</code></pre>
+<hr>
+<h2 id="六测试"><a class="header" href="#六测试">六、测试</a></h2>
+<h3 id="61-测试层次"><a class="header" href="#61-测试层次">6.1 测试层次</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>层次</th><th>说明</th><th>比例（测试金字塔）</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>单元测试</strong></td><td>测试单个函数或模块</td><td>最多（约 70%）</td></tr>
+<tr><td><strong>集成测试</strong></td><td>测试模块间的交互</td><td>中等（约 20%）</td></tr>
+<tr><td><strong>端到端测试</strong></td><td>测试完整用户流程</td><td>最少（约 10%）</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="62-rust-中的测试"><a class="header" href="#62-rust-中的测试">6.2 Rust 中的测试</a></h3>
+<p>Rust 内置了强大的测试框架：</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 单元测试：与源代码在同一文件
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_add() {
+        assert_eq!(add(2, 3), 5);
+    }
+
+    #[test]
+    fn test_divide_by_zero() {
+        assert!(safe_divide(10, 0).is_none());
+    }
+
+    #[test]
+    #[should_panic(expected = "index out of bounds")]
+    fn test_panic() {
+        let v: Vec&lt;i32&gt; = vec![];
+        let _ = v[0]; // 应当 panic
+    }
+}
+<span class="boring">}</span></code></pre>
+<pre><code class="language-bash">cargo test              # 运行所有测试
+cargo test test_add     # 运行指定测试
+cargo test -- --nocapture  # 显示 println! 输出
+</code></pre>
+<h3 id="63-测试驱动开发tdd"><a class="header" href="#63-测试驱动开发tdd">6.3 测试驱动开发（TDD）</a></h3>
+<p>TDD 是一种先写测试、再写实现代码的开发方法：</p>
+<ol>
+<li><strong>Red</strong>：写一个会失败的测试</li>
+<li><strong>Green</strong>：写最少的代码让测试通过</li>
+<li><strong>Refactor</strong>：重构代码，保持测试通过</li>
+</ol>
+<hr>
+<h2 id="七持续集成与持续部署cicd"><a class="header" href="#七持续集成与持续部署cicd">七、持续集成与持续部署（CI/CD）</a></h2>
+<h3 id="71-cicd-的概念"><a class="header" href="#71-cicd-的概念">7.1 CI/CD 的概念</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>术语</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>CI（持续集成）</strong></td><td>开发者频繁合并代码到主干，自动运行构建和测试</td></tr>
+<tr><td><strong>CD（持续交付）</strong></td><td>代码随时可部署到生产环境</td></tr>
+<tr><td><strong>CD（持续部署）</strong></td><td>每次通过测试后自动部署到生产环境</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="72-典型-cicd-流水线"><a class="header" href="#72-典型-cicd-流水线">7.2 典型 CI/CD 流水线</a></h3>
+<pre><code class="language-text">代码提交 → 代码检查（lint） → 编译构建 → 单元测试 → 集成测试
+    → 构建镜像 → 部署到测试环境 → 端到端测试 → 部署到生产环境
+</code></pre>
+<h3 id="73-github-actions-示例"><a class="header" href="#73-github-actions-示例">7.3 GitHub Actions 示例</a></h3>
+<pre><code class="language-yaml">name: CI
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo build --release
+      - run: cargo test
+      - run: cargo clippy -- -D warnings
+</code></pre>
+<hr>
+<h2 id="八开源"><a class="header" href="#八开源">八、开源</a></h2>
+<h3 id="81-开源运动简史"><a class="header" href="#81-开源运动简史">8.1 开源运动简史</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>时间</th><th>事件</th></tr>
+</thead>
+<tbody>
+<tr><td>1983</td><td>Richard Stallman 发起 GNU 项目，倡导自由软件</td></tr>
+<tr><td>1985</td><td>自由软件基金会（FSF）成立</td></tr>
+<tr><td>1991</td><td>Linus Torvalds 发布 Linux 内核</td></tr>
+<tr><td>1998</td><td>“开源”（Open Source）一词正式提出；OSI 成立</td></tr>
+<tr><td>2005</td><td>Git 诞生，GitHub 于 2008 年上线</td></tr>
+<tr><td>2014</td><td>微软宣布拥抱开源（“Microsoft loves Linux”）</td></tr>
+<tr><td>2018</td><td>微软收购 GitHub</td></tr>
+<tr><td>2020s</td><td>开源成为软件行业的主流开发模式</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="82-开源许可证"><a class="header" href="#82-开源许可证">8.2 开源许可证</a></h3>
+<p>选择许可证决定了他人如何使用你的代码：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>许可证</th><th>类型</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>MIT</strong></td><td>宽松</td><td>几乎无限制，只需保留版权声明</td></tr>
+<tr><td><strong>Apache 2.0</strong></td><td>宽松</td><td>类似 MIT，额外提供专利保护</td></tr>
+<tr><td><strong>BSD</strong></td><td>宽松</td><td>类似 MIT，有 2 条款和 3 条款版本</td></tr>
+<tr><td><strong>GPL 3.0</strong></td><td>Copyleft</td><td>衍生作品也必须开源</td></tr>
+<tr><td><strong>AGPL 3.0</strong></td><td>Copyleft</td><td>网络服务也必须开源</td></tr>
+<tr><td><strong>MPL 2.0</strong></td><td>混合</td><td>文件级 Copyleft，可与闭源代码混合</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>选择指南：</strong></p>
+<ul>
+<li>想最大化使用范围 → MIT 或 Apache 2.0</li>
+<li>想确保衍生作品也开源 → GPL</li>
+<li>想文件级保护 → MPL 2.0</li>
+</ul>
+<h3 id="83-参与开源"><a class="header" href="#83-参与开源">8.3 参与开源</a></h3>
+<p>参与开源项目的常见方式：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方式</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>报告 Bug</strong></td><td>在 Issue 中清晰描述问题</td></tr>
+<tr><td><strong>提交 PR</strong></td><td>修复 Bug、添加功能、改进文档</td></tr>
+<tr><td><strong>代码审查</strong></td><td>帮助审查他人的 PR</td></tr>
+<tr><td><strong>文档贡献</strong></td><td>编写教程、翻译、API 文档</td></tr>
+<tr><td><strong>社区支持</strong></td><td>在论坛、Discord 中帮助其他用户</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>开源协作流程（Fork &amp; Pull）：</strong></p>
+<pre><code class="language-bash"># 1. Fork 仓库（在 GitHub 上点击 Fork）
+# 2. 克隆自己的 Fork
+git clone https://github.com/yourname/project.git
+cd project
+
+# 3. 创建功能分支
+git checkout -b fix-typo
+
+# 4. 修改代码并提交
+git add .
+git commit -m "fix: 修正 README 中的拼写错误"
+
+# 5. 推送并发起 Pull Request
+git push origin fix-typo
+# 在 GitHub 上创建 PR，等待维护者审查合并
+</code></pre>
+<h3 id="84-著名的开源项目"><a class="header" href="#84-著名的开源项目">8.4 著名的开源项目</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>项目</th><th>语言</th><th>影响</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Linux</strong></td><td>C</td><td>支撑全球 90%+ 的服务器和所有 Android 手机</td></tr>
+<tr><td><strong>Git</strong></td><td>C</td><td>全球最广泛使用的版本控制系统</td></tr>
+<tr><td><strong>VS Code</strong></td><td>TypeScript</td><td>最受欢迎的代码编辑器</td></tr>
+<tr><td><strong>React</strong></td><td>JavaScript</td><td>改变了前端开发范式</td></tr>
+<tr><td><strong>TensorFlow/PyTorch</strong></td><td>Python/C++</td><td>AI 领域的核心基础设施</td></tr>
+<tr><td><strong>Rust</strong></td><td>Rust</td><td>连续多年最受喜爱的编程语言</td></tr>
+<tr><td><strong>Kubernetes</strong></td><td>Go</td><td>容器编排的事实标准</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="九编程的未来趋势"><a class="header" href="#九编程的未来趋势">九、编程的未来趋势</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>趋势</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>AI 辅助编程</strong></td><td>大语言模型成为编程助手，生成、审查、调试代码</td></tr>
+<tr><td><strong>低代码/无代码</strong></td><td>可视化搭建应用，降低编程门槛</td></tr>
+<tr><td><strong>WebAssembly</strong></td><td>在浏览器中运行任意语言编写的高性能程序</td></tr>
+<tr><td><strong>量子编程</strong></td><td>面向量子计算机的新型编程范式</td></tr>
+<tr><td><strong>形式化验证</strong></td><td>用数学方法证明程序的正确性</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="十总结与练习"><a class="header" href="#十总结与练习">十、总结与练习</a></h2>
+<h3 id="本章小结"><a class="header" href="#本章小结">本章小结</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>知识点</th><th>要点</th></tr>
+</thead>
+<tbody>
+<tr><td>编程语言演化</td><td>从机器码到高级语言，从单一范式到多范式融合</td></tr>
+<tr><td>编程范式</td><td>命令式、面向对象、函数式、逻辑式各有优劣</td></tr>
+<tr><td>主流语言</td><td>C/C++/Rust（系统级）、Java/Go/Python（应用级）、JS/TS（Web）</td></tr>
+<tr><td>软件工程</td><td>SOLID 原则、DRY/KISS、架构模式</td></tr>
+<tr><td>版本控制</td><td>Git 是协作开发的基石，分支策略和提交规范提升团队效率</td></tr>
+<tr><td>测试</td><td>单元/集成/端到端测试构成测试金字塔，TDD 驱动高质量代码</td></tr>
+<tr><td>CI/CD</td><td>自动化构建、测试、部署，提升交付效率和质量</td></tr>
+<tr><td>开源</td><td>MIT/Apache/GPL 等许可证，Fork &amp; Pull 是主流协作模式</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
+<ol>
+<li><strong>语言对比</strong>：选择一种你熟悉的语言，分别用命令式和函数式风格实现同一个算法（如快速排序），体会范式差异。</li>
+<li><strong>Git 实战</strong>：创建一个 Git 仓库，模拟多人协作：创建分支、提交代码、合并、解决冲突。</li>
+<li><strong>编写单元测试</strong>：为一个简单的函数（如字符串解析器）编写至少 5 个单元测试，覆盖正常、边界和异常情况。</li>
+<li><strong>搭建 CI/CD</strong>：在 GitHub 上创建一个 Rust 项目，配置 GitHub Actions 自动运行 <code>cargo test</code> 和 <code>cargo clippy</code>。</li>
+<li><strong>开源许可证选择</strong>：为一个假想的项目分析需求，选择最合适的开源许可证并说明理由。</li>
+<li><strong>贡献开源</strong>：在 GitHub 上找一个你感兴趣的开源项目，阅读其贡献指南，尝试提交一个文档改进或 Bug 修复的 PR。</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_55_data_mining.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_57_number_theory.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_55_data_mining.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_57_number_theory.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

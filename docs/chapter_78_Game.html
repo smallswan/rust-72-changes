@@ -49,10 +49,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-f08b2010.js"></script>
+        <script src="toc-545e538a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -240,6 +240,26 @@
 <p>比较幂、对数、三角函数的大小。</p>
 <p><strong>玩法：</strong> 玩家身处一个由多个方形密室组成的迷宫。每个密室四面墙各有一道门，其中一道门通往相邻密室，其余 3 道是假出口。玩家通过回答比较大小问题打开谜题的门。</p>
 <p><strong>规则：</strong> 回答正确即可开门，答错密室空间自动缩小。</p>
+<p>下面用 Rust 模拟“比较大小”关卡的核心判题逻辑：</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    // 题目：比较 a = 2^0.5, b = 0.5^2, c = log2(3) 的大小
+    let a = 2.0_f64.powf(0.5); // ≈ 1.414
+    let b = 0.5_f64.powi(2);   // = 0.25
+    let c = 3.0_f64.log2();    // ≈ 1.585
+
+    let mut items = [("a=2^0.5", a), ("b=0.5^2", b), ("c=log2(3)", c)];
+    items.sort_by(|x, y| x.1.partial_cmp(&amp;y.1).unwrap());
+
+    print!("从小到大：");
+    for (i, (name, val)) in items.iter().enumerate() {
+        if i &gt; 0 {
+            print!(" &lt; ");
+        }
+        print!("{}({:.3})", name, val);
+    }
+    println!();
+    // 正确答案：b &lt; a &lt; c
+}</code></pre>
 <h3 id="42-关卡2矩阵与向量"><a class="header" href="#42-关卡2矩阵与向量">4.2 关卡2：矩阵与向量</a></h3>
 <p>矩阵对向量的运算（旋转、缩放、平移、剪切）。</p>
 <p><strong>玩法：</strong> 玩家身处湖中有机关的桥墩上。桥墩上有一个矩阵机关，玩家需要将方形石块放置到矩阵的各个位置上，触发桥梁（向量）进行旋转、缩放、平移、剪切，从而连接到其他桥墩，最终到达岸边。</p>
@@ -281,6 +301,24 @@ bevy = "0.14"
 <hr>
 <h2 id="六猜想"><a class="header" href="#六猜想">六、猜想</a></h2>
 <p><strong>克拉茨猜想（3n+1 猜想）：</strong> 任取一正整数，若为偶数则除以 2，若为奇数则乘以 3 再加 1，重复操作，最终总会落入 4→2→1 的循环。至今未被证明。</p>
+<pre class="playground"><code class="language-rust edition2024">fn collatz(mut n: u64) -&gt; (u64, Vec&lt;u64&gt;) {
+    let mut path = vec![n];
+    let mut steps = 0;
+    while n != 1 {
+        n = if n % 2 == 0 { n / 2 } else { 3 * n + 1 };
+        path.push(n);
+        steps += 1;
+    }
+    (steps, path)
+}
+
+fn main() {
+    let start = 27;
+    let (steps, path) = collatz(start);
+    println!("从 {} 出发，经过 {} 步落入 1", start, steps); // 111 步
+    let preview = &amp;path[..12.min(path.len())];
+    println!("序列前 12 项：{:?} ...", preview);
+}</code></pre>
 <hr>
 <h2 id="七微积分书籍推荐"><a class="header" href="#七微积分书籍推荐">七、微积分书籍推荐</a></h2>
 <div class="table-wrapper">
@@ -336,6 +374,142 @@ bevy = "0.14"
 <li><a href="https://leetcode.cn">LeetCode</a> — 算法练习</li>
 <li><a href="https://www.kaggle.com/">Kaggle</a> — 数据科学竞赛</li>
 </ul>
+<h2 id="十ai落地"><a class="header" href="#十ai落地">十、AI落地</a></h2>
+<p>将AI应用到生产领域，是一个从“能做Demo”到“能稳定交付”的系统性工程。这不仅仅是调用一个API，更涉及架构设计、数据治理、安全合规、持续运维等一系列工程化问题。</p>
+<p>根据当前行业的最佳实践，这个过程可以从以下三个层面来系统性地学习和实践。</p>
+<h3 id="-第一步理解ai进入生产的三种路径"><a class="header" href="#-第一步理解ai进入生产的三种路径">🧭 第一步：理解AI进入生产的三种路径</a></h3>
+<p>并非所有AI应用都要一步到位实现完全自动化。根据风险、场景和数据成熟度，AI进入生产通常有三种路径。</p>
+<ol>
+<li>
+<p><strong>Copilot模式（辅助增强）</strong>：这是最务实、最成熟的起点。AI作为“副驾驶”，提供建议和分析，最终决策权仍在人类手中。</p>
+<ul>
+<li><strong>典型场景</strong>：
+<ul>
+<li><strong>故障诊断与维修指导</strong>：设备报警时，AI自动分析数据、检索历史，生成诊断报告和建议。</li>
+<li><strong>生产排程优化</strong>：AI综合考虑订单、设备、物料等多变量生成优化计划，供人工确认。</li>
+<li><strong>自动化报告生成</strong>：AI自动从MES、ERP等系统拉取数据，生成品质周报，将工程师数小时的工作缩短至几分钟。</li>
+</ul>
+</li>
+<li><strong>优势</strong>：安全可控，风险低，易于起步。</li>
+</ul>
+</li>
+<li>
+<p><strong>自治模式（封闭场景自主决策）</strong>：在边界清晰、规则明确的封闭场景中，AI被赋予自主决策和执行权。</p>
+<ul>
+<li><strong>典型场景</strong>：
+<ul>
+<li><strong>仓储物流机器人</strong>：AI自主规划路径、调度AGV（自动导引车）完成搬运任务。</li>
+<li><strong>AI视觉质检</strong>：AI自主完成产品外观缺陷的检测、分类和分拣，速度和精度超过人类。</li>
+</ul>
+</li>
+<li><strong>关键</strong>：场景必须高度封闭，输入输出明确，异常处理有预案，风险完全可控。</li>
+</ul>
+</li>
+<li>
+<p><strong>混合模式（分层自治与人机协同）</strong>：这是目前最被看好的方向。它将系统划分为不同层级，低层级（如具体操作）由AI自主完成，高层级（如任务分配、复杂决策）由人类负责，形成高效协同。</p>
+</li>
+</ol>
+<h3 id="-第二步掌握从概念到生产的工程化实践"><a class="header" href="#-第二步掌握从概念到生产的工程化实践">🛠️ 第二步：掌握从概念到生产的工程化实践</a></h3>
+<p>将AI应用推向生产，需要一套超越Demo的工程化思维。</p>
+<h4 id="-思维转变ai应用不是传统软件"><a class="header" href="#-思维转变ai应用不是传统软件">💡 思维转变：AI应用不是传统软件</a></h4>
+<p>AI应用（特别是基于大模型的智能体）有三个根本不同点，导致传统开发和运维方法失效：</p>
+<ul>
+<li><strong>输出不确定</strong>：大模型是概率模型，同样输入可能得到不同输出。</li>
+<li><strong>Prompt即代码</strong>：对Prompt的修改会像代码变更一样影响行为，却缺乏严格的版本管理和测试。</li>
+<li><strong>依赖会变化</strong>：依赖的云端大模型会悄无声息地更新，导致你的应用行为发生变化。</li>
+</ul>
+<h4 id="-核心方法论以评估驱动的闭环"><a class="header" href="#-核心方法论以评估驱动的闭环">⚙️ 核心方法论：以评估驱动的闭环</a></h4>
+<p>亚马逊云科技发布的《企业生产级智能体开发部署指南》提出了一个核心解法：<strong>将“评估”置于开发全生命周期的起点</strong>。</p>
+<p>这是一个<strong>六步闭环</strong>：<strong>定义标准 → 构建 → 评估 → 灰度上线 → 持续监控 → 问题回流</strong>。每一次迭代都让系统更可靠，生产环境的问题会变成下一轮优化的起点。</p>
+<h4 id="-关键实践构建生产级ai应用的要点"><a class="header" href="#-关键实践构建生产级ai应用的要点">🏗️ 关键实践：构建生产级AI应用的要点</a></h4>
+<ol>
+<li>
+<p><strong>架构设计</strong>：</p>
+<ul>
+<li><strong>从单体到多智能体（Multi-Agent）</strong>：对于复杂任务，采用多智能体协作架构。例如，一个“Planner Agent”负责任务拆分，然后分配给专门的“数据Agent”、“知识库Agent”等分别执行。</li>
+<li><strong>分层记忆管理</strong>：不要将所有历史对话都塞进Prompt。应建立<strong>短期记忆</strong>（当前会话）、<strong>中期记忆</strong>（向量数据库存储的用户偏好等）和<strong>长期记忆</strong>（核心业务实体数据库）的分层架构。</li>
+</ul>
+</li>
+<li>
+<p><strong>工具与数据治理</strong>：</p>
+<ul>
+<li><strong>工具治理</strong>：为Agent调用的API建立<strong>版本管理</strong>、<strong>幂等机制</strong>（避免重复执行）和<strong>熔断机制</strong>（防止故障蔓延）。</li>
+<li><strong>数据治理</strong>：这是AI发挥效用的前提。需要将分散在MES、ERP、Excel、PDF等不同系统中的数据统一接入，转化为AI可理解的格式。</li>
+</ul>
+</li>
+<li>
+<p><strong>评估与可观测性</strong>：</p>
+<ul>
+<li><strong>让评估成为基础设施</strong>：从项目第一天起，就要准备一套覆盖常见和边缘情况的<strong>基准数据集</strong>，用以衡量每次改动带来的效果变化。</li>
+<li><strong>让系统可观测</strong>：从第一天就接入追踪手段，将Agent的每一步（调用了什么模型、工具、参数）都结构化地记录下来。</li>
+</ul>
+</li>
+<li>
+<p><strong>安全与可靠性</strong>：</p>
+<ul>
+<li><strong>人在回路（Human-in-the-Loop）</strong>：对于高风险操作（如调整化工厂反应釜温度），必须设置人工审批环节。</li>
+<li><strong>责任边界</strong>：明确AI能做什么、不能做什么，以及出错时的责任归属。</li>
+<li><strong>确定性任务分离</strong>：能用一行代码解决的（如数学计算、日期获取），就不要让大模型去做，既慢又不稳定。</li>
+</ul>
+</li>
+</ol>
+<h3 id="-第三步从行业案例中学习"><a class="header" href="#-第三步从行业案例中学习">🏭 第三步：从行业案例中学习</a></h3>
+<p>AI在生产领域的应用已经有很多成功案例。</p>
+<ul>
+<li><strong>京东方 (BOE)</strong>：在显示行业率先发布“AI工厂”，部署了<strong>缺陷管理智能体（ADM Agent）<strong>和</strong>良率管理智能体（AYM Agent）</strong>，贯通了从数据采集、检测、分析到改善的全链路。</li>
+<li><strong>TCL</strong>：其子公司TCL中环借助AI模型，实现了单人多机（<strong>384台</strong>）的远程操控；TCL华星发布了自研的“星智X-Intelligence3.0”大模型，用于产品开发。</li>
+<li><strong>中控技术</strong>：其TPT系统在万华化学的工厂中，将废液pH中和处理时长从<strong>5小时压缩至1小时</strong>，年节约综合成本超千万元。</li>
+<li><strong>国星光电</strong>：通过AI模型对LED产品进行智能化分档和异常预警，使<strong>试点产品光电参数一致性提升10%以上</strong>，<strong>异常响应时间缩短约98%</strong>。</li>
+<li><strong>浪潮集团</strong>：建立了国内首个人工智能模型工厂，将模型生产周期从<strong>90天缩短至20天</strong>。</li>
+<li><strong>永卓控股</strong>：在钢铁生产中上线了<strong>29个AI智能体</strong>、<strong>134项工业AI模型</strong>，覆盖从采购到销售的全链条。</li>
+</ul>
+<h3 id="-第四步系统性地学习"><a class="header" href="#-第四步系统性地学习">📚 第四步：系统性地学习</a></h3>
+<p>如果你想系统性地学习，可以参考以下路径：</p>
+<ol>
+<li>
+<p><strong>夯实基础</strong>：</p>
+<ul>
+<li>理解大模型基本原理、不同模型的能力边界。</li>
+<li>掌握Prompt Engineering、RAG（检索增强生成）等核心技术。</li>
+<li>了解向量数据库（如Milvus, Qdrant）的基本用法。</li>
+</ul>
+</li>
+<li>
+<p><strong>动手实践</strong>：</p>
+<ul>
+<li>从简单的“Copilot”类应用开始，例如用AI自动化生成周报。</li>
+<li>尝试使用Dify、Coze等低代码平台快速搭建原型。</li>
+<li>深入学习一个主流框架（如LangChain或LlamaIndex）。</li>
+</ul>
+</li>
+<li>
+<p><strong>关注工程化</strong>：</p>
+<ul>
+<li>学习如何构建可评估、可观测的AI系统。</li>
+<li>了解模型推理优化（如SGLang）、高并发与性能监控。</li>
+<li>关注CI/CD for AI（或GenAIOps），学习如何使用GitHub Actions等工具为AI应用构建持续集成和部署流水线。</li>
+</ul>
+</li>
+<li>
+<p><strong>利用优质资源</strong>：</p>
+<ul>
+<li>关注云厂商（如AWS、Azure、阿里云）发布的白皮书和指南。</li>
+<li>参与InfoQ等技术社区的相关大会和讨论。</li>
+</ul>
+</li>
+</ol>
+<h3 id="-总结"><a class="header" href="#-总结">💎 总结</a></h3>
+<p>将AI应用到生产，本质上是<strong>将前沿的AI能力与成熟的软件工程、系统工程方法论相结合</strong>的过程。成功的路径通常是：<strong>从一个边界清晰、风险可控的具体问题开始（如Copilot模式），在解决实际问题的过程中，逐步建立起评估、监控、治理等全套工程化体系</strong>。</p>
+<p>你目前所在的行业或正在考虑的具体场景是什么呢？如果方便分享，我可以为你提供更聚焦的落地思路和建议～</p>
+<p>git clone https://github.com/deepseek-ai/deepseek-harness.git
+cd deepseek-harness
+pnpm install          # 安装依赖，需先安装 pnpm
+pnpm run build        # 构建项目
+pnpm dsh web          # 启动 Web UI</p>
+<p><a href="https://prettier.io/">prettier</a></p>
+<p><a href="https://www.nocobase.com/cn/">NocoBase</a>  基于代码生成器的快速开发平台</p>
+<p>《DeepSeek Harness白皮书》
+https://electricitysheep.github.io/dsh-handbook/#/</p>
 
                     </main>
 

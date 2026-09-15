@@ -1,0 +1,7 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/geometry/480p15/partial_movie_files/UnrollCircle/1584795214_3331664465_223132457.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/geometry/480p15/partial_movie_files/UnrollCircle/4072820271_1321003560_139913798.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/geometry/480p15/partial_movie_files/UnrollCircle/4072820271_3046602102_2870917040.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/geometry/480p15/partial_movie_files/UnrollCircle/4072820271_945242265_2372309903.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/geometry/480p15/partial_movie_files/UnrollCircle/4072820271_648890638_1524800447.mp4'
+file 'file:C:/repositories/rust/rust-72-changes/src/rust/visualization/examples/manim/media/videos/geometry/480p15/partial_movie_files/UnrollCircle/4072820271_1839128356_1904175863.mp4'

@@ -49,10 +49,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-f08b2010.js"></script>
+        <script src="toc-545e538a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -241,27 +241,66 @@
 $$A \cap (B \cup C) = (A \cap B) \cup (A \cap C) \quad \text{（分配律）}$$
 $$\overline{A \cup B} = \bar{A} \cap \bar{B} \quad \text{（德摩根定律）}$$
 $$\overline{A \cap B} = \bar{A} \cup \bar{B} \quad \text{（德摩根定律）}$$</p>
-<pre class="playground"><code class="language-rust edition2024">use std::collections::{HashSet, BTreeSet};
+<pre class="playground"><code class="language-rust edition2024">use std::collections::BTreeSet;
 
 fn main() {
-    let a: HashSet&lt;i32&gt; = [1, 2, 3, 4].iter().cloned().collect();
-    let b: HashSet&lt;i32&gt; = [3, 4, 5, 6].iter().cloned().collect();
+    // 统一使用 BTreeSet
+    let a: BTreeSet&lt;i32&gt; = [1, 2, 3, 4].iter().cloned().collect();
+    let b: BTreeSet&lt;i32&gt; = [3, 4, 5, 6].iter().cloned().collect();
+    let c: BTreeSet&lt;i32&gt; = [4, 8, 12, 16].iter().cloned().collect();
 
-    // 并集
+    // 基本运算（并、交、差、对称差）——同上，类型全部一致
     let union: BTreeSet&lt;_&gt; = a.union(&amp;b).cloned().collect();
-    println!("A ∪ B = {:?}", union);  // {1, 2, 3, 4, 5, 6}
+    println!("A ∪ B = {:?}", union);
 
-    // 交集
     let intersection: BTreeSet&lt;_&gt; = a.intersection(&amp;b).cloned().collect();
-    println!("A ∩ B = {:?}", intersection);  // {3, 4}
+    println!("A ∩ B = {:?}", intersection);
 
-    // 差集
     let difference: BTreeSet&lt;_&gt; = a.difference(&amp;b).cloned().collect();
-    println!("A - B = {:?}", difference);  // {1, 2}
+    println!("A - B = {:?}", difference);
 
-    // 对称差
+    let difference_b: BTreeSet&lt;_&gt; = b.difference(&amp;a).cloned().collect();
+    println!("B - A = {:?}", difference_b);
+
     let sym_diff: BTreeSet&lt;_&gt; = a.symmetric_difference(&amp;b).cloned().collect();
-    println!("A △ B = {:?}", sym_diff);  // {1, 2, 5, 6}
+    println!("A △ B = {:?}", sym_diff);
+
+    // 全集 U
+    let u: BTreeSet&lt;i32&gt; = (1..=10).collect();
+
+    // 德摩根定律：¬(A ∪ B) = ¬A ∩ ¬B
+    let union_ab = a.union(&amp;b).cloned().collect::&lt;BTreeSet&lt;_&gt;&gt;();
+    let left = u.difference(&amp;union_ab).cloned().collect::&lt;BTreeSet&lt;_&gt;&gt;();
+
+    let not_a = u.difference(&amp;a).cloned().collect::&lt;BTreeSet&lt;_&gt;&gt;();
+    let not_b = u.difference(&amp;b).cloned().collect::&lt;BTreeSet&lt;_&gt;&gt;();
+    let right = not_a.intersection(&amp;not_b).cloned().collect::&lt;BTreeSet&lt;_&gt;&gt;();
+
+    println!("¬(A ∪ B) = {:?}", left);   // {7, 8, 9, 10}
+    println!("¬A ∩ ¬B = {:?}", right);   // {7, 8, 9, 10}
+    assert_eq!(left, right);
+
+    // 德摩根定律：¬(A ∩ B) = ¬A ∪ ¬B
+    let inter_ab = a.intersection(&amp;b).cloned().collect::&lt;BTreeSet&lt;_&gt;&gt;();
+    let left2 = u.difference(&amp;inter_ab).cloned().collect::&lt;BTreeSet&lt;_&gt;&gt;();
+
+    let right2 = not_a.union(&amp;not_b).cloned().collect::&lt;BTreeSet&lt;_&gt;&gt;();
+
+    println!("¬(A ∩ B) = {:?}", left2);   // {1, 2, 5, 6, 7, 8, 9, 10}
+    println!("¬A ∪ ¬B   = {:?}", right2); // {1, 2, 5, 6, 7, 8, 9, 10}
+    assert_eq!(left2, right2);
+
+    // 分配律：A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C)
+    let union_bc = b.union(&amp;c).cloned().collect::&lt;BTreeSet&lt;_&gt;&gt;();
+    let left_dist = a.intersection(&amp;union_bc).cloned().collect::&lt;BTreeSet&lt;_&gt;&gt;();
+
+    let a_inter_b = a.intersection(&amp;b).cloned().collect::&lt;BTreeSet&lt;_&gt;&gt;();
+    let a_inter_c = a.intersection(&amp;c).cloned().collect::&lt;BTreeSet&lt;_&gt;&gt;();
+    let right_dist = a_inter_b.union(&amp;a_inter_c).cloned().collect::&lt;BTreeSet&lt;_&gt;&gt;();
+
+    println!("A ∩ (B ∪ C) = {:?}", left_dist);   // {4}
+    println!("(A ∩ B) ∪ (A ∩ C) = {:?}", right_dist); // {4}
+    assert_eq!(left_dist, right_dist);
 }</code></pre>
 <h3 id="14-幂集"><a class="header" href="#14-幂集">1.4 幂集</a></h3>
 <p>集合 $A$ 的<strong>幂集</strong> $\mathcal{P}(A)$ 是 $A$ 的所有子集构成的集合。</p>
@@ -445,6 +484,27 @@ fn main() {
 <p><strong>量词的否定：</strong></p>
 <p>$$\neg(\forall x, P(x)) = \exists x, \neg P(x)$$</p>
 <p>$$\neg(\exists x, P(x)) = \forall x, \neg P(x)$$</p>
+<h3 id="33-真值表与逻辑等价"><a class="header" href="#33-真值表与逻辑等价">3.3 真值表与逻辑等价</a></h3>
+<pre class="playground"><code class="language-rust edition2024">fn implies(p: bool, q: bool) -&gt; bool { !p || q }   // p → q
+fn iff(p: bool, q: bool) -&gt; bool { p == q }         // p ↔ q
+
+fn main() {
+    println!("  p     q   | p→q   p↔q");
+    println!("---------------------------");
+    for &amp;p in &amp;[true, false] {
+        for &amp;q in &amp;[true, false] {
+            println!("{:5} {:5} | {:5} {:5}", p, q, implies(p, q), iff(p, q));
+        }
+    }
+
+    // 验证 p → q 等价于 ¬p ∨ q
+    for &amp;p in &amp;[true, false] {
+        for &amp;q in &amp;[true, false] {
+            assert_eq!(implies(p, q), !p || q);
+        }
+    }
+    println!("已验证：p → q  ⟺  ¬p ∨ q");
+}</code></pre>
 <hr>
 <h2 id="四组合数学"><a class="header" href="#四组合数学">四、组合数学</a></h2>
 <h3 id="41-加法原理与乘法原理"><a class="header" href="#41-加法原理与乘法原理">4.1 加法原理与乘法原理</a></h3>
@@ -461,6 +521,33 @@ fn main() {
 <h3 id="44-容斥原理"><a class="header" href="#44-容斥原理">4.4 容斥原理</a></h3>
 <p>$$|A \cup B| = |A| + |B| - |A \cap B|$$</p>
 <p>$$|A \cup B \cup C| = |A| + |B| + |C| - |A \cap B| - |A \cap C| - |B \cap C| + |A \cap B \cap C|$$</p>
+<pre class="playground"><code class="language-rust edition2024">// 排列数 P(n, m) = n! / (n-m)!
+fn permutation(n: u64, m: u64) -&gt; u64 {
+    (n - m + 1..=n).product()
+}
+
+// 组合数 C(n, m)，用递推 C(n,k) = C(n,k-1)*(n-k+1)/k 避免阶乘溢出
+fn combination(n: u64, m: u64) -&gt; u64 {
+    let m = m.min(n - m);
+    let mut result = 1u64;
+    for i in 0..m {
+        result = result * (n - i) / (i + 1);
+    }
+    result
+}
+
+fn main() {
+    println!("P(5, 2) = {}", permutation(5, 2)); // 20
+    println!("C(5, 2) = {}", combination(5, 2)); // 10
+
+    // 容斥原理：1~100 中能被 2、3 或 5 整除的数的个数
+    let n = 100u32;
+    let count = |d: u32| n / d;
+    let ans = count(2) + count(3) + count(5)
+        - count(6) - count(10) - count(15)
+        + count(30);
+    println!("1~100 中能被 2、3 或 5 整除的数有 {} 个", ans); // 74
+}</code></pre>
 <hr>
 <h2 id="五关系"><a class="header" href="#五关系">五、关系</a></h2>
 <h3 id="51-二元关系"><a class="header" href="#51-二元关系">5.1 二元关系</a></h3>
@@ -485,6 +572,41 @@ fn main() {
 <h3 id="54-偏序关系"><a class="header" href="#54-偏序关系">5.4 偏序关系</a></h3>
 <p>同时满足自反性、反对称性、传递性的关系称为<strong>偏序关系</strong>。</p>
 <p>偏序关系可以用<strong>哈斯图</strong>（Hasse Diagram）直观表示。</p>
+<h3 id="55-关系性质判定"><a class="header" href="#55-关系性质判定">5.5 关系性质判定</a></h3>
+<pre class="playground"><code class="language-rust edition2024">type Relation = Vec&lt;(i32, i32)&gt;;
+
+fn is_reflexive(set: &amp;[i32], r: &amp;Relation) -&gt; bool {
+    set.iter().all(|&amp;a| r.contains(&amp;(a, a)))
+}
+
+fn is_symmetric(r: &amp;Relation) -&gt; bool {
+    r.iter().all(|&amp;(a, b)| r.contains(&amp;(b, a)))
+}
+
+fn is_transitive(r: &amp;Relation) -&gt; bool {
+    for &amp;(a, b) in r {
+        for &amp;(c, d) in r {
+            if b == c &amp;&amp; !r.contains(&amp;(a, d)) {
+                return false;
+            }
+        }
+    }
+    true
+}
+
+fn main() {
+    let set = vec![1, 2, 3];
+    // 关系 R：自反、对称、传递 —— 一个等价关系
+    let r: Relation = vec![(1, 1), (2, 2), (3, 3), (1, 2), (2, 1)];
+
+    let reflexive = is_reflexive(&amp;set, &amp;r);
+    let symmetric = is_symmetric(&amp;r);
+    let transitive = is_transitive(&amp;r);
+    println!("自反性: {}", reflexive);
+    println!("对称性: {}", symmetric);
+    println!("传递性: {}", transitive);
+    println!("是否等价关系: {}", reflexive &amp;&amp; symmetric &amp;&amp; transitive);
+}</code></pre>
 <hr>
 <h2 id="六代数结构"><a class="header" href="#六代数结构">六、代数结构</a></h2>
 <div class="table-wrapper">

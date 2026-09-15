@@ -1,0 +1,663 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第六十三 云计算 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-545e538a.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第六十三-云计算"><a class="header" href="#第六十三-云计算">第六十三 云计算</a></h1>
+<p>云计算（Cloud Computing）是通过网络按需提供可配置计算资源（服务器、存储、数据库、网络、软件、AI 算力等）的模式。用户无需自建机房，即可像用水用电一样按量付费使用计算资源。</p>
+<hr>
+<h2 id="一云计算概述"><a class="header" href="#一云计算概述">一、云计算概述</a></h2>
+<h3 id="11-云计算的五个基本特征"><a class="header" href="#11-云计算的五个基本特征">1.1 云计算的五个基本特征</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特征</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>按需自助服务</strong></td><td>用户自助开通资源，无需人工干预</td></tr>
+<tr><td><strong>广泛网络接入</strong></td><td>通过互联网随时随地访问</td></tr>
+<tr><td><strong>资源池化</strong></td><td>多租户共享物理资源，按需分配</td></tr>
+<tr><td><strong>快速弹性</strong></td><td>资源可秒级伸缩，应对流量波动</td></tr>
+<tr><td><strong>可计量服务</strong></td><td>按使用量计费，透明可审计</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="12-云计算发展简史"><a class="header" href="#12-云计算发展简史">1.2 云计算发展简史</a></h3>
+<pre><code>1960s  John McCarthy：计算未来将像公共事业一样提供
+1999   Salesforce 推出 SaaS 模式
+2006   AWS 发布 S3 和 EC2，云计算元年
+2008   微软 Azure、谷歌 App Engine 相继推出
+2010   阿里云、腾讯云起步，中国云计算兴起
+2013   Docker 发布，容器化时代开启
+2015   Kubernetes 1.0 发布，容器编排成为标准
+2020s  AI 云服务爆发：GPU 云、大模型 API、Serverless 普及
+</code></pre>
+<hr>
+<h2 id="二云服务模式"><a class="header" href="#二云服务模式">二、云服务模式</a></h2>
+<h3 id="21-iaas--paas--saas"><a class="header" href="#21-iaas--paas--saas">2.1 IaaS / PaaS / SaaS</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>模式</th><th>全称</th><th>提供内容</th><th>用户管理</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>IaaS</strong></td><td>基础设施即服务</td><td>计算、存储、网络</td><td>系统及以上</td><td>AWS EC2、阿里云 ECS</td></tr>
+<tr><td><strong>PaaS</strong></td><td>平台即服务</td><td>运行时、数据库、中间件</td><td>应用及以上</td><td>AWS Lambda、Heroku</td></tr>
+<tr><td><strong>SaaS</strong></td><td>软件即服务</td><td>完整应用</td><td>仅使用</td><td>Office 365、钉钉</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code>┌─────────────────────────────────┐
+│  SaaS  应用（用户只管用）         │
+├─────────────────────────────────┤
+│  PaaS  平台（用户只管开发）       │
+├─────────────────────────────────┤
+│  IaaS  基础设施（用户只管部署）   │
+├─────────────────────────────────┤
+│  物理机房（用户什么都不管 = 传统）│
+└─────────────────────────────────┘
+</code></pre>
+<h3 id="22-新的服务模式"><a class="header" href="#22-新的服务模式">2.2 新的服务模式</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>模式</th><th>说明</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>FaaS</strong>（函数即服务）</td><td>上传函数，平台自动弹性运行</td><td>AWS Lambda、Cloudflare Workers</td></tr>
+<tr><td><strong>CaaS</strong>（容器即服务）</td><td>托管容器编排平台</td><td>AWS EKS、谷歌 GKE</td></tr>
+<tr><td><strong>MaaS</strong>（模型即服务）</td><td>直接调用大模型 API</td><td>OpenAI API、通义千问 API</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="三部署模式"><a class="header" href="#三部署模式">三、部署模式</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>模式</th><th>说明</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>公有云</strong></td><td>第三方提供，多租户共享</td><td>创业公司、弹性业务</td></tr>
+<tr><td><strong>私有云</strong></td><td>企业自建或专享</td><td>金融、政务、涉密场景</td></tr>
+<tr><td><strong>混合云</strong></td><td>公有云 + 私有云协同</td><td>弹性扩容 + 数据合规</td></tr>
+<tr><td><strong>多云</strong></td><td>同时使用多家云厂商</td><td>避免厂商锁定、容灾</td></tr>
+<tr><td><strong>边缘云</strong></td><td>资源部署在靠近用户一侧</td><td>IoT、自动驾驶、低延迟场景</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="四虚拟化与容器"><a class="header" href="#四虚拟化与容器">四、虚拟化与容器</a></h2>
+<h3 id="41-虚拟化技术"><a class="header" href="#41-虚拟化技术">4.1 虚拟化技术</a></h3>
+<p>虚拟化是云计算的基石，把一台物理机划分成多台“虚拟机“。</p>
+<pre><code>┌─────────────────────────────┐
+│  虚拟机 1   虚拟机 2  虚拟机 3 │
+├─────────────────────────────┤
+│  Hypervisor（KVM/VMware）    │
+├─────────────────────────────┤
+│  CPU / 内存 / 磁盘 / 网卡    │
+└─────────────────────────────┘
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>技术</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Hypervisor</strong></td><td>虚拟机监视器，如 KVM、VMware、Hyper-V</td></tr>
+<tr><td><strong>容器</strong></td><td>共享宿主机内核的隔离进程，如 Docker</td></tr>
+<tr><td><strong>gVisor</strong></td><td>谷歌的容器安全沙箱</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="42-虚拟机-vs-容器"><a class="header" href="#42-虚拟机-vs-容器">4.2 虚拟机 vs 容器</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>维度</th><th>虚拟机</th><th>容器</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>隔离级别</strong></td><td>硬件级隔离（独立内核）</td><td>进程级隔离（共享内核）</td></tr>
+<tr><td><strong>启动时间</strong></td><td>秒级到分钟级</td><td>毫秒级</td></tr>
+<tr><td><strong>资源开销</strong></td><td>大（每个 VM 一个完整系统）</td><td>小（共享内核）</td></tr>
+<tr><td><strong>密度</strong></td><td>一台物理机数十台 VM</td><td>一台物理机数百个容器</td></tr>
+<tr><td><strong>安全边界</strong></td><td>强</td><td>相对弱（依赖内核安全）</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="43-docker-基础命令"><a class="header" href="#43-docker-基础命令">4.3 Docker 基础命令</a></h3>
+<pre><code class="language-bash">docker build -t myapp .      # 构建镜像
+docker run -d -p 8080:80 myapp   # 运行容器
+docker ps                    # 查看运行中的容器
+docker compose up -d         # 多容器编排
+</code></pre>
+<hr>
+<h2 id="五容器编排与-kubernetes"><a class="header" href="#五容器编排与-kubernetes">五、容器编排与 Kubernetes</a></h2>
+<h3 id="51-为什么需要-kubernetes"><a class="header" href="#51-为什么需要-kubernetes">5.1 为什么需要 Kubernetes</a></h3>
+<p>容器数量少时手动管理即可；当有成百上千个容器需要<strong>自动部署、伸缩、故障恢复</strong>时，就需要容器编排平台。</p>
+<h3 id="52-kubernetes-核心概念"><a class="header" href="#52-kubernetes-核心概念">5.2 Kubernetes 核心概念</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Pod</strong></td><td>最小调度单元，一个或多个容器</td></tr>
+<tr><td><strong>Deployment</strong></td><td>声明式管理副本数和滚动更新</td></tr>
+<tr><td><strong>Service</strong></td><td>稳定的访问入口（负载均衡）</td></tr>
+<tr><td><strong>Ingress</strong></td><td>七层 HTTP 路由</td></tr>
+<tr><td><strong>ConfigMap / Secret</strong></td><td>配置与密钥管理</td></tr>
+<tr><td><strong>Namespace</strong></td><td>资源隔离与分组</td></tr>
+<tr><td><strong>Node</strong></td><td>工作节点（物理机或虚拟机）</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code>                ┌──────────────┐
+                │  Control Plane │
+                │  (kube-apiserver)│
+                └──────┬───────┘
+      ┌────────────┬────┴────┬────────────┐
+      ▼            ▼         ▼            ▼
+┌─────────┐  ┌─────────┐ ┌─────────┐  ┌─────────┐
+│ Node 1  │  │ Node 2  │ │ Node 3  │  │ Node N  │
+│ Pod Pod  │  │ Pod Pod  │ │ Pod Pod  │  │ Pod Pod  │
+└─────────┘  └─────────┘ └─────────┘  └─────────┘
+</code></pre>
+<h3 id="53-声明式部署示例"><a class="header" href="#53-声明式部署示例">5.3 声明式部署示例</a></h3>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  replicas: 3            # 期望 3 个副本，自动维持
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+</code></pre>
+<hr>
+<h2 id="六存储与数据库服务"><a class="header" href="#六存储与数据库服务">六、存储与数据库服务</a></h2>
+<h3 id="61-云存储类型"><a class="header" href="#61-云存储类型">6.1 云存储类型</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型</th><th>说明</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>对象存储</strong></td><td>海量非结构化数据，HTTP 访问</td><td>AWS S3、阿里云 OSS</td></tr>
+<tr><td><strong>块存储</strong></td><td>挂载到云服务器的硬盘</td><td>AWS EBS、云盘</td></tr>
+<tr><td><strong>文件存储</strong></td><td>多台服务器共享的文件系统</td><td>AWS EFS、NAS</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="62-云数据库"><a class="header" href="#62-云数据库">6.2 云数据库</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型</th><th>说明</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>关系型</strong></td><td>MySQL / PostgreSQL 托管</td><td>RDS、云数据库 RDS</td></tr>
+<tr><td><strong>NoSQL</strong></td><td>键值、文档、宽表</td><td>DynamoDB、MongoDB Atlas</td></tr>
+<tr><td><strong>数据仓库</strong></td><td>海量数据分析</td><td>Redshift、ClickHouse</td></tr>
+<tr><td><strong>缓存</strong></td><td>高速读写</td><td>Redis、Memcached</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="63-对象存储生命周期"><a class="header" href="#63-对象存储生命周期">6.3 对象存储生命周期</a></h3>
+<pre><code>上传 → 标准存储（热数据，访问频繁）
+        ↓ 30 天未访问
+      低频访问（成本降低）
+        ↓ 90 天未访问
+      归档存储（成本最低，需解冻）
+        ↓
+      过期删除
+</code></pre>
+<hr>
+<h2 id="七无服务器计算serverless"><a class="header" href="#七无服务器计算serverless">七、无服务器计算（Serverless）</a></h2>
+<h3 id="71-什么是-serverless"><a class="header" href="#71-什么是-serverless">7.1 什么是 Serverless</a></h3>
+<p>用户只写业务代码，无需关心服务器、扩容、高可用——平台按调用次数计费，空闲时不产生费用。</p>
+<h3 id="72-faas-示例aws-lambda-风格"><a class="header" href="#72-faas-示例aws-lambda-风格">7.2 FaaS 示例（AWS Lambda 风格）</a></h3>
+<pre class="playground"><code class="language-rust edition2024">use lambda_runtime::{service_fn, LambdaEvent};
+use serde_json::{json, Value};
+
+async fn handler(event: LambdaEvent&lt;Value&gt;) -&gt; Result&lt;Value, lambda_runtime::Error&gt; {
+    let body = event.payload;
+    Ok(json!({
+        "statusCode": 200,
+        "body": format!("收到请求: {}", body)
+    }))
+}
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), lambda_runtime::Error&gt; {
+    let func = service_fn(handler);
+    lambda_runtime::run(func).await?;
+    Ok(())
+}</code></pre>
+<h3 id="73-serverless-的优缺点"><a class="header" href="#73-serverless-的优缺点">7.3 Serverless 的优缺点</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>优点</th><th>缺点</th></tr>
+</thead>
+<tbody>
+<tr><td>零运维，专注业务代码</td><td>冷启动延迟</td></tr>
+<tr><td>按调用计费，闲置免费</td><td>不适合长时间运行的任务</td></tr>
+<tr><td>自动弹性伸缩</td><td>厂商锁定</td></tr>
+<tr><td>内置高可用</td><td>调试与监控困难</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="八云原生"><a class="header" href="#八云原生">八、云原生</a></h2>
+<h3 id="81-云原生cloud-native特征"><a class="header" href="#81-云原生cloud-native特征">8.1 云原生（Cloud Native）特征</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特征</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>微服务</strong></td><td>应用拆分为可独立部署的小服务</td></tr>
+<tr><td><strong>容器化</strong></td><td>用容器打包与运行服务</td></tr>
+<tr><td><strong>声明式 API</strong></td><td>描述期望状态，平台自动对齐</td></tr>
+<tr><td><strong>DevOps</strong></td><td>开发与运维一体化，CI/CD 流水线</td></tr>
+<tr><td><strong>可观测性</strong></td><td>日志、指标、链路追踪三件套</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="82-十二要素应用12-factor要点"><a class="header" href="#82-十二要素应用12-factor要点">8.2 十二要素应用（12-Factor）要点</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>要素</th><th>要点</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>配置</strong></td><td>配置存入环境变量，不进代码仓库</td></tr>
+<tr><td><strong>进程</strong></td><td>无状态进程，可随时启停复制</td></tr>
+<tr><td><strong>后端服务</strong></td><td>数据库、消息队列等作为附加资源，可替换</td></tr>
+<tr><td><strong>日志</strong></td><td>日志输出到标准输出，由平台收集</td></tr>
+<tr><td><strong>一次性</strong></td><td>进程可快速启动、优雅退出</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="83-可观测性三支柱"><a class="header" href="#83-可观测性三支柱">8.3 可观测性三支柱</a></h3>
+<pre><code>日志（Logs）—— 发生了什么（离散事件）
+指标（Metrics）—— 系统状态如何（数值聚合）
+链路追踪（Traces）—— 请求经历了什么（调用链）
+</code></pre>
+<hr>
+<h2 id="九云安全"><a class="header" href="#九云安全">九、云安全</a></h2>
+<h3 id="91-责任共担模型"><a class="header" href="#91-责任共担模型">9.1 责任共担模型</a></h3>
+<pre><code>┌─────────────────────────────┐
+│  用户负责：数据、应用、账号权限 │
+├─────────────────────────────┤
+│  云厂商负责：物理机房、硬件、网络 │
+└─────────────────────────────┘
+</code></pre>
+<h3 id="92-云安全最佳实践"><a class="header" href="#92-云安全最佳实践">9.2 云安全最佳实践</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>实践</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>IAM 最小权限</strong></td><td>只用最小必要权限，定期轮换密钥</td></tr>
+<tr><td><strong>加密</strong></td><td>传输加密（TLS）+ 存储加密（KMS）</td></tr>
+<tr><td><strong>网络隔离</strong></td><td>VPC 私有网络、安全组、防火墙</td></tr>
+<tr><td><strong>审计日志</strong></td><td>开启 CloudTrail / ActionTrail</td></tr>
+<tr><td><strong>备份与容灾</strong></td><td>跨可用区、跨地域备份</td></tr>
+<tr><td><strong>合规</strong></td><td>等保 2.0、SOC 2、GDPR</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="十主流云厂商与-rust-生态"><a class="header" href="#十主流云厂商与-rust-生态">十、主流云厂商与 Rust 生态</a></h2>
+<h3 id="101-主流云厂商"><a class="header" href="#101-主流云厂商">10.1 主流云厂商</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>厂商</th><th>地区</th><th>代表服务</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>AWS</strong></td><td>全球</td><td>EC2、S3、Lambda、SageMaker</td></tr>
+<tr><td><strong>Azure</strong></td><td>全球</td><td>虚拟机、AI、GitHub</td></tr>
+<tr><td><strong>Google Cloud</strong></td><td>全球</td><td>GKE、BigQuery、Vertex AI</td></tr>
+<tr><td><strong>阿里云</strong></td><td>中国</td><td>ECS、OSS、PolarDB、通义千问</td></tr>
+<tr><td><strong>腾讯云</strong></td><td>中国</td><td>CVM、COS、TDSQL</td></tr>
+<tr><td><strong>华为云</strong></td><td>中国</td><td>昇腾 AI、ModelArts</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="102-rust-云生态"><a class="header" href="#102-rust-云生态">10.2 Rust 云生态</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Crate / SDK</th><th>用途</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://github.com/awslabs/aws-sdk-rust">aws-sdk-rust</a></td><td>AWS 官方 Rust SDK</td></tr>
+<tr><td><a href="https://crates.io/crates/rusoto">rusoto</a></td><td>AWS 服务封装（社区）</td></tr>
+<tr><td><a href="https://crates.io/crates/reqwest">reqwest</a></td><td>HTTP 客户端，调用云 API</td></tr>
+<tr><td><a href="https://crates.io/crates/azure_core">azure_core</a></td><td>Azure SDK 基础库</td></tr>
+<tr><td><a href="https://crates.io/crates/tokio">tokio</a></td><td>异步运行时，云服务基石</td></tr>
+<tr><td><a href="https://crates.io/crates/tonic">tonic</a></td><td>gRPC 框架（微服务通信）</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">use reqwest::Client;
+use serde_json::json;
+
+// 调用云端 API 的示例
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let client = Client::new();
+    let resp = client
+        .post("https://api.example.com/chat")
+        .json(&amp;json!({ "model": "qwen-max", "prompt": "你好" }))
+        .send()
+        .await?;
+    println!("状态码: {}", resp.status());
+    Ok(())
+}</code></pre>
+<hr>
+<h2 id="十一总结与练习"><a class="header" href="#十一总结与练习">十一、总结与练习</a></h2>
+<h3 id="本章小结"><a class="header" href="#本章小结">本章小结</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>知识点</th><th>要点</th></tr>
+</thead>
+<tbody>
+<tr><td>云计算特征</td><td>按需自助、网络接入、资源池化、弹性、可计量</td></tr>
+<tr><td>服务模式</td><td>IaaS、PaaS、SaaS、FaaS、MaaS</td></tr>
+<tr><td>部署模式</td><td>公有云、私有云、混合云、多云、边缘云</td></tr>
+<tr><td>虚拟化与容器</td><td>Hypervisor、Docker、VM vs 容器</td></tr>
+<tr><td>容器编排</td><td>Kubernetes：Pod、Deployment、Service</td></tr>
+<tr><td>云存储</td><td>对象存储、块存储、文件存储</td></tr>
+<tr><td>Serverless</td><td>按调用计费、自动弹性、冷启动</td></tr>
+<tr><td>云原生</td><td>微服务、容器化、DevOps、可观测性</td></tr>
+<tr><td>云安全</td><td>责任共担、IAM、加密、VPC、审计</td></tr>
+<tr><td>Rust 生态</td><td>aws-sdk-rust、reqwest、tonic</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
+<ol>
+<li><strong>Docker 实践</strong>：把一个简单的 Rust Web 服务容器化，用 <code>docker build</code> 和 <code>docker run</code> 本地运行，并用 <code>docker ps</code> 观察。</li>
+<li><strong>Kubernetes 部署</strong>：在本地用 minikube 或 kind 部署上面的服务，编写 Deployment 和 Service YAML，实现滚动更新。</li>
+<li><strong>对象存储上传</strong>：用 aws-sdk-rust 的 S3 API 实现文件上传和下载，并设置生命周期规则。</li>
+<li><strong>Serverless 体验</strong>：在任一云平台创建一个 FaaS 函数，用 Rust 实现一个“图片压缩“函数，观察按调用计费模型。</li>
+<li><strong>十二要素审计</strong>：对照 12-Factor 审计一个现有项目，找出配置硬编码、有状态进程等问题并改进。</li>
+<li><strong>云成本分析</strong>：设计一个电商网站的云架构（计算、存储、数据库、CDN），估算日活 10 万用户时的月成本，并给出降本方案。</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_62.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_64.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_62.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_64.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

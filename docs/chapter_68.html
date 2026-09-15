@@ -1,0 +1,827 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第六十八 位置 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-545e538a.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第六十八-位置"><a class="header" href="#第六十八-位置">第六十八 位置</a></h1>
+<p>位置（Location）是万物在地球上的坐标。从 GPS 卫星定位到手机地图导航，从外卖配送调度到共享单车围栏，从物流追踪到气象预报，几乎所有现代应用都离不开“在哪里“这个问题。而“在哪里“的答案，离不开坐标系——尤其是 WGS-84 与 GCJ-02 这一对“相爱相杀“的坐标体系。</p>
+<hr>
+<h2 id="一地理坐标基础"><a class="header" href="#一地理坐标基础">一、地理坐标基础</a></h2>
+<h3 id="11-经纬度"><a class="header" href="#11-经纬度">1.1 经纬度</a></h3>
+<p>地球表面的位置用**经度（Longitude）<strong>和</strong>纬度（Latitude）**表示：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>经度</strong></td><td>东西方向，本初子午线为 0°，范围 -180° ~ +180°</td></tr>
+<tr><td><strong>纬度</strong></td><td>南北方向，赤道为 0°，范围 -90° ~ +90°</td></tr>
+<tr><td><strong>单位</strong></td><td>十进制度（小数）或度分秒（DMS）</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code>   北纬 90°（北极）
+        │
+  西经 0°┼──────────────► 东经 180°
+   -180° │  本初子午线
+        │
+   南纬 -90°（南极）
+</code></pre>
+<h3 id="12-经纬度表示法"><a class="header" href="#12-经纬度表示法">1.2 经纬度表示法</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>表示</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td>十进制度（DD）</td><td><code>116.4074, 39.9042</code>（北京天安门）</td></tr>
+<tr><td>度分秒（DMS）</td><td><code>116°24'26.6"E, 39°54'15.1"N</code></td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// DMS 转十进制度
+fn dms_to_decimal(deg: f64, min: f64, sec: f64) -&gt; f64 {
+    deg + min / 60.0 + sec / 3600.0
+}
+// 116°24'26.6" → 116 + 24/60 + 26.6/3600 ≈ 116.4074
+<span class="boring">}</span></code></pre>
+<h3 id="13-椭球体与基准面"><a class="header" href="#13-椭球体与基准面">1.3 椭球体与基准面</a></h3>
+<p>地球不是正球体，而是近似<strong>椭球体</strong>。描述地球形状需要定义椭球参数：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>参数</th><th>WGS-84 椭球</th></tr>
+</thead>
+<tbody>
+<tr><td>长半轴 a</td><td>6378137.0 米</td></tr>
+<tr><td>短半轴 b</td><td>6356752.3142 米</td></tr>
+<tr><td>扁率 f</td><td>1/298.257223563</td></tr>
+<tr><td>第一偏心率 e²</td><td>0.00669437999014</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>不同的椭球体 + 基准面构成不同的<strong>坐标系</strong>，同一个经纬度在不同坐标系下对应地球上不同的点。</p>
+</blockquote>
+<hr>
+<h2 id="二wgs-84-坐标系"><a class="header" href="#二wgs-84-坐标系">二、WGS-84 坐标系</a></h2>
+<h3 id="21-什么是-wgs-84"><a class="header" href="#21-什么是-wgs-84">2.1 什么是 WGS-84</a></h3>
+<p>WGS-84（World Geodetic System 1984，世界大地测量系统 1984）是 GPS 全球定位系统使用的坐标系，由美国国防部建立，是全球最通用的地理坐标基准。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>特性</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>全称</td><td>World Geodetic System 1984</td></tr>
+<tr><td>使用方</td><td>GPS 卫星定位、全球通用</td></tr>
+<tr><td>原点</td><td>地球质心（地心地固系）</td></tr>
+<tr><td>精度</td><td>厘米级（差分后）</td></tr>
+<tr><td>地位</td><td>国际事实标准（ITRF 与 WGS-84 基本一致）</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="22-gps-如何定位"><a class="header" href="#22-gps-如何定位">2.2 GPS 如何定位</a></h3>
+<pre><code>至少 4 颗卫星:
+卫星位置（已知） + 信号传播时间 → 距离
+   │
+多颗卫星距离求交 → 三维坐标 (x, y, z)
+   │
+转换为经纬度 (WGS-84 系)
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>导航系统</th><th>国家/地区</th><th>状态</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>GPS</strong></td><td>美国</td><td>全球</td></tr>
+<tr><td><strong>北斗（BDS）</strong></td><td>中国</td><td>全球</td></tr>
+<tr><td><strong>GLONASS</strong></td><td>俄罗斯</td><td>全球</td></tr>
+<tr><td><strong>伽利略（Galileo）</strong></td><td>欧盟</td><td>全球</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="23-wgs-84-的应用"><a class="header" href="#23-wgs-84-的应用">2.3 WGS-84 的应用</a></h3>
+<ul>
+<li>全球定位与导航（车载、手机、船舶、航空）</li>
+<li>科学测绘、大地测量</li>
+<li>国际标准数据交换</li>
+<li>开源地图（OpenStreetMap）</li>
+</ul>
+<hr>
+<h2 id="三gcj-02-坐标系"><a class="header" href="#三gcj-02-坐标系">三、GCJ-02 坐标系</a></h2>
+<h3 id="31-为什么需要-gcj-02"><a class="header" href="#31-为什么需要-gcj-02">3.1 为什么需要 GCJ-02</a></h3>
+<p>GCJ-02（国测局坐标，俗称“火星坐标系“）是中国国家测绘局发布的地理坐标系，对 WGS-84 坐标施加了<strong>非线性加密偏移</strong>（通常几十到几百米）。中国境内公开地图产品必须使用 GCJ-02，这是法律法规要求，也是地图厂商（高德、腾讯等）默认使用的坐标系。</p>
+<pre><code>WGS-84（真实位置） ──加密偏移──&gt; GCJ-02（火星坐标）
+      │                              │
+   GPS 直接读出                   地图上显示的位置
+   与地图不符                       与真实位置有偏移
+</code></pre>
+<blockquote>
+<p>在中国境内使用 GPS 模块直接读取的 WGS-84 坐标叠加到高德/腾讯地图上，会发现位置偏移几十米到几百米——这就是坐标系不一致造成的。</p>
+</blockquote>
+<h3 id="32-加密偏移原理"><a class="header" href="#32-加密偏移原理">3.2 加密偏移原理</a></h3>
+<p>GCJ-02 偏移并非简单的固定平移，而是与经纬度相关的<strong>非线性函数</strong>：</p>
+<pre><code>GCJ-02 纬度 = WGS-84 纬度 + 偏移量(lat, lng)
+GCJ-02 经度 = WGS-84 经度 + 偏移量(lat, lng)
+
+偏移量随位置变化: 北京、上海、新疆的偏移方向和大小都不同
+</code></pre>
+<h3 id="33-bd-09百度坐标"><a class="header" href="#33-bd-09百度坐标">3.3 BD-09（百度坐标）</a></h3>
+<p>百度地图在 GCJ-02 基础上又做了一次加密偏移，形成 <strong>BD-09</strong>：</p>
+<pre><code>WGS-84 ──国测局加密──&gt; GCJ-02 ──百度加密──&gt; BD-09
+  (GPS)            (高德/腾讯)         (百度地图)
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>坐标系</th><th>使用方</th><th>加密层次</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>WGS-84</strong></td><td>GPS、国际通用、开源地图</td><td>无</td></tr>
+<tr><td><strong>GCJ-02</strong></td><td>高德、腾讯、中国境内地图</td><td>国测局加密</td></tr>
+<tr><td><strong>BD-09</strong></td><td>百度地图</td><td>GCJ-02 + 百度二次加密</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="34-坐标转换的必要性"><a class="header" href="#34-坐标转换的必要性">3.4 坐标转换的必要性</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>场景</th><th>需要转换</th></tr>
+</thead>
+<tbody>
+<tr><td>GPS 原始数据叠加到高德地图</td><td>WGS-84 → GCJ-02</td></tr>
+<tr><td>高德坐标传给百度地图</td><td>GCJ-02 → BD-09</td></tr>
+<tr><td>百度坐标导出到 GIS 系统</td><td>BD-09 → GCJ-02 → WGS-84</td></tr>
+<tr><td>海外区域</td><td>无需转换（GCJ-02 仅作用于中国境内）</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="四坐标转换算法"><a class="header" href="#四坐标转换算法">四、坐标转换算法</a></h2>
+<h3 id="41-wgs-84--gcj-02示意核心"><a class="header" href="#41-wgs-84--gcj-02示意核心">4.1 WGS-84 → GCJ-02（示意核心）</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// WGS-84 转 GCJ-02（火星坐标）核心算法（简化示意）
+const A: f64 = 6378245.0;        // 长半轴
+const EE: f64 = 0.00669342162296594323; // 偏心率平方
+
+fn out_of_china(lng: f64, lat: f64) -&gt; bool {
+    !(72.004 &lt;= lng &amp;&amp; lng &lt;= 137.8347 &amp;&amp; 0.8293 &lt;= lat &amp;&amp; lat &lt;= 55.8271)
+}
+
+fn transform_lat(x: f64, y: f64) -&gt; f64 {
+    let mut ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y
+        + 0.1 * x * y + 0.2 * (x.abs().sqrt());
+    ret += (20.0 * (6.0 * x * std::f64::consts::PI).sin()
+        + 20.0 * (2.0 * x * std::f64::consts::PI).sin()) * 2.0 / 3.0;
+    ret += (20.0 * (y * std::f64::consts::PI).sin()
+        + 40.0 * (y / 3.0 * std::f64::consts::PI).sin()) * 2.0 / 3.0;
+    ret += (160.0 * (y / 12.0 * std::f64::consts::PI).sin()
+        + 320.0 * (y * std::f64::consts::PI / 30.0).sin()) * 2.0 / 3.0;
+    ret
+}
+
+fn transform_lng(x: f64, y: f64) -&gt; f64 {
+    let mut ret = 300.0 + x + 2.0 * y + 0.1 * x * x
+        + 0.1 * x * y + 0.1 * (x.abs().sqrt());
+    ret += (20.0 * (6.0 * x * std::f64::consts::PI).sin()
+        + 20.0 * (2.0 * x * std::f64::consts::PI).sin()) * 2.0 / 3.0;
+    ret += (20.0 * (x * std::f64::consts::PI).sin()
+        + 40.0 * (x / 3.0 * std::f64::consts::PI).sin()) * 2.0 / 3.0;
+    ret += (150.0 * (x / 12.0 * std::f64::consts::PI).sin()
+        + 300.0 * (x / 30.0 * std::f64::consts::PI).sin()) * 2.0 / 3.0;
+    ret
+}
+
+/// 返回 (GCJ-02 经度, GCJ-02 纬度)
+fn wgs84_to_gcj02(wgs_lng: f64, wgs_lat: f64) -&gt; (f64, f64) {
+    if out_of_china(wgs_lng, wgs_lat) {
+        return (wgs_lng, wgs_lat); // 境外不偏移
+    }
+    let d_lat = transform_lat(wgs_lng - 105.0, wgs_lat - 35.0);
+    let d_lng = transform_lng(wgs_lng - 105.0, wgs_lat - 35.0);
+    let rad_lat = wgs_lat / 180.0 * std::f64::consts::PI;
+    let magic = (rad_lat).sin();
+    let magic = 1.0 - EE * magic * magic;
+    let sqrt_magic = magic.sqrt();
+    let d_lat = (d_lat * 180.0) / ((A * (1.0 - EE)) / (magic * sqrt_magic) * std::f64::consts::PI);
+    let d_lng = (d_lng * 180.0) / (A / sqrt_magic * rad_lat.cos() * std::f64::consts::PI);
+    (wgs_lng + d_lng, wgs_lat + d_lat)
+}
+<span class="boring">}</span></code></pre>
+<h3 id="42-gcj-02--bd-09"><a class="header" href="#42-gcj-02--bd-09">4.2 GCJ-02 → BD-09</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// GCJ-02 转 BD-09（百度坐标）
+fn gcj02_to_bd09(gcj_lng: f64, gcj_lat: f64) -&gt; (f64, f64) {
+    let x_pi = std::f64::consts::PI * 3000.0 / 180.0;
+    let z = (gcj_lng * gcj_lng + gcj_lat * gcj_lat).sqrt()
+        + 0.00002 * (gcj_lat * x_pi).sin();
+    let theta = (gcj_lat).atan2(gcj_lng) + 0.000003 * (gcj_lng * x_pi).cos();
+    let bd_lng = z * theta.cos() + 0.0065;
+    let bd_lat = z * theta.sin() + 0.006;
+    (bd_lng, bd_lat)
+}
+<span class="boring">}</span></code></pre>
+<h3 id="43-反向转换"><a class="header" href="#43-反向转换">4.3 反向转换</a></h3>
+<p>GCJ-02 → WGS-84 没有解析逆函数，通常用<strong>迭代逼近</strong>：</p>
+<pre><code>猜测 wgs = gcj
+循环:
+    gcj' = wgs84_to_gcj02(wgs)
+    wgs += (gcj - gcj')   // 用误差修正猜测
+直到误差足够小
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>转换</th><th>难度</th></tr>
+</thead>
+<tbody>
+<tr><td>WGS-84 → GCJ-02</td><td>解析式，直接计算</td></tr>
+<tr><td>GCJ-02 → BD-09</td><td>解析式，直接计算</td></tr>
+<tr><td>GCJ-02 → WGS-84</td><td>迭代逼近，精度有限</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>注意</strong>：坐标转换应遵循各地法律法规；中国境内地图产品必须使用 GCJ-02。</p>
+</blockquote>
+<hr>
+<h2 id="五距离计算"><a class="header" href="#五距离计算">五、距离计算</a></h2>
+<h3 id="51-haversine-公式"><a class="header" href="#51-haversine-公式">5.1 Haversine 公式</a></h3>
+<p>球面上两点间的大圆距离：</p>
+<p>$$d = 2R \cdot \arcsin\left(\sqrt{\sin^2\left(\frac{\Delta\phi}{2}\right) + \cos\phi_1 \cdot \cos\phi_2 \cdot \sin^2\left(\frac{\Delta\lambda}{2}\right)}\right)$$</p>
+<pre class="playground"><code class="language-rust edition2024">const EARTH_RADIUS_M: f64 = 6371000.0;
+
+/// 两点间的球面距离（米）
+fn haversine(lat1: f64, lng1: f64, lat2: f64, lng2: f64) -&gt; f64 {
+    let to_rad = |d: f64| d * std::f64::consts::PI / 180.0;
+    let d_lat = to_rad(lat2 - lat1);
+    let d_lng = to_rad(lng2 - lng1);
+    let a = (d_lat / 2.0).sin().powi(2)
+        + to_rad(lat1).cos() * to_rad(lat2).cos() * (d_lng / 2.0).sin().powi(2);
+    2.0 * EARTH_RADIUS_M * a.sqrt().asin()
+}
+
+fn main() {
+    // 北京天安门 → 上海外滩
+    let dist = haversine(39.9042, 116.4074, 31.2397, 121.4998);
+    println!("距离约 {:.0} 公里", dist / 1000.0);
+}</code></pre>
+<h3 id="52-各距离算法对比"><a class="header" href="#52-各距离算法对比">5.2 各距离算法对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>精度</th><th>复杂度</th><th>适用</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Haversine</strong></td><td>球面近似</td><td>O(1)</td><td>通用</td></tr>
+<tr><td><strong>Vincenty</strong></td><td>椭球面精确</td><td>迭代</td><td>高精度测量</td></tr>
+<tr><td><strong>平面勾股</strong></td><td>局部近似</td><td>O(1)</td><td>小范围过滤（先粗筛）</td></tr>
+<tr><td><strong>GeoHash 前缀匹配</strong></td><td>网格近似</td><td>O(1)</td><td>索引加速</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="53-经验法则"><a class="header" href="#53-经验法则">5.3 经验法则</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>纬度</th><th>1° 纬度距离</th><th>1° 经度距离</th></tr>
+</thead>
+<tbody>
+<tr><td>赤道 0°</td><td>约 111.3 km</td><td>约 111.3 km</td></tr>
+<tr><td>北京 40°</td><td>约 111.3 km</td><td>约 85.4 km</td></tr>
+<tr><td>北极 90°</td><td>约 111.3 km</td><td>约 0 km</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>纬度一度距离基本恒定，经度一度距离随纬度余弦缩小，所以“经纬度各差 0.01“不代表实际距离相同。</p>
+</blockquote>
+<hr>
+<h2 id="六空间数据格式"><a class="header" href="#六空间数据格式">六、空间数据格式</a></h2>
+<h3 id="61-geojson"><a class="header" href="#61-geojson">6.1 GeoJSON</a></h3>
+<p>GeoJSON 是地理数据的标准 JSON 格式，被绝大多数地图服务与数据库支持：</p>
+<pre><code class="language-json">{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "天安门" },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [116.4074, 39.9042]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "故宫范围" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[116.397, 39.915], [116.407, 39.915],
+                        [116.407, 39.909], [116.397, 39.909],
+                        [116.397, 39.915]]]
+      }
+    }
+  ]
+}
+</code></pre>
+<h3 id="62-常见几何类型"><a class="header" href="#62-常见几何类型">6.2 常见几何类型</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型</th><th>说明</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Point</strong></td><td>点</td><td>门店、设备</td></tr>
+<tr><td><strong>LineString</strong></td><td>线</td><td>道路、轨迹</td></tr>
+<tr><td><strong>Polygon</strong></td><td>面</td><td>行政区、围栏</td></tr>
+<tr><td><strong>MultiPoint / MultiLine / MultiPolygon</strong></td><td>复合几何</td><td>多点、多线、多面</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="63-wkt-与-wkb"><a class="header" href="#63-wkt-与-wkb">6.3 WKT 与 WKB</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>格式</th><th>说明</th><th>示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>WKT</strong></td><td>文本格式</td><td><code>POINT(116.4074 39.9042)</code></td></tr>
+<tr><td><strong>WKB</strong></td><td>二进制格式</td><td>数据库内部存储常用</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="七数据库存储"><a class="header" href="#七数据库存储">七、数据库存储</a></h2>
+<h3 id="71-空间数据库对比"><a class="header" href="#71-空间数据库对比">7.1 空间数据库对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>数据库</th><th>空间能力</th><th>适用场景</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>PostGIS</strong>（PostgreSQL 扩展）</td><td>最强大：空间索引、GIS 函数</td><td>地理信息系统</td></tr>
+<tr><td><strong>MySQL/Redis 空间索引</strong></td><td>MySQL Spatial、Redis GEO</td><td>Web 应用</td></tr>
+<tr><td><strong>Elasticsearch Geo</strong></td><td>地理过滤、聚合</td><td>搜索推荐</td></tr>
+<tr><td><strong>MongoDB GeoJSON</strong></td><td>2dsphere 索引</td><td>文档型应用</td></tr>
+<tr><td><strong>SQLite R*Tree</strong></td><td>轻量空间索引</td><td>移动端离线地图</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="72-postgis-示例"><a class="header" href="#72-postgis-示例">7.2 PostGIS 示例</a></h3>
+<pre><code class="language-sql">-- 建表（带空间字段）
+CREATE TABLE shops (
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+    location GEOMETRY(Point, 4326)  -- 4326 = WGS-84
+);
+
+-- 插入数据
+INSERT INTO shops (name, location)
+VALUES ('天安门', ST_SetSRID(ST_MakePoint(116.4074, 39.9042), 4326));
+
+-- 查询附近 3 公里内的门店（按距离排序）
+SELECT name, ST_DistanceSphere(location,
+       ST_SetSRID(ST_MakePoint(116.4100, 39.9000), 4326)) AS dist
+FROM shops
+WHERE ST_DWithin(
+    location,
+    ST_SetSRID(ST_MakePoint(116.4100, 39.9000), 4326),
+    3000)
+ORDER BY dist;
+</code></pre>
+<h3 id="73-空间索引原理geohash"><a class="header" href="#73-空间索引原理geohash">7.3 空间索引原理：GeoHash</a></h3>
+<p>GeoHash 把经纬度编码为字符串，<strong>前缀相同的点地理上相邻</strong>，从而把二维搜索降为一维前缀匹配：</p>
+<pre><code>北京: wx4g0ec19x3d
+上海: wtw3sj5x4u5  （前缀不同 → 相距远）
+
+WGS-84: 116.4074, 39.9042
+→ GeoHash: wx4g0ec19x3d（精度约米级）
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>GeoHash 长度</th><th>网格大小</th></tr>
+</thead>
+<tbody>
+<tr><td>6 位</td><td>约 1.2 km × 0.6 km</td></tr>
+<tr><td>7 位</td><td>约 153 m × 153 m</td></tr>
+<tr><td>8 位</td><td>约 38 m × 19 m</td></tr>
+<tr><td>9 位</td><td>约 4.8 m × 4.8 m</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// GeoHash 编码示意（二进制交错经纬度）
+fn geohash_encode(lng: f64, lat: f64, precision: usize) -&gt; String {
+    const BASE32: &amp;[u8] = b"0123456789bcdefghjkmnpqrstuvwxyz";
+    let mut bits = String::new();
+    let mut lng_range = (-180.0, 180.0);
+    let mut lat_range = (-90.0, 90.0);
+    for i in 0..(precision * 5) {
+        if i % 2 == 0 {
+            // 经度位
+            let mid = (lng_range.0 + lng_range.1) / 2.0;
+            if lng &gt; mid { bits.push('1'); lng_range.0 = mid; }
+            else { bits.push('0'); lng_range.1 = mid; }
+        } else {
+            // 纬度位
+            let mid = (lat_range.0 + lat_range.1) / 2.0;
+            if lat &gt; mid { bits.push('1'); lat_range.0 = mid; }
+            else { bits.push('0'); lat_range.1 = mid; }
+        }
+    }
+    bits.as_bytes()
+        .chunks(5)
+        .map(|chunk| {
+            let mut v = 0u8;
+            for &amp;b in chunk { v = (v &lt;&lt; 1) | (b - b'0'); }
+            BASE32[v as usize] as char
+        })
+        .collect()
+}
+<span class="boring">}</span></code></pre>
+<h3 id="74-redis-geo"><a class="header" href="#74-redis-geo">7.4 Redis GEO</a></h3>
+<pre><code class="language-bash"># 添加位置
+GEOADD shops 116.4074 39.9042 天安门
+GEOADD shops 121.4998 31.2397 外滩
+
+# 查询附近 5 公里
+GEOSEARCH shops FROMLONLAT 116.4100 39.9000 BYRADIUS 5 km ASC
+</code></pre>
+<hr>
+<h2 id="八地图软件与坐标系"><a class="header" href="#八地图软件与坐标系">八、地图软件与坐标系</a></h2>
+<h3 id="81-国内主流地图"><a class="header" href="#81-国内主流地图">8.1 国内主流地图</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>地图</th><th>坐标系</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>高德地图</strong></td><td>GCJ-02</td><td>国内市场份额领先，LBS 生态完善</td></tr>
+<tr><td><strong>百度地图</strong></td><td>BD-09</td><td>百度生态整合</td></tr>
+<tr><td><strong>腾讯地图</strong></td><td>GCJ-02</td><td>微信生态联动</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="82-国际地图"><a class="header" href="#82-国际地图">8.2 国际地图</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>地图</th><th>坐标系</th><th>特点</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Google Maps</strong></td><td>WGS-84</td><td>全球使用</td></tr>
+<tr><td><strong>OpenStreetMap</strong></td><td>WGS-84</td><td>开源、可自由下载</td></tr>
+<tr><td><strong>Apple Maps</strong></td><td>WGS-84</td><td>苹果生态</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="83-地图坐标系使用要点"><a class="header" href="#83-地图坐标系使用要点">8.3 地图坐标系使用要点</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>要点</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>定位数据入库</td><td>建议统一存 WGS-84（国际标准）</td></tr>
+<tr><td>展示到地图</td><td>按地图商要求转换（高德/百度各有 API）</td></tr>
+<tr><td>边界判断</td><td>GCJ-02 仅在中国境内偏移，境外不变</td></tr>
+<tr><td>精度丢失</td><td>经纬度用 <code>f64</code> 存储，避免 <code>f32</code> 截断</td></tr>
+<tr><td>单位统一</td><td>数据库统一记录坐标系元数据（SRID）</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="九rust-地理生态"><a class="header" href="#九rust-地理生态">九、Rust 地理生态</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Crate</th><th>用途</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://crates.io/crates/geo">geo</a></td><td>几何类型与空间计算（georust）</td></tr>
+<tr><td><a href="https://crates.io/crates/geojson">geojson</a></td><td>GeoJSON 解析与生成</td></tr>
+<tr><td><a href="https://crates.io/crates/geohash">geohash</a></td><td>GeoHash 编解码</td></tr>
+<tr><td><a href="https://crates.io/crates/proj">proj</a></td><td>坐标投影转换（PROJ 绑定）</td></tr>
+<tr><td><a href="https://crates.io/crates/sqlx">sqlx</a></td><td>数据库访问（配合 PostGIS）</td></tr>
+<tr><td><a href="https://crates.io/crates/rust-geo-booleanop">rust-geo-booleanop</a></td><td>几何布尔运算</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+geo = "0.32.0"
+*/
+use geo::{Point, Haversine, Distance};
+
+fn main() {
+    let a = Point::new(-72.1235, 42.3521);
+    let b = Point::new(-72.1260, 42.45);
+    
+    // 使用 Haversine 度量空间计算距离
+    let d = Haversine.distance(a, b);
+    
+    println!("Distance: {} meters", d);
+}</code></pre>
+<hr>
+<h2 id="十总结与练习"><a class="header" href="#十总结与练习">十、总结与练习</a></h2>
+<h3 id="本章小结"><a class="header" href="#本章小结">本章小结</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>知识点</th><th>要点</th></tr>
+</thead>
+<tbody>
+<tr><td>经纬度</td><td>经度 ±180°、纬度 ±90°，DD/DMS 表示</td></tr>
+<tr><td>WGS-84</td><td>GPS 全球基准，国际标准</td></tr>
+<tr><td>GCJ-02</td><td>国测局火星坐标，中国境内地图强制使用</td></tr>
+<tr><td>BD-09</td><td>百度在 GCJ-02 上二次加密</td></tr>
+<tr><td>坐标转换</td><td>WGS→GCJ 解析式、GCJ→WGS 迭代逼近</td></tr>
+<tr><td>距离计算</td><td>Haversine、Vincenty、GeoHash</td></tr>
+<tr><td>数据格式</td><td>GeoJSON、WKT、WKB</td></tr>
+<tr><td>数据库</td><td>PostGIS、MySQL Spatial、Redis GEO</td></tr>
+<tr><td>空间索引</td><td>GeoHash 前缀、R*Tree、2dsphere</td></tr>
+<tr><td>地图软件</td><td>高德/百度（GCJ/BD）、Google/OSM（WGS-84）</td></tr>
+<tr><td>Rust 生态</td><td>geo、geojson、geohash、proj</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
+<ol>
+<li><strong>坐标转换工具</strong>：用 Rust 实现 WGS-84 ↔ GCJ-02 ↔ BD-09 完整转换，用北京、上海、乌鲁木齐三个城市验证偏移量差异。</li>
+<li><strong>距离计算</strong>：实现 Haversine 与 Vincenty 算法，比较两个相距 1000 公里城市的结果差异。</li>
+<li><strong>GeoHash 实现</strong>：实现 GeoHash 编解码，验证“前缀越长、相邻点前缀越相似“的特性。</li>
+<li><strong>PostGIS 实战</strong>：安装 PostgreSQL + PostGIS，导入一批点数据，实现“附近门店“查询并对比有无空间索引的性能。</li>
+<li><strong>GeoJSON 可视化</strong>：用 geojson crate 生成一个包含点、线、面的 GeoJSON 文件，在 OpenStreetMap 或任意地图工具中可视化。</li>
+<li><strong>坐标系调研</strong>：用手机 GPS 与高德地图对比同一地点的坐标差异，估算 GCJ-02 在你所在城市的偏移量。</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_67.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_69.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_67.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_69.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

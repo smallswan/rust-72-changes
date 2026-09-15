@@ -49,10 +49,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-f08b2010.js"></script>
+        <script src="toc-545e538a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -1106,7 +1106,7 @@ impl&lt;B: Backend&gt; MnistModel&lt;B&gt; {
 <li><strong>易于部署</strong>：单一二进制文件，无依赖地狱</li>
 </ul>
 <pre class="playground"><code class="language-rust edition2024">/// 使用 ndarray 进行矩阵运算（神经网络基础）
-use ndarray::{Array2, Array1, array};
+use ndarray::{Array1, array};
 
 fn main() {
     // 权重矩阵 3x2
@@ -1123,11 +1123,11 @@ fn main() {
     println!("线性输出 z = {:?}", z);  // [1.0, 1.6, 1.5]
 
     // ReLU 激活
-    let a: Array1&lt;f64&gt; = z.mapv(|v| v.max(0.0));
+    let a: Array1&lt;f64&gt; = z.mapv(|v: f64| v.max(0.0));
     println!("ReLU 激活后 a = {:?}", a);  // [1.0, 1.6, 1.5]
 
     // Softmax
-    let exp_a = a.mapv(|v| v.exp());
+    let exp_a = a.mapv(|v: f64| v.exp());
     let sum_exp = exp_a.sum();
     let probs = exp_a / sum_exp;
     println!("Softmax 输出 = {:?}", probs);

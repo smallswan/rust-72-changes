@@ -49,10 +49,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-f08b2010.js"></script>
+        <script src="toc-545e538a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -772,7 +772,12 @@ fn main(){
 </div>
 <h3 id="1138-错误处理"><a class="header" href="#1138-错误处理">11.3.8 错误处理</a></h3>
 <p>Serde 的错误处理通过 <code>serde_json::Error</code> 类型实现，它提供了丰富的错误信息：</p>
-<pre class="playground"><code class="language-rust edition2024">use serde::Deserialize;
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0"
+*/
+use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
 struct Config {
@@ -781,10 +786,13 @@ struct Config {
 }
 
 fn main() {
-    let json = r#"{"name": "test", "port": "abc"}"#;
+    let json = r#"{"name": "test", "port": 8080}"#;
     
     match serde_json::from_str::&lt;Config&gt;(json) {
-        Ok(config) =&gt; println!("配置加载成功: {:?}", config),
+        Ok(config) =&gt; {
+            println!("配置加载成功: {:?}", config);
+            println!("name:{},port:{}",config.name,config.port);
+        },
         Err(e) =&gt; {
             eprintln!("配置解析失败: {}", e);
             // 输出详细错误分类

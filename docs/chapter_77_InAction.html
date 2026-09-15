@@ -49,10 +49,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-3cfb2e33.js";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-f08b2010.js"></script>
+        <script src="toc-545e538a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -218,6 +218,28 @@ y = [84,82,76,60,72,74,76,84,88,90,78,80,92,94,96,88,90,78,76,74]
 corr, p_value = pointbiserialr(x, y)
 print(f"corr: {corr}, p_value: {p_value}")
 </code></pre>
+<h3 id="rust-实现皮尔逊相关系数"><a class="header" href="#rust-实现皮尔逊相关系数">Rust 实现皮尔逊相关系数</a></h3>
+<pre class="playground"><code class="language-rust edition2024">fn pearson(x: &amp;[f64], y: &amp;[f64]) -&gt; f64 {
+    let n = x.len() as f64;
+    let mean_x = x.iter().sum::&lt;f64&gt;() / n;
+    let mean_y = y.iter().sum::&lt;f64&gt;() / n;
+
+    let (mut cov, mut var_x, mut var_y) = (0.0, 0.0, 0.0);
+    for i in 0..x.len() {
+        let dx = x[i] - mean_x;
+        let dy = y[i] - mean_y;
+        cov += dx * dy;
+        var_x += dx * dx;
+        var_y += dy * dy;
+    }
+    cov / (var_x.sqrt() * var_y.sqrt())
+}
+
+fn main() {
+    let x = [1.0, 2.0, 3.0, 4.0, 5.0];
+    let y = [2.0, 4.0, 6.0, 8.0, 10.0]; // 完全正相关
+    println!("Pearson r = {:.4}", pearson(&amp;x, &amp;y)); // 1.0000
+}</code></pre>
 <hr>
 <h2 id="三中国剩余定理"><a class="header" href="#三中国剩余定理">三、中国剩余定理</a></h2>
 <h3 id="问题"><a class="header" href="#问题">问题</a></h3>
@@ -259,6 +281,37 @@ fn main() {
     let a = 7;
     let b = 9;
     println!("extended_gcd({}, {}) = {:?}", a, b, extended_gcd(a, b));
+}</code></pre>
+<h3 id="中国剩余定理求解"><a class="header" href="#中国剩余定理求解">中国剩余定理求解</a></h3>
+<p>利用扩展欧几里得求逆元，可以直接求解《孙子算经》的“物不知数”问题：</p>
+<pre class="playground"><code class="language-rust edition2024">// 扩展欧几里得，返回 (gcd, x, y) 使 a*x + b*y = gcd
+fn ext_gcd(a: i64, b: i64) -&gt; (i64, i64, i64) {
+    if b == 0 {
+        (a, 1, 0)
+    } else {
+        let (g, x, y) = ext_gcd(b, a % b);
+        (g, y, x - (a / b) * y)
+    }
+}
+
+// 中国剩余定理：求解 x ≡ a_i (mod m_i)，要求 m_i 两两互质
+fn crt(remainders: &amp;[i64], moduli: &amp;[i64]) -&gt; i64 {
+    let prod: i64 = moduli.iter().product();
+    let mut result = 0i64;
+    for (&amp;a, &amp;m) in remainders.iter().zip(moduli) {
+        let mi = prod / m;
+        let (_, inv, _) = ext_gcd(mi, m);
+        result += a * mi * inv;
+    }
+    result.rem_euclid(prod)
+}
+
+fn main() {
+    // 《孙子算经》：三三剩二，五五剩三，七七剩二
+    let remainders = [2, 3, 2];
+    let moduli = [3, 5, 7];
+    let x = crt(&amp;remainders, &amp;moduli);
+    println!("物不知数 x = {}", x); // 23
 }</code></pre>
 <hr>
 <h2 id="四素数筛法"><a class="header" href="#四素数筛法">四、素数筛法</a></h2>

@@ -1,0 +1,739 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第五十八 图论 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-545e538a.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="第五十八-图论"><a class="header" href="#第五十八-图论">第五十八 图论</a></h1>
+<p>图论（Graph Theory）是数学和计算机科学的重要分支，研究由**顶点（Vertex）<strong>和</strong>边（Edge）**构成的图结构。从社交网络到地图导航，从互联网路由到芯片布线，图论无处不在。1736 年，欧拉解决了哥尼斯堡七桥问题，标志着图论的诞生。</p>
+<hr>
+<h2 id="一图的基本概念"><a class="header" href="#一图的基本概念">一、图的基本概念</a></h2>
+<h3 id="11-图的定义"><a class="header" href="#11-图的定义">1.1 图的定义</a></h3>
+<p>图 $G = (V, E)$ 由<strong>顶点集</strong> $V$ 和<strong>边集</strong> $E$ 组成。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>术语</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>有向图</strong></td><td>边有方向，$(u,v) \neq (v,u)$</td></tr>
+<tr><td><strong>无向图</strong></td><td>边无方向，$(u,v) = (v,u)$</td></tr>
+<tr><td><strong>加权图</strong></td><td>每条边有权重 $w(u,v)$</td></tr>
+<tr><td><strong>简单图</strong></td><td>无自环、无重边</td></tr>
+<tr><td><strong>完全图</strong></td><td>任意两顶点间都有边，$K_n$ 有 $\frac{n(n-1)}{2}$ 条边</td></tr>
+<tr><td><strong>二分图</strong></td><td>顶点可分为两组，边只连接不同组的顶点</td></tr>
+<tr><td><strong>DAG</strong></td><td>有向无环图（Directed Acyclic Graph）</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="12-度与路径"><a class="header" href="#12-度与路径">1.2 度与路径</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>术语</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>度（Degree）</strong></td><td>与顶点相连的边数；有向图分入度和出度</td></tr>
+<tr><td><strong>路径</strong></td><td>顶点序列 $v_1, v_2, \ldots, v_k$，相邻顶点间有边</td></tr>
+<tr><td><strong>环（Cycle）</strong></td><td>起点和终点相同的路径</td></tr>
+<tr><td><strong>连通图</strong></td><td>任意两顶点间都有路径</td></tr>
+<tr><td><strong>强连通</strong></td><td>有向图中任意两顶点互相可达</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>握手定理：</strong> 无向图所有顶点的度之和等于边数的两倍：$\sum_{v \in V} \deg(v) = 2|E|$。</p>
+<hr>
+<h2 id="二图的表示"><a class="header" href="#二图的表示">二、图的表示</a></h2>
+<h3 id="21-邻接矩阵"><a class="header" href="#21-邻接矩阵">2.1 邻接矩阵</a></h3>
+<p>用 $n \times n$ 矩阵 $A$ 表示图，$A[i][j] = 1$（或权重）表示顶点 $i$ 和 $j$ 之间有边。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>优点</th><th>缺点</th></tr>
+</thead>
+<tbody>
+<tr><td>查询边是否存在 $O(1)$</td><td>空间 $O(n^2)$，稀疏图浪费</td></tr>
+<tr><td>适合稠密图</td><td>遍历邻居 $O(n)$</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct AdjMatrix {
+    n: usize,
+    matrix: Vec&lt;Vec&lt;i64&gt;&gt;, // -1 表示无边
+}
+
+impl AdjMatrix {
+    fn new(n: usize) -&gt; Self {
+        AdjMatrix {
+            n,
+            matrix: vec![vec![-1; n]; n],
+        }
+    }
+
+    fn add_edge(&amp;mut self, u: usize, v: usize, weight: i64) {
+        self.matrix[u][v] = weight;
+        self.matrix[v][u] = weight; // 无向图
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="22-邻接表"><a class="header" href="#22-邻接表">2.2 邻接表</a></h3>
+<p>每个顶点维护一个邻居列表。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>优点</th><th>缺点</th></tr>
+</thead>
+<tbody>
+<tr><td>空间 $O(n + m)$，适合稀疏图</td><td>查询边 $O(\deg(v))$</td></tr>
+<tr><td>遍历邻居高效</td><td></td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct AdjList {
+    n: usize,
+    adj: Vec&lt;Vec&lt;(usize, i64)&gt;&gt;, // (邻居, 权重)
+}
+
+impl AdjList {
+    fn new(n: usize) -&gt; Self {
+        AdjList {
+            n,
+            adj: vec![Vec::new(); n],
+        }
+    }
+
+    fn add_edge(&amp;mut self, u: usize, v: usize, weight: i64) {
+        self.adj[u].push((v, weight));
+        self.adj[v].push((u, weight)); // 无向图
+    }
+}
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="三图的遍历"><a class="header" href="#三图的遍历">三、图的遍历</a></h2>
+<h3 id="31-深度优先搜索dfs"><a class="header" href="#31-深度优先搜索dfs">3.1 深度优先搜索（DFS）</a></h3>
+<p>DFS 沿一条路深入到底，再回溯。时间复杂度 $O(V + E)$。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn dfs(adj: &amp;[Vec&lt;usize&gt;], start: usize) -&gt; Vec&lt;usize&gt; {
+    let mut visited = vec![false; adj.len()];
+    let mut order = Vec::new();
+    dfs_visit(adj, start, &amp;mut visited, &amp;mut order);
+    order
+}
+
+fn dfs_visit(adj: &amp;[Vec&lt;usize&gt;], u: usize, visited: &amp;mut Vec&lt;bool&gt;, order: &amp;mut Vec&lt;usize&gt;) {
+    visited[u] = true;
+    order.push(u);
+    for &amp;v in &amp;adj[u] {
+        if !visited[v] {
+            dfs_visit(adj, v, visited, order);
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>应用：</strong> 连通分量检测、环检测、拓扑排序、强连通分量（Tarjan 算法）。</p>
+<h3 id="32-广度优先搜索bfs"><a class="header" href="#32-广度优先搜索bfs">3.2 广度优先搜索（BFS）</a></h3>
+<p>BFS 逐层扩展，适合求无权图的最短路径。时间复杂度 $O(V + E)$。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::collections::VecDeque;
+
+fn bfs_shortest_path(adj: &amp;[Vec&lt;usize&gt;], start: usize) -&gt; Vec&lt;i32&gt; {
+    let n = adj.len();
+    let mut dist = vec![-1i32; n];
+    let mut queue = VecDeque::new();
+    dist[start] = 0;
+    queue.push_back(start);
+
+    while let Some(u) = queue.pop_front() {
+        for &amp;v in &amp;adj[u] {
+            if dist[v] == -1 {
+                dist[v] = dist[u] + 1;
+                queue.push_back(v);
+            }
+        }
+    }
+    dist
+}
+<span class="boring">}</span></code></pre>
+<p><strong>应用：</strong> 无权最短路径、层次遍历、社交网络“六度分隔“验证。</p>
+<hr>
+<h2 id="四最短路径"><a class="header" href="#四最短路径">四、最短路径</a></h2>
+<h3 id="41-dijkstra-算法"><a class="header" href="#41-dijkstra-算法">4.1 Dijkstra 算法</a></h3>
+<p>求<strong>单源最短路径</strong>（边权非负）。时间复杂度 $O((V + E) \log V)$（优先队列实现）。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::collections::BinaryHeap;
+use std::cmp::Reverse;
+
+fn dijkstra(adj: &amp;[Vec&lt;(usize, u64)&gt;], start: usize) -&gt; Vec&lt;u64&gt; {
+    let n = adj.len();
+    let mut dist = vec![u64::MAX; n];
+    let mut heap = BinaryHeap::new();
+
+    dist[start] = 0;
+    heap.push(Reverse((0u64, start)));
+
+    while let Some(Reverse((d, u))) = heap.pop() {
+        if d &gt; dist[u] { continue; } // 已过期的条目
+        for &amp;(v, w) in &amp;adj[u] {
+            let new_dist = dist[u] + w;
+            if new_dist &lt; dist[v] {
+                dist[v] = new_dist;
+                heap.push(Reverse((new_dist, v)));
+            }
+        }
+    }
+    dist
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>适用条件</th><th>时间复杂度</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Dijkstra</strong></td><td>非负权边</td><td>$O((V+E)\log V)$</td></tr>
+<tr><td><strong>Bellman-Ford</strong></td><td>允许负权边</td><td>$O(VE)$</td></tr>
+<tr><td><strong>Floyd-Warshall</strong></td><td>全源最短路径</td><td>$O(V^3)$</td></tr>
+<tr><td><strong>SPFA</strong></td><td>队列优化的 Bellman-Ford</td><td>平均 $O(E)$</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="42-floyd-warshall-全源最短路径"><a class="header" href="#42-floyd-warshall-全源最短路径">4.2 Floyd-Warshall 全源最短路径</a></h3>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn floyd_warshall(dist: &amp;mut Vec&lt;Vec&lt;i64&gt;&gt;) {
+    let n = dist.len();
+    for k in 0..n {
+        for i in 0..n {
+            for j in 0..n {
+                if dist[i][k] != i64::MAX &amp;&amp; dist[k][j] != i64::MAX {
+                    dist[i][j] = dist[i][j].min(dist[i][k] + dist[k][j]);
+                }
+            }
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="五最小生成树"><a class="header" href="#五最小生成树">五、最小生成树</a></h2>
+<p>**最小生成树（MST）**是连接图中所有顶点且边权之和最小的子图。</p>
+<h3 id="51-kruskal-算法"><a class="header" href="#51-kruskal-算法">5.1 Kruskal 算法</a></h3>
+<p>按边权从小到大排序，用并查集判断是否形成环。时间复杂度 $O(E \log E)$。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct UnionFind {
+    parent: Vec&lt;usize&gt;,
+    rank: Vec&lt;usize&gt;,
+}
+
+impl UnionFind {
+    fn new(n: usize) -&gt; Self {
+        UnionFind {
+            parent: (0..n).collect(),
+            rank: vec![0; n],
+        }
+    }
+
+    fn find(&amp;mut self, x: usize) -&gt; usize {
+        if self.parent[x] != x {
+            self.parent[x] = self.find(self.parent[x]); // 路径压缩
+        }
+        self.parent[x]
+    }
+
+    fn union(&amp;mut self, x: usize, y: usize) -&gt; bool {
+        let (rx, ry) = (self.find(x), self.find(y));
+        if rx == ry { return false; }
+        // 按秩合并
+        match self.rank[rx].cmp(&amp;self.rank[ry]) {
+            std::cmp::Ordering::Less =&gt; self.parent[rx] = ry,
+            std::cmp::Ordering::Greater =&gt; self.parent[ry] = rx,
+            std::cmp::Ordering::Equal =&gt; {
+                self.parent[ry] = rx;
+                self.rank[rx] += 1;
+            }
+        }
+        true
+    }
+}
+
+fn kruskal(n: usize, edges: &amp;mut Vec&lt;(usize, usize, i64)&gt;) -&gt; i64 {
+    edges.sort_by_key(|e| e.2);
+    let mut uf = UnionFind::new(n);
+    let mut total_weight = 0i64;
+
+    for &amp;(u, v, w) in edges.iter() {
+        if uf.union(u, v) {
+            total_weight += w;
+        }
+    }
+    total_weight
+}
+<span class="boring">}</span></code></pre>
+<h3 id="52-prim-算法"><a class="header" href="#52-prim-算法">5.2 Prim 算法</a></h3>
+<p>从一个顶点出发，逐步加入最小权边扩展生成树。时间复杂度 $O(E \log V)$（优先队列实现）。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>适合场景</th><th>时间复杂度</th></tr>
+</thead>
+<tbody>
+<tr><td>Kruskal</td><td>稀疏图</td><td>$O(E \log E)$</td></tr>
+<tr><td>Prim</td><td>稠密图</td><td>$O(E \log V)$</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="六拓扑排序"><a class="header" href="#六拓扑排序">六、拓扑排序</a></h2>
+<p>对**有向无环图（DAG）**的顶点进行排序，使得对每条有向边 $(u, v)$，$u$ 都排在 $v$ 前面。</p>
+<p><strong>Kahn 算法（BFS 实现）：</strong></p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn topological_sort(adj: &amp;[Vec&lt;usize&gt;]) -&gt; Option&lt;Vec&lt;usize&gt;&gt; {
+    let n = adj.len();
+    let mut in_degree = vec![0usize; n];
+    for neighbors in adj {
+        for &amp;v in neighbors {
+            in_degree[v] += 1;
+        }
+    }
+
+    let mut queue: VecDeque&lt;usize&gt; = (0..n)
+        .filter(|&amp;i| in_degree[i] == 0)
+        .collect();
+    let mut order = Vec::with_capacity(n);
+
+    while let Some(u) = queue.pop_front() {
+        order.push(u);
+        for &amp;v in &amp;adj[u] {
+            in_degree[v] -= 1;
+            if in_degree[v] == 0 {
+                queue.push_back(v);
+            }
+        }
+    }
+
+    if order.len() == n { Some(order) } else { None } // 有环则返回 None
+}
+<span class="boring">}</span></code></pre>
+<p><strong>应用：</strong> 任务调度、课程先修关系、编译依赖分析、构建系统（如 Make、Cargo）。</p>
+<hr>
+<h2 id="七网络流"><a class="header" href="#七网络流">七、网络流</a></h2>
+<h3 id="71-最大流问题"><a class="header" href="#71-最大流问题">7.1 最大流问题</a></h3>
+<p>给定有向图，每条边有容量限制，求从源点 $s$ 到汇点 $t$ 的最大流量。</p>
+<p><strong>Ford-Fulkerson 方法：</strong> 反复寻找增广路径，沿路径推送流量，直到无增广路径。</p>
+<p><strong>Edmonds-Karp 算法（BFS 实现）：</strong> 时间复杂度 $O(VE^2)$。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn edmonds_karp(capacity: &amp;mut Vec&lt;Vec&lt;i64&gt;&gt;, s: usize, t: usize) -&gt; i64 {
+    let n = capacity.len();
+    let mut max_flow = 0i64;
+
+    loop {
+        // BFS 寻找增广路径
+        let mut parent = vec![(-1i32, -1i32); n]; // (前驱节点, 瓶颈容量)
+        let mut visited = vec![false; n];
+        let mut queue = VecDeque::new();
+
+        visited[s] = true;
+        queue.push_back((s, i64::MAX));
+
+        while let Some((u, flow)) = queue.pop_front() {
+            if u == t {
+                // 沿增广路径推送流量
+                let mut v = t;
+                while v != s {
+                    let (p, _) = parent[v];
+                    let p = p as usize;
+                    capacity[p][v] -= flow;
+                    capacity[v][p] += flow;
+                    v = p;
+                }
+                max_flow += flow;
+                break;
+            }
+            for v in 0..n {
+                if !visited[v] &amp;&amp; capacity[u][v] &gt; 0 {
+                    visited[v] = true;
+                    parent[v] = (u as i32, 0);
+                    queue.push_back((v, flow.min(capacity[u][v])));
+                }
+            }
+        }
+
+        if !visited[t] { break; } // 无增广路径
+    }
+    max_flow
+}
+<span class="boring">}</span></code></pre>
+<h3 id="72-最大流最小割定理"><a class="header" href="#72-最大流最小割定理">7.2 最大流最小割定理</a></h3>
+<p><strong>最大流等于最小割。</strong> 将图分为两部分的最小边权和等于最大流量。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>应用</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>网络带宽</td><td>通信网络的最大传输能力</td></tr>
+<tr><td>二分图匹配</td><td>最大匹配 = 最大流</td></tr>
+<tr><td>项目选择</td><td>利润最大化的项目组合</td></tr>
+<tr><td>图像分割</td><td>将图像分为前景和背景</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="八图着色与经典问题"><a class="header" href="#八图着色与经典问题">八、图着色与经典问题</a></h2>
+<h3 id="81-图着色问题"><a class="header" href="#81-图着色问题">8.1 图着色问题</a></h3>
+<p>给图的顶点着色，使相邻顶点颜色不同。求最少颜色数（<strong>色数</strong> $\chi(G)$）。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>图的类型</th><th>色数</th></tr>
+</thead>
+<tbody>
+<tr><td>空图</td><td>1</td></tr>
+<tr><td>二分图</td><td>2</td></tr>
+<tr><td>奇数环</td><td>3</td></tr>
+<tr><td>完全图 $K_n$</td><td>$n$</td></tr>
+<tr><td>平面图</td><td>$\leq 4$（四色定理）</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>四色定理：</strong> 任何平面地图只需 4 种颜色即可着色，使得相邻区域颜色不同。1976 年由计算机辅助证明，是第一个被计算机证明的重要数学定理。</p>
+<h3 id="82-哥尼斯堡七桥问题"><a class="header" href="#82-哥尼斯堡七桥问题">8.2 哥尼斯堡七桥问题</a></h3>
+<p>1736 年欧拉证明：哥尼斯堡的七座桥无法每条恰好走一次。</p>
+<p><strong>欧拉路径存在的条件：</strong></p>
+<ul>
+<li><strong>欧拉回路</strong>（起点 = 终点）：所有顶点度数为偶数</li>
+<li><strong>欧拉路径</strong>（起点 ≠ 终点）：恰好 2 个顶点度数为奇数</li>
+</ul>
+<h3 id="83-旅行商问题tsp"><a class="header" href="#83-旅行商问题tsp">8.3 旅行商问题（TSP）</a></h3>
+<p>经过所有顶点恰好一次并回到起点的最短回路。NP-hard 问题，是组合优化的经典难题。</p>
+<hr>
+<h2 id="九图论在-rust-生态中的应用"><a class="header" href="#九图论在-rust-生态中的应用">九、图论在 Rust 生态中的应用</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Crate</th><th>功能</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://crates.io/crates/petgraph">petgraph</a></td><td>通用图数据结构与算法库</td></tr>
+<tr><td><a href="https://crates.io/crates/pathfinding">pathfinding</a></td><td>A*、Dijkstra、BFS 等寻路算法</td></tr>
+<tr><td><a href="https://crates.io/crates/graphlib">graphlib</a></td><td>轻量级图库</td></tr>
+</tbody>
+</table>
+</div>
+<pre class="playground"><code class="language-rust edition2024">use petgraph::graph::Graph;
+use petgraph::algo::dijkstra;
+use petgraph::visit::EdgeRef;
+
+fn main() {
+    let mut graph = Graph::&lt;&amp;str, f64&gt;::new();
+    let a = graph.add_node("北京");
+    let b = graph.add_node("上海");
+    let c = graph.add_node("广州");
+
+    graph.add_edge(a, b, 1200.0);
+    graph.add_edge(b, c, 1400.0);
+    graph.add_edge(a, c, 2100.0);
+
+    // Dijkstra 最短路径
+    let distances = dijkstra(&amp;graph, a, None, |e| *e.weight());
+    println!("从北京到各城市的最短距离: {:?}", distances);
+}</code></pre>
+<hr>
+<h2 id="十总结与练习"><a class="header" href="#十总结与练习">十、总结与练习</a></h2>
+<h3 id="本章小结"><a class="header" href="#本章小结">本章小结</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>知识点</th><th>要点</th></tr>
+</thead>
+<tbody>
+<tr><td>图的表示</td><td>邻接矩阵 $O(n^2)$ 适合稠密图，邻接表 $O(n+m)$ 适合稀疏图</td></tr>
+<tr><td>DFS / BFS</td><td>图遍历的两大基础算法，$O(V+E)$</td></tr>
+<tr><td>Dijkstra</td><td>非负权单源最短路径，$O((V+E)\log V)$</td></tr>
+<tr><td>Floyd-Warshall</td><td>全源最短路径，$O(V^3)$</td></tr>
+<tr><td>最小生成树</td><td>Kruskal（并查集）和 Prim（优先队列）</td></tr>
+<tr><td>拓扑排序</td><td>DAG 的线性排序，Kahn 算法</td></tr>
+<tr><td>网络流</td><td>最大流 = 最小割，Edmonds-Karp 算法</td></tr>
+<tr><td>图着色</td><td>四色定理，NP-hard 的一般图着色</td></tr>
+<tr><td>欧拉路径</td><td>所有顶点偶数度 → 欧拉回路</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
+<ol>
+<li><strong>图遍历</strong>：用 DFS 和 BFS 分别遍历一个给定的图，对比访问顺序，分析各自的适用场景。</li>
+<li><strong>最短路径</strong>：实现 Dijkstra 算法，求一个城市交通网中从起点到所有终点的最短距离。</li>
+<li><strong>最小生成树</strong>：用 Kruskal 算法为一个模拟的网络（如校园网布线）计算最优连接方案。</li>
+<li><strong>拓扑排序</strong>：模拟一个课程先修关系，用 Kahn 算法生成合法的修课顺序；加入环检测逻辑。</li>
+<li><strong>网络流</strong>：实现 Edmonds-Karp 算法，求解一个二分图最大匹配问题（如任务分配）。</li>
+<li><strong>社交网络分析</strong>：构建一个简单的社交网络图，用 BFS 验证“六度分隔“假说，计算任意两人之间的最短社交距离。</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_57_number_theory.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_59_software_vulnerability.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_57_number_theory.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_59_software_vulnerability.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
