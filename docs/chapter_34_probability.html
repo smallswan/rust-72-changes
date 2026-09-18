@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -231,6 +268,8 @@
 <li>递推关系：$C(n,m) = C(n-1,m-1) + C(n-1,m)$</li>
 <li>求和公式：$\sum_{k=0}^{n} C(n,k) = 2^n$</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZmFjdG9yaWFsKG46IHU2NCkgLT4gdTY0IHsKICAgICgxLi49bikucHJvZHVjdCgpCn0KCmZuIHBlcm11dGF0aW9uKG46IHU2NCwgbTogdTY0KSAtPiB1NjQgewogICAgZmFjdG9yaWFsKG4pIC8gZmFjdG9yaWFsKG4gLSBtKQp9CgpmbiBjb21iaW5hdGlvbihuOiB1NjQsIG06IHU2NCkgLT4gdTY0IHsKICAgIGlmIG0gPiBuIHsgcmV0dXJuIDA7IH0KICAgIGlmIG0gPiBuIC0gbSB7IHJldHVybiBjb21iaW5hdGlvbihuLCBuIC0gbSk7IH0KICAgIGxldCBtdXQgcmVzdWx0ID0gMXU2NDsKICAgIGZvciBpIGluIDAuLm0gewogICAgICAgIHJlc3VsdCA9IHJlc3VsdCAqIChuIC0gaSkgLyAoaSArIDEpOwogICAgfQogICAgcmVzdWx0Cn0KCmZuIG1haW4oKSB7CiAgICBwcmludGxuISgiUCg1LDMpID0ge30iLCBwZXJtdXRhdGlvbig1LCAzKSk7ICAvLyA2MAogICAgcHJpbnRsbiEoIkMoNSwzKSA9IHt9IiwgY29tYmluYXRpb24oNSwgMykpOyAgLy8gMTAKICAgIHByaW50bG4hKCJDKDUyLDMpID0ge30iLCBjb21iaW5hdGlvbig1MiwgMykpOyAvLyAyMjEwMAp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn factorial(n: u64) -&gt; u64 {
     (1..=n).product()
 }
@@ -268,6 +307,8 @@ fn main() {
 <blockquote>
 <p><strong>注意：</strong> 独立与互斥是不同的概念。互斥事件通常不独立（除非其中一个概率为 0）。</p>
 </blockquote>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOeUsuWHu+S4reamgueOhyAwLjjvvIzkuZnlh7vkuK3mpoLnjocgMC4377yM55uu5qCH6KKr5Ye75Lit55qE5qaC546H77yfCiAgICBsZXQgcF9hID0gMC44OwogICAgbGV0IHBfYiA9IDAuNzsKCiAgICAvLyBQKOWHu+S4rSkgPSBQKEEpICsgUChCKSAtIFAoQeKIqUIpID0gMC44ICsgMC43IC0gMC44KjAuNwogICAgbGV0IHBfaGl0ID0gcF9hICsgcF9iIC0gcF9hICogcF9iOwogICAgcHJpbnRsbiEoIuebruagh+iiq+WHu+S4reeahOamgueOhzogezouMn0iLCBwX2hpdCk7ICAvLyAwLjk0Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 甲击中概率 0.8，乙击中概率 0.7，目标被击中的概率？
     let p_a = 0.8;
@@ -299,6 +340,8 @@ fn main() {
 <blockquote>
 <p><strong>贝叶斯公式的直觉理解：</strong> 先验信念 + 新证据 → 更新后的信念。这是机器学习中贝叶斯推断的基础。</p>
 </blockquote>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOWMu+WtpuajgOa1i+mXrumimAogICAgLy8g5p+Q55a+55eF5Y+R55eF546HIDEl77yM5qOA5rWL5YeG56Gu546HIDk5Je+8iOecn+mYs+aAp+eOhyA5OSXvvIzlgYfpmLPmgKfnjocgMSXvvIkKICAgIC8vIOmXru+8muajgOa1i+S4uumYs+aAp++8jOWunumZheaCo+eXheeahOamgueOh+aYr+WkmuWwke+8nwoKICAgIGxldCBwX2Rpc2Vhc2UgPSAwLjAxOyAgICAgICAvLyBQKOaCo+eXhSkKICAgIGxldCBwX25vX2Rpc2Vhc2UgPSAwLjk5OyAgICAvLyBQKOS4jeaCo+eXhSkKICAgIGxldCBwX3Bvc2l0aXZlX2dpdmVuX2Rpc2Vhc2UgPSAwLjk5OyAgICAvLyBQKOmYs+aAp3zmgqPnl4UpCiAgICBsZXQgcF9wb3NpdGl2ZV9naXZlbl9ubyA9IDAuMDE7ICAgICAgICAgLy8gUCjpmLPmgKd85LiN5oKj55eFKQoKICAgIC8vIOWFqOamgueOh+WFrOW8j++8mlAo6Ziz5oCnKQogICAgbGV0IHBfcG9zaXRpdmUgPSBwX3Bvc2l0aXZlX2dpdmVuX2Rpc2Vhc2UgKiBwX2Rpc2Vhc2UKICAgICAgICAgICAgICAgICAgKyBwX3Bvc2l0aXZlX2dpdmVuX25vICogcF9ub19kaXNlYXNlOwoKICAgIC8vIOi0neWPtuaWr+WFrOW8j++8mlAo5oKj55eFfOmYs+aApykKICAgIGxldCBwX2Rpc2Vhc2VfZ2l2ZW5fcG9zaXRpdmUgPSBwX3Bvc2l0aXZlX2dpdmVuX2Rpc2Vhc2UgKiBwX2Rpc2Vhc2UgLyBwX3Bvc2l0aXZlOwoKICAgIHByaW50bG4hKCLmo4DmtYvpmLPmgKfml7blrp7pmYXmgqPnl4XmpoLnjoc6IHs6LjR9IiwgcF9kaXNlYXNlX2dpdmVuX3Bvc2l0aXZlKTsKICAgIC8vIDAuNTAyNSDigJQg5Y2z5L2/5qOA5rWL5YeG56Gu546H6auY6L6+IDk5Je+8jOmYs+aAp+e7k+aenOS5n+WPquaciee6piA1MCUg5qaC546H5piv55yf55qE77yBCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 医学检测问题
     // 某疾病发病率 1%，检测准确率 99%（真阳性率 99%，假阳性率 1%）
@@ -353,6 +396,8 @@ fn main() {
 <li>$\text{Var}(aX + b) = a^2 \text{Var}(X)$</li>
 <li>若 $X, Y$ 独立：$\text{Var}(X + Y) = \text{Var}(X) + \text{Var}(Y)$</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWVhbihkYXRhOiAmW2Y2NF0pIC0+IGY2NCB7CiAgICBkYXRhLml0ZXIoKS5zdW06OjxmNjQ+KCkgLyBkYXRhLmxlbigpIGFzIGY2NAp9CgpmbiB2YXJpYW5jZShkYXRhOiAmW2Y2NF0pIC0+IGY2NCB7CiAgICBsZXQgbSA9IG1lYW4oZGF0YSk7CiAgICBkYXRhLml0ZXIoKS5tYXAofHh8ICh4IC0gbSkucG93aSgyKSkuc3VtOjo8ZjY0PigpIC8gZGF0YS5sZW4oKSBhcyBmNjQKfQoKZm4gc3RkX2RldihkYXRhOiAmW2Y2NF0pIC0+IGY2NCB7CiAgICB2YXJpYW5jZShkYXRhKS5zcXJ0KCkKfQoKZm4gbWFpbigpIHsKICAgIGxldCBkYXRhID0gWzYuMCwgNS4wLCA0LjAsIDguMCwgMTIuMF07CiAgICBwcmludGxuISgi5bmz5Z2H5YC8OiB7fSIsIG1lYW4oJmRhdGEpKTsgICAgICAgLy8gNy4wCiAgICBwcmludGxuISgi5pa55beuOiAgIHt9IiwgdmFyaWFuY2UoJmRhdGEpKTsgICAgLy8gOC4wCiAgICBwcmludGxuISgi5qCH5YeG5beuOiB7fSIsIHN0ZF9kZXYoJmRhdGEpKTsgICAgICAgLy8gMi44Mjg0Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn mean(data: &amp;[f64]) -&gt; f64 {
     data.iter().sum::&lt;f64&gt;() / data.len() as f64
 }
@@ -379,6 +424,8 @@ fn main() {
 <p>$$f(x) = \binom{n}{x} \cdot p^x \cdot (1-p)^{n-x}$$</p>
 <p><strong>期望：</strong> $E[X] = np$</p>
 <p><strong>方差：</strong> $\text{Var}(X) = np(1-p)$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gYmlub21pYWxfcG1mKHg6IHUzMiwgbjogdTMyLCBwOiBmNjQpIC0+IGY2NCB7CiAgICBjb21iaW5hdGlvbihuIGFzIHU2NCwgeCBhcyB1NjQpIGFzIGY2NCAqIHAucG93aSh4IGFzIGkzMikgKiAoMS4wIC0gcCkucG93aShuIGFzIGkzMiAtIHggYXMgaTMyKQp9CgpmbiBtYWluKCkgewogICAgLy8g5LiJ5Y+R5a+85by577yM5ZG95Lit546HIDcwJQogICAgbGV0IG4gPSAzOwogICAgbGV0IHAgPSAwLjc7CgogICAgcHJpbnRsbiEoIuS4ieWPkeWFqOS4rTogICAgIHs6LjR9IiwgYmlub21pYWxfcG1mKDMsIG4sIHApKTsgIC8vIDAuMzQzCiAgICBwcmludGxuISgi5ZG95Lit5Lik5Y+ROiAgICAgezouNH0iLCBiaW5vbWlhbF9wbWYoMiwgbiwgcCkpOyAgLy8gMC40NDEKICAgIHByaW50bG4hKCLlkb3kuK3kuIDlj5E6ICAgICB7Oi40fSIsIGJpbm9taWFsX3BtZigxLCBuLCBwKSk7ICAvLyAwLjE4OQogICAgcHJpbnRsbiEoIuWFqOS4jeWRveS4rTogICAgIHs6LjR9IiwgYmlub21pYWxfcG1mKDAsIG4sIHApKTsgIC8vIDAuMDI3Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn binomial_pmf(x: u32, n: u32, p: f64) -&gt; f64 {
     combination(n as u64, x as u64) as f64 * p.powi(x as i32) * (1.0 - p).powi(n as i32 - x as i32)
 }
@@ -400,6 +447,8 @@ fn main() {
 <blockquote>
 <p><strong>适用场景：</strong> 电话呼叫次数、交通事故数、错别字数、服务器请求量等“稀有事件“。</p>
 </blockquote>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gcG9pc3Nvbl9wbWYoeDogdTMyLCBsYW1iZGE6IGY2NCkgLT4gZjY0IHsKICAgIGxhbWJkYS5wb3dpKHggYXMgaTMyKSAqICgtbGFtYmRhKS5leHAoKSAvIGZhY3RvcmlhbCh4IGFzIHU2NCkgYXMgZjY0Cn0KCmZuIG1haW4oKSB7CiAgICAvLyDmn5DnvZHnq5nlubPlnYfmr4/lsI/ml7YgNSDmrKHorr/pl64KICAgIGxldCBsYW1iZGEgPSA1LjA7CiAgICBmb3IgeCBpbiAwLi49MTAgewogICAgICAgIHByaW50bG4hKCJQKFg9e30pID0gezouNn0iLCB4LCBwb2lzc29uX3BtZih4LCBsYW1iZGEpKTsKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn poisson_pmf(x: u32, lambda: f64) -&gt; f64 {
     lambda.powi(x as i32) * (-lambda).exp() / factorial(x as u64) as f64
 }
@@ -431,6 +480,8 @@ fn main() {
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbm9ybWFsX3BkZih4OiBmNjQsIG11OiBmNjQsIHNpZ21hOiBmNjQpIC0+IGY2NCB7CiAgICBsZXQgY29lZmYgPSAxLjAgLyAoc2lnbWEgKiAoMi4wICogc3RkOjpmNjQ6OmNvbnN0czo6UEkpLnNxcnQoKSk7CiAgICBjb2VmZiAqICgtKHggLSBtdSkucG93aSgyKSAvICgyLjAgKiBzaWdtYSAqIHNpZ21hKSkuZXhwKCkKfQoKZm4gbWFpbigpIHsKICAgIC8vIOagh+WHhuato+aAgeWIhuW4g+WcqOWHoOS4quWFs+mUrueCueeahOamgueOh+WvhuW6pgogICAgZm9yICZ4IGluICZbLTMuMCwgLTIuMCwgLTEuMCwgMC4wLCAxLjAsIDIuMCwgMy4wXSB7CiAgICAgICAgcHJpbnRsbiEoImYoezorLjB9KSA9IHs6LjZ9IiwgeCwgbm9ybWFsX3BkZih4LCAwLjAsIDEuMCkpOwogICAgfQogICAgLy8gZigwKSA9IDAuMzk4OTQy77yI5pyA5aSn5YC877yJCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn normal_pdf(x: f64, mu: f64, sigma: f64) -&gt; f64 {
     let coeff = 1.0 / (sigma * (2.0 * std::f64::consts::PI).sqrt());
     coeff * (-(x - mu).powi(2) / (2.0 * sigma * sigma)).exp()
@@ -478,6 +529,8 @@ fn main() {
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZW50cm9weShwcm9iYWJpbGl0aWVzOiAmW2Y2NF0pIC0+IGY2NCB7CiAgICBwcm9iYWJpbGl0aWVzCiAgICAgICAgLml0ZXIoKQogICAgICAgIC5maWx0ZXIofCYmcHwgcCA+IDAuMCkKICAgICAgICAubWFwKHwmcHwgLXAgKiBwLmxvZzIoKSkKICAgICAgICAuc3VtKCkKfQoKZm4gbWFpbigpIHsKICAgIC8vIOWFrOW5s+ehrOW4gQogICAgcHJpbnRsbiEoIuWFrOW5s+ehrOW4geeGtTogezouNH0iLCBlbnRyb3B5KCZbMC41LCAwLjVdKSk7ICAvLyAxLjAKCiAgICAvLyDkuI3lhazlubPnoazluIEKICAgIHByaW50bG4hKCLlgY/lv4PnoazluIHnhrU6IHs6LjR9IiwgZW50cm9weSgmWzAuOSwgMC4xXSkpOyAgLy8gMC40NjkwCgogICAgLy8g5YWt6Z2i6aqw5a2QCiAgICBwcmludGxuISgi5YWs5bmz6aqw5a2Q54a1OiB7Oi40fSIsIGVudHJvcHkoJlsxLjAvNi4wOyA2XSkpOyAgLy8gMi41ODUwCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn entropy(probabilities: &amp;[f64]) -&gt; f64 {
     probabilities
         .iter()
@@ -532,6 +585,8 @@ fn main() {
 <h2 id="十二经典题目"><a class="header" href="#十二经典题目">十二、经典题目</a></h2>
 <h3 id="题目1生日悖论"><a class="header" href="#题目1生日悖论">题目1：生日悖论</a></h3>
 <p>一个班有 100 人，至少两人生日相同的概率是多少？</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gYmlydGhkYXlfcHJvYmFiaWxpdHkobjogdTMyKSAtPiBmNjQgewogICAgbGV0IG11dCBwX25vX21hdGNoID0gMS4wOwogICAgZm9yIGkgaW4gMC4ubiB7CiAgICAgICAgcF9ub19tYXRjaCAqPSAoMzY1LjAgLSBpIGFzIGY2NCkgLyAzNjUuMDsKICAgIH0KICAgIDEuMCAtIHBfbm9fbWF0Y2gKfQoKZm4gbWFpbigpIHsKICAgIGZvciAmbiBpbiAmWzIzLCAzMCwgNTAsIDcwLCAxMDBdIHsKICAgICAgICBwcmludGxuISgie30g5Lq65Lit6Iez5bCR5Lik5Lq655Sf5pel55u45ZCMOiB7Oi40fSIsIG4sIGJpcnRoZGF5X3Byb2JhYmlsaXR5KG4pKTsKICAgIH0KICAgIC8vIDIzIOS6ujogMC41MDcz77yI6LaF6L+HIDUwJe+8ge+8iQogICAgLy8gMTAwIOS6ujogMC45OTk5OTk377yI5Yeg5LmO5b+F54S277yJCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn birthday_probability(n: u32) -&gt; f64 {
     let mut p_no_match = 1.0;
     for i in 0..n {
@@ -549,6 +604,8 @@ fn main() {
 }</code></pre>
 <h3 id="题目2炸金花概率"><a class="header" href="#题目2炸金花概率">题目2：炸金花概率</a></h3>
 <p>52 张牌中抽 3 张，求同花顺和豹子的概率。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCB0b3RhbCA9IGNvbWJpbmF0aW9uKDUyLCAzKSBhcyBmNjQ7ICAvLyAyMjEwMAoKICAgIC8vIOWQjOiKsemhuu+8mjTnp43oirHoibIgw5cgMTLnp43luo/liJfvvIhBMjMsIDIzNCwgLi4uLCBRS0HvvIkKICAgIGxldCBzdHJhaWdodF9mbHVzaCA9IDQuMCAqIDEyLjA7CiAgICBwcmludGxuISgi5ZCM6Iqx6aG65qaC546HOiB7Oi42fSAoezouNH0lKSIsIHN0cmFpZ2h0X2ZsdXNoIC8gdG90YWwsIHN0cmFpZ2h0X2ZsdXNoIC8gdG90YWwgKiAxMDAuMCk7CgogICAgLy8g6LG55a2Q77yaMTPnp43ngrnmlbAgw5cgNOenjeiKseiJsuWPljPnp40KICAgIGxldCB0aHJlZV9vZl9raW5kID0gMTMuMCAqIGNvbWJpbmF0aW9uKDQsIDMpIGFzIGY2NDsKICAgIHByaW50bG4hKCLosbnlrZDmpoLnjoc6ICAgezouNn0gKHs6LjR9JSkiLCB0aHJlZV9vZl9raW5kIC8gdG90YWwsIHRocmVlX29mX2tpbmQgLyB0b3RhbCAqIDEwMC4wKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let total = combination(52, 3) as f64;  // 22100
 

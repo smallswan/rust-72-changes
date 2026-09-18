@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -245,7 +282,13 @@
 </div>
 <p>秒级时间戳在 32 位有符号整数中的最大值为 $2^{31} - 1 = 2147483647$，对应 <strong>2038-01-19 03:14:07 UTC</strong>，这就是著名的 <strong>Y2K38 问题</strong>（2038 年问题）。使用 64 位整数可以表示到约 2920 亿年后，彻底解决这个问题。</p>
 <h3 id="422-rust-获取时间戳"><a class="header" href="#422-rust-获取时间戳">4.2.2 Rust 获取时间戳</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use chrono::Utc;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KY2hyb25vID0gIjAuNC40MiIKKi8KdXNlIGNocm9ubzo6VXRjOwoKZm4gbWFpbigpIHsKICAgIC8vIOenkue6p+aXtumXtOaIswogICAgcHJpbnRsbiEoIlV0YyB0aW1lc3RhbXA6IHt9IiwgVXRjOjpub3coKS50aW1lc3RhbXAoKSk7CiAgICAKICAgIC8vIOavq+enkue6p+aXtumXtOaIswogICAgcHJpbnRsbiEoIlV0YyB0aW1lc3RhbXBfbWlsbGlzOiB7fSIsIFV0Yzo6bm93KCkudGltZXN0YW1wX21pbGxpcygpKTsKICAgIAogICAgLy8g5b6u56eS57qn5pe26Ze05oizCiAgICBwcmludGxuISgiVXRjIHRpbWVzdGFtcF9taWNyb3M6IHt9IiwgVXRjOjpub3coKS50aW1lc3RhbXBfbWljcm9zKCkpOwogICAgCiAgICAvLyDnurPnp5Lnuqfml7bpl7TmiLMKICAgIHByaW50bG4hKCJVdGMgdGltZXN0YW1wX25hbm9zOiB7fSIsIFV0Yzo6bm93KCkudGltZXN0YW1wX25hbm9zX29wdCgpLnVud3JhcF9vcigwKSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+chrono = "0.4.42"
+*/
+use chrono::Utc;
 
 fn main() {
     // 秒级时间戳
@@ -321,7 +364,13 @@ fn main() {
 </table>
 </div>
 <h3 id="434-日期与字符串相互转换"><a class="header" href="#434-日期与字符串相互转换">4.3.4 日期与字符串相互转换</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use chrono::{Utc, NaiveDateTime, TimeZone, NaiveDate};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KY2hyb25vID0gIjAuNC40MiIKKi8KdXNlIGNocm9ubzo6e1V0YywgTmFpdmVEYXRlVGltZSwgVGltZVpvbmUsIE5haXZlRGF0ZX07CgpwdWIgZm4gbWFpbigpIC0+IFJlc3VsdDwoKSwgQm94PGR5biBzdGQ6OmVycm9yOjpFcnJvcj4+IHsKICAgIC8vIDEuIERhdGVUaW1lIC0+ICZzdHIgKOagvOW8j+WMlui+k+WHuuaXpeacnykKICAgIGxldCBkdCA9IFV0Yy53aXRoX3ltZF9hbmRfaG1zKDIwMTQsIDExLCAyOCwgMTIsIDAsIDkpLnVud3JhcCgpOwogICAgYXNzZXJ0X2VxISgKICAgICAgICBkdC5mb3JtYXQoIiVZLSVtLSVkICVIOiVNOiVTIikudG9fc3RyaW5nKCksCiAgICAgICAgIjIwMTQtMTEtMjggMTI6MDA6MDkiCiAgICApOwoKICAgIGFzc2VydF9lcSEoZHQudG9fc3RyaW5nKCksICIyMDE0LTExLTI4IDEyOjAwOjA5IFVUQyIpOwogICAgYXNzZXJ0X2VxIShkdC50b19yZmMyODIyKCksICJGcmksIDI4IE5vdiAyMDE0IDEyOjAwOjA5ICswMDAwIik7CiAgICBhc3NlcnRfZXEhKGR0LnRvX3JmYzMzMzkoKSwgIjIwMTQtMTEtMjhUMTI6MDA6MDkrMDA6MDAiKTsKICAgIGFzc2VydF9lcSEoZm9ybWF0ISgiezo/fSIsIGR0KSwgIjIwMTQtMTEtMjhUMTI6MDA6MDlaIik7CgogICAgLy8gMi4gJnN0ciAtPiBEYXRlVGltZQogICAgbGV0IG5vX3RpbWV6b25lID0gTmFpdmVEYXRlVGltZTo6cGFyc2VfZnJvbV9zdHIoIjIwMTUtMDktMDUgMjM6NTY6MDQiLCAiJVktJW0tJWQgJUg6JU06JVMiKTsKICAgIHByaW50bG4hKCJ7Oj99Iiwgbm9fdGltZXpvbmUpOwoKICAgIGFzc2VydF9lcSEoCiAgICAgICAgTmFpdmVEYXRlVGltZTo6cGFyc2VfZnJvbV9zdHIoIjIwMTQtNS0xN1QxMjozNDo1NiswOTozMCIsICIlWS0lbS0lZFQlSDolTTolUyV6IiksCiAgICAgICAgT2soTmFpdmVEYXRlOjpmcm9tX3ltZF9vcHQoMjAxNCwgNSwgMTcpLnVud3JhcCgpLmFuZF9obXNfb3B0KDEyLCAzNCwgNTYpLnVud3JhcCgpKQogICAgKTsKICAgIAogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+chrono = "0.4.42"
+*/
+use chrono::{Utc, NaiveDateTime, TimeZone, NaiveDate};
 
 pub fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
     // 1. DateTime -&gt; &amp;str (格式化输出日期)
@@ -367,7 +416,13 @@ UTC-8      太平洋标准时区（PST）（西八区时间）
 <li>夏令时的开始和结束日期每年可能不同，给程序处理带来复杂性</li>
 </ul>
 <h3 id="443-rust-时区处理"><a class="header" href="#443-rust-时区处理">4.4.3 Rust 时区处理</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use chrono::{Local, DateTime, Utc, FixedOffset, NaiveDate, TimeZone};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KY2hyb25vID0gIjAuNC40MiIKKi8KdXNlIGNocm9ubzo6e0xvY2FsLCBEYXRlVGltZSwgVXRjLCBGaXhlZE9mZnNldCwgTmFpdmVEYXRlLCBUaW1lWm9uZX07CnVzZSBjaHJvbm86OntEYXRlbGlrZSwgVGltZWxpa2V9OwoKZm4gbWFpbigpIHsKICAgIC8vIOKdjCDml6fmlrnms5XvvIjlt7LlvIPnlKjvvIkKICAgIC8vIGxldCB1dGNfdGltZSA9IERhdGVUaW1lOjo8VXRjPjo6ZnJvbV91dGMobG9jYWxfdGltZS5uYWl2ZV91dGMoKSwgVXRjKTsKICAgIAogICAgLy8g4pyFIOaWsOaWueazle+8muS9v+eUqCBVdGMuZnJvbV91dGNfZGF0ZXRpbWUoKQogICAgbGV0IGxvY2FsX3RpbWUgPSBMb2NhbDo6bm93KCk7CiAgICBsZXQgdXRjX3RpbWUgPSBVdGMuZnJvbV91dGNfZGF0ZXRpbWUoJmxvY2FsX3RpbWUubmFpdmVfdXRjKCkpOwogICAgCiAgICAvLyDlrprkuYnml7bljLrvvIjms6jmhI/vvJpGaXhlZE9mZnNldDo6ZWFzdCgpIOW3suW8g+eUqO+8jOS9v+eUqCBlYXN0X29wdCgpIOaIliBmcm9tX2hvdXJzKCnvvIkKICAgIGxldCBuZXdfZGVsaGlfdGltZXpvbmUgPSBGaXhlZE9mZnNldDo6ZWFzdF9vcHQoNSAqIDM2MDAgKyAxODAwKS51bndyYXAoKTsKICAgIGxldCBjaGluYV90aW1lem9uZSA9IEZpeGVkT2Zmc2V0OjplYXN0X29wdCg4ICogMzYwMCkudW53cmFwKCk7CiAgICBsZXQgamFwYW5fdGltZXpvbmUgPSBGaXhlZE9mZnNldDo6ZWFzdF9vcHQoOSAqIDM2MDApLnVud3JhcCgpOwogICAgbGV0IHJpb190aW1lem9uZSA9IEZpeGVkT2Zmc2V0Ojp3ZXN0X29wdCgyICogMzYwMCkudW53cmFwKCk7CiAgICBsZXQgZXN0X3RpbWV6b25lID0gRml4ZWRPZmZzZXQ6Ondlc3Rfb3B0KDUgKiAzNjAwKS51bndyYXAoKTsKICAgIGxldCBwc3RfdGltZXpvbmUgPSBGaXhlZE9mZnNldDo6d2VzdF9vcHQoOCAqIDM2MDApLnVud3JhcCgpOwoKICAgIHByaW50bG4hKCJMb2NhbCB0aW1lIG5vdyBpcyB7fSIsIGxvY2FsX3RpbWUpOwogICAgcHJpbnRsbiEoIlVUQyB0aW1lIG5vdyBpcyB7fSIsIHV0Y190aW1lKTsKCiAgICAvLyBVVEMgLS0+IOWQhOaXtuWMuuaXtumXtAogICAgcHJpbnRsbiEoIlRpbWUgaW4gQmVpamluZyBub3cgaXMge30iLCB1dGNfdGltZS53aXRoX3RpbWV6b25lKCZjaGluYV90aW1lem9uZSkpOwogICAgcHJpbnRsbiEoIlRpbWUgaW4gVG9reW8gbm93IGlzIHt9IiwgdXRjX3RpbWUud2l0aF90aW1lem9uZSgmamFwYW5fdGltZXpvbmUpKTsKICAgIHByaW50bG4hKCJUaW1lIGluIFJpbyBkZSBKYW5laXJvIG5vdyBpcyB7fSIsIHV0Y190aW1lLndpdGhfdGltZXpvbmUoJnJpb190aW1lem9uZSkpOwogICAgcHJpbnRsbiEoIlRpbWUgaW4gTmV3IERlbGhpIG5vdyBpcyB7fSIsIHV0Y190aW1lLndpdGhfdGltZXpvbmUoJm5ld19kZWxoaV90aW1lem9uZSkpOwogICAgcHJpbnRsbiEoIlRpbWUgaW4gRVNUIG5vdyBpcyB7fSIsIHV0Y190aW1lLndpdGhfdGltZXpvbmUoJmVzdF90aW1lem9uZSkpOwogICAgcHJpbnRsbiEoIlRpbWUgaW4gUFNUIG5vdyBpcyB7fSIsIHV0Y190aW1lLndpdGhfdGltZXpvbmUoJnBzdF90aW1lem9uZSkpOwogICAgCiAgICAvLyDmoLzlvI/ljJbovpPlh7oKICAgIGxldCBsb2NhbDogRGF0ZVRpbWU8TG9jYWw+ID0gTG9jYWw6Om5vdygpOwogICAgcHJpbnRsbiEoInt9IiwgbG9jYWwuZm9ybWF0KCIlWS0lbS0lZCAlSDolTTolUyIpKTsKICAgIHByaW50bG4hKCLlvZPliY3mnKzlnLDml7bpl7Q6IHt9IiwgbG9jYWwpOwoKICAgIC8vIE5haXZlRGF0ZVRpbWUg5p6E5bu677yI6ZyA6KaBIE5haXZlRGF0ZSDnsbvlnovvvIkKICAgIGxldCBsb2NhbF90aW1lX25vdyA9IExvY2FsOjpub3coKTsKICAgIGxldCBkdCA9IE5haXZlRGF0ZTo6ZnJvbV95bWRfb3B0KAogICAgICAgIGxvY2FsX3RpbWVfbm93LnllYXIoKSwgCiAgICAgICAgbG9jYWxfdGltZV9ub3cubW9udGgoKSwgCiAgICAgICAgbG9jYWxfdGltZV9ub3cuZGF5KCkKICAgICkKICAgIC51bndyYXAoKQogICAgLmFuZF9obXNfb3B0KAogICAgICAgIGxvY2FsX3RpbWVfbm93LmhvdXIoKSwgCiAgICAgICAgbG9jYWxfdGltZV9ub3cubWludXRlKCksIAogICAgICAgIGxvY2FsX3RpbWVfbm93LnNlY29uZCgpCiAgICApCiAgICAudW53cmFwKCk7CiAgICAKICAgIHByaW50bG4hKCJOYWl2ZURhdGVUaW1lOiB7fSIsIGR0KTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+chrono = "0.4.42"
+*/
+use chrono::{Local, DateTime, Utc, FixedOffset, NaiveDate, TimeZone};
 use chrono::{Datelike, Timelike};
 
 fn main() {
@@ -440,7 +495,13 @@ fn main() {
 </table>
 </div>
 <h3 id="452-时间运算"><a class="header" href="#452-时间运算">4.5.2 时间运算</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use chrono::{Duration, DateTime, Utc, TimeZone, Local};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KY2hyb25vID0gIjAuNC40MiIKKi8KdXNlIGNocm9ubzo6e0R1cmF0aW9uLCBEYXRlVGltZSwgVXRjLCBUaW1lWm9uZSwgTG9jYWx9OwoKZm4gZGF5X2VhcmxpZXIoZGF0ZV90aW1lOiBEYXRlVGltZTxVdGM+KSAtPiBPcHRpb248RGF0ZVRpbWU8VXRjPj4gewogICAgZGF0ZV90aW1lLmNoZWNrZWRfc3ViX3NpZ25lZChEdXJhdGlvbjo6ZGF5cygxKSkKfQoKZm4gbWFpbigpIHsKICAgIGxldCBub3cgPSBVdGM6Om5vdygpOwogICAgCiAgICBsZXQgYWxtb3N0X3RocmVlX3dlZWtzX2Zyb21fbm93ID0gbm93CiAgICAgICAgLmNoZWNrZWRfYWRkX3NpZ25lZChEdXJhdGlvbjo6d2Vla3MoMikpCiAgICAgICAgLmFuZF90aGVuKHxpbl8yd2Vla3N8IGluXzJ3ZWVrcy5jaGVja2VkX2FkZF9zaWduZWQoRHVyYXRpb246OndlZWtzKDEpKSkKICAgICAgICAuYW5kX3RoZW4oZGF5X2VhcmxpZXIpOwoKICAgIG1hdGNoIGFsbW9zdF90aHJlZV93ZWVrc19mcm9tX25vdyB7CiAgICAgICAgU29tZSh4KSA9PiBwcmludGxuISgi5LiJ5ZGo5YmN5LiA5aSpOiB7fSIsIHgpLAogICAgICAgIE5vbmUgPT4gZXByaW50bG4hKCJBbG1vc3QgdGhyZWUgd2Vla3MgZnJvbSBub3cgb3ZlcmZsb3dzISIpLAogICAgfQoKICAgIC8vIOKchSDmlrDmlrnms5XvvJrkvb/nlKggd2l0aF95bWRfYW5kX2htcygpCiAgICBsZXQgdG9kYXkgPSBVdGM6Om5vdygpOwogICAgbGV0IG5vdyA9IExvY2FsOjpub3coKTsKICAgIGxldCBmb3VuZGluZ19kYXRlID0gVXRjLndpdGhfeW1kX2FuZF9obXMoMTk0OSwgMTAsIDEsIDAsIDAsIDApLnVud3JhcCgpOwogICAgCiAgICBsZXQgeWVhcnNfcGFzc2VkID0gbm93LnNpZ25lZF9kdXJhdGlvbl9zaW5jZShmb3VuZGluZ19kYXRlKS5udW1fZGF5cygpIC8gMzY1OwogICAgcHJpbnRsbiEoIuS7iuWkqXt977yM5bu65Zu9e33lubQiLCBub3csIHllYXJzX3Bhc3NlZCk7CiAgICAKICAgIC8vIOaXtumXtOi/kOeul+ekuuS+iwogICAgbGV0IHRvbW9ycm93ID0gbm93LmNoZWNrZWRfYWRkX3NpZ25lZChEdXJhdGlvbjo6ZGF5cygxKSkudW53cmFwKCk7CiAgICBsZXQgbGFzdF93ZWVrID0gbm93LmNoZWNrZWRfc3ViX3NpZ25lZChEdXJhdGlvbjo6d2Vla3MoMSkpLnVud3JhcCgpOwogICAgbGV0IHRlbl9taW51dGVzX2xhdGVyID0gbm93LmNoZWNrZWRfYWRkX3NpZ25lZChEdXJhdGlvbjo6bWludXRlcygxMCkpLnVud3JhcCgpOwogICAgCiAgICBwcmludGxuISgi5piO5aSpOiB7fSIsIHRvbW9ycm93KTsKICAgIHByaW50bG4hKCLkuIrlkag6IHt9IiwgbGFzdF93ZWVrKTsKICAgIHByaW50bG4hKCLljYHliIbpkp/lkI46IHt9IiwgdGVuX21pbnV0ZXNfbGF0ZXIpOwogICAgCiAgICAvLyDorqHnrpfkuKTkuKrml7bpl7TngrnnmoTpl7TpmpQKICAgIGxldCBzdGFydCA9IFV0Yy53aXRoX3ltZF9hbmRfaG1zKDIwMjQsIDEsIDEsIDAsIDAsIDApLnVud3JhcCgpOwogICAgbGV0IGVuZCA9IFV0Yy53aXRoX3ltZF9hbmRfaG1zKDIwMjQsIDYsIDIwLCAxMiwgMCwgMCkudW53cmFwKCk7CiAgICBsZXQgZGlmZiA9IGVuZC5zaWduZWRfZHVyYXRpb25fc2luY2Uoc3RhcnQpOwogICAgCiAgICBwcmludGxuISgi5LuO5bm05Yid5Yiw5LuK5aSp55qE6Ze06ZqUOiB7fSDlpKkiLCBkaWZmLm51bV9kYXlzKCkpOwogICAgcHJpbnRsbiEoIuS7juW5tOWIneWIsOS7iuWkqeeahOmXtOmalDoge30g5bCP5pe2IiwgZGlmZi5udW1faG91cnMoKSk7CiAgICBwcmludGxuISgi5LuO5bm05Yid5Yiw5LuK5aSp55qE6Ze06ZqUOiB7fSDnp5IiLCBkaWZmLm51bV9zZWNvbmRzKCkpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+chrono = "0.4.42"
+*/
+use chrono::{Duration, DateTime, Utc, TimeZone, Local};
 
 fn day_earlier(date_time: DateTime&lt;Utc&gt;) -&gt; Option&lt;DateTime&lt;Utc&gt;&gt; {
     date_time.checked_sub_signed(Duration::days(1))

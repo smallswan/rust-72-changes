@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -289,6 +326,8 @@
 rodio = "0.17"
 </code></pre>
 <p>播放本地音频文件：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6ZnM6OkZpbGU7CnVzZSBzdGQ6OmlvOjpCdWZSZWFkZXI7CgpmbiBtYWluKCkgewogICAgLy8gMS4g6I635Y+W6buY6K6k6Z+z6aKR6L6T5Ye66K6+5aSHCiAgICBsZXQgKF9zdHJlYW0sIHN0cmVhbV9oYW5kbGUpID0gcm9kaW86Ok91dHB1dFN0cmVhbTo6dHJ5X2RlZmF1bHQoKS51bndyYXAoKTsKCiAgICAvLyAyLiDmiZPlvIDpn7PpopHmlofku7YKICAgIGxldCBmaWxlID0gRmlsZTo6b3BlbigibXVzaWMubXAzIikudW53cmFwKCk7CiAgICBsZXQgc291cmNlID0gcm9kaW86OkRlY29kZXI6Om5ldyhCdWZSZWFkZXI6Om5ldyhmaWxlKSkudW53cmFwKCk7CgogICAgLy8gMy4g5pKt5pS+6Z+z6aKRCiAgICBzdHJlYW1faGFuZGxlLnBsYXlfcmF3KHNvdXJjZS5jb252ZXJ0X3NhbXBsZXMoKSkudW53cmFwKCk7CgogICAgLy8gNC4g562J5b6F5pKt5pS+5a6M5oiQ77yI56S65L6L5Lit5LyR55ygIDEwIOenku+8iQogICAgc3RkOjp0aHJlYWQ6OnNsZWVwKHN0ZDo6dGltZTo6RHVyYXRpb246OmZyb21fc2VjcygxMCkpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::fs::File;
 use std::io::BufReader;
 
@@ -307,6 +346,8 @@ fn main() {
     std::thread::sleep(std::time::Duration::from_secs(10));
 }</code></pre>
 <p>rodio 还支持音量控制、播放速度调整、音频混合等高级功能：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHJvZGlvOjp7RGVjb2RlciwgU291cmNlfTsKdXNlIHN0ZDo6ZnM6OkZpbGU7CnVzZSBzdGQ6OmlvOjpCdWZSZWFkZXI7CgpmbiBtYWluKCkgewogICAgbGV0IChfc3RyZWFtLCBzdHJlYW1faGFuZGxlKSA9IHJvZGlvOjpPdXRwdXRTdHJlYW06OnRyeV9kZWZhdWx0KCkudW53cmFwKCk7CiAgICBsZXQgZmlsZSA9IEZpbGU6Om9wZW4oIm11c2ljLndhdiIpLnVud3JhcCgpOwogICAgbGV0IHNvdXJjZSA9IERlY29kZXI6Om5ldyhCdWZSZWFkZXI6Om5ldyhmaWxlKSkudW53cmFwKCk7CgogICAgLy8g6LCD5pW06Z+z6YeP77yIMC41IOihqOekuuS4gOWNiumfs+mHj++8iQogICAgbGV0IHZvbHVtZV9hZGp1c3RlZCA9IHNvdXJjZS5hbXBsaWZ5KDAuNSk7CgogICAgLy8g6LCD5pW05pKt5pS+6YCf5bqm77yIMS41IOWAjemAn++8iQogICAgbGV0IHNwZWVkX2FkanVzdGVkID0gdm9sdW1lX2FkanVzdGVkLnNwZWVkKDEuNSk7CgogICAgc3RyZWFtX2hhbmRsZS5wbGF5X3JhdyhzcGVlZF9hZGp1c3RlZC5jb252ZXJ0X3NhbXBsZXMoKSkudW53cmFwKCk7CiAgICBzdGQ6OnRocmVhZDo6c2xlZXAoc3RkOjp0aW1lOjpEdXJhdGlvbjo6ZnJvbV9zZWNzKDEwKSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use rodio::{Decoder, Source};
 use std::fs::File;
 use std::io::BufReader;
@@ -332,7 +373,13 @@ fn main() {
 symphonia = { version = "0.5", features = ["mp3", "flac", "wav"] }
 </code></pre>
 <p>读取音频文件元数据和采样数据：</p>
-<pre class="playground"><code class="language-rust edition2024">use symphonia::core::codecs::DecoderOptions;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc3ltcGhvbmlhID0geyB2ZXJzaW9uID0gIjAuNSIsIGZlYXR1cmVzID0gWyJtcDMiLCAiYWFjIl0gfQoqLwp1c2Ugc3ltcGhvbmlhOjpjb3JlOjpjb2RlY3M6OkRlY29kZXJPcHRpb25zOwp1c2Ugc3ltcGhvbmlhOjpjb3JlOjpmb3JtYXRzOjpGb3JtYXRPcHRpb25zOwp1c2Ugc3ltcGhvbmlhOjpjb3JlOjppbzo6TWVkaWFTb3VyY2VTdHJlYW07CnVzZSBzeW1waG9uaWE6OmNvcmU6Om1ldGE6Ok1ldGFkYXRhT3B0aW9uczsKdXNlIHN5bXBob25pYTo6Y29yZTo6cHJvYmU6OkhpbnQ7CnVzZSBzdGQ6OmZzOjpGaWxlOwoKZm4gbWFpbigpIHsKICAgIC8vIDEuIOaJk+W8gOaWh+S7tgogICAgbGV0IGZpbGUgPSBGaWxlOjpvcGVuKCJtdXNpYy5tcDMiKS51bndyYXAoKTsKICAgIGxldCBtc3MgPSBNZWRpYVNvdXJjZVN0cmVhbTo6bmV3KEJveDo6bmV3KGZpbGUpLCBEZWZhdWx0OjpkZWZhdWx0KCkpOwoKICAgIC8vIDIuIOWIm+W7uuaPkOekuuWSjOmAiemhuQogICAgbGV0IGhpbnQgPSBIaW50OjpuZXcoKTsKICAgIGxldCBmb3JtYXRfb3B0czogRm9ybWF0T3B0aW9ucyA9IERlZmF1bHQ6OmRlZmF1bHQoKTsKICAgIGxldCBtZXRhZGF0YV9vcHRzOiBNZXRhZGF0YU9wdGlvbnMgPSBEZWZhdWx0OjpkZWZhdWx0KCk7CiAgICBsZXQgZGVjb2Rlcl9vcHRzOiBEZWNvZGVyT3B0aW9ucyA9IERlZmF1bHQ6OmRlZmF1bHQoKTsKCiAgICAvLyAzLiDmjqLmtYvmoLzlvI8KICAgIGxldCBwcm9iZWQgPSBzeW1waG9uaWE6OmRlZmF1bHQ6OmdldF9wcm9iZSgpCiAgICAgICAgLmZvcm1hdCgmaGludCwgbXNzLCAmZm9ybWF0X29wdHMsICZtZXRhZGF0YV9vcHRzKQogICAgICAgIC51bndyYXAoKTsKCiAgICBsZXQgbXV0IGZvcm1hdCA9IHByb2JlZC5mb3JtYXQ7CgogICAgLy8gNC4g6I635Y+W6Z+z6aKR5rWB5L+h5oGvCiAgICBsZXQgdHJhY2sgPSBmb3JtYXQuZGVmYXVsdF90cmFjaygpLnVud3JhcCgpOwogICAgbGV0IGNvZGVjX3BhcmFtcyA9ICZ0cmFjay5jb2RlY19wYXJhbXM7CgogICAgcHJpbnRsbiEoIumHh+agt+eOhzogezo/fSIsIGNvZGVjX3BhcmFtcy5zYW1wbGVfcmF0ZSk7CiAgICBwcmludGxuISgi5aOw6YGT5pWwOiB7Oj99IiwgY29kZWNfcGFyYW1zLmNoYW5uZWxzKTsKCiAgICAvLyA1LiDliJvlu7rop6PnoIHlmajlubbor7vlj5bph4fmoLfmlbDmja4KICAgIGxldCBtdXQgZGVjb2RlciA9IHN5bXBob25pYTo6ZGVmYXVsdDo6Z2V0X2NvZGVjcygpCiAgICAgICAgLm1ha2UoY29kZWNfcGFyYW1zLCAmZGVjb2Rlcl9vcHRzKQogICAgICAgIC51bndyYXAoKTsKCiAgICB3aGlsZSBsZXQgT2socGFja2V0KSA9IGZvcm1hdC5uZXh0X3BhY2tldCgpIHsKICAgICAgICBtYXRjaCBkZWNvZGVyLmRlY29kZSgmcGFja2V0KSB7CiAgICAgICAgICAgIE9rKGRlY29kZWQpID0+IHsKICAgICAgICAgICAgICAgIC8vIOWkhOeQhuino+eggeWQjueahOmfs+mikemHh+agt+aVsOaNrgogICAgICAgICAgICAgICAgbGV0IHNhbXBsZXMgPSBkZWNvZGVkLnNhbXBsZXMoKTsKICAgICAgICAgICAgICAgIHByaW50bG4hKCLop6PnoIHlvpfliLAge30g5Liq6YeH5qC354K5Iiwgc2FtcGxlcy5sZW4oKSk7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgRXJyKF8pID0+IGJyZWFrLAogICAgICAgIH0KICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+symphonia = { version = "0.5", features = ["mp3", "aac"] }
+*/
+use symphonia::core::codecs::DecoderOptions;
 use symphonia::core::formats::FormatOptions;
 use symphonia::core::io::MediaSourceStream;
 use symphonia::core::meta::MetadataOptions;
@@ -387,6 +434,8 @@ fn main() {
 hound = "3.5"
 </code></pre>
 <p>读取 WAV 文件：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCByZWFkZXIgPSBob3VuZDo6V2F2UmVhZGVyOjpvcGVuKCJtdXNpYy53YXYiKS51bndyYXAoKTsKICAgIGxldCBzcGVjID0gcmVhZGVyLnNwZWMoKTsKCiAgICBwcmludGxuISgi6YeH5qC3546HOiB7fSIsIHNwZWMuc2FtcGxlX3JhdGUpOwogICAgcHJpbnRsbiEoIuWjsOmBk+aVsDoge30iLCBzcGVjLmNoYW5uZWxzKTsKICAgIHByaW50bG4hKCLkvY3mt7HluqY6IHt9Iiwgc3BlYy5iaXRzX3Blcl9zYW1wbGUpOwogICAgcHJpbnRsbiEoIuagt+acrOagvOW8jzogezo/fSIsIHNwZWMuc2FtcGxlX2Zvcm1hdCk7CgogICAgLy8g6K+75Y+W5omA5pyJ6YeH5qC35YC877yI5YGH6K6+5Li6IDE2IOS9jeacieespuWPt+aVtOaVsO+8iQogICAgbGV0IHNhbXBsZXM6IFZlYzxpMTY+ID0gcmVhZGVyLmludG9fc2FtcGxlczo6PGkxNj4oKQogICAgICAgIC5maWx0ZXJfbWFwKHxzfCBzLm9rKCkpCiAgICAgICAgLmNvbGxlY3QoKTsKCiAgICBwcmludGxuISgi5oC76YeH5qC35pWwOiB7fSIsIHNhbXBsZXMubGVuKCkpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let reader = hound::WavReader::open("music.wav").unwrap();
     let spec = reader.spec();
@@ -404,6 +453,8 @@ hound = "3.5"
     println!("总采样数: {}", samples.len());
 }</code></pre>
 <p>生成 WAV 文件（生成一个 1 秒的正弦波）：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6ZjMyOjpjb25zdHM6OlBJOwoKZm4gbWFpbigpIHsKICAgIGxldCBzYW1wbGVfcmF0ZSA9IDQ0MTAwOwogICAgbGV0IGZyZXF1ZW5jeSA9IDQ0MC4wOyAvLyBBNCDpn7PnrKYKICAgIGxldCBkdXJhdGlvbiA9IDE7IC8vIDEg56eSCiAgICBsZXQgYW1wbGl0dWRlID0gMC41OwoKICAgIGxldCBzcGVjID0gaG91bmQ6OldhdlNwZWMgewogICAgICAgIGNoYW5uZWxzOiAxLAogICAgICAgIHNhbXBsZV9yYXRlLAogICAgICAgIGJpdHNfcGVyX3NhbXBsZTogMTYsCiAgICAgICAgc2FtcGxlX2Zvcm1hdDogaG91bmQ6OlNhbXBsZUZvcm1hdDo6SW50LAogICAgfTsKCiAgICBsZXQgbXV0IHdyaXRlciA9IGhvdW5kOjpXYXZXcml0ZXI6OmNyZWF0ZSgic2luZS53YXYiLCBzcGVjKS51bndyYXAoKTsKCiAgICBmb3IgdCBpbiAwLi5zYW1wbGVfcmF0ZSAqIGR1cmF0aW9uIHsKICAgICAgICBsZXQgc2FtcGxlID0gKGFtcGxpdHVkZSAqICgyLjAgKiBQSSAqIGZyZXF1ZW5jeSAqIHQgYXMgZjMyIC8gc2FtcGxlX3JhdGUgYXMgZjMyKS5zaW4oKSkKICAgICAgICAgICAgKiBpMTY6Ok1BWCBhcyBmMzI7CiAgICAgICAgd3JpdGVyLndyaXRlX3NhbXBsZShzYW1wbGUgYXMgaTE2KS51bndyYXAoKTsKICAgIH0KCiAgICB3cml0ZXIuZmluYWxpemUoKS51bndyYXAoKTsKICAgIHByaW50bG4hKCLlt7LnlJ/miJAgc2luZS53YXYiKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::f32::consts::PI;
 
 fn main() {

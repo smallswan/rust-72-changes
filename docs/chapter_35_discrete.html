@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -241,6 +278,8 @@
 $$A \cap (B \cup C) = (A \cap B) \cup (A \cap C) \quad \text{（分配律）}$$
 $$\overline{A \cup B} = \bar{A} \cap \bar{B} \quad \text{（德摩根定律）}$$
 $$\overline{A \cap B} = \bar{A} \cup \bar{B} \quad \text{（德摩根定律）}$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6Y29sbGVjdGlvbnM6OkJUcmVlU2V0OwoKZm4gbWFpbigpIHsKICAgIC8vIOe7n+S4gOS9v+eUqCBCVHJlZVNldAogICAgbGV0IGE6IEJUcmVlU2V0PGkzMj4gPSBbMSwgMiwgMywgNF0uaXRlcigpLmNsb25lZCgpLmNvbGxlY3QoKTsKICAgIGxldCBiOiBCVHJlZVNldDxpMzI+ID0gWzMsIDQsIDUsIDZdLml0ZXIoKS5jbG9uZWQoKS5jb2xsZWN0KCk7CiAgICBsZXQgYzogQlRyZWVTZXQ8aTMyPiA9IFs0LCA4LCAxMiwgMTZdLml0ZXIoKS5jbG9uZWQoKS5jb2xsZWN0KCk7CgogICAgLy8g5Z+65pys6L+Q566X77yI5bm244CB5Lqk44CB5beu44CB5a+556ew5beu77yJ4oCU4oCU5ZCM5LiK77yM57G75Z6L5YWo6YOo5LiA6Ie0CiAgICBsZXQgdW5pb246IEJUcmVlU2V0PF8+ID0gYS51bmlvbigmYikuY2xvbmVkKCkuY29sbGVjdCgpOwogICAgcHJpbnRsbiEoIkEg4oiqIEIgPSB7Oj99IiwgdW5pb24pOwoKICAgIGxldCBpbnRlcnNlY3Rpb246IEJUcmVlU2V0PF8+ID0gYS5pbnRlcnNlY3Rpb24oJmIpLmNsb25lZCgpLmNvbGxlY3QoKTsKICAgIHByaW50bG4hKCJBIOKIqSBCID0gezo/fSIsIGludGVyc2VjdGlvbik7CgogICAgbGV0IGRpZmZlcmVuY2U6IEJUcmVlU2V0PF8+ID0gYS5kaWZmZXJlbmNlKCZiKS5jbG9uZWQoKS5jb2xsZWN0KCk7CiAgICBwcmludGxuISgiQSAtIEIgPSB7Oj99IiwgZGlmZmVyZW5jZSk7CgogICAgbGV0IGRpZmZlcmVuY2VfYjogQlRyZWVTZXQ8Xz4gPSBiLmRpZmZlcmVuY2UoJmEpLmNsb25lZCgpLmNvbGxlY3QoKTsKICAgIHByaW50bG4hKCJCIC0gQSA9IHs6P30iLCBkaWZmZXJlbmNlX2IpOwoKICAgIGxldCBzeW1fZGlmZjogQlRyZWVTZXQ8Xz4gPSBhLnN5bW1ldHJpY19kaWZmZXJlbmNlKCZiKS5jbG9uZWQoKS5jb2xsZWN0KCk7CiAgICBwcmludGxuISgiQSDilrMgQiA9IHs6P30iLCBzeW1fZGlmZik7CgogICAgLy8g5YWo6ZuGIFUKICAgIGxldCB1OiBCVHJlZVNldDxpMzI+ID0gKDEuLj0xMCkuY29sbGVjdCgpOwoKICAgIC8vIOW+t+aRqeagueWumuW+i++8msKsKEEg4oiqIEIpID0gwqxBIOKIqSDCrEIKICAgIGxldCB1bmlvbl9hYiA9IGEudW5pb24oJmIpLmNsb25lZCgpLmNvbGxlY3Q6OjxCVHJlZVNldDxfPj4oKTsKICAgIGxldCBsZWZ0ID0gdS5kaWZmZXJlbmNlKCZ1bmlvbl9hYikuY2xvbmVkKCkuY29sbGVjdDo6PEJUcmVlU2V0PF8+PigpOwoKICAgIGxldCBub3RfYSA9IHUuZGlmZmVyZW5jZSgmYSkuY2xvbmVkKCkuY29sbGVjdDo6PEJUcmVlU2V0PF8+PigpOwogICAgbGV0IG5vdF9iID0gdS5kaWZmZXJlbmNlKCZiKS5jbG9uZWQoKS5jb2xsZWN0Ojo8QlRyZWVTZXQ8Xz4+KCk7CiAgICBsZXQgcmlnaHQgPSBub3RfYS5pbnRlcnNlY3Rpb24oJm5vdF9iKS5jbG9uZWQoKS5jb2xsZWN0Ojo8QlRyZWVTZXQ8Xz4+KCk7CgogICAgcHJpbnRsbiEoIsKsKEEg4oiqIEIpID0gezo/fSIsIGxlZnQpOyAgIC8vIHs3LCA4LCA5LCAxMH0KICAgIHByaW50bG4hKCLCrEEg4oipIMKsQiA9IHs6P30iLCByaWdodCk7ICAgLy8gezcsIDgsIDksIDEwfQogICAgYXNzZXJ0X2VxIShsZWZ0LCByaWdodCk7CgogICAgLy8g5b635pGp5qC55a6a5b6L77yawqwoQSDiiKkgQikgPSDCrEEg4oiqIMKsQgogICAgbGV0IGludGVyX2FiID0gYS5pbnRlcnNlY3Rpb24oJmIpLmNsb25lZCgpLmNvbGxlY3Q6OjxCVHJlZVNldDxfPj4oKTsKICAgIGxldCBsZWZ0MiA9IHUuZGlmZmVyZW5jZSgmaW50ZXJfYWIpLmNsb25lZCgpLmNvbGxlY3Q6OjxCVHJlZVNldDxfPj4oKTsKCiAgICBsZXQgcmlnaHQyID0gbm90X2EudW5pb24oJm5vdF9iKS5jbG9uZWQoKS5jb2xsZWN0Ojo8QlRyZWVTZXQ8Xz4+KCk7CgogICAgcHJpbnRsbiEoIsKsKEEg4oipIEIpID0gezo/fSIsIGxlZnQyKTsgICAvLyB7MSwgMiwgNSwgNiwgNywgOCwgOSwgMTB9CiAgICBwcmludGxuISgiwqxBIOKIqiDCrEIgICA9IHs6P30iLCByaWdodDIpOyAvLyB7MSwgMiwgNSwgNiwgNywgOCwgOSwgMTB9CiAgICBhc3NlcnRfZXEhKGxlZnQyLCByaWdodDIpOwoKICAgIC8vIOWIhumFjeW+i++8mkEg4oipIChCIOKIqiBDKSA9IChBIOKIqSBCKSDiiKogKEEg4oipIEMpCiAgICBsZXQgdW5pb25fYmMgPSBiLnVuaW9uKCZjKS5jbG9uZWQoKS5jb2xsZWN0Ojo8QlRyZWVTZXQ8Xz4+KCk7CiAgICBsZXQgbGVmdF9kaXN0ID0gYS5pbnRlcnNlY3Rpb24oJnVuaW9uX2JjKS5jbG9uZWQoKS5jb2xsZWN0Ojo8QlRyZWVTZXQ8Xz4+KCk7CgogICAgbGV0IGFfaW50ZXJfYiA9IGEuaW50ZXJzZWN0aW9uKCZiKS5jbG9uZWQoKS5jb2xsZWN0Ojo8QlRyZWVTZXQ8Xz4+KCk7CiAgICBsZXQgYV9pbnRlcl9jID0gYS5pbnRlcnNlY3Rpb24oJmMpLmNsb25lZCgpLmNvbGxlY3Q6OjxCVHJlZVNldDxfPj4oKTsKICAgIGxldCByaWdodF9kaXN0ID0gYV9pbnRlcl9iLnVuaW9uKCZhX2ludGVyX2MpLmNsb25lZCgpLmNvbGxlY3Q6OjxCVHJlZVNldDxfPj4oKTsKCiAgICBwcmludGxuISgiQSDiiKkgKEIg4oiqIEMpID0gezo/fSIsIGxlZnRfZGlzdCk7ICAgLy8gezR9CiAgICBwcmludGxuISgiKEEg4oipIEIpIOKIqiAoQSDiiKkgQykgPSB7Oj99IiwgcmlnaHRfZGlzdCk7IC8vIHs0fQogICAgYXNzZXJ0X2VxIShsZWZ0X2Rpc3QsIHJpZ2h0X2Rpc3QpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::collections::BTreeSet;
 
 fn main() {
@@ -305,6 +344,8 @@ fn main() {
 <h3 id="14-幂集"><a class="header" href="#14-幂集">1.4 幂集</a></h3>
 <p>集合 $A$ 的<strong>幂集</strong> $\mathcal{P}(A)$ 是 $A$ 的所有子集构成的集合。</p>
 <p>$$|\mathcal{P}(A)| = 2^{|A|}$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gcG93ZXJfc2V0PFQ6IENsb25lPihzZXQ6ICZbVF0pIC0+IFZlYzxWZWM8VD4+IHsKICAgIGxldCBuID0gc2V0LmxlbigpOwogICAgbGV0IG11dCByZXN1bHQgPSBWZWM6Om5ldygpOwogICAgZm9yIG1hc2sgaW4gMC4uKDF1MzIgPDwgbikgewogICAgICAgIGxldCBtdXQgc3Vic2V0ID0gVmVjOjpuZXcoKTsKICAgICAgICBmb3IgaSBpbiAwLi5uIHsKICAgICAgICAgICAgaWYgKG1hc2sgPj4gaSkgJiAxID09IDEgewogICAgICAgICAgICAgICAgc3Vic2V0LnB1c2goc2V0W2ldLmNsb25lKCkpOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIHJlc3VsdC5wdXNoKHN1YnNldCk7CiAgICB9CiAgICByZXN1bHQKfQoKZm4gbWFpbigpIHsKICAgIGxldCBzZXQgPSB2ZWMhWzEsIDIsIDNdOwogICAgbGV0IHBzID0gcG93ZXJfc2V0KCZzZXQpOwogICAgcHJpbnRsbiEoIuW5gumbhu+8iOWFsSB7fSDkuKrlrZDpm4bvvIk6IiwgcHMubGVuKCkpOyAgLy8gOCA9IDLCswogICAgZm9yIHN1YnNldCBpbiAmcHMgewogICAgICAgIHByaW50bG4hKCIgIHs6P30iLCBzdWJzZXQpOwogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn power_set&lt;T: Clone&gt;(set: &amp;[T]) -&gt; Vec&lt;Vec&lt;T&gt;&gt; {
     let n = set.len();
     let mut result = Vec::new();
@@ -359,6 +400,8 @@ fn main() {
 <li>其他情况 → 不存在一笔画</li>
 </ul>
 <h3 id="23-图的存储与遍历"><a class="header" href="#23-图的存储与遍历">2.3 图的存储与遍历</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6Y29sbGVjdGlvbnM6OntIYXNoTWFwLCBIYXNoU2V0LCBWZWNEZXF1ZX07CgpzdHJ1Y3QgR3JhcGggewogICAgYWRqOiBIYXNoTWFwPGkzMiwgVmVjPGkzMj4+LAp9CgppbXBsIEdyYXBoIHsKICAgIGZuIG5ldygpIC0+IFNlbGYgeyBHcmFwaCB7IGFkajogSGFzaE1hcDo6bmV3KCkgfSB9CgogICAgZm4gYWRkX2VkZ2UoJm11dCBzZWxmLCB1OiBpMzIsIHY6IGkzMikgewogICAgICAgIHNlbGYuYWRqLmVudHJ5KHUpLm9yX2RlZmF1bHQoKS5wdXNoKHYpOwogICAgICAgIHNlbGYuYWRqLmVudHJ5KHYpLm9yX2RlZmF1bHQoKS5wdXNoKHUpOwogICAgfQoKICAgIC8vIEJGUyDmsYLmnIDnn63ot6/lvoQKICAgIGZuIHNob3J0ZXN0X3BhdGgoJnNlbGYsIHN0YXJ0OiBpMzIsIGVuZDogaTMyKSAtPiBPcHRpb248VmVjPGkzMj4+IHsKICAgICAgICBsZXQgbXV0IHZpc2l0ZWQgPSBIYXNoU2V0OjpuZXcoKTsKICAgICAgICBsZXQgbXV0IHF1ZXVlID0gVmVjRGVxdWU6Om5ldygpOwogICAgICAgIGxldCBtdXQgcGFyZW50OiBIYXNoTWFwPGkzMiwgaTMyPiA9IEhhc2hNYXA6Om5ldygpOwoKICAgICAgICB2aXNpdGVkLmluc2VydChzdGFydCk7CiAgICAgICAgcXVldWUucHVzaF9iYWNrKHN0YXJ0KTsKCiAgICAgICAgd2hpbGUgbGV0IFNvbWUobm9kZSkgPSBxdWV1ZS5wb3BfZnJvbnQoKSB7CiAgICAgICAgICAgIGlmIG5vZGUgPT0gZW5kIHsKICAgICAgICAgICAgICAgIC8vIOWbnua6r+i3r+W+hAogICAgICAgICAgICAgICAgbGV0IG11dCBwYXRoID0gVmVjOjpuZXcoKTsKICAgICAgICAgICAgICAgIGxldCBtdXQgY3VycmVudCA9IGVuZDsKICAgICAgICAgICAgICAgIHdoaWxlIGN1cnJlbnQgIT0gc3RhcnQgewogICAgICAgICAgICAgICAgICAgIHBhdGgucHVzaChjdXJyZW50KTsKICAgICAgICAgICAgICAgICAgICBjdXJyZW50ID0gcGFyZW50WyZjdXJyZW50XTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIHBhdGgucHVzaChzdGFydCk7CiAgICAgICAgICAgICAgICBwYXRoLnJldmVyc2UoKTsKICAgICAgICAgICAgICAgIHJldHVybiBTb21lKHBhdGgpOwogICAgICAgICAgICB9CiAgICAgICAgICAgIGlmIGxldCBTb21lKG5laWdoYm9ycykgPSBzZWxmLmFkai5nZXQoJm5vZGUpIHsKICAgICAgICAgICAgICAgIGZvciAmbmVpZ2hib3IgaW4gbmVpZ2hib3JzIHsKICAgICAgICAgICAgICAgICAgICBpZiAhdmlzaXRlZC5jb250YWlucygmbmVpZ2hib3IpIHsKICAgICAgICAgICAgICAgICAgICAgICAgdmlzaXRlZC5pbnNlcnQobmVpZ2hib3IpOwogICAgICAgICAgICAgICAgICAgICAgICBwYXJlbnQuaW5zZXJ0KG5laWdoYm9yLCBub2RlKTsKICAgICAgICAgICAgICAgICAgICAgICAgcXVldWUucHVzaF9iYWNrKG5laWdoYm9yKTsKICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgTm9uZQogICAgfQp9CgpmbiBtYWluKCkgewogICAgbGV0IG11dCBnID0gR3JhcGg6Om5ldygpOwogICAgZy5hZGRfZWRnZSgwLCAxKTsgZy5hZGRfZWRnZSgwLCAyKTsKICAgIGcuYWRkX2VkZ2UoMSwgMyk7IGcuYWRkX2VkZ2UoMiwgMyk7CiAgICBnLmFkZF9lZGdlKDMsIDQpOwoKICAgIGlmIGxldCBTb21lKHBhdGgpID0gZy5zaG9ydGVzdF9wYXRoKDAsIDQpIHsKICAgICAgICBwcmludGxuISgi5pyA55+t6Lev5b6EOiB7Oj99IiwgcGF0aCk7ICAvLyBbMCwgMSwgMywgNF0g5oiWIFswLCAyLCAzLCA0XQogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::collections::{HashMap, HashSet, VecDeque};
 
 struct Graph {
@@ -485,6 +528,8 @@ fn main() {
 <p>$$\neg(\forall x, P(x)) = \exists x, \neg P(x)$$</p>
 <p>$$\neg(\exists x, P(x)) = \forall x, \neg P(x)$$</p>
 <h3 id="33-真值表与逻辑等价"><a class="header" href="#33-真值表与逻辑等价">3.3 真值表与逻辑等价</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gaW1wbGllcyhwOiBib29sLCBxOiBib29sKSAtPiBib29sIHsgIXAgfHwgcSB9ICAgLy8gcCDihpIgcQpmbiBpZmYocDogYm9vbCwgcTogYm9vbCkgLT4gYm9vbCB7IHAgPT0gcSB9ICAgICAgICAgLy8gcCDihpQgcQoKZm4gbWFpbigpIHsKICAgIHByaW50bG4hKCIgIHAgICAgIHEgICB8IHDihpJxICAgcOKGlHEiKTsKICAgIHByaW50bG4hKCItLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0iKTsKICAgIGZvciAmcCBpbiAmW3RydWUsIGZhbHNlXSB7CiAgICAgICAgZm9yICZxIGluICZbdHJ1ZSwgZmFsc2VdIHsKICAgICAgICAgICAgcHJpbnRsbiEoIns6NX0gezo1fSB8IHs6NX0gezo1fSIsIHAsIHEsIGltcGxpZXMocCwgcSksIGlmZihwLCBxKSk7CiAgICAgICAgfQogICAgfQoKICAgIC8vIOmqjOivgSBwIOKGkiBxIOetieS7t+S6jiDCrHAg4oioIHEKICAgIGZvciAmcCBpbiAmW3RydWUsIGZhbHNlXSB7CiAgICAgICAgZm9yICZxIGluICZbdHJ1ZSwgZmFsc2VdIHsKICAgICAgICAgICAgYXNzZXJ0X2VxIShpbXBsaWVzKHAsIHEpLCAhcCB8fCBxKTsKICAgICAgICB9CiAgICB9CiAgICBwcmludGxuISgi5bey6aqM6K+B77yacCDihpIgcSAg4p+6ICDCrHAg4oioIHEiKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn implies(p: bool, q: bool) -&gt; bool { !p || q }   // p → q
 fn iff(p: bool, q: bool) -&gt; bool { p == q }         // p ↔ q
 
@@ -521,6 +566,8 @@ fn main() {
 <h3 id="44-容斥原理"><a class="header" href="#44-容斥原理">4.4 容斥原理</a></h3>
 <p>$$|A \cup B| = |A| + |B| - |A \cap B|$$</p>
 <p>$$|A \cup B \cup C| = |A| + |B| + |C| - |A \cap B| - |A \cap C| - |B \cap C| + |A \cap B \cap C|$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g5o6S5YiX5pWwIFAobiwgbSkgPSBuISAvIChuLW0pIQpmbiBwZXJtdXRhdGlvbihuOiB1NjQsIG06IHU2NCkgLT4gdTY0IHsKICAgIChuIC0gbSArIDEuLj1uKS5wcm9kdWN0KCkKfQoKLy8g57uE5ZCI5pWwIEMobiwgbSnvvIznlKjpgJLmjqggQyhuLGspID0gQyhuLGstMSkqKG4taysxKS9rIOmBv+WFjemYtuS5mOa6ouWHugpmbiBjb21iaW5hdGlvbihuOiB1NjQsIG06IHU2NCkgLT4gdTY0IHsKICAgIGxldCBtID0gbS5taW4obiAtIG0pOwogICAgbGV0IG11dCByZXN1bHQgPSAxdTY0OwogICAgZm9yIGkgaW4gMC4ubSB7CiAgICAgICAgcmVzdWx0ID0gcmVzdWx0ICogKG4gLSBpKSAvIChpICsgMSk7CiAgICB9CiAgICByZXN1bHQKfQoKZm4gbWFpbigpIHsKICAgIHByaW50bG4hKCJQKDUsIDIpID0ge30iLCBwZXJtdXRhdGlvbig1LCAyKSk7IC8vIDIwCiAgICBwcmludGxuISgiQyg1LCAyKSA9IHt9IiwgY29tYmluYXRpb24oNSwgMikpOyAvLyAxMAoKICAgIC8vIOWuueaWpeWOn+eQhu+8mjF+MTAwIOS4reiDveiiqyAy44CBMyDmiJYgNSDmlbTpmaTnmoTmlbDnmoTkuKrmlbAKICAgIGxldCBuID0gMTAwdTMyOwogICAgbGV0IGNvdW50ID0gfGQ6IHUzMnwgbiAvIGQ7CiAgICBsZXQgYW5zID0gY291bnQoMikgKyBjb3VudCgzKSArIGNvdW50KDUpCiAgICAgICAgLSBjb3VudCg2KSAtIGNvdW50KDEwKSAtIGNvdW50KDE1KQogICAgICAgICsgY291bnQoMzApOwogICAgcHJpbnRsbiEoIjF+MTAwIOS4reiDveiiqyAy44CBMyDmiJYgNSDmlbTpmaTnmoTmlbDmnIkge30g5LiqIiwgYW5zKTsgLy8gNzQKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// 排列数 P(n, m) = n! / (n-m)!
 fn permutation(n: u64, m: u64) -&gt; u64 {
     (n - m + 1..=n).product()
@@ -573,6 +620,8 @@ fn main() {
 <p>同时满足自反性、反对称性、传递性的关系称为<strong>偏序关系</strong>。</p>
 <p>偏序关系可以用<strong>哈斯图</strong>（Hasse Diagram）直观表示。</p>
 <h3 id="55-关系性质判定"><a class="header" href="#55-关系性质判定">5.5 关系性质判定</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dHlwZSBSZWxhdGlvbiA9IFZlYzwoaTMyLCBpMzIpPjsKCmZuIGlzX3JlZmxleGl2ZShzZXQ6ICZbaTMyXSwgcjogJlJlbGF0aW9uKSAtPiBib29sIHsKICAgIHNldC5pdGVyKCkuYWxsKHwmYXwgci5jb250YWlucygmKGEsIGEpKSkKfQoKZm4gaXNfc3ltbWV0cmljKHI6ICZSZWxhdGlvbikgLT4gYm9vbCB7CiAgICByLml0ZXIoKS5hbGwofCYoYSwgYil8IHIuY29udGFpbnMoJihiLCBhKSkpCn0KCmZuIGlzX3RyYW5zaXRpdmUocjogJlJlbGF0aW9uKSAtPiBib29sIHsKICAgIGZvciAmKGEsIGIpIGluIHIgewogICAgICAgIGZvciAmKGMsIGQpIGluIHIgewogICAgICAgICAgICBpZiBiID09IGMgJiYgIXIuY29udGFpbnMoJihhLCBkKSkgewogICAgICAgICAgICAgICAgcmV0dXJuIGZhbHNlOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQogICAgdHJ1ZQp9CgpmbiBtYWluKCkgewogICAgbGV0IHNldCA9IHZlYyFbMSwgMiwgM107CiAgICAvLyDlhbPns7sgUu+8muiHquWPjeOAgeWvueensOOAgeS8oOmAkiDigJTigJQg5LiA5Liq562J5Lu35YWz57O7CiAgICBsZXQgcjogUmVsYXRpb24gPSB2ZWMhWygxLCAxKSwgKDIsIDIpLCAoMywgMyksICgxLCAyKSwgKDIsIDEpXTsKCiAgICBsZXQgcmVmbGV4aXZlID0gaXNfcmVmbGV4aXZlKCZzZXQsICZyKTsKICAgIGxldCBzeW1tZXRyaWMgPSBpc19zeW1tZXRyaWMoJnIpOwogICAgbGV0IHRyYW5zaXRpdmUgPSBpc190cmFuc2l0aXZlKCZyKTsKICAgIHByaW50bG4hKCLoh6rlj43mgKc6IHt9IiwgcmVmbGV4aXZlKTsKICAgIHByaW50bG4hKCLlr7nnp7DmgKc6IHt9Iiwgc3ltbWV0cmljKTsKICAgIHByaW50bG4hKCLkvKDpgJLmgKc6IHt9IiwgdHJhbnNpdGl2ZSk7CiAgICBwcmludGxuISgi5piv5ZCm562J5Lu35YWz57O7OiB7fSIsIHJlZmxleGl2ZSAmJiBzeW1tZXRyaWMgJiYgdHJhbnNpdGl2ZSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">type Relation = Vec&lt;(i32, i32)&gt;;
 
 fn is_reflexive(set: &amp;[i32], r: &amp;Relation) -&gt; bool {

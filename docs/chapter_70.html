@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -470,6 +507,8 @@ $$</p>
 <p>这套结构之所以有效，靠的是<strong>局部性原理</strong>：程序在一段时间内倾向于访问<strong>最近访问过的</strong>数据（时间局部性）和<strong>邻近的</strong>数据（空间局部性）。硬件据此按**缓存行（Cache Line，通常 64 字节）**整块搬运，而不是按字节搬运。</p>
 <h3 id="62-亲测存储层次的延迟阶梯"><a class="header" href="#62-亲测存储层次的延迟阶梯">6.2 亲测：存储层次的延迟阶梯</a></h3>
 <p>教科书上的数字到底对不对？自己量一遍最清楚。<strong>顺序扫描测不出层次差异</strong>（CPU 预取器会把延迟隐藏掉），要用<strong>指针追逐</strong>：让每次访问的地址依赖上一次的结果，预取器就无能为力了。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6dGltZTo6SW5zdGFudDsKCi8vLyDnlKjnur/mgKflkIzkvZnlj5HnlJ/lmajnlJ/miJDkuIDkuKogMC4ubiDnmoTkvKrpmo/mnLrmjpLliJfvvIhGaXNoZXLigJNZYXRlcyDmtJfniYzvvIkKZm4gcGVybXV0YXRpb24objogdXNpemUsIHNlZWQ6IHU2NCkgLT4gVmVjPHVzaXplPiB7CiAgICBsZXQgbXV0IGlkeDogVmVjPHVzaXplPiA9ICgwLi5uKS5jb2xsZWN0KCk7CiAgICBsZXQgbXV0IHN0YXRlID0gc2VlZDsKICAgIGxldCBtdXQgbmV4dCA9IG1vdmUgfHwgewogICAgICAgIHN0YXRlID0gc3RhdGUKICAgICAgICAgICAgLndyYXBwaW5nX211bCg2MzY0MTM2MjIzODQ2NzkzMDA1KQogICAgICAgICAgICAud3JhcHBpbmdfYWRkKDE0NDI2OTUwNDA4ODg5NjM0MDcpOwogICAgICAgIChzdGF0ZSA+PiAzMykgYXMgdXNpemUKICAgIH07CiAgICBmb3IgaSBpbiAoMS4ubikucmV2KCkgewogICAgICAgIGxldCBqID0gbmV4dCgpICUgKGkgKyAxKTsKICAgICAgICBpZHguc3dhcChpLCBqKTsKICAgIH0KICAgIGlkeAp9CgovLy8g5oyH6ZKI6L+96YCQ77ya6K6/6Zeu6aG65bqP6ZqP5py677yM5LiU5LiL5LiA5qyh6K6/6Zeu55qE5Zyw5Z2A5L6d6LWW5LiK5LiA5qyh55qE57uT5p6c77yMCi8vLyDlm6DmraQgQ1BVIOaXoOazlemihOWPlu+8jOa1i+WIsOeahOaYr+ecn+WunueahOWtmOWCqOWxguasoeW7tui/n+OAggpmbiBjaGFzZV9uc19wZXJfYWNjZXNzKGJ5dGVzOiB1c2l6ZSwgcm91bmRzOiB1c2l6ZSkgLT4gZjY0IHsKICAgIGxldCBuID0gYnl0ZXMgLyBzdGQ6Om1lbTo6c2l6ZV9vZjo6PHVzaXplPigpOwogICAgbGV0IHBlcm0gPSBwZXJtdXRhdGlvbihuLCAweDlFMzdfNzlCOSk7CgogICAgLy8gbGlua1trXSDmjIflkJEi6ZqP5py65bqP5YiX5LitIGsg55qE5LiL5LiA5Liq5YWD57SgIu+8jOaKiuafpeihqOWPmOaIkOmTvuihqAogICAgbGV0IG11dCBsaW5rID0gdmVjIVswdXNpemU7IG5dOwogICAgZm9yIGsgaW4gMC4ubiB7CiAgICAgICAgbGlua1twZXJtW2tdXSA9IHBlcm1bKGsgKyAxKSAlIG5dOwogICAgfQoKICAgIGxldCBtdXQgY3VyID0gMHVzaXplOwogICAgLy8g6aKE54Ot5LiA6YGNCiAgICBmb3IgXyBpbiAwLi5uIHsKICAgICAgICBjdXIgPSBsaW5rW2N1cl07CiAgICB9CgogICAgbGV0IG11dCBiZXN0ID0gZjY0OjpNQVg7CiAgICBmb3IgXyBpbiAwLi5yb3VuZHMgewogICAgICAgIGxldCBzdGFydCA9IEluc3RhbnQ6Om5vdygpOwogICAgICAgIGZvciBfIGluIDAuLm4gewogICAgICAgICAgICBjdXIgPSBsaW5rW2N1cl07IC8vIOS+nei1luWKoOi9ve+8muW/hemhu+etieS4iuS4gOasoeivu+Wbnue7k+aenAogICAgICAgIH0KICAgICAgICBsZXQgbnMgPSBzdGFydC5lbGFwc2VkKCkuYXNfbmFub3MoKSBhcyBmNjQgLyBuIGFzIGY2NDsKICAgICAgICBpZiBucyA8IGJlc3QgewogICAgICAgICAgICBiZXN0ID0gbnM7CiAgICAgICAgfQogICAgfQogICAgc3RkOjpoaW50OjpibGFja19ib3goY3VyKTsKICAgIGJlc3QKfQoKZm4gbWFpbigpIHsKICAgIGxldCBzaXplczogWyh1c2l6ZSwgJnN0cik7IDVdID0gWwogICAgICAgICgxNiAqIDEwMjQsICIxNiBLQiAgICBMMSDmlbDmja7nvJPlrZgiKSwKICAgICAgICAoMjU2ICogMTAyNCwgIjI1NiBLQiAgIEwyIOe8k+WtmCIpLAogICAgICAgICg0ICogMTAyNCAqIDEwMjQsICI0IE1CICAgICBMMyDnvJPlrZgiKSwKICAgICAgICAoMzIgKiAxMDI0ICogMTAyNCwgIjMyIE1CICAgIEwzIC8g5Li75a2Y5Lqk55WMIiksCiAgICAgICAgKDI1NiAqIDEwMjQgKiAxMDI0LCAiMjU2IE1CICAg5Li75a2YIiksCiAgICBdOwoKICAgIHByaW50bG4hKCJ7OjwyNn0gezo+MTJ9IiwgIuW3peS9nOmbhiIsICLmr4/mrKHorr/pl64obnMpIik7CiAgICBmb3IgKGJ5dGVzLCBsYWJlbCkgaW4gc2l6ZXMgewogICAgICAgIHByaW50bG4hKCJ7OjwyNn0gezo+MTIuMX0iLCBsYWJlbCwgY2hhc2VfbnNfcGVyX2FjY2VzcyhieXRlcywgMykpOwogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::time::Instant;
 
 /// 用线性同余发生器生成一个 0..n 的伪随机排列（Fisher–Yates 洗牌）
@@ -826,6 +865,8 @@ $$</p>
 </div>
 <h3 id="102-与寄存器打交道位域与校验"><a class="header" href="#102-与寄存器打交道位域与校验">10.2 与寄存器打交道：位域与校验</a></h3>
 <p>芯片编程的日常就是“按位读改写“：配置寄存器里的某个位域，或从寄存器里解出一个有符号数值。下面的例子还顺手实现了嵌入式通信最常用的 CRC-32：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8gLS0tLS0tLS0tLSDkvY3ln5/or7vlhpkgLS0tLS0tLS0tLQoKLy8vIOaKiiB2YWx1ZSDlhpnlhaUgcmVnIOeahCBbaGlnaDpsb3ddIOS9je+8jOWFtuS9meS9jeS/neaMgeS4jeWPmApmbiBzZXRfYml0cyhyZWc6ICZtdXQgdTMyLCBoaWdoOiB1MzIsIGxvdzogdTMyLCB2YWx1ZTogdTMyKSB7CiAgICBsZXQgd2lkdGggPSBoaWdoIC0gbG93ICsgMTsKICAgIGxldCBtYXNrID0gKCgxdTMyIDw8IHdpZHRoKSAtIDEpIDw8IGxvdzsKICAgICpyZWcgPSAoKnJlZyAmICFtYXNrKSB8ICgodmFsdWUgPDwgbG93KSAmIG1hc2spOwp9CgovLy8g5LuOIHJlZyDkuK3lj5blh7ogW2hpZ2g6bG93XSDkvY0KZm4gZ2V0X2JpdHMocmVnOiB1MzIsIGhpZ2g6IHUzMiwgbG93OiB1MzIpIC0+IHUzMiB7CiAgICBsZXQgd2lkdGggPSBoaWdoIC0gbG93ICsgMTsKICAgIChyZWcgPj4gbG93KSAmICgoMXUzMiA8PCB3aWR0aCkgLSAxKQp9CgovLy8g6Iqv54mH5rip5bqm5a+E5a2Y5Zmo77ya5L2OIDEyIOS9jeaYr+ihpeegge+8jDEgTFNCID0gMC4wNjI1IMKwQwpmbiBwYXJzZV90ZW1wZXJhdHVyZShyYXc6IHUxNikgLT4gZjY0IHsKICAgIGxldCB2YWx1ZSA9IChyYXcgJiAweDBGRkYpIGFzIGkxNjsgLy8g5Y+q5L+d55WZ5L2OIDEyIOS9jQogICAgbGV0IHNpZ25lZCA9IGlmIHZhbHVlICYgMHgwODAwICE9IDAgewogICAgICAgIHZhbHVlIC0gNDA5NiAvLyDmnIDpq5jkvY3kuLogMe+8mui0n+aVsO+8jOWBmuespuWPt+aJqeWxlQogICAgfSBlbHNlIHsKICAgICAgICB2YWx1ZQogICAgfTsKICAgIHNpZ25lZCBhcyBmNjQgKiAwLjA2MjUKfQoKLy8gLS0tLS0tLS0tLSBDUkMtMzIg5qCh6aqMIC0tLS0tLS0tLS0KCi8vLyBDUkMtMzLvvIhJRUVFIDgwMi4z77yM5LiOIHppcCAvIOS7peWkque9keS4gOiHtO+8iQpmbiBjcmMzMihkYXRhOiAmW3U4XSkgLT4gdTMyIHsKICAgIGxldCBtdXQgY3JjID0gMHhGRkZGX0ZGRkZ1MzI7CiAgICBmb3IgJmJ5dGUgaW4gZGF0YSB7CiAgICAgICAgY3JjIF49IGJ5dGUgYXMgdTMyOwogICAgICAgIGZvciBfIGluIDAuLjggewogICAgICAgICAgICBsZXQgbHNiID0gY3JjICYgMTsKICAgICAgICAgICAgY3JjID4+PSAxOwogICAgICAgICAgICBpZiBsc2IgPT0gMSB7CiAgICAgICAgICAgICAgICBjcmMgXj0gMHhFREI4XzgzMjA7IC8vIOWPjeWwhOWQjueahOeUn+aIkOWkmumhueW8jwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQogICAgIWNyYwp9CgpmbiBtYWluKCkgewogICAgLy8g5L2N5Z+f77ya6YWN572u5LiA5Liq5o6n5Yi25a+E5a2Y5ZmoCiAgICBsZXQgbXV0IGN0cmwgPSAwdTMyOwogICAgc2V0X2JpdHMoJm11dCBjdHJsLCAzLCAwLCAwYjEwMTApOyAvLyDkvY4gNCDkvY3vvJrliIbpopHns7vmlbAKICAgIHNldF9iaXRzKCZtdXQgY3RybCwgNywgNCwgMGIwMTEwKTsgLy8g5qyhIDQg5L2N77ya5qih5byPCiAgICBwcmludGxuISgiY3RybCA9IHtjdHJsOiMwMTBYfSAoMGJ7Y3RybDowMTBifSkiKTsKICAgIHByaW50bG4hKCLliIbpopEgPSB7fSwg5qih5byPID0ge30iLCBnZXRfYml0cyhjdHJsLCAzLCAwKSwgZ2V0X2JpdHMoY3RybCwgNywgNCkpOwoKICAgIC8vIOS/ruaUueS4remXtOS9jeWfn+iAjOS4jeW9seWTjeWFtuS7luS9jQogICAgc2V0X2JpdHMoJm11dCBjdHJsLCA3LCA0LCAwYjExMTEpOwogICAgcHJpbnRsbiEoIuaUueaooeW8j+WQjiBjdHJsID0gMGJ7Y3RybDowMTBifSwg5YiG6aKR5LuN5pivIHt9IiwgZ2V0X2JpdHMoY3RybCwgMywgMCkpOwoKICAgIC8vIOa4qeW6pu+8mjB4MDNDMCAtPiA2MCDCsEPvvIwweDBGQzAgLT4gLTQgwrBDCiAgICBmb3IgcmF3IGluIFsweDAzQzB1MTYsIDB4MEZDMCwgMHgwNjQwXSB7CiAgICAgICAgcHJpbnRsbiEoInJhdyA9IHtyYXc6IzA2WH0gLT4gezouNH0gwrBDIiwgcGFyc2VfdGVtcGVyYXR1cmUocmF3KSk7CiAgICB9CgogICAgcHJpbnRsbiEoIkNSQy0zMihcIjEyMzQ1Njc4OVwiKSA9IHs6IzAxMFh9IiwgY3JjMzIoYiIxMjM0NTY3ODkiKSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// ---------- 位域读写 ----------
 
 /// 把 value 写入 reg 的 [high:low] 位，其余位保持不变
@@ -903,6 +944,8 @@ CRC-32("123456789") = 0xCBF43926
 </blockquote>
 <h3 id="103-抽象隔离芯片差异hal-与测试替身"><a class="header" href="#103-抽象隔离芯片差异hal-与测试替身">10.3 抽象隔离芯片差异：HAL 与测试替身</a></h3>
 <p>嵌入式开发最痛苦的事之一是“换个芯片就重写“。Rust 的 <code>trait</code> 把“外设能做什么“抽象出来，驱动只依赖抽象，于是<strong>同一份驱动能跑遍所有芯片</strong>，而且<strong>在电脑上就能测</strong>：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOacgOWwj+WMlueahCBTUEkg5oq96LGh77yI5a+55bqUIGVtYmVkZGVkLWhhbCDnmoQgU3BpRGV2aWNlIHRyYWl077yJCnRyYWl0IFNwaURldmljZSB7CiAgICBmbiB0cmFuc2ZlcigmbXV0IHNlbGYsIHJlYWQ6ICZtdXQgW3U4XSwgd3JpdGU6ICZbdThdKSAtPiBSZXN1bHQ8KCksICYnc3RhdGljIHN0cj47Cn0KCi8vLyDkvKDmhJ/lmajpqbHliqjvvJrlj6rkvp3otZbmir3osaHvvIzkuI3kvp3otZbku7vkvZXlhbfkvZPoiq/niYcKc3RydWN0IFNlbnNvcjxTOiBTcGlEZXZpY2U+IHsKICAgIHNwaTogUywKfQoKaW1wbDxTOiBTcGlEZXZpY2U+IFNlbnNvcjxTPiB7CiAgICBmbiBuZXcoc3BpOiBTKSAtPiBTZWxmIHsKICAgICAgICBTZW5zb3IgeyBzcGkgfQogICAgfQoKICAgIC8vLyDor7vlj5YgV0hPX0FNX0kg5a+E5a2Y5Zmo77yIMHgwRu+8ie+8jOeUqOS6juehruiupOmAmuS/oemTvui3r+ato+W4uAogICAgZm4gd2hvX2FtX2koJm11dCBzZWxmKSAtPiBSZXN1bHQ8dTgsICYnc3RhdGljIHN0cj4gewogICAgICAgIGxldCBtdXQgYnVmID0gWzB1ODsgMV07CiAgICAgICAgLy8g5pyA6auY5L2N572uIDEg6KGo56S66K+75pON5L2cCiAgICAgICAgc2VsZi5zcGkudHJhbnNmZXIoJm11dCBidWYsICZbMHg4MCB8IDB4MEYsIDB4MDBdKT87CiAgICAgICAgT2soYnVmWzBdKQogICAgfQp9CgovLy8g55yf5a6e56Gs5Lu277ya5oqK6K+75YaZ5Lqk57uZ6Iqv54mH55qEIFNQSSDlpJborr7lr4TlrZjlmajvvIjmraTlpITkuLrnpLrmhI/vvIkKI1thbGxvdyhkZWFkX2NvZGUpXQpzdHJ1Y3QgSGFyZHdhcmVTcGkgewogICAgYmFzZTogdXNpemUsCn0KCmltcGwgU3BpRGV2aWNlIGZvciBIYXJkd2FyZVNwaSB7CiAgICBmbiB0cmFuc2ZlcigmbXV0IHNlbGYsIHJlYWQ6ICZtdXQgW3U4XSwgd3JpdGU6ICZbdThdKSAtPiBSZXN1bHQ8KCksICYnc3RhdGljIHN0cj4gewogICAgICAgIC8vIOecn+WunuWunueOsOmHjOS8muWGmSBTUEkg5pWw5o2u5a+E5a2Y5Zmo44CB6L2u6K+i54q25oCB5L2N44CB6K+75Zue5pWw5o2u77yMCiAgICAgICAgLy8g5L6L5aaC77yI56S65oSP77yJ77yaCiAgICAgICAgLy8gICBsZXQgZHIgPSAoc2VsZi5iYXNlICsgMHgwQykgYXMgKm11dCB1MzI7CiAgICAgICAgLy8gICB1bnNhZmUgeyBjb3JlOjpwdHI6OndyaXRlX3ZvbGF0aWxlKGRyLCB3cml0ZVswXSBhcyB1MzIpIH07CiAgICAgICAgbGV0IF8gPSAoc2VsZi5iYXNlLCB3cml0ZSk7CiAgICAgICAgcmVhZFswXSA9IDB4MDA7CiAgICAgICAgT2soKCkpCiAgICB9Cn0KCi8vLyDmtYvor5Xmm7/ouqvvvJrlrozlhajkuI3pnIDopoHnoazku7bvvIzlsLHog73pqozor4HpqbHliqjnmoTljY/orq7mmK/lkKbmraPnoa4Kc3RydWN0IE1vY2tTcGkgewogICAgaWQ6IHU4LAogICAgd3JpdHRlbjogVmVjPHU4PiwKfQoKaW1wbCBTcGlEZXZpY2UgZm9yIE1vY2tTcGkgewogICAgZm4gdHJhbnNmZXIoJm11dCBzZWxmLCByZWFkOiAmbXV0IFt1OF0sIHdyaXRlOiAmW3U4XSkgLT4gUmVzdWx0PCgpLCAmJ3N0YXRpYyBzdHI+IHsKICAgICAgICBzZWxmLndyaXR0ZW4uZXh0ZW5kX2Zyb21fc2xpY2Uod3JpdGUpOwogICAgICAgIHJlYWRbMF0gPSBzZWxmLmlkOwogICAgICAgIE9rKCgpKQogICAgfQp9CgpmbiBtYWluKCkgewogICAgbGV0IG11dCBzZW5zb3IgPSBTZW5zb3I6Om5ldyhNb2NrU3BpIHsKICAgICAgICBpZDogMHg2QiwKICAgICAgICB3cml0dGVuOiBWZWM6Om5ldygpLAogICAgfSk7CiAgICBwcmludGxuISgiV0hPX0FNX0kgPSB7OiMwNFh9Iiwgc2Vuc29yLndob19hbV9pKCkudW53cmFwKCkpOwogICAgcHJpbnRsbiEoIumpseWKqOWPkeWHuueahOWtl+iKgiA9IHs6MDJYP30iLCBzZW5zb3Iuc3BpLndyaXR0ZW4pOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 最小化的 SPI 抽象（对应 embedded-hal 的 SpiDevice trait）
 trait SpiDevice {
     fn transfer(&amp;mut self, read: &amp;mut [u8], write: &amp;[u8]) -&gt; Result&lt;(), &amp;'static str&gt;;

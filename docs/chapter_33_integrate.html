@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -211,6 +248,8 @@
 <li><strong>无穷大</strong>：趋向于无穷的量</li>
 <li>等价无穷小替换（$x \to 0$ 时）：$\sin x \sim x$，$\tan x \sim x$，$e^x - 1 \sim x$，$\ln(1+x) \sim x$</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOmqjOivgSBsaW0oeOKGkjApIHNpbih4KS94ID0gMQogICAgZm9yICZoIGluICZbMWUtMV9mNjQsIDFlLTJfZjY0LCAxZS00X2Y2NCwgMWUtOF9mNjRdIHsKICAgICAgICBwcmludGxuISgic2luKHs6LjBlfSkvezouMGV9ID0gezouMTB9IiwgaCwgaCwgaC5zaW4oKSAvIGgpOwogICAgfQogICAgLy8g6LaK5o6l6L+RIDDvvIznu5PmnpzotormjqXov5EgMQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 验证 lim(x→0) sin(x)/x = 1
     for &amp;h in &amp;[1e-1_f64, 1e-2_f64, 1e-4_f64, 1e-8_f64] {
@@ -259,6 +298,8 @@
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOaVsOWAvOaxguWvvO+8mmYoeCkgPSBzaW4oeCkgKyB4wrIKICAgIGxldCBmID0gfHg6IGY2NHwgeC5zaW4oKSArIHggKiB4OwogICAgbGV0IGggPSAxZS04OwogICAgbGV0IHggPSAxLjA7CgogICAgLy8g5pWw5YC85a+85pWwCiAgICBsZXQgbnVtZXJpY2FsID0gKGYoeCArIGgpIC0gZih4IC0gaCkpIC8gKDIuMCAqIGgpOwogICAgLy8g6Kej5p6Q5a+85pWwOiBjb3MoeCkgKyAyeAogICAgbGV0IGFuYWx5dGljYWwgPSB4LmNvcygpICsgMi4wICogeDsKCiAgICBwcmludGxuISgi5pWw5YC85a+85pWwOiB7Oi4xMH0iLCBudW1lcmljYWwpOyAgIC8vIDIuNTQwMzAyMzA1OQogICAgcHJpbnRsbiEoIuino+aekOWvvOaVsDogezouMTB9IiwgYW5hbHl0aWNhbCk7ICAgLy8gMi41NDAzMDIzMDU5Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 数值求导：f(x) = sin(x) + x²
     let f = |x: f64| x.sin() + x * x;
@@ -298,6 +339,8 @@
 <p>当 $\lim_{x \to a} \frac{f(x)}{g(x)}$ 为 $\frac{0}{0}$ 或 $\frac{\infty}{\infty}$ 型未定式时：</p>
 <p>$$\lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{f’(x)}{g’(x)}$$</p>
 <p>前提是右边的极限存在。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOaxgiBsaW0oeOKGkjEpIHNpbijPgHgpIC8gKHjCsiAtIDEpCiAgICBsZXQgZiA9IHx4OiBmNjR8IChzdGQ6OmY2NDo6Y29uc3RzOjpQSSAqIHgpLnNpbigpOwogICAgbGV0IGcgPSB8eDogZjY0fCB4ICogeCAtIDEuMDsKCiAgICBsZXQgeCA9IDEuMDsKICAgIGxldCBoID0gMWUtODsKCiAgICAvLyDnm7TmjqXku6PlhaXmmK8gMC8wIOWei++8jOS9v+eUqOa0m+W/hei+vuazleWImQogICAgLy8gZicoeCkgPSDPgGNvcyjPgHgpLCBnJyh4KSA9IDJ4CiAgICAvLyBsaW0gPSDPgGNvcyjPgCkgLyAyID0gLc+ALzIKICAgIGxldCBsaW1pdCA9IChmKHggKyBoKSAtIGYoeCAtIGgpKSAvICgyLjAgKiBoKSAvICgoZyh4ICsgaCkgLSBnKHggLSBoKSkgLyAoMi4wICogaCkpOwogICAgcHJpbnRsbiEoImxpbSA9IHs6LjZ9IiwgbGltaXQpOyAgLy8gLTEuNTcwNzk2IOKJiCAtz4AvMgp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 求 lim(x→1) sin(πx) / (x² - 1)
     let f = |x: f64| (std::f64::consts::PI * x).sin();
@@ -323,6 +366,8 @@
 <p>$$\cos x = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \frac{x^6}{6!} + \cdots$$</p>
 <p>$$e^x = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \cdots$$</p>
 <p>$$\ln(1-x) = -\left(x + \frac{x^2}{2} + \frac{x^3}{3} + \frac{x^4}{4} + \cdots\right) \quad (|x| &lt; 1)$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gdGF5bG9yX3Npbih4OiBmNjQsIHRlcm1zOiB1c2l6ZSkgLT4gZjY0IHsKICAgIGxldCBtdXQgc3VtID0gMC4wOwogICAgZm9yIG4gaW4gMC4udGVybXMgewogICAgICAgIGxldCBwb3dlciA9IDIgKiBuICsgMTsKICAgICAgICBsZXQgY29lZmYgPSBpZiBuICUgMiA9PSAwIHsgMS4wIH0gZWxzZSB7IC0xLjAgfTsKICAgICAgICBsZXQgZmFjdG9yaWFsOiBmNjQgPSAoMS4uPXBvd2VyKS5tYXAofHh8IHggYXMgZjY0KS5wcm9kdWN0KCk7CiAgICAgICAgc3VtICs9IGNvZWZmICogeC5wb3dpKHBvd2VyIGFzIGkzMikgLyBmYWN0b3JpYWw7CiAgICB9CiAgICBzdW0KfQoKZm4gbWFpbigpIHsKICAgIGxldCB4ID0gc3RkOjpmNjQ6OmNvbnN0czo6UEkgLyA0LjA7IC8vIDQ1wrAKCiAgICBwcmludGxuISgi5qCH5YeG5bqTIHNpbijPgC80KSA9IHs6LjEwfSIsIHguc2luKCkpOwogICAgcHJpbnRsbiEoIuazsOWLkiAzIOmhuTogICAgICAgIHs6LjEwfSIsIHRheWxvcl9zaW4oeCwgMykpOwogICAgcHJpbnRsbiEoIuazsOWLkiA1IOmhuTogICAgICAgIHs6LjEwfSIsIHRheWxvcl9zaW4oeCwgNSkpOwogICAgcHJpbnRsbiEoIuazsOWLkiAxMCDpobk6ICAgICAgIHs6LjEwfSIsIHRheWxvcl9zaW4oeCwgMTApKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn taylor_sin(x: f64, terms: usize) -&gt; f64 {
     let mut sum = 0.0;
     for n in 0..terms {
@@ -378,6 +423,8 @@ fn main() {
 <p>若 $F(x)$ 是 $f(x)$ 在 $[a,b]$ 上的一个原函数（即 $F’(x) = f(x)$），则：</p>
 <p>$$\int_a^b f(x) dx = F(b) - F(a)$$</p>
 <h3 id="辛普森积分法"><a class="header" href="#辛普森积分法">辛普森积分法</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gc2ltcHNvbl9pbnRlZ3JhbChmOiBpbXBsIEZuKGY2NCkgLT4gZjY0LCBhOiBmNjQsIGI6IGY2NCwgbjogdXNpemUpIC0+IGY2NCB7CiAgICBhc3NlcnQhKG4gJSAyID09IDApOwogICAgbGV0IGggPSAoYiAtIGEpIC8gbiBhcyBmNjQ7CiAgICBsZXQgbXV0IHN1bSA9IGYoYSkgKyBmKGIpOwoKICAgIGZvciBpIGluIDEuLm4gewogICAgICAgIGxldCB4ID0gYSArIGkgYXMgZjY0ICogaDsKICAgICAgICBpZiBpICUgMiA9PSAwIHsgc3VtICs9IDIuMCAqIGYoeCk7IH0KICAgICAgICBlbHNlIHsgc3VtICs9IDQuMCAqIGYoeCk7IH0KICAgIH0KCiAgICBzdW0gKiBoIC8gMy4wCn0KCmZuIG1haW4oKSB7CiAgICAvLyDiiKvigoDCuSB4wrIgZHggPSAxLzMKICAgIGxldCByZXN1bHQgPSBzaW1wc29uX2ludGVncmFsKHx4fCB4ICogeCwgMC4wLCAxLjAsIDEwMCk7CiAgICBwcmludGxuISgi4oir4oKAwrkgeMKyIGR4ID0gezouMTB9ICjnkIborrrlgLw6IDAuMzMzMzMzMzMzMykiLCByZXN1bHQpOwoKICAgIC8vIOKIq+KCgF7PgCBzaW4oeCkgZHggPSAyCiAgICBsZXQgcmVzdWx0MiA9IHNpbXBzb25faW50ZWdyYWwofHh8IHguc2luKCksIDAuMCwgc3RkOjpmNjQ6OmNvbnN0czo6UEksIDEwMCk7CiAgICBwcmludGxuISgi4oir4oKAz4Agc2luKHgpIGR4ID0gezouMTB9ICjnkIborrrlgLw6IDIpIiwgcmVzdWx0Mik7CgogICAgLy8g4oir4oKAwrkgZV54IGR4ID0gZSAtIDEKICAgIGxldCByZXN1bHQzID0gc2ltcHNvbl9pbnRlZ3JhbCh8eHwgeC5leHAoKSwgMC4wLCAxLjAsIDEwMCk7CiAgICBwcmludGxuISgi4oir4oKAwrkgZV54IGR4ID0gezouMTB9ICjnkIborrrlgLw6IHs6LjEwfSkiLCByZXN1bHQzLCBzdGQ6OmY2NDo6Y29uc3RzOjpFIC0gMS4wKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn simpson_integral(f: impl Fn(f64) -&gt; f64, a: f64, b: f64, n: usize) -&gt; f64 {
     assert!(n % 2 == 0);
     let h = (b - a) / n as f64;
@@ -432,6 +479,8 @@ fn main() {
 <li>对称性：$\binom{n}{k} = \binom{n}{n-k}$</li>
 <li>递推关系：$\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}$</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gYmlub21pYWwobjogdTY0LCBrOiB1NjQpIC0+IHU2NCB7CiAgICBpZiBrID4gbiB7IHJldHVybiAwOyB9CiAgICBpZiBrID4gbiAtIGsgeyBrID0gbiAtIGs7IH0gLy8g5Yip55So5a+556ew5oCn5LyY5YyWCiAgICBsZXQgbXV0IHJlc3VsdCA9IDF1NjQ7CiAgICBmb3IgaSBpbiAwLi5rIHsKICAgICAgICByZXN1bHQgPSByZXN1bHQgKiAobiAtIGkpIC8gKGkgKyAxKTsKICAgIH0KICAgIHJlc3VsdAp9CgpmbiBwcmludF9wYXNjYWwocm93czogdXNpemUpIHsKICAgIGZvciBuIGluIDAuLnJvd3MgewogICAgICAgIGZvciBrIGluIDAuLj1uIHsKICAgICAgICAgICAgcHJpbnQhKCJ7OjZ9IiwgYmlub21pYWwobiBhcyB1NjQsIGsgYXMgdTY0KSk7CiAgICAgICAgfQogICAgICAgIHByaW50bG4hKCk7CiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBwcmludF9wYXNjYWwoMTApOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn binomial(n: u64, k: u64) -&gt; u64 {
     if k &gt; n { return 0; }
     if k &gt; n - k { k = n - k; } // 利用对称性优化
@@ -470,7 +519,13 @@ fn main() {
 <h2 id="十一蒙特卡洛方法"><a class="header" href="#十一蒙特卡洛方法">十一、蒙特卡洛方法</a></h2>
 <p>蒙特卡洛方法利用随机采样来近似计算确定性的数学问题。</p>
 <p><strong>用蒙特卡洛方法计算圆周率：</strong></p>
-<pre class="playground"><code class="language-rust edition2024">use rand::Rng;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwp1c2UgcmFuZDo6Um5nOwp1c2UgcmFuZDo6Um5nRXh0OwoKZm4gbW9udGVfY2FybG9fcGkoc2FtcGxlczogdXNpemUpIC0+IGY2NCB7CiAgICBsZXQgbXV0IHJuZyA9IHJhbmQ6OnJuZygpOyAgICAgICAgICAvLyB0aHJlYWRfcm5nKCkg4oaSIHJuZygpCiAgICBsZXQgbXV0IGluc2lkZSA9IDA7CgogICAgZm9yIF8gaW4gMC4uc2FtcGxlcyB7CiAgICAgICAgbGV0IHg6IGY2NCA9IHJuZy5yYW5kb21fcmFuZ2UoLTEuMC4uMS4wKTsgIC8vIGdlbl9yYW5nZSgpIOKGkiByYW5kb21fcmFuZ2UoKQogICAgICAgIGxldCB5OiBmNjQgPSBybmcucmFuZG9tX3JhbmdlKC0xLjAuLjEuMCk7CiAgICAgICAgaWYgeCAqIHggKyB5ICogeSA8PSAxLjAgewogICAgICAgICAgICBpbnNpZGUgKz0gMTsKICAgICAgICB9CiAgICB9CgogICAgNC4wICogaW5zaWRlIGFzIGY2NCAvIHNhbXBsZXMgYXMgZjY0Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgc2FtcGxlX3NpemVzID0gWzEwMDAsIDEwMDAwLCAxMDAwMDAsIDEwMDAwMDBdOwogICAgCiAgICBmb3IgJm4gaW4gJnNhbXBsZV9zaXplcyB7CiAgICAgICAgbGV0IHBpX2FwcHJveCA9IG1vbnRlX2NhcmxvX3BpKG4pOwogICAgICAgIHByaW50bG4hKCJ7bjo+N30g5qyh6YeH5qC3OiDPgCDiiYgge3BpX2FwcHJveDouNn0iKTsKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+use rand::Rng;
 use rand::RngExt;
 
 fn monte_carlo_pi(samples: usize) -&gt; f64 {

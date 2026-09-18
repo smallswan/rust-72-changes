@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -242,7 +279,7 @@
 <li><strong>第四十 生成式AI</strong>：GAN、VAE、扩散模型，创造新内容的AI技术。</li>
 </ul>
 <h3 id="下卷-秘密与密码"><a class="header" href="#下卷-秘密与密码">下卷 秘密与密码</a></h3>
-<p>下卷主要介绍如何通过密码技术实现数据的安全存储、传输等一系列问题。从最基本的口令和随机数出发，逐步深入到对称密码、非对称密码、哈希函数等核心密码学 primitives，再扩展到身份认证、授权访问、PKI、TLS、区块链、零知识证明、同态加密、量子密码等高级主题，最后以“无敌密码“和“终极密码“作为全书的哲学升华。下卷共三十二章：</p>
+<p>下卷主要介绍如何通过密码技术实现数据的安全存储、传输等一系列问题。从最基本的口令和随机数出发，逐步深入到对称密码、非对称密码、哈希函数等核心密码学 primitives，再扩展到身份认证、授权访问、PKI、TLS、区块链、零知识证明、同态加密、量子密码等高级主题；随后从数据挖掘、代码、数论、图论等基础出发，走向软件漏洞、网络与数据安全，并延伸到操作系统、云计算、互联网、通用人工智能、机器人、虚拟现实、位置、编译器和芯片，最后以“无敌密码“和“终极密码“作为全书的哲学升华。下卷共三十二章：</p>
 <ul>
 <li><strong>第四十一 口令</strong>：密码的存储、强度评估与破解防护。</li>
 <li><strong>第四十二 随机数</strong>：真随机与伪随机，密码学安全随机数生成器。</li>
@@ -258,7 +295,22 @@
 <li><strong>第五十二 零知识证明</strong>：证明者如何在不泄露秘密的情况下证明知晓某事。</li>
 <li><strong>第五十三 同态加密</strong>：在加密数据上直接计算，隐私计算的圣杯。</li>
 <li><strong>第五十四 量子密码</strong>：量子密钥分发与后量子密码学。</li>
-<li><strong>第五十五至第七十（预留）</strong>：为密码学前沿发展预留空间。</li>
+<li><strong>第五十五 数据挖掘</strong>：聚类、分类、关联规则等经典算法，数据预处理与模型评估。</li>
+<li><strong>第五十六 代码</strong>：编程语言的演化与范式、主流语言巡礼，以及软件工程、Git 与 CI/CD。</li>
+<li><strong>第五十七 数论</strong>：整除与素数、同余与欧拉定理，公钥密码的数学基础。</li>
+<li><strong>第五十八 图论</strong>：图的表示与遍历，最短路径、最小生成树与拓扑排序。</li>
+<li><strong>第五十九 软件漏洞</strong>：内存安全、注入类漏洞与 OWASP Top 10，漏洞检测与防御。</li>
+<li><strong>第六十 网络安全</strong>：常见网络攻击与防御体系，VPN、隧道技术与 Web 安全。</li>
+<li><strong>第六十一 数据安全</strong>：数据加密、访问控制、脱敏与隐私保护、备份容灾与数据库安全。</li>
+<li><strong>第六十二 操作系统</strong>：进程与线程、调度、内存管理、文件系统、设备 I/O 与系统调用。</li>
+<li><strong>第六十三 云计算</strong>：服务与部署模式、虚拟化与容器、Serverless、云原生与云安全。</li>
+<li><strong>第六十四 互联网</strong>：OSI/TCP-IP 模型、IP 与 DNS、HTTP、TCP 与 UDP 的工作机制。</li>
+<li><strong>第六十五 通用人工智能</strong>：从 ANI 到 AGI 的能力维度与技术路线，对齐与安全。</li>
+<li><strong>第六十六 机器人</strong>：感知、决策与执行，运动学、SLAM、ROS 与机器人中的 AI。</li>
+<li><strong>第六十七 虚拟现实和物理世界</strong>：VR/AR/MR 与空间计算、物理引擎、数字孪生。</li>
+<li><strong>第六十八 位置</strong>：经纬度与 WGS-84/GCJ-02 坐标系、坐标转换、距离计算与空间索引。</li>
+<li><strong>第六十九 编译器与解释器</strong>：词法、语法、语义分析到中间表示与代码生成，并亲手实现一个解释器。</li>
+<li><strong>第七十 芯片</strong>：从沙子到晶圆，晶体管、制程工艺、芯片家族与嵌入式 Rust。</li>
 <li><strong>第七十一 无敌密码</strong>：探讨是否存在绝对安全的密码系统。</li>
 <li><strong>第七十二 终极密码</strong>：从密码学上升到信息安全哲学，思考安全的本质。</li>
 </ul>

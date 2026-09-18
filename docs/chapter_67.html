@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -513,6 +550,8 @@ fn circles_collide(a: &amp;Circle, b: &amp;Circle) -&gt; bool {
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g55SoIGJldnkg5Yib5bu65pyA566A5Y2V55qEIDNEIOWcuuaZrwp1c2UgYmV2eTo6cHJlbHVkZTo6KjsKCmZuIG1haW4oKSB7CiAgICBBcHA6Om5ldygpCiAgICAgICAgLmFkZF9wbHVnaW5zKERlZmF1bHRQbHVnaW5zKQogICAgICAgIC5hZGRfc3lzdGVtcyhTdGFydHVwLCBzZXR1cCkKICAgICAgICAucnVuKCk7Cn0KCmZuIHNldHVwKAogICAgbXV0IGNvbW1hbmRzOiBDb21tYW5kcywKICAgIG11dCBtZXNoZXM6IFJlc011dDxBc3NldHM8TWVzaD4+LAogICAgbXV0IG1hdGVyaWFsczogUmVzTXV0PEFzc2V0czxTdGFuZGFyZE1hdGVyaWFsPj4sCikgewogICAgLy8g55u45py6CiAgICBjb21tYW5kcy5zcGF3bihDYW1lcmEzZEJ1bmRsZTo6ZGVmYXVsdCgpKTsKICAgIC8vIOeri+aWueS9kwogICAgY29tbWFuZHMuc3Bhd24oUGJyQnVuZGxlIHsKICAgICAgICBtZXNoOiBtZXNoZXMuYWRkKEN1Ym9pZDo6bmV3KDEuMCwgMS4wLCAxLjApKSwKICAgICAgICBtYXRlcmlhbDogbWF0ZXJpYWxzLmFkZChTdGFuZGFyZE1hdGVyaWFsOjpkZWZhdWx0KCkpLAogICAgICAgIHRyYW5zZm9ybTogVHJhbnNmb3JtOjpmcm9tX3h5eigwLjAsIDAuMCwgLTMuMCksCiAgICAgICAgLi5kZWZhdWx0KCkKICAgIH0pOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// 用 bevy 创建最简单的 3D 场景
 use bevy::prelude::*;
 

@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -250,6 +287,8 @@ IP 包
 <p><strong>IPv4：</strong> 32 位地址，通常表示为四段十进制数，如 <code>192.168.1.1</code>。理论上有约 43 亿个地址，但由于互联网设备激增，IPv4 地址已接近枯竭。</p>
 <p><strong>IPv6：</strong> 128 位地址，表示为八组十六进制数，如 <code>2001:0db8:85a3::8a2e:0370:7334</code>。地址空间极大，足以给地球上每一粒沙子分配一个地址。</p>
 <p>在 Rust 中，IP 地址由 <code>std::net::IpAddr</code> 枚举表示：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6bmV0Ojp7SXBBZGRyLCBJcHY0QWRkciwgSXB2NkFkZHJ9OwoKZm4gbWFpbigpIHsKICAgIC8vIElQdjQg5Zyw5Z2ACiAgICBsZXQgdjQgPSBJcHY0QWRkcjo6bmV3KDE5MiwgMTY4LCAxLCAxKTsKICAgIHByaW50bG4hKCJJUHY0OiB7fSIsIHY0KTsgIC8vIDE5Mi4xNjguMS4xCgogICAgLy8gSVB2NiDlnLDlnYAKICAgIGxldCB2NiA9IElwdjZBZGRyOjpuZXcoMHgyMDAxLCAweGRiOCwgMCwgMCwgMCwgMCwgMHgxLCAweDEpOwogICAgcHJpbnRsbiEoIklQdjY6IHt9IiwgdjYpOyAgLy8gMjAwMTpkYjg6OjE6MQoKICAgIC8vIElwQWRkciDmnprkuL7lj6/ku6XlkIzml7bmjIHmnInkuKTnp43nsbvlnosKICAgIGxldCBhZGRyX3Y0OiBJcEFkZHIgPSB2NC5pbnRvKCk7CiAgICBsZXQgYWRkcl92NjogSXBBZGRyID0gdjYuaW50bygpOwoKICAgIHByaW50bG4hKCLmmK/lkKbmmK8gSVB2NDoge30iLCBhZGRyX3Y0LmlzX2lwdjQoKSk7ICAvLyB0cnVlCiAgICBwcmludGxuISgi5piv5ZCm5pivIElQdjY6IHt9IiwgYWRkcl92Ni5pc19pcHY2KCkpOyAgLy8gdHJ1ZQoKICAgIC8vIOeJueauiuWcsOWdgAogICAgcHJpbnRsbiEoIuacrOWcsOWbnueOrzoge30iLCBJcHY0QWRkcjo6TE9DQUxIT1NUKTsgIC8vIDEyNy4wLjAuMQogICAgcHJpbnRsbiEoIuS7u+aEj+WcsOWdgDoge30iLCBJcHY0QWRkcjo6VU5TUEVDSUZJRUQpOyAgLy8gMC4wLjAuMAp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 
 fn main() {
@@ -286,6 +325,8 @@ fn main() {
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6bmV0OjpTb2NrZXRBZGRyVjQ7CgpmbiBtYWluKCkgewogICAgLy8gU29ja2V0QWRkciDljIXlkKsgSVAg5Zyw5Z2A5ZKM56uv5Y+j5Y+3CiAgICBsZXQgYWRkciA9IFNvY2tldEFkZHJWNDo6bmV3KElwdjRBZGRyOjpuZXcoMTI3LCAwLCAwLCAxKSwgODA4MCk7CiAgICBwcmludGxuISgi5pyN5Yqh5Zmo5Zyw5Z2AOiB7fSIsIGFkZHIpOyAgLy8gMTI3LjAuMC4xOjgwODAKCiAgICAvLyDluLjop4HmnI3liqHnq6/lj6MKICAgIGxldCBjb21tb25fcG9ydHMgPSBbCiAgICAgICAgKCJIVFRQIiwgODApLAogICAgICAgICgiSFRUUFMiLCA0NDMpLAogICAgICAgICgiU1NIIiwgMjIpLAogICAgICAgICgiRlRQIiwgMjEpLAogICAgICAgICgiRE5TIiwgNTMpLAogICAgICAgICgiTXlTUUwiLCAzMzA2KSwKICAgICAgICAoIlJlZGlzIiwgNjM3OSksCiAgICBdOwoKICAgIGZvciAobmFtZSwgcG9ydCkgaW4gJmNvbW1vbl9wb3J0cyB7CiAgICAgICAgcHJpbnRsbiEoInt9IOacjeWKoem7mOiupOerr+WPozoge30iLCBuYW1lLCBwb3J0KTsKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::net::SocketAddrV4;
 
 fn main() {
@@ -310,6 +351,8 @@ fn main() {
 }</code></pre>
 <h3 id="23-域名与-dns"><a class="header" href="#23-域名与-dns">2.3 域名与 DNS</a></h3>
 <p>人类更容易记住域名（如 <code>www.example.com</code>），而不是 IP 地址。DNS（Domain Name System）负责将域名解析为 IP 地址。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6bmV0OjpUb1NvY2tldEFkZHJzOwoKZm4gbWFpbigpIHsKICAgIC8vIOWwhuWfn+WQjeino+aekOS4uiBTb2NrZXRBZGRyCiAgICBsZXQgYWRkcnMgPSAid3d3LnJ1c3QtbGFuZy5vcmc6NDQzIi50b19zb2NrZXRfYWRkcnMoKTsKCiAgICBtYXRjaCBhZGRycyB7CiAgICAgICAgT2soaXRlcikgPT4gewogICAgICAgICAgICBmb3IgYWRkciBpbiBpdGVyIHsKICAgICAgICAgICAgICAgIHByaW50bG4hKCLop6PmnpDnu5Pmnpw6IHt9IiwgYWRkcik7CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgRXJyKGUpID0+IHByaW50bG4hKCLop6PmnpDlpLHotKU6IHt9IiwgZSksCiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::net::ToSocketAddrs;
 
 fn main() {
@@ -476,6 +519,8 @@ Content-Length: 1234
 <p>Rust 的标准库 <code>std::net</code> 提供了基础的网络编程能力，而 <code>tokio</code> 等异步运行时则提供了高性能的异步网络编程能力。</p>
 <h3 id="51-使用-stdnet-进行-tcp-编程"><a class="header" href="#51-使用-stdnet-进行-tcp-编程">5.1 使用 std::net 进行 TCP 编程</a></h3>
 <h4 id="tcp-服务端"><a class="header" href="#tcp-服务端">TCP 服务端</a></h4>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6aW86OntSZWFkLCBXcml0ZX07CnVzZSBzdGQ6Om5ldDo6e1RjcExpc3RlbmVyLCBUY3BTdHJlYW19Owp1c2Ugc3RkOjp0aHJlYWQ7CgpmbiBoYW5kbGVfY2xpZW50KG11dCBzdHJlYW06IFRjcFN0cmVhbSkgewogICAgbGV0IG11dCBidWZmZXIgPSBbMHU4OyAxMDI0XTsKCiAgICBsb29wIHsKICAgICAgICBtYXRjaCBzdHJlYW0ucmVhZCgmbXV0IGJ1ZmZlcikgewogICAgICAgICAgICBPaygwKSA9PiB7CiAgICAgICAgICAgICAgICBwcmludGxuISgi5a6i5oi356uv5pat5byA6L+e5o6lIik7CiAgICAgICAgICAgICAgICBicmVhazsKICAgICAgICAgICAgfQogICAgICAgICAgICBPayhuKSA9PiB7CiAgICAgICAgICAgICAgICBsZXQgcmVjZWl2ZWQgPSBTdHJpbmc6OmZyb21fdXRmOF9sb3NzeSgmYnVmZmVyWy4ubl0pOwogICAgICAgICAgICAgICAgcHJpbnRsbiEoIuaUtuWIsDoge30iLCByZWNlaXZlZC50cmltKCkpOwoKICAgICAgICAgICAgICAgIGxldCByZXNwb25zZSA9IGZvcm1hdCEoIuacjeWKoeerr+W3suaUtuWIsDoge30iLCByZWNlaXZlZC50cmltKCkpOwogICAgICAgICAgICAgICAgaWYgc3RyZWFtLndyaXRlX2FsbChyZXNwb25zZS5hc19ieXRlcygpKS5pc19lcnIoKSB7CiAgICAgICAgICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICAgICAgRXJyKGUpID0+IHsKICAgICAgICAgICAgICAgIHByaW50bG4hKCLor7vlj5bplJnor686IHt9IiwgZSk7CiAgICAgICAgICAgICAgICBicmVhazsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQoKZm4gbWFpbigpIC0+IHN0ZDo6aW86OlJlc3VsdDwoKT4gewogICAgbGV0IGxpc3RlbmVyID0gVGNwTGlzdGVuZXI6OmJpbmQoIjEyNy4wLjAuMTo3ODc4Iik/OwogICAgcHJpbnRsbiEoIlRDUCDmnI3liqHnq6/lt7LlkK/liqjvvIznm5HlkKwgMTI3LjAuMC4xOjc4NzgiKTsKCiAgICBmb3Igc3RyZWFtIGluIGxpc3RlbmVyLmluY29taW5nKCkgewogICAgICAgIG1hdGNoIHN0cmVhbSB7CiAgICAgICAgICAgIE9rKHN0cmVhbSkgPT4gewogICAgICAgICAgICAgICAgcHJpbnRsbiEoIuaWsOWuouaIt+err+i/nuaOpTogezo/fSIsIHN0cmVhbS5wZWVyX2FkZHIoKT8pOwogICAgICAgICAgICAgICAgdGhyZWFkOjpzcGF3bih8fCBoYW5kbGVfY2xpZW50KHN0cmVhbSkpOwogICAgICAgICAgICB9CiAgICAgICAgICAgIEVycihlKSA9PiBwcmludGxuISgi6L+e5o6l5aSx6LSlOiB7fSIsIGUpLAogICAgICAgIH0KICAgIH0KCiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::thread;
@@ -523,6 +568,8 @@ fn main() -&gt; std::io::Result&lt;()&gt; {
     Ok(())
 }</code></pre>
 <h4 id="tcp-客户端"><a class="header" href="#tcp-客户端">TCP 客户端</a></h4>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6aW86OntzZWxmLCBSZWFkLCBXcml0ZX07CnVzZSBzdGQ6Om5ldDo6VGNwU3RyZWFtOwoKZm4gbWFpbigpIC0+IHN0ZDo6aW86OlJlc3VsdDwoKT4gewogICAgbGV0IG11dCBzdHJlYW0gPSBUY3BTdHJlYW06OmNvbm5lY3QoIjEyNy4wLjAuMTo3ODc4Iik/OwogICAgcHJpbnRsbiEoIuW3sui/nuaOpeWIsOacjeWKoeerryIpOwoKICAgIC8vIOWPkemAgea2iOaBrwogICAgbGV0IG1zZyA9ICJIZWxsbywgUnVzdCBOZXR3b3JrIVxuIjsKICAgIHN0cmVhbS53cml0ZV9hbGwobXNnLmFzX2J5dGVzKCkpPzsKCiAgICAvLyDor7vlj5blk43lupQKICAgIGxldCBtdXQgYnVmZmVyID0gWzB1ODsgMTAyNF07CiAgICBsZXQgbiA9IHN0cmVhbS5yZWFkKCZtdXQgYnVmZmVyKT87CiAgICBwcmludGxuISgi5pyN5Yqh56uv5ZON5bqUOiB7fSIsIFN0cmluZzo6ZnJvbV91dGY4X2xvc3N5KCZidWZmZXJbLi5uXSkpOwoKICAgIE9rKCgpKQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::io::{self, Read, Write};
 use std::net::TcpStream;
 
@@ -543,6 +590,8 @@ fn main() -&gt; std::io::Result&lt;()&gt; {
 }</code></pre>
 <h3 id="52-使用-stdnet-进行-udp-编程"><a class="header" href="#52-使用-stdnet-进行-udp-编程">5.2 使用 std::net 进行 UDP 编程</a></h3>
 <p>UDP 编程不需要建立连接，直接使用 <code>UdpSocket</code> 发送和接收数据报。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6bmV0OjpVZHBTb2NrZXQ7CgpmbiBtYWluKCkgLT4gc3RkOjppbzo6UmVzdWx0PCgpPiB7CiAgICAvLyBVRFAg5pyN5Yqh56uvCiAgICBsZXQgc29ja2V0ID0gVWRwU29ja2V0OjpiaW5kKCIxMjcuMC4wLjE6ODA4MCIpPzsKICAgIHByaW50bG4hKCJVRFAg5pyN5Yqh56uv5bey5ZCv5Yqo77yM55uR5ZCsIDEyNy4wLjAuMTo4MDgwIik7CgogICAgbGV0IG11dCBidWYgPSBbMHU4OyAxMDI0XTsKCiAgICBsb29wIHsKICAgICAgICAvLyDmjqXmlLbmlbDmja7miqUKICAgICAgICBsZXQgKGFtdCwgc3JjKSA9IHNvY2tldC5yZWN2X2Zyb20oJm11dCBidWYpPzsKICAgICAgICBsZXQgcmVjZWl2ZWQgPSBTdHJpbmc6OmZyb21fdXRmOF9sb3NzeSgmYnVmWy4uYW10XSk7CiAgICAgICAgcHJpbnRsbiEoIuadpeiHqiB7fSDnmoTmtojmga86IHt9Iiwgc3JjLCByZWNlaXZlZC50cmltKCkpOwoKICAgICAgICAvLyDlj5HpgIHlk43lupQKICAgICAgICBsZXQgcmVzcG9uc2UgPSBmb3JtYXQhKCLlt7LmlLbliLA6IHt9IiwgcmVjZWl2ZWQudHJpbSgpKTsKICAgICAgICBzb2NrZXQuc2VuZF90byhyZXNwb25zZS5hc19ieXRlcygpLCAmc3JjKT87CiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::net::UdpSocket;
 
 fn main() -&gt; std::io::Result&lt;()&gt; {
@@ -563,6 +612,8 @@ fn main() -&gt; std::io::Result&lt;()&gt; {
         socket.send_to(response.as_bytes(), &amp;src)?;
     }
 }</code></pre>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6bmV0OjpVZHBTb2NrZXQ7CgpmbiBtYWluKCkgLT4gc3RkOjppbzo6UmVzdWx0PCgpPiB7CiAgICAvLyBVRFAg5a6i5oi356uvCiAgICBsZXQgc29ja2V0ID0gVWRwU29ja2V0OjpiaW5kKCIxMjcuMC4wLjE6MCIpPzsgIC8vIOiuqeezu+e7n+WIhumFjeerr+WPowogICAgcHJpbnRsbiEoIlVEUCDlrqLmiLfnq6/lt7LlkK/liqgiKTsKCiAgICBsZXQgc2VydmVyID0gIjEyNy4wLjAuMTo4MDgwIjsKICAgIGxldCBtc2cgPSAiSGVsbG8sIFVEUCEiOwoKICAgIC8vIOWPkemAgeaVsOaNruaKpQogICAgc29ja2V0LnNlbmRfdG8obXNnLmFzX2J5dGVzKCksIHNlcnZlcik/OwogICAgcHJpbnRsbiEoIuW3suWPkemAgToge30iLCBtc2cpOwoKICAgIC8vIOaOpeaUtuWTjeW6lAogICAgbGV0IG11dCBidWYgPSBbMHU4OyAxMDI0XTsKICAgIGxldCAoYW10LCBfc3JjKSA9IHNvY2tldC5yZWN2X2Zyb20oJm11dCBidWYpPzsKICAgIHByaW50bG4hKCLmlLbliLDlk43lupQ6IHt9IiwgU3RyaW5nOjpmcm9tX3V0ZjhfbG9zc3koJmJ1ZlsuLmFtdF0pKTsKCiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::net::UdpSocket;
 
 fn main() -&gt; std::io::Result&lt;()&gt; {
@@ -593,7 +644,14 @@ tokio = { version = "1", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 </code></pre>
 <p><strong>异步 GET 请求：</strong></p>
-<pre class="playground"><code class="language-rust edition2024">use reqwest;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2VyZGUgPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJkZXJpdmUiXSB9CnRva2lvID0geyB2ZXJzaW9uID0gIjEiLCBmZWF0dXJlcyA9IFsiZnVsbCJdIH0KKi8KdXNlIHJlcXdlc3Q7CnVzZSBzZXJkZTo6RGVzZXJpYWxpemU7CgojW2Rlcml2ZShEZWJ1ZywgRGVzZXJpYWxpemUpXQpzdHJ1Y3QgUG9zdCB7CiAgICB1c2VySWQ6IHUzMiwKICAgIGlkOiB1MzIsCiAgICB0aXRsZTogU3RyaW5nLAogICAgYm9keTogU3RyaW5nLAp9CgojW3Rva2lvOjptYWluXQphc3luYyBmbiBtYWluKCkgLT4gUmVzdWx0PCgpLCBCb3g8ZHluIHN0ZDo6ZXJyb3I6OkVycm9yPj4gewogICAgLy8g5Y+R6YCBIEdFVCDor7fmsYIKICAgIGxldCByZXNwID0gcmVxd2VzdDo6Z2V0KCJodHRwczovL2pzb25wbGFjZWhvbGRlci50eXBpY29kZS5jb20vcG9zdHMvMSIpCiAgICAgICAgLmF3YWl0PwogICAgICAgIC5qc29uOjo8UG9zdD4oKQogICAgICAgIC5hd2FpdD87CgogICAgcHJpbnRsbiEoIuiOt+WPluWIsOeahOaWh+eroDogezo/fSIsIHJlc3ApOwoKICAgIE9rKCgpKQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+tokio = { version = "1", features = ["full"] }
+*/
+use reqwest;
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -617,7 +675,14 @@ async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
     Ok(())
 }</code></pre>
 <p><strong>POST 请求与自定义请求头：</strong></p>
-<pre class="playground"><code class="language-rust edition2024">use reqwest::header::{HeaderMap, HeaderValue, CONTENT_TYPE};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2VyZGVfanNvbiA9ICIxIgp0b2tpbyA9IHsgdmVyc2lvbiA9ICIxIiwgZmVhdHVyZXMgPSBbImZ1bGwiXSB9CiovCnVzZSByZXF3ZXN0OjpoZWFkZXI6OntIZWFkZXJNYXAsIEhlYWRlclZhbHVlLCBDT05URU5UX1RZUEV9Owp1c2Ugc2VyZGVfanNvbjo6anNvbjsKCiNbdG9raW86Om1haW5dCmFzeW5jIGZuIG1haW4oKSAtPiBSZXN1bHQ8KCksIEJveDxkeW4gc3RkOjplcnJvcjo6RXJyb3I+PiB7CiAgICBsZXQgY2xpZW50ID0gcmVxd2VzdDo6Q2xpZW50OjpuZXcoKTsKCiAgICAvLyDmnoTlu7ror7fmsYLkvZMKICAgIGxldCBib2R5ID0ganNvbiEoewogICAgICAgICJ0aXRsZSI6ICJSdXN0IOe9kee7nOe8lueoiyIsCiAgICAgICAgImJvZHkiOiAi6L+Z5piv5LiA56+H5YWz5LqOIFJ1c3Qg572R57uc57yW56iL55qE5paH56ugIiwKICAgICAgICAidXNlcklkIjogMQogICAgfSk7CgogICAgLy8g5Y+R6YCBIFBPU1Qg6K+35rGCCiAgICBsZXQgcmVzcCA9IGNsaWVudAogICAgICAgIC5wb3N0KCJodHRwczovL2pzb25wbGFjZWhvbGRlci50eXBpY29kZS5jb20vcG9zdHMiKQogICAgICAgIC5oZWFkZXIoQ09OVEVOVF9UWVBFLCAiYXBwbGljYXRpb24vanNvbiIpCiAgICAgICAgLmpzb24oJmJvZHkpCiAgICAgICAgLnNlbmQoKQogICAgICAgIC5hd2FpdD87CgogICAgcHJpbnRsbiEoIueKtuaAgeeggToge30iLCByZXNwLnN0YXR1cygpKTsKICAgIHByaW50bG4hKCLlk43lupTkvZM6IHt9IiwgcmVzcC50ZXh0KCkuYXdhaXQ/KTsKCiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+*/
+use reqwest::header::{HeaderMap, HeaderValue, CONTENT_TYPE};
 use serde_json::json;
 
 #[tokio::main]
@@ -651,7 +716,13 @@ async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 tokio = { version = "1", features = ["full"] }
 </code></pre>
 <p><strong>异步 TCP 服务端：</strong></p>
-<pre class="playground"><code class="language-rust edition2024">use tokio::io::{AsyncReadExt, AsyncWriteExt};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KdG9raW8gPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJmdWxsIl0gfQoqLwp1c2UgdG9raW86OmlvOjp7QXN5bmNSZWFkRXh0LCBBc3luY1dyaXRlRXh0fTsKdXNlIHRva2lvOjpuZXQ6OntUY3BMaXN0ZW5lciwgVGNwU3RyZWFtfTsKCmFzeW5jIGZuIGhhbmRsZV9jbGllbnQobXV0IHNvY2tldDogVGNwU3RyZWFtKSB7CiAgICBsZXQgbXV0IGJ1ZiA9IFswdTg7IDEwMjRdOwoKICAgIGxvb3AgewogICAgICAgIG1hdGNoIHNvY2tldC5yZWFkKCZtdXQgYnVmKS5hd2FpdCB7CiAgICAgICAgICAgIE9rKDApID0+IHsKICAgICAgICAgICAgICAgIHByaW50bG4hKCLlrqLmiLfnq6/mlq3lvIAiKTsKICAgICAgICAgICAgICAgIHJldHVybjsKICAgICAgICAgICAgfQogICAgICAgICAgICBPayhuKSA9PiB7CiAgICAgICAgICAgICAgICBsZXQgcmVjZWl2ZWQgPSBTdHJpbmc6OmZyb21fdXRmOF9sb3NzeSgmYnVmWy4ubl0pOwogICAgICAgICAgICAgICAgcHJpbnRsbiEoIuaUtuWIsDoge30iLCByZWNlaXZlZC50cmltKCkpOwoKICAgICAgICAgICAgICAgIGxldCByZXNwb25zZSA9IGZvcm1hdCEoIuW8guatpeacjeWKoeerr+WTjeW6lDoge30iLCByZWNlaXZlZC50cmltKCkpOwogICAgICAgICAgICAgICAgaWYgc29ja2V0LndyaXRlX2FsbChyZXNwb25zZS5hc19ieXRlcygpKS5hd2FpdC5pc19lcnIoKSB7CiAgICAgICAgICAgICAgICAgICAgcmV0dXJuOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgICAgIEVycihlKSA9PiB7CiAgICAgICAgICAgICAgICBwcmludGxuISgi6K+75Y+W6ZSZ6K+vOiB7fSIsIGUpOwogICAgICAgICAgICAgICAgcmV0dXJuOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9CgojW3Rva2lvOjptYWluXQphc3luYyBmbiBtYWluKCkgLT4gdG9raW86OmlvOjpSZXN1bHQ8KCk+IHsKICAgIGxldCBsaXN0ZW5lciA9IFRjcExpc3RlbmVyOjpiaW5kKCIxMjcuMC4wLjE6ODA4MCIpLmF3YWl0PzsKICAgIHByaW50bG4hKCLlvILmraUgVENQIOacjeWKoeerr+W3suWQr+WKqO+8jOebkeWQrCAxMjcuMC4wLjE6ODA4MCIpOwoKICAgIGxvb3AgewogICAgICAgIGxldCAoc29ja2V0LCBhZGRyKSA9IGxpc3RlbmVyLmFjY2VwdCgpLmF3YWl0PzsKICAgICAgICBwcmludGxuISgi5paw6L+e5o6lOiB7fSIsIGFkZHIpOwoKICAgICAgICAvLyDmr4/kuKrov57mjqXnlJ/miJDkuIDkuKrni6znq4vnmoTlvILmraXku7vliqEKICAgICAgICB0b2tpbzo6c3Bhd24oYXN5bmMgbW92ZSB7CiAgICAgICAgICAgIGhhbmRsZV9jbGllbnQoc29ja2V0KS5hd2FpdDsKICAgICAgICB9KTsKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+*/
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::{TcpListener, TcpStream};
 
 async fn handle_client(mut socket: TcpStream) {
@@ -696,7 +767,13 @@ async fn main() -&gt; tokio::io::Result&lt;()&gt; {
     }
 }</code></pre>
 <p><strong>异步 TCP 客户端：</strong></p>
-<pre class="playground"><code class="language-rust edition2024">use tokio::io::{AsyncReadExt, AsyncWriteExt};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KdG9raW8gPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJmdWxsIl0gfQoqLwp1c2UgdG9raW86OmlvOjp7QXN5bmNSZWFkRXh0LCBBc3luY1dyaXRlRXh0fTsKdXNlIHRva2lvOjpuZXQ6OlRjcFN0cmVhbTsKCiNbdG9raW86Om1haW5dCmFzeW5jIGZuIG1haW4oKSAtPiB0b2tpbzo6aW86OlJlc3VsdDwoKT4gewogICAgbGV0IG11dCBzdHJlYW0gPSBUY3BTdHJlYW06OmNvbm5lY3QoIjEyNy4wLjAuMTo4MDgwIikuYXdhaXQ/OwogICAgcHJpbnRsbiEoIuW3sui/nuaOpeWIsOacjeWKoeerryIpOwoKICAgIC8vIOW8guatpeWPkemAgQogICAgc3RyZWFtLndyaXRlX2FsbChiIkhlbGxvLCBBc3luYyBSdXN0IVxuIikuYXdhaXQ/OwoKICAgIC8vIOW8guatpeivu+WPlgogICAgbGV0IG11dCBidWYgPSBbMHU4OyAxMDI0XTsKICAgIGxldCBuID0gc3RyZWFtLnJlYWQoJm11dCBidWYpLmF3YWl0PzsKICAgIHByaW50bG4hKCLmlLbliLA6IHt9IiwgU3RyaW5nOjpmcm9tX3V0ZjhfbG9zc3koJmJ1ZlsuLm5dKSk7CgogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+*/
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpStream;
 
 #[tokio::main]
@@ -716,7 +793,13 @@ async fn main() -&gt; tokio::io::Result&lt;()&gt; {
 }</code></pre>
 <h3 id="55-简单的-http-服务端"><a class="header" href="#55-简单的-http-服务端">5.5 简单的 HTTP 服务端</a></h3>
 <p>使用 <code>hyper</code> 库可以快速构建 HTTP 服务端：</p>
-<pre class="playground"><code class="language-rust edition2024">use hyper::service::{make_service_fn, service_fn};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KdG9raW8gPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJmdWxsIl0gfQoqLwp1c2UgaHlwZXI6OnNlcnZpY2U6OnttYWtlX3NlcnZpY2VfZm4sIHNlcnZpY2VfZm59Owp1c2UgaHlwZXI6OntCb2R5LCBSZXF1ZXN0LCBSZXNwb25zZSwgU2VydmVyfTsKdXNlIHN0ZDo6Y29udmVydDo6SW5mYWxsaWJsZTsKdXNlIHN0ZDo6bmV0OjpTb2NrZXRBZGRyOwoKYXN5bmMgZm4gaGVsbG8oX3JlcTogUmVxdWVzdDxCb2R5PikgLT4gUmVzdWx0PFJlc3BvbnNlPEJvZHk+LCBJbmZhbGxpYmxlPiB7CiAgICBPayhSZXNwb25zZTo6bmV3KEJvZHk6OmZyb20oIkhlbGxvLCBSdXN0IEhUVFAgU2VydmVyISIpKSkKfQoKI1t0b2tpbzo6bWFpbl0KYXN5bmMgZm4gbWFpbigpIHsKICAgIGxldCBhZGRyID0gU29ja2V0QWRkcjo6ZnJvbSgoWzEyNywgMCwgMCwgMV0sIDMwMDApKTsKCiAgICBsZXQgbWFrZV9zdmMgPSBtYWtlX3NlcnZpY2VfZm4ofF9jb25ufCBhc3luYyB7CiAgICAgICAgT2s6OjxfLCBJbmZhbGxpYmxlPihzZXJ2aWNlX2ZuKGhlbGxvKSkKICAgIH0pOwoKICAgIGxldCBzZXJ2ZXIgPSBTZXJ2ZXI6OmJpbmQoJmFkZHIpLnNlcnZlKG1ha2Vfc3ZjKTsKCiAgICBwcmludGxuISgiSFRUUCDmnI3liqHlt7LlkK/liqg6IGh0dHA6Ly97fSIsIGFkZHIpOwoKICAgIGlmIGxldCBFcnIoZSkgPSBzZXJ2ZXIuYXdhaXQgewogICAgICAgIGVwcmludGxuISgi5pyN5Yqh5Zmo6ZSZ6K+vOiB7fSIsIGUpOwogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+*/
+use hyper::service::{make_service_fn, service_fn};
 use hyper::{Body, Request, Response, Server};
 use std::convert::Infallible;
 use std::net::SocketAddr;

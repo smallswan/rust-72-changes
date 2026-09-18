@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -264,6 +301,8 @@
 </table>
 </div>
 <h3 id="23-用-rust-表示图像"><a class="header" href="#23-用-rust-表示图像">2.3 用 Rust 表示图像</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOWDj+e0oOe7k+aehOS9kwojW2Rlcml2ZShEZWJ1ZywgQ2xvbmUsIENvcHkpXQpzdHJ1Y3QgUGl4ZWwgewogICAgcjogdTgsCiAgICBnOiB1OCwKICAgIGI6IHU4LAp9CgovLy8g566A5piT5Zu+5YOP57uT5p6ECnN0cnVjdCBJbWFnZSB7CiAgICB3aWR0aDogdXNpemUsCiAgICBoZWlnaHQ6IHVzaXplLAogICAgcGl4ZWxzOiBWZWM8UGl4ZWw+LAp9CgppbXBsIEltYWdlIHsKICAgIGZuIG5ldyh3aWR0aDogdXNpemUsIGhlaWdodDogdXNpemUpIC0+IFNlbGYgewogICAgICAgIEltYWdlIHsKICAgICAgICAgICAgd2lkdGgsCiAgICAgICAgICAgIGhlaWdodCwKICAgICAgICAgICAgcGl4ZWxzOiB2ZWMhW1BpeGVsIHsgcjogMCwgZzogMCwgYjogMCB9OyB3aWR0aCAqIGhlaWdodF0sCiAgICAgICAgfQogICAgfQoKICAgIGZuIGdldF9waXhlbCgmc2VsZiwgeDogdXNpemUsIHk6IHVzaXplKSAtPiAmUGl4ZWwgewogICAgICAgICZzZWxmLnBpeGVsc1t5ICogc2VsZi53aWR0aCArIHhdCiAgICB9CgogICAgZm4gc2V0X3BpeGVsKCZtdXQgc2VsZiwgeDogdXNpemUsIHk6IHVzaXplLCBwaXhlbDogUGl4ZWwpIHsKICAgICAgICBzZWxmLnBpeGVsc1t5ICogc2VsZi53aWR0aCArIHhdID0gcGl4ZWw7CiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgbXV0IGltZyA9IEltYWdlOjpuZXcoMywgMik7CiAgICAvLyDorr7nva7kuIDkuKrnuqLoibLlg4/ntKAKICAgIGltZy5zZXRfcGl4ZWwoMCwgMCwgUGl4ZWwgeyByOiAyNTUsIGc6IDAsIGI6IDAgfSk7CiAgICAvLyDorr7nva7kuIDkuKrnu7/oibLlg4/ntKAKICAgIGltZy5zZXRfcGl4ZWwoMSwgMCwgUGl4ZWwgeyByOiAwLCBnOiAyNTUsIGI6IDAgfSk7CgogICAgcHJpbnRsbiEoIuWbvuWDj+WwuuWvuDoge314e30iLCBpbWcud2lkdGgsIGltZy5oZWlnaHQpOwogICAgcHJpbnRsbiEoIuWDj+e0oCAoMCwwKTogezo/fSIsIGltZy5nZXRfcGl4ZWwoMCwgMCkpOwogICAgcHJpbnRsbiEoIuWDj+e0oCAoMSwwKTogezo/fSIsIGltZy5nZXRfcGl4ZWwoMSwgMCkpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 像素结构体
 #[derive(Debug, Clone, Copy)]
 struct Pixel {
@@ -315,7 +354,13 @@ fn main() {
 <p>缩放是最基本的预处理操作。常见的插值算法包括最近邻插值、双线性插值和双三次插值。</p>
 <p>$$I’(x’, y’) = \sum_{i} \sum_{j} I(x_i, y_j) \cdot w(x_i - x’) \cdot w(y_j - y’)$$</p>
 <p>其中 $w$ 为插值核函数。</p>
-<pre class="playground"><code class="language-rust edition2024">use image::{imageops, DynamicImage, GenericImageView, ImageFormat};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaW1hZ2UgPSAiMC4yNSIKKi8KdXNlIGltYWdlOjp7aW1hZ2VvcHMsIER5bmFtaWNJbWFnZSwgR2VuZXJpY0ltYWdlVmlldywgSW1hZ2VGb3JtYXR9OwoKZm4gbWFpbigpIHsKICAgIC8vIOWKoOi9veWbvuWDjwogICAgbGV0IGltZyA9IGltYWdlOjpvcGVuKCJpbnB1dC5qcGciKS5leHBlY3QoIuaXoOazleaJk+W8gOWbvuWDjyIpOwogICAgcHJpbnRsbiEoIuWOn+Wni+WwuuWvuDoge314e30iLCBpbWcud2lkdGgoKSwgaW1nLmhlaWdodCgpKTsKCiAgICAvLyDkvb/nlKjkuI3lkIzmu6Tms6LlmajnvKnmlL4KICAgIGxldCBtZXRob2RzID0gWwogICAgICAgICgibmVhcmVzdCIsICBpbWFnZW9wczo6RmlsdGVyVHlwZTo6TmVhcmVzdCksCiAgICAgICAgKCJ0cmlhbmdsZSIsIGltYWdlb3BzOjpGaWx0ZXJUeXBlOjpUcmlhbmdsZSksCiAgICAgICAgKCJjYXRtdWxsIiwgIGltYWdlb3BzOjpGaWx0ZXJUeXBlOjpDYXRtdWxsUm9tKSwKICAgICAgICAoImdhdXNzaWFuIiwgaW1hZ2VvcHM6OkZpbHRlclR5cGU6OkdhdXNzaWFuKSwKICAgICAgICAoImxhbmN6b3MiLCAgaW1hZ2VvcHM6OkZpbHRlclR5cGU6OkxhbmN6b3MzKSwKICAgIF07CgogICAgZm9yIChuYW1lLCBmaWx0ZXIpIGluICZtZXRob2RzIHsKICAgICAgICBsZXQgcmVzaXplZCA9IGltZy5yZXNpemUoMjI0LCAyMjQsICpmaWx0ZXIpOwogICAgICAgIHJlc2l6ZWQuc2F2ZShmb3JtYXQhKCJyZXNpemVkX3t9LnBuZyIsIG5hbWUpKS51bndyYXAoKTsKICAgICAgICBwcmludGxuISgi5bey5L+d5a2YIHJlc2l6ZWRfe30ucG5nICgyMjR4MjI0KSIsIG5hbWUpOwogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+image = "0.25"
+*/
+use image::{imageops, DynamicImage, GenericImageView, ImageFormat};
 
 fn main() {
     // 加载图像
@@ -341,7 +386,13 @@ fn main() {
 <p>将彩色图像转换为灰度图像，常用加权平均法（ITU-R BT.601 标准）：</p>
 <p>$$I_{\text{gray}} = 0.299 \cdot R + 0.587 \cdot G + 0.114 \cdot B$$</p>
 <p>人眼对绿色最敏感，对蓝色最不敏感，因此权重不同。</p>
-<pre class="playground"><code class="language-rust edition2024">use image::{DynamicImage, GenericImageView, Rgb, Luma};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaW1hZ2UgPSAiMC4yNSIKKi8KdXNlIGltYWdlOjp7RHluYW1pY0ltYWdlLCBHZW5lcmljSW1hZ2VWaWV3LCBSZ2IsIEx1bWF9OwoKZm4gdG9fZ3JheXNjYWxlKGltZzogJkR5bmFtaWNJbWFnZSkgLT4gaW1hZ2U6OkdyYXlJbWFnZSB7CiAgICBsZXQgcmdiID0gaW1nLnRvX3JnYjgoKTsKICAgIGxldCAod2lkdGgsIGhlaWdodCkgPSByZ2IuZGltZW5zaW9ucygpOwogICAgbGV0IG11dCBncmF5ID0gaW1hZ2U6OkdyYXlJbWFnZTo6bmV3KHdpZHRoLCBoZWlnaHQpOwoKICAgIGZvciB5IGluIDAuLmhlaWdodCB7CiAgICAgICAgZm9yIHggaW4gMC4ud2lkdGggewogICAgICAgICAgICBsZXQgUmdiKFtyLCBnLCBiXSkgPSByZ2IuZ2V0X3BpeGVsKHgsIHkpOwogICAgICAgICAgICAvLyBJVFUtUiBCVC42MDEg5Yqg5p2D54Gw5bqmCiAgICAgICAgICAgIGxldCBncmF5X3ZhbCA9IDAuMjk5ICogKnIgYXMgZjMyCiAgICAgICAgICAgICAgICAgICAgICAgICArIDAuNTg3ICogKmcgYXMgZjMyCiAgICAgICAgICAgICAgICAgICAgICAgICArIDAuMTE0ICogKmIgYXMgZjMyOwogICAgICAgICAgICBncmF5LnB1dF9waXhlbCh4LCB5LCBMdW1hKFtncmF5X3ZhbCBhcyB1OF0pKTsKICAgICAgICB9CiAgICB9CiAgICBncmF5Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgaW1nID0gaW1hZ2U6Om9wZW4oImlucHV0LmpwZyIpLnVud3JhcCgpOwogICAgbGV0IGdyYXkgPSB0b19ncmF5c2NhbGUoJmltZyk7CiAgICBncmF5LnNhdmUoImdyYXlzY2FsZS5wbmciKS51bndyYXAoKTsKICAgIHByaW50bG4hKCLngbDluqblm77lg4/lt7Lkv53lrZgiKTsKCiAgICAvLyBpbWFnZSBjcmF0ZSDkuZ/lhoXnva7kuobngbDluqbovazmjaIKICAgIGxldCBncmF5MiA9IGltZy50b19sdW1hOCgpOwogICAgZ3JheTIuc2F2ZSgiZ3JheXNjYWxlX2J1aWx0aW4ucG5nIikudW53cmFwKCk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+image = "0.25"
+*/
+use image::{DynamicImage, GenericImageView, Rgb, Luma};
 
 fn to_grayscale(img: &amp;DynamicImage) -&gt; image::GrayImage {
     let rgb = img.to_rgb8();
@@ -379,7 +430,13 @@ fn main() {
 <p>$$K_{\text{gauss}} = \frac{1}{16} \begin{pmatrix} 1 &amp; 2 &amp; 1 \ 2 &amp; 4 &amp; 2 \ 1 &amp; 2 &amp; 1 \end{pmatrix}$$</p>
 <p><strong>Sobel 边缘检测</strong>（水平方向）：</p>
 <p>$$K_{\text{sobel_x}} = \begin{pmatrix} -1 &amp; 0 &amp; 1 \ -2 &amp; 0 &amp; 2 \ -1 &amp; 0 &amp; 1 \end{pmatrix}$$</p>
-<pre class="playground"><code class="language-rust edition2024">use image::{GrayImage, GenericImageView, Luma};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaW1hZ2UgPSAiMC4yNSIKKi8KdXNlIGltYWdlOjp7R3JheUltYWdlLCBHZW5lcmljSW1hZ2VWaWV3LCBMdW1hfTsKCi8vLyDmiYvliqjlrp7njrAgM3gzIOWNt+enrwpmbiBjb252b2x2ZTN4MyhpbWc6ICZHcmF5SW1hZ2UsIGtlcm5lbDogJltmMzI7IDldKSAtPiBHcmF5SW1hZ2UgewogICAgbGV0ICh3aWR0aCwgaGVpZ2h0KSA9IGltZy5kaW1lbnNpb25zKCk7CiAgICBsZXQgbXV0IG91dHB1dCA9IEdyYXlJbWFnZTo6bmV3KHdpZHRoLCBoZWlnaHQpOwoKICAgIGZvciB5IGluIDEuLmhlaWdodCAtIDEgewogICAgICAgIGZvciB4IGluIDEuLndpZHRoIC0gMSB7CiAgICAgICAgICAgIGxldCBtdXQgc3VtID0gMC4wZjMyOwogICAgICAgICAgICBsZXQgbXV0IGtpID0gMDsKICAgICAgICAgICAgZm9yIGt5IGluIC0xLi49MSB7CiAgICAgICAgICAgICAgICBmb3Iga3ggaW4gLTEuLj0xIHsKICAgICAgICAgICAgICAgICAgICBsZXQgcHggPSAoeCBhcyBpMzIgKyBreCkgYXMgdTMyOwogICAgICAgICAgICAgICAgICAgIGxldCBweSA9ICh5IGFzIGkzMiArIGt5KSBhcyB1MzI7CiAgICAgICAgICAgICAgICAgICAgbGV0IEx1bWEoW3ZhbF0pID0gaW1nLmdldF9waXhlbChweCwgcHkpOwogICAgICAgICAgICAgICAgICAgIHN1bSArPSB2YWwgYXMgZjMyICoga2VybmVsW2tpXTsKICAgICAgICAgICAgICAgICAgICBraSArPSAxOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgICAgIG91dHB1dC5wdXRfcGl4ZWwoeCwgeSwgTHVtYShbc3VtLmNsYW1wKDAuMCwgMjU1LjApIGFzIHU4XSkpOwogICAgICAgIH0KICAgIH0KICAgIG91dHB1dAp9CgpmbiBtYWluKCkgewogICAgbGV0IGltZyA9IGltYWdlOjpvcGVuKCJpbnB1dC5qcGciKS51bndyYXAoKS50b19sdW1hOCgpOwoKICAgIC8vIOWdh+WAvOa7pOazou+8iOaooeeziu+8iQogICAgbGV0IG1lYW5fa2VybmVsOiBbZjMyOyA5XSA9IFsxLjAvOS4wOyA5XTsKICAgIGxldCBibHVycmVkID0gY29udm9sdmUzeDMoJmltZywgJm1lYW5fa2VybmVsKTsKICAgIGJsdXJyZWQuc2F2ZSgiYmx1cnJlZC5wbmciKS51bndyYXAoKTsKCiAgICAvLyDpq5jmlq/mu6Tms6IKICAgIGxldCBnYXVzc19rZXJuZWw6IFtmMzI7IDldID0KICAgICAgICBbMS4wLzE2LjAsIDIuMC8xNi4wLCAxLjAvMTYuMCwKICAgICAgICAgMi4wLzE2LjAsIDQuMC8xNi4wLCAyLjAvMTYuMCwKICAgICAgICAgMS4wLzE2LjAsIDIuMC8xNi4wLCAxLjAvMTYuMF07CiAgICBsZXQgZ2F1c3NpYW4gPSBjb252b2x2ZTN4MygmaW1nLCAmZ2F1c3Nfa2VybmVsKTsKICAgIGdhdXNzaWFuLnNhdmUoImdhdXNzaWFuLnBuZyIpLnVud3JhcCgpOwoKICAgIC8vIFNvYmVsIOi+uee8mOajgOa1iwogICAgbGV0IHNvYmVsX3g6IFtmMzI7IDldID0gWy0xLjAsIDAuMCwgMS4wLCAtMi4wLCAwLjAsIDIuMCwgLTEuMCwgMC4wLCAxLjBdOwogICAgbGV0IGVkZ2VzID0gY29udm9sdmUzeDMoJmltZywgJnNvYmVsX3gpOwogICAgZWRnZXMuc2F2ZSgiZWRnZXMucG5nIikudW53cmFwKCk7CgogICAgcHJpbnRsbiEoIua7pOazoue7k+aenOW3suS/neWtmCIpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+image = "0.25"
+*/
+use image::{GrayImage, GenericImageView, Luma};
 
 /// 手动实现 3x3 卷积
 fn convolve3x3(img: &amp;GrayImage, kernel: &amp;[f32; 9]) -&gt; GrayImage {
@@ -449,6 +506,8 @@ fn main() {
 </ul>
 <p>$$O = \left\lfloor \frac{W - K + 2P}{S} \right\rfloor + 1$$</p>
 <p>其中 $W$ 为输入尺寸，$K$ 为核大小，$P$ 为填充大小，$S$ 为步长。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOS6jOe7tOWNt+enr+WunueOsO+8iOS6kuebuOWFs++8iQpmbiBjb252MmQoCiAgICBpbnB1dDogJltWZWM8ZjMyPl0sCiAgICBrZXJuZWw6ICZbVmVjPGYzMj5dLAogICAgc3RyaWRlOiB1c2l6ZSwKICAgIHBhZGRpbmc6IHVzaXplLAopIC0+IFZlYzxWZWM8ZjMyPj4gewogICAgbGV0IGhfaW4gPSBpbnB1dC5sZW4oKTsKICAgIGxldCB3X2luID0gaW5wdXRbMF0ubGVuKCk7CiAgICBsZXQga19oID0ga2VybmVsLmxlbigpOwogICAgbGV0IGtfdyA9IGtlcm5lbFswXS5sZW4oKTsKCiAgICAvLyDloavlhYXovpPlhaUKICAgIGxldCBoX3BhZCA9IGhfaW4gKyAyICogcGFkZGluZzsKICAgIGxldCB3X3BhZCA9IHdfaW4gKyAyICogcGFkZGluZzsKICAgIGxldCBtdXQgcGFkZGVkID0gdmVjIVt2ZWMhWzAuMGYzMjsgd19wYWRdOyBoX3BhZF07CiAgICBmb3IgaSBpbiAwLi5oX2luIHsKICAgICAgICBmb3IgaiBpbiAwLi53X2luIHsKICAgICAgICAgICAgcGFkZGVkW2kgKyBwYWRkaW5nXVtqICsgcGFkZGluZ10gPSBpbnB1dFtpXVtqXTsKICAgICAgICB9CiAgICB9CgogICAgLy8g6K6h566X6L6T5Ye65bC65a+4CiAgICBsZXQgaF9vdXQgPSAoaF9wYWQgLSBrX2gpIC8gc3RyaWRlICsgMTsKICAgIGxldCB3X291dCA9ICh3X3BhZCAtIGtfdykgLyBzdHJpZGUgKyAxOwogICAgbGV0IG11dCBvdXRwdXQgPSB2ZWMhW3ZlYyFbMC4wZjMyOyB3X291dF07IGhfb3V0XTsKCiAgICBmb3IgaSBpbiAwLi5oX291dCB7CiAgICAgICAgZm9yIGogaW4gMC4ud19vdXQgewogICAgICAgICAgICBsZXQgbXV0IHN1bSA9IDAuMGYzMjsKICAgICAgICAgICAgZm9yIGtpIGluIDAuLmtfaCB7CiAgICAgICAgICAgICAgICBmb3Iga2ogaW4gMC4ua193IHsKICAgICAgICAgICAgICAgICAgICBsZXQgcGkgPSBpICogc3RyaWRlICsga2k7CiAgICAgICAgICAgICAgICAgICAgbGV0IHBqID0gaiAqIHN0cmlkZSArIGtqOwogICAgICAgICAgICAgICAgICAgIHN1bSArPSBwYWRkZWRbcGldW3BqXSAqIGtlcm5lbFtraV1ba2pdOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgICAgIG91dHB1dFtpXVtqXSA9IHN1bTsKICAgICAgICB9CiAgICB9CiAgICBvdXRwdXQKfQoKZm4gbWFpbigpIHsKICAgIC8vIDV4NSDovpPlhaUKICAgIGxldCBpbnB1dDogVmVjPFZlYzxmMzI+PiA9ICgwLi41KQogICAgICAgIC5tYXAofGl8ICgwLi41KS5tYXAofGp8IChpICogNSArIGopIGFzIGYzMikuY29sbGVjdCgpKQogICAgICAgIC5jb2xsZWN0KCk7CgogICAgLy8gM3gzIOWNt+enr+aguO+8iOi+uee8mOajgOa1i++8iQogICAgbGV0IGtlcm5lbDogVmVjPFZlYzxmMzI+PiA9IHZlYyFbCiAgICAgICAgdmVjIVstMS4wLCAtMS4wLCAtMS4wXSwKICAgICAgICB2ZWMhWy0xLjAsICA4LjAsIC0xLjBdLAogICAgICAgIHZlYyFbLTEuMCwgLTEuMCwgLTEuMF0sCiAgICBdOwoKICAgIGxldCBvdXRwdXQgPSBjb252MmQoJmlucHV0LCAma2VybmVsLCAxLCAxKTsKICAgIHByaW50bG4hKCLljbfnp6/ovpPlh7ogKDN4Myk6Iik7CiAgICBmb3Igcm93IGluICZvdXRwdXQgewogICAgICAgIHByaW50bG4hKCIgIHs6P30iLCByb3cuaXRlcigpLm1hcCh8dnwgZm9ybWF0ISgiezo2LjF9IiwgdikpLmNvbGxlY3Q6OjxWZWM8Xz4+KCkpOwogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 二维卷积实现（互相关）
 fn conv2d(
     input: &amp;[Vec&lt;f32&gt;],
@@ -536,6 +595,8 @@ fn main() {
 <p><strong>平均池化（Average Pooling）</strong>：</p>
 <p>$$Y(i, j) = \frac{1}{|\mathcal{R}<em>{ij}|} \sum</em>{(m,n) \in \mathcal{R}_{ij}} X(m, n)$$</p>
 <p>其中 $\mathcal{R}_{ij}$ 为池化窗口覆盖的区域。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOacgOWkp+axoOWMliAyeDIsIHN0cmlkZT0yCmZuIG1heF9wb29sMngyKGlucHV0OiAmW1ZlYzxmMzI+XSkgLT4gVmVjPFZlYzxmMzI+PiB7CiAgICBsZXQgaCA9IGlucHV0LmxlbigpIC8gMjsKICAgIGxldCB3ID0gaW5wdXRbMF0ubGVuKCkgLyAyOwogICAgbGV0IG11dCBvdXRwdXQgPSB2ZWMhW3ZlYyFbMC4wZjMyOyB3XTsgaF07CgogICAgZm9yIGkgaW4gMC4uaCB7CiAgICAgICAgZm9yIGogaW4gMC4udyB7CiAgICAgICAgICAgIGxldCByID0gaSAqIDI7CiAgICAgICAgICAgIGxldCBjID0gaiAqIDI7CiAgICAgICAgICAgIG91dHB1dFtpXVtqXSA9IGlucHV0W3JdW2NdCiAgICAgICAgICAgICAgICAubWF4KGlucHV0W3JdW2MgKyAxXSkKICAgICAgICAgICAgICAgIC5tYXgoaW5wdXRbciArIDFdW2NdKQogICAgICAgICAgICAgICAgLm1heChpbnB1dFtyICsgMV1bYyArIDFdKTsKICAgICAgICB9CiAgICB9CiAgICBvdXRwdXQKfQoKLy8vIOW5s+Wdh+axoOWMliAyeDIsIHN0cmlkZT0yCmZuIGF2Z19wb29sMngyKGlucHV0OiAmW1ZlYzxmMzI+XSkgLT4gVmVjPFZlYzxmMzI+PiB7CiAgICBsZXQgaCA9IGlucHV0LmxlbigpIC8gMjsKICAgIGxldCB3ID0gaW5wdXRbMF0ubGVuKCkgLyAyOwogICAgbGV0IG11dCBvdXRwdXQgPSB2ZWMhW3ZlYyFbMC4wZjMyOyB3XTsgaF07CgogICAgZm9yIGkgaW4gMC4uaCB7CiAgICAgICAgZm9yIGogaW4gMC4udyB7CiAgICAgICAgICAgIGxldCByID0gaSAqIDI7CiAgICAgICAgICAgIGxldCBjID0gaiAqIDI7CiAgICAgICAgICAgIGxldCBzdW0gPSBpbnB1dFtyXVtjXSArIGlucHV0W3JdW2MgKyAxXQogICAgICAgICAgICAgICAgICAgICsgaW5wdXRbciArIDFdW2NdICsgaW5wdXRbciArIDFdW2MgKyAxXTsKICAgICAgICAgICAgb3V0cHV0W2ldW2pdID0gc3VtIC8gNC4wOwogICAgICAgIH0KICAgIH0KICAgIG91dHB1dAp9CgpmbiBtYWluKCkgewogICAgbGV0IGlucHV0OiBWZWM8VmVjPGYzMj4+ID0gdmVjIVsKICAgICAgICB2ZWMhWzEuMCwgMi4wLCAzLjAsIDQuMF0sCiAgICAgICAgdmVjIVs1LjAsIDYuMCwgNy4wLCA4LjBdLAogICAgICAgIHZlYyFbOS4wLCAxMC4wLCAxMS4wLCAxMi4wXSwKICAgICAgICB2ZWMhWzEzLjAsIDE0LjAsIDE1LjAsIDE2LjBdLAogICAgXTsKCiAgICBsZXQgbWF4X3Bvb2xlZCA9IG1heF9wb29sMngyKCZpbnB1dCk7CiAgICBwcmludGxuISgi5pyA5aSn5rGg5YyWOiB7Oj99IiwgbWF4X3Bvb2xlZCk7CiAgICAvLyBbWzYuMCwgOC4wXSwgWzE0LjAsIDE2LjBdXQoKICAgIGxldCBhdmdfcG9vbGVkID0gYXZnX3Bvb2wyeDIoJmlucHV0KTsKICAgIHByaW50bG4hKCLlubPlnYfmsaDljJY6IHs6P30iLCBhdmdfcG9vbGVkKTsKICAgIC8vIFtbMy41LCA1LjVdLCBbMTEuNSwgMTMuNV1dCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 最大池化 2x2, stride=2
 fn max_pool2x2(input: &amp;[Vec&lt;f32&gt;]) -&gt; Vec&lt;Vec&lt;f32&gt;&gt; {
     let h = input.len() / 2;
@@ -623,6 +684,8 @@ fn main() {
 <p>ResNet 引入了<strong>残差连接（Skip Connection）</strong>，解决了深层网络的退化问题：</p>
 <p>$$\mathcal{F}(x) = \mathcal{H}(x) - x \quad \Rightarrow \quad \mathcal{H}(x) = \mathcal{F}(x) + x$$</p>
 <p>网络学习的是残差 $\mathcal{F}(x) = \mathcal{H}(x) - x$，而非直接学习映射 $\mathcal{H}(x)$。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOeugOWMlueahOaui+W3ruWdl+amguW/tea8lOekugpmbiByZXNpZHVhbF9ibG9jayhpbnB1dDogJltmMzJdLCB3ZWlnaHRzOiAmW2YzMl0sIGJpYXM6ICZbZjMyXSkgLT4gVmVjPGYzMj4gewogICAgLy8gRih4KSA9IFcgKiB4ICsgYiDvvIjnroDljJbkuLrpgJDlhYPntKDov5DnrpfvvIkKICAgIGxldCBmX3g6IFZlYzxmMzI+ID0gaW5wdXQKICAgICAgICAuaXRlcigpCiAgICAgICAgLnppcCh3ZWlnaHRzLml0ZXIoKSkKICAgICAgICAuemlwKGJpYXMuaXRlcigpKQogICAgICAgIC5tYXAofCgoJngsICZ3KSwgJmIpfCAoeCAqIHcgKyBiKS5tYXgoMC4wKSkgLy8gUmVMVQogICAgICAgIC5jb2xsZWN0KCk7CgogICAgLy8gSCh4KSA9IEYoeCkgKyB4IO+8iOaui+W3rui/nuaOpe+8iQogICAgbGV0IGhfeDogVmVjPGYzMj4gPSBpbnB1dC5pdGVyKCkuemlwKGZfeC5pdGVyKCkpLm1hcCh8KCZ4LCAmZil8IHggKyBmKS5jb2xsZWN0KCk7CgogICAgaF94Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgaW5wdXQgPSB2ZWMhWzEuMCwgMi4wLCAzLjAsIDQuMCwgNS4wXTsKICAgIGxldCB3ZWlnaHRzID0gdmVjIVswLjUsIDAuOCwgMC4zLCAwLjYsIDAuNF07CiAgICBsZXQgYmlhcyA9IHZlYyFbMC4xLCAtMC4xLCAwLjIsIC0wLjIsIDAuMV07CgogICAgbGV0IG91dHB1dCA9IHJlc2lkdWFsX2Jsb2NrKCZpbnB1dCwgJndlaWdodHMsICZiaWFzKTsKICAgIHByaW50bG4hKCLmrovlt67lnZfovpPlh7o6IHs6P30iLCBvdXRwdXQpOwogICAgLy8gWzEuNiwgMi41LCAyLjksIDQuNCwgNS4zXQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 简化的残差块概念演示
 fn residual_block(input: &amp;[f32], weights: &amp;[f32], bias: &amp;[f32]) -&gt; Vec&lt;f32&gt; {
     // F(x) = W * x + b （简化为逐元素运算）
@@ -717,7 +780,13 @@ fn main() {
 [dependencies]
 image = "0.25"
 </code></pre>
-<pre class="playground"><code class="language-rust edition2024">use image::{DynamicImage, GenericImageView, ImageFormat, imageops};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaW1hZ2UgPSAiMC4yNSIKKi8KdXNlIGltYWdlOjp7RHluYW1pY0ltYWdlLCBHZW5lcmljSW1hZ2VWaWV3LCBJbWFnZUZvcm1hdCwgaW1hZ2VvcHN9OwoKZm4gbWFpbigpIHsKICAgIC8vIDEuIOivu+WPluWbvuWDj++8iOaUr+aMgSBKUEVHLCBQTkcsIFdlYlAsIEdJRiwgQk1QLCBUSUZGIOetie+8iQogICAgbGV0IGltZyA9IGltYWdlOjpvcGVuKCJwaG90by5qcGciKS5leHBlY3QoIuaJk+W8gOWbvuWDj+Wksei0pSIpOwogICAgcHJpbnRsbiEoIuWwuuWvuDoge314e30iLCBpbWcud2lkdGgoKSwgaW1nLmhlaWdodCgpKTsKCiAgICAvLyAyLiDoo4HliaoKICAgIGxldCBjcm9wcGVkID0gaW1nLmNyb3BfaW1tKDEwMCwgMTAwLCAzMDAsIDMwMCk7CiAgICBjcm9wcGVkLnNhdmUoImNyb3BwZWQucG5nIikudW53cmFwKCk7CgogICAgLy8gMy4g5peL6L2sCiAgICBsZXQgcm90YXRlZCA9IGltZy5yb3RhdGU5MCgpOwogICAgcm90YXRlZC5zYXZlKCJyb3RhdGVkLnBuZyIpLnVud3JhcCgpOwoKICAgIC8vIDQuIOe/u+i9rAogICAgbGV0IGZsaXBwZWQgPSBpbWFnZW9wczo6ZmxpcF9ob3Jpem9udGFsKCZpbWcpOwogICAgZmxpcHBlZC5zYXZlKCJmbGlwcGVkX2gucG5nIikudW53cmFwKCk7CgogICAgLy8gNS4g6LCD5pW05Lqu5bqmL+WvueavlOW6pgogICAgbGV0IGFkanVzdGVkID0gaW1nLmFkanVzdF9jb250cmFzdCgxLjUpOwogICAgYWRqdXN0ZWQuc2F2ZSgiY29udHJhc3QucG5nIikudW53cmFwKCk7CgogICAgLy8gNi4g5qC85byP6L2s5o2iCiAgICBsZXQgcmdiID0gaW1nLnRvX3JnYjgoKTsKICAgIGxldCBncmF5ID0gaW1nLnRvX2x1bWE4KCk7CgogICAgLy8gNy4g5L+d5a2Y5Li65LiN5ZCM5qC85byPCiAgICBpbWcuc2F2ZSgib3V0cHV0LndlYnAiKS51bndyYXAoKTsgLy8g6Ieq5Yqo5o6o5pat5qC85byPCiAgICBsZXQgbXV0IG91dCA9IHN0ZDo6ZnM6OkZpbGU6OmNyZWF0ZSgib3V0cHV0LmJtcCIpLnVud3JhcCgpOwogICAgaW1nLndyaXRlX3RvKCZtdXQgb3V0LCBJbWFnZUZvcm1hdDo6Qm1wKS51bndyYXAoKTsKCiAgICBwcmludGxuISgi5Zu+5YOP5aSE55CG5a6M5oiQIik7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+image = "0.25"
+*/
+use image::{DynamicImage, GenericImageView, ImageFormat, imageops};
 
 fn main() {
     // 1. 读取图像（支持 JPEG, PNG, WebP, GIF, BMP, TIFF 等）
@@ -758,7 +827,13 @@ fn main() {
 candle-core = "0.8"
 candle-nn = "0.8"
 </code></pre>
-<pre class="playground"><code class="language-rust edition2024">use candle_core::{Tensor, Device};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KY2FuZGxlLWNvcmUgPSAiMC45IgoqLwp1c2UgY2FuZGxlX2NvcmU6OntUZW5zb3IsIERldmljZX07CgpmbiBtYWluKCkgLT4gUmVzdWx0PCgpLCBCb3g8ZHluIHN0ZDo6ZXJyb3I6OkVycm9yPj4gewogICAgbGV0IGRldmljZSA9IERldmljZTo6Q3B1OwoKICAgIC8vIOWIm+W7uuS4gOS4qiA0IOe7tOW8oOmHj++8jOaooeaLn+S4gOaJueWbvuWDjyAoYmF0Y2gsIGNoYW5uZWxzLCBoZWlnaHQsIHdpZHRoKQogICAgLy8g5b2i54q2OiBbMiwgMywgMjI0LCAyMjRd77yM5qih5oufIDIg5bygIFJHQiDlm77lg48KICAgIGxldCBpbWFnZXMgPSBUZW5zb3I6OnJhbmRuKDBmMzIsIDEuMCwgKDIsIDMsIDIyNCwgMjI0KSwgJmRldmljZSk/OwoKICAgIHByaW50bG4hKCLovpPlhaXlvKDph4/lvaLnirY6IHs6P30iLCBpbWFnZXMuc2hhcGUoKSk7CgogICAgLy8g5qih5ouf5Y2356ev5bGC5p2D6YeNOiAxNiDkuKogM3gzIOWNt+enr+aguO+8jOi+k+WFpSAzIOmAmumBkwogICAgbGV0IHdlaWdodCA9IFRlbnNvcjo6cmFuZG4oMGYzMiwgMC4wMiwgKDE2LCAzLCAzLCAzKSwgJmRldmljZSk/OwogICAgbGV0IGJpYXMgPSBUZW5zb3I6Onplcm9zKDE2LCAmZGV2aWNlKT87CgogICAgLy8g5omn6KGM5Y2356ev6L+Q566XIChwYWRkaW5nPTEpCiAgICBsZXQgY29udiA9IGltYWdlcy5jb252MmQoJndlaWdodCwgJmJpYXMsIDEsIDEpPzsKICAgIHByaW50bG4hKCLljbfnp6/lkI7lvaLnirY6IHs6P30iLCBjb252LnNoYXBlKCkpOyAvLyBbMiwgMTYsIDIyNCwgMjI0XQoKICAgIC8vIFJlTFUg5r+A5rS7CiAgICBsZXQgYWN0aXZhdGVkID0gY29udi5yZWx1KCk/OwogICAgcHJpbnRsbiEoIlJlTFUg5ZCO5b2i54q2OiB7Oj99IiwgYWN0aXZhdGVkLnNoYXBlKCkpOwoKICAgIC8vIOacgOWkp+axoOWMliAyeDIKICAgIGxldCBwb29sZWQgPSBhY3RpdmF0ZWQubWF4X3Bvb2wyZCgyKT87CiAgICBwcmludGxuISgi5rGg5YyW5ZCO5b2i54q2OiB7Oj99IiwgcG9vbGVkLnNoYXBlKCkpOyAvLyBbMiwgMTYsIDExMiwgMTEyXQoKICAgIE9rKCgpKQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+candle-core = "0.9"
+*/
+use candle_core::{Tensor, Device};
 
 fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
     let device = Device::Cpu;
@@ -807,7 +882,14 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 </table>
 </div>
 <h3 id="84-用-candle-加载预训练模型进行图像分类"><a class="header" href="#84-用-candle-加载预训练模型进行图像分类">8.4 用 candle 加载预训练模型进行图像分类</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use candle_core::{Device, Tensor};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KY2FuZGxlLWNvcmUgPSAiMC45IgpjYW5kbGUtbm4gPSAiMC45IgoqLwp1c2UgY2FuZGxlX2NvcmU6OntEZXZpY2UsIFRlbnNvcn07CnVzZSBjYW5kbGVfbm46OntWYXJNYXAsIE1vZHVsZSwgQ29udjJkLCBDb252MmRDb25maWcsIExpbmVhcn07CnVzZSBjYW5kbGVfbm46OmluaXQ7CgovLy8g5p6E5bu6566A5piTIENOTiDmqKHlnovvvIjnlKjkuo7mvJTnpLrvvIzpnZ7pooTorq3nu4PvvIkKZm4gYnVpbGRfc2ltcGxlX2Nubih2czogJmNhbmRsZV9ubjo6VmFyQnVpbGRlcikgLT4gUmVzdWx0PEJveDxkeW4gTW9kdWxlPiwgQm94PGR5biBzdGQ6OmVycm9yOjpFcnJvcj4+IHsKICAgIC8vIENvbnYxOiAzIC0+IDMyLCAzeDMKICAgIGxldCBjb252MSA9IGNhbmRsZV9ubjo6Y29udjJkKDMsIDMyLCAzLCBDb252MmRDb25maWc6OmRlZmF1bHQoKSwgdnMucHAoImNvbnYxIikpPzsKICAgIC8vIENvbnYyOiAzMiAtPiA2NCwgM3gzCiAgICBsZXQgY29udjIgPSBjYW5kbGVfbm46OmNvbnYyZCgzMiwgNjQsIDMsIENvbnYyZENvbmZpZzo6ZGVmYXVsdCgpLCB2cy5wcCgiY29udjIiKSk/OwogICAgLy8gRkM6IDY0KjYqNiAtPiAxMjgKICAgIGxldCBmYzEgPSBjYW5kbGVfbm46OmxpbmVhcig2NCAqIDYgKiA2LCAxMjgsIHZzLnBwKCJmYzEiKSk/OwogICAgLy8gRkM6IDEyOCAtPiAxMCAoQ0lGQVItMTAg55qEIDEwIOS4quexu+WIqykKICAgIGxldCBmYzIgPSBjYW5kbGVfbm46OmxpbmVhcigxMjgsIDEwLCB2cy5wcCgiZmMyIikpPzsKCiAgICBPayhCb3g6Om5ldyhtb3ZlIHx4czogJlRlbnNvcnwgLT4gUmVzdWx0PFRlbnNvciwgY2FuZGxlX2NvcmU6OkVycm9yPiB7CiAgICAgICAgbGV0IHhzID0geHMuYXBwbHkoJmNvbnYxKT8ucmVsdSgpPy5tYXhfcG9vbDJkKDIpPzsKICAgICAgICBsZXQgeHMgPSB4cy5hcHBseSgmY29udjIpPy5yZWx1KCk/Lm1heF9wb29sMmQoMik/OwogICAgICAgIGxldCB4cyA9IHhzLmZsYXR0ZW5fZnJvbSgxKT87CiAgICAgICAgbGV0IHhzID0geHMuYXBwbHkoJmZjMSk/LnJlbHUoKT87CiAgICAgICAgeHMuYXBwbHkoJmZjMikKICAgIH0pKQp9CgpmbiBtYWluKCkgLT4gUmVzdWx0PCgpLCBCb3g8ZHluIHN0ZDo6ZXJyb3I6OkVycm9yPj4gewogICAgbGV0IGRldmljZSA9IERldmljZTo6Q3B1OwogICAgbGV0IG11dCB2YXJtYXAgPSBWYXJNYXA6Om5ldygpOwogICAgbGV0IHZzID0gY2FuZGxlX25uOjpWYXJCdWlsZGVyOjpmcm9tX3Zhcm1hcCgmdmFybWFwLCBjYW5kbGVfY29yZTo6RFR5cGU6OkYzMiwgJmRldmljZSk7CgogICAgbGV0IG1vZGVsID0gYnVpbGRfc2ltcGxlX2NubigmdnMpPzsKCiAgICAvLyDmqKHmi5/ovpPlhaU6IGJhdGNoPTEsIGNoYW5uZWxzPTMsIGhlaWdodD0zMiwgd2lkdGg9MzIgKENJRkFSLTEwIOWwuuWvuCkKICAgIGxldCBpbnB1dCA9IFRlbnNvcjo6cmFuZG4oMGYzMiwgMS4wLCAoMSwgMywgMzIsIDMyKSwgJmRldmljZSk/OwogICAgbGV0IG91dHB1dCA9IG1vZGVsLmZvcndhcmQoJmlucHV0KT87CgogICAgcHJpbnRsbiEoIuaooeWei+i+k+WHuuW9oueKtjogezo/fSIsIG91dHB1dC5zaGFwZSgpKTsgLy8gWzEsIDEwXQogICAgcHJpbnRsbiEoIuWOn+Wni+i+k+WHujoge30iLCBvdXRwdXQudG9fdmVjMjo6PGYzMj4oKT8pOwoKICAgIC8vIFNvZnRtYXgg6I635Y+W5qaC546H5YiG5biDCiAgICBsZXQgcHJvYnMgPSBjYW5kbGVfbm46Om9wczo6c29mdG1heCgmb3V0cHV0LCAxKT87CiAgICBwcmludGxuISgi5qaC546H5YiG5biDOiB7Oj99IiwgcHJvYnMudG9fdmVjMjo6PGYzMj4oKT8pOwoKICAgIC8vIOiOt+WPlumihOa1i+exu+WIqwogICAgbGV0IHByZWQgPSBwcm9icy5hcmdtYXgoMSk/OwogICAgcHJpbnRsbiEoIumihOa1i+exu+WIqzogezo/fSIsIHByZWQudG9fdmVjMTo6PHUzMj4oKT8pOwoKICAgIE9rKCgpKQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+candle-core = "0.9"
+candle-nn = "0.9"
+*/
+use candle_core::{Device, Tensor};
 use candle_nn::{VarMap, Module, Conv2d, Conv2dConfig, Linear};
 use candle_nn::init;
 
@@ -879,7 +961,14 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 </table>
 </div>
 <h3 id="92-完整训练流程"><a class="header" href="#92-完整训练流程">9.2 完整训练流程</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use candle_core::{Device, Tensor, DType};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KY2FuZGxlLWNvcmUgPSAiMC45IgpjYW5kbGUtbm4gPSAiMC45IgoqLwp1c2UgY2FuZGxlX2NvcmU6OntEZXZpY2UsIFRlbnNvciwgRFR5cGV9Owp1c2UgY2FuZGxlX25uOjp7VmFyTWFwLCBNb2R1bGUsIENvbnYyZCwgQ29udjJkQ29uZmlnLCBMaW5lYXIsIEFkYW1XLCBPcHRpbWl6ZXIsIGxvc3N9Owp1c2UgY2FuZGxlX2RhdGFzZXRzOjpjaWZhcjEwOwoKLy8vIOeugOaYkyBDTk4g55So5LqOIENJRkFSLTEwIOWIhuexuwpzdHJ1Y3QgQ2lmYXJOZXQgewogICAgY29udjE6IENvbnYyZCwKICAgIGNvbnYyOiBDb252MmQsCiAgICBjb252MzogQ29udjJkLAogICAgZmMxOiBMaW5lYXIsCiAgICBmYzI6IExpbmVhciwKfQoKaW1wbCBDaWZhck5ldCB7CiAgICBmbiBuZXcodnM6IGNhbmRsZV9ubjo6VmFyQnVpbGRlcikgLT4gUmVzdWx0PFNlbGYsIGNhbmRsZV9jb3JlOjpFcnJvcj4gewogICAgICAgIGxldCBjb252MSA9IGNhbmRsZV9ubjo6Y29udjJkKDMsIDMyLCAzLCBDb252MmRDb25maWc6OndpdGhfcGFkZGluZygxKSwgdnMucHAoImMxIikpPzsKICAgICAgICBsZXQgY29udjIgPSBjYW5kbGVfbm46OmNvbnYyZCgzMiwgNjQsIDMsIENvbnYyZENvbmZpZzo6d2l0aF9wYWRkaW5nKDEpLCB2cy5wcCgiYzIiKSk/OwogICAgICAgIGxldCBjb252MyA9IGNhbmRsZV9ubjo6Y29udjJkKDY0LCA2NCwgMywgQ29udjJkQ29uZmlnOjp3aXRoX3BhZGRpbmcoMSksIHZzLnBwKCJjMyIpKT87CiAgICAgICAgbGV0IGZjMSA9IGNhbmRsZV9ubjo6bGluZWFyKDY0ICogNCAqIDQsIDY0LCB2cy5wcCgiZmMxIikpPzsKICAgICAgICBsZXQgZmMyID0gY2FuZGxlX25uOjpsaW5lYXIoNjQsIDEwLCB2cy5wcCgiZmMyIikpPzsKICAgICAgICBPayhTZWxmIHsgY29udjEsIGNvbnYyLCBjb252MywgZmMxLCBmYzIgfSkKICAgIH0KCiAgICBmbiBmb3J3YXJkKCZzZWxmLCB4czogJlRlbnNvcikgLT4gUmVzdWx0PFRlbnNvciwgY2FuZGxlX2NvcmU6OkVycm9yPiB7CiAgICAgICAgbGV0IHhzID0geHMuYXBwbHkoJnNlbGYuY29udjEpPy5yZWx1KCk/Lm1heF9wb29sMmQoMik/OyAgLy8gW0IsIDMyLCAxNiwgMTZdCiAgICAgICAgbGV0IHhzID0geHMuYXBwbHkoJnNlbGYuY29udjIpPy5yZWx1KCk/Lm1heF9wb29sMmQoMik/OyAgLy8gW0IsIDY0LCA4LCA4XQogICAgICAgIGxldCB4cyA9IHhzLmFwcGx5KCZzZWxmLmNvbnYzKT8ucmVsdSgpPy5tYXhfcG9vbDJkKDIpPzsgIC8vIFtCLCA2NCwgNCwgNF0KICAgICAgICBsZXQgeHMgPSB4cy5mbGF0dGVuX2Zyb20oMSk/OyAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyBbQiwgMTAyNF0KICAgICAgICBsZXQgeHMgPSB4cy5hcHBseSgmc2VsZi5mYzEpPy5yZWx1KCk/OwogICAgICAgIHhzLmFwcGx5KCZzZWxmLmZjMikKICAgIH0KfQoKZm4gbWFpbigpIC0+IFJlc3VsdDwoKSwgQm94PGR5biBzdGQ6OmVycm9yOjpFcnJvcj4+IHsKICAgIGxldCBkZXZpY2UgPSBEZXZpY2U6OkNwdTsKCiAgICAvLyDliqDovb0gQ0lGQVItMTAg5pWw5o2u6ZuGCiAgICBsZXQgKHRyYWluX2ltYWdlcywgdHJhaW5fbGFiZWxzKSA9IGNpZmFyMTA6OmxvYWRfdHJhaW4oKT87CiAgICBsZXQgKHRlc3RfaW1hZ2VzLCB0ZXN0X2xhYmVscykgPSBjaWZhcjEwOjpsb2FkX3Rlc3QoKT87CgogICAgcHJpbnRsbiEoIuiuree7g+mbhjoge30g5byg5Zu+5YOPIiwgdHJhaW5faW1hZ2VzLmxlbigpKTsKICAgIHByaW50bG4hKCLmtYvor5Xpm4Y6IHt9IOW8oOWbvuWDjyIsIHRlc3RfaW1hZ2VzLmxlbigpKTsKCiAgICAvLyDmnoTlu7rmqKHlnosKICAgIGxldCBtdXQgdmFybWFwID0gVmFyTWFwOjpuZXcoKTsKICAgIGxldCB2cyA9IGNhbmRsZV9ubjo6VmFyQnVpbGRlcjo6ZnJvbV92YXJtYXAoJnZhcm1hcCwgRFR5cGU6OkYzMiwgJmRldmljZSk7CiAgICBsZXQgbW9kZWwgPSBDaWZhck5ldDo6bmV3KHZzKT87CgogICAgLy8g5LyY5YyW5ZmoCiAgICBsZXQgbXV0IG9wdGltaXplciA9IGNhbmRsZV9ubjo6QWRhbVc6Om5ldygmdmFybWFwLCAwLjAwMWY2NCk/OwoKICAgIC8vIOiuree7g+W+queOrwogICAgbGV0IGVwb2NocyA9IDEwOwogICAgbGV0IGJhdGNoX3NpemUgPSA2NDsKCiAgICBmb3IgZXBvY2ggaW4gMS4uPWVwb2NocyB7CiAgICAgICAgbGV0IG11dCB0b3RhbF9sb3NzID0gMC4wZjMyOwogICAgICAgIGxldCBtdXQgY29ycmVjdCA9IDB1c2l6ZTsKICAgICAgICBsZXQgbXV0IHRvdGFsID0gMHVzaXplOwoKICAgICAgICAvLyDpgY3ljoYgbWluaS1iYXRjaAogICAgICAgIGZvciBpIGluICgwLi50cmFpbl9pbWFnZXMubGVuKCkpLnN0ZXBfYnkoYmF0Y2hfc2l6ZSkgewogICAgICAgICAgICBsZXQgZW5kID0gKGkgKyBiYXRjaF9zaXplKS5taW4odHJhaW5faW1hZ2VzLmxlbigpKTsKICAgICAgICAgICAgbGV0IGJhdGNoX2ltYWdlczogVmVjPFRlbnNvcj4gPSB0cmFpbl9pbWFnZXNbaS4uZW5kXQogICAgICAgICAgICAgICAgLml0ZXIoKQogICAgICAgICAgICAgICAgLm1hcCh8aW1nfCBUZW5zb3I6OmZyb21fZGF0YShpbWcuY2xvbmUoKSwgJmRldmljZSkudW53cmFwKCkpCiAgICAgICAgICAgICAgICAuY29sbGVjdCgpOwogICAgICAgICAgICBsZXQgYmF0Y2hfbGFiZWxzID0gVGVuc29yOjpmcm9tX3ZlYygKICAgICAgICAgICAgICAgIHRyYWluX2xhYmVsc1tpLi5lbmRdLnRvX3ZlYygpLAogICAgICAgICAgICAgICAgKGVuZCAtIGksKSBhcyB1c2l6ZSwKICAgICAgICAgICAgICAgICZkZXZpY2UsCiAgICAgICAgICAgICk/OwoKICAgICAgICAgICAgbGV0IGltYWdlcyA9IFRlbnNvcjo6c3RhY2soJmJhdGNoX2ltYWdlcywgMCk/OwogICAgICAgICAgICBsZXQgbG9naXRzID0gbW9kZWwuZm9yd2FyZCgmaW1hZ2VzKT87CiAgICAgICAgICAgIGxldCBsb3NzID0gbG9zczo6Y3Jvc3NfZW50cm9weSgmbG9naXRzLCAmYmF0Y2hfbGFiZWxzKT87CgogICAgICAgICAgICBvcHRpbWl6ZXIuYmFja3dhcmRfc3RlcCgmbG9zcyk/OwogICAgICAgICAgICB0b3RhbF9sb3NzICs9IGxvc3MudG9fc2NhbGFyOjo8ZjMyPigpPzsKCiAgICAgICAgICAgIC8vIOiuoeeul+WHhuehrueOhwogICAgICAgICAgICBsZXQgcHJlZHMgPSBsb2dpdHMuYXJnbWF4KDEpPzsKICAgICAgICAgICAgbGV0IGxhYmVscyA9IGJhdGNoX2xhYmVsczsKICAgICAgICAgICAgY29ycmVjdCArPSBwcmVkcy5lcSgmbGFiZWxzKT8udG9fc2NhbGFyOjo8dTMyPigpPyBhcyB1c2l6ZTsKICAgICAgICAgICAgdG90YWwgKz0gZW5kIC0gaTsKICAgICAgICB9CgogICAgICAgIHByaW50bG4hKAogICAgICAgICAgICAiRXBvY2gge30ve30gLSBMb3NzOiB7Oi40fSAtIEFjYzogezouMn0lIiwKICAgICAgICAgICAgZXBvY2gsIGVwb2NocywKICAgICAgICAgICAgdG90YWxfbG9zcyAvICh0cmFpbl9pbWFnZXMubGVuKCkgLyBiYXRjaF9zaXplKSBhcyBmMzIsCiAgICAgICAgICAgIDEwMC4wICogY29ycmVjdCBhcyBmMzIgLyB0b3RhbCBhcyBmMzIKICAgICAgICApOwogICAgfQoKICAgIE9rKCgpKQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+candle-core = "0.9"
+candle-nn = "0.9"
+*/
+use candle_core::{Device, Tensor, DType};
 use candle_nn::{VarMap, Module, Conv2d, Conv2dConfig, Linear, AdamW, Optimizer, loss};
 use candle_datasets::cifar10;
 

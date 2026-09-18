@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -442,6 +479,8 @@ fn gcj02_to_bd09(gcj_lng: f64, gcj_lat: f64) -&gt; (f64, f64) {
 <h3 id="51-haversine-公式"><a class="header" href="#51-haversine-公式">5.1 Haversine 公式</a></h3>
 <p>球面上两点间的大圆距离：</p>
 <p>$$d = 2R \cdot \arcsin\left(\sqrt{\sin^2\left(\frac{\Delta\phi}{2}\right) + \cos\phi_1 \cdot \cos\phi_2 \cdot \sin^2\left(\frac{\Delta\lambda}{2}\right)}\right)$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Y29uc3QgRUFSVEhfUkFESVVTX006IGY2NCA9IDYzNzEwMDAuMDsKCi8vLyDkuKTngrnpl7TnmoTnkIPpnaLot53nprvvvIjnsbPvvIkKZm4gaGF2ZXJzaW5lKGxhdDE6IGY2NCwgbG5nMTogZjY0LCBsYXQyOiBmNjQsIGxuZzI6IGY2NCkgLT4gZjY0IHsKICAgIGxldCB0b19yYWQgPSB8ZDogZjY0fCBkICogc3RkOjpmNjQ6OmNvbnN0czo6UEkgLyAxODAuMDsKICAgIGxldCBkX2xhdCA9IHRvX3JhZChsYXQyIC0gbGF0MSk7CiAgICBsZXQgZF9sbmcgPSB0b19yYWQobG5nMiAtIGxuZzEpOwogICAgbGV0IGEgPSAoZF9sYXQgLyAyLjApLnNpbigpLnBvd2koMikKICAgICAgICArIHRvX3JhZChsYXQxKS5jb3MoKSAqIHRvX3JhZChsYXQyKS5jb3MoKSAqIChkX2xuZyAvIDIuMCkuc2luKCkucG93aSgyKTsKICAgIDIuMCAqIEVBUlRIX1JBRElVU19NICogYS5zcXJ0KCkuYXNpbigpCn0KCmZuIG1haW4oKSB7CiAgICAvLyDljJfkuqzlpKnlronpl6gg4oaSIOS4iua1t+Wklua7qQogICAgbGV0IGRpc3QgPSBoYXZlcnNpbmUoMzkuOTA0MiwgMTE2LjQwNzQsIDMxLjIzOTcsIDEyMS40OTk4KTsKICAgIHByaW50bG4hKCLot53nprvnuqYgezouMH0g5YWs6YeMIiwgZGlzdCAvIDEwMDAuMCk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">const EARTH_RADIUS_M: f64 = 6371000.0;
 
 /// 两点间的球面距离（米）
@@ -702,6 +741,8 @@ GEOSEARCH shops FROMLONLAT 116.4100 39.9000 BYRADIUS 5 km ASC
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KZ2VvID0gIjAuMzIuMCIKKi8KdXNlIGdlbzo6e1BvaW50LCBIYXZlcnNpbmUsIERpc3RhbmNlfTsKCmZuIG1haW4oKSB7CiAgICBsZXQgYSA9IFBvaW50OjpuZXcoLTcyLjEyMzUsIDQyLjM1MjEpOwogICAgbGV0IGIgPSBQb2ludDo6bmV3KC03Mi4xMjYwLCA0Mi40NSk7CiAgICAKICAgIC8vIOS9v+eUqCBIYXZlcnNpbmUg5bqm6YeP56m66Ze06K6h566X6Led56a7CiAgICBsZXQgZCA9IEhhdmVyc2luZS5kaXN0YW5jZShhLCBiKTsKICAgIAogICAgcHJpbnRsbiEoIkRpc3RhbmNlOiB7fSBtZXRlcnMiLCBkKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/*
 [dependencies]
 geo = "0.32.0"

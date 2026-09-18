@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -215,6 +252,8 @@
 <p>$$x_1 + x_2 = -\frac{b}{a}$$</p>
 <p>$$x_1 \cdot x_2 = \frac{c}{a}$$</p>
 <h3 id="14-rust-实现"><a class="header" href="#14-rust-实现">1.4 Rust 实现</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gc29sdmVfcXVhZHJhdGljKGE6IGY2NCwgYjogZjY0LCBjOiBmNjQpIC0+IChPcHRpb248ZjY0PiwgT3B0aW9uPGY2ND4pIHsKICAgIGxldCBkaXNjcmltaW5hbnQgPSBiICogYiAtIDQuMCAqIGEgKiBjOwoKICAgIGlmIGRpc2NyaW1pbmFudCA+IDAuMCB7CiAgICAgICAgbGV0IHNxcnRfZCA9IGRpc2NyaW1pbmFudC5zcXJ0KCk7CiAgICAgICAgbGV0IHgxID0gKC1iICsgc3FydF9kKSAvICgyLjAgKiBhKTsKICAgICAgICBsZXQgeDIgPSAoLWIgLSBzcXJ0X2QpIC8gKDIuMCAqIGEpOwogICAgICAgIChTb21lKHgxKSwgU29tZSh4MikpCiAgICB9IGVsc2UgaWYgZGlzY3JpbWluYW50ID09IDAuMCB7CiAgICAgICAgbGV0IHggPSAtYiAvICgyLjAgKiBhKTsKICAgICAgICAoU29tZSh4KSwgU29tZSh4KSkgIC8vIOmHjeaguQogICAgfSBlbHNlIHsKICAgICAgICAoTm9uZSwgTm9uZSkgIC8vIOaXoOWunuaVsOaguQogICAgfQp9CgpmbiBtYWluKCkgewogICAgLy8geMKyIC0gNXggKyA2ID0gMO+8jOagueS4uiAyIOWSjCAzCiAgICBsZXQgKHgxLCB4MikgPSBzb2x2ZV9xdWFkcmF0aWMoMS4wLCAtNS4wLCA2LjApOwogICAgcHJpbnRsbiEoInjCsiAtIDV4ICsgNiA9IDAg55qE5qC5OiB7Oj99LCB7Oj99IiwgeDEsIHgyKTsKCiAgICAvLyB4wrIgKyAyeCArIDEgPSAw77yM5qC55Li6IC0x77yI6YeN5qC577yJCiAgICBsZXQgKHgxLCB4MikgPSBzb2x2ZV9xdWFkcmF0aWMoMS4wLCAyLjAsIDEuMCk7CiAgICBwcmludGxuISgieMKyICsgMnggKyAxID0gMCDnmoTmoLk6IHs6P30sIHs6P30iLCB4MSwgeDIpOwoKICAgIC8vIHjCsiArIHggKyAxID0gMO+8jOaXoOWunuaVsOaguQogICAgbGV0ICh4MSwgeDIpID0gc29sdmVfcXVhZHJhdGljKDEuMCwgMS4wLCAxLjApOwogICAgcHJpbnRsbiEoInjCsiArIHggKyAxID0gMCDnmoTmoLk6IHs6P30sIHs6P30iLCB4MSwgeDIpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn solve_quadratic(a: f64, b: f64, c: f64) -&gt; (Option&lt;f64&gt;, Option&lt;f64&gt;) {
     let discriminant = b * b - 4.0 * a * c;
 
@@ -250,6 +289,8 @@ fn main() {
 <p>等差数列是相邻两项之差为常数的数列，这个常数称为<strong>公差</strong>（$d$）。</p>
 <p><strong>通项公式：</strong> $a_n = a_1 + (n-1)d$</p>
 <p><strong>前 n 项和：</strong> $S_n = \frac{n(a_1 + a_n)}{2} = \frac{n}{2}[2a_1 + (n-1)d]$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gYXJpdGhtZXRpY19zdW0oYTE6IGY2NCwgZDogZjY0LCBuOiB1c2l6ZSkgLT4gZjY0IHsKICAgIG4gYXMgZjY0ICogKDIuMCAqIGExICsgKG4gYXMgZjY0IC0gMS4wKSAqIGQpIC8gMi4wCn0KCmZuIG1haW4oKSB7CiAgICAvLyAxICsgMiArIDMgKyAuLi4gKyAxMDAgPSA1MDUwCiAgICBwcmludGxuISgiMSsyKy4uLisxMDAgPSB7fSIsIGFyaXRobWV0aWNfc3VtKDEuMCwgMS4wLCAxMDApKTsgIC8vIDUwNTAKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn arithmetic_sum(a1: f64, d: f64, n: usize) -&gt; f64 {
     n as f64 * (2.0 * a1 + (n as f64 - 1.0) * d) / 2.0
 }
@@ -262,6 +303,8 @@ fn main() {
 <p>等比数列是相邻两项之比为常数的数列，这个常数称为<strong>公比</strong>（$q$）。</p>
 <p><strong>通项公式：</strong> $a_n = a_1 \cdot q^{n-1}$</p>
 <p><strong>前 n 项和：</strong> $S_n = \frac{a_1(1 - q^n)}{1 - q} \quad (q \neq 1)$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZ2VvbWV0cmljX3N1bShhMTogZjY0LCBxOiBmNjQsIG46IHVzaXplKSAtPiBmNjQgewogICAgaWYgcSA9PSAxLjAgewogICAgICAgIGExICogbiBhcyBmNjQKICAgIH0gZWxzZSB7CiAgICAgICAgYTEgKiAoMS4wIC0gcS5wb3dpKG4gYXMgaTMyKSkgLyAoMS4wIC0gcSkKICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIC8vIDEgKyAyICsgNCArIDggKyAuLi4g5YmNIDEwIOmhuQogICAgcHJpbnRsbiEoIuetieavlOaxguWSjDoge30iLCBnZW9tZXRyaWNfc3VtKDEuMCwgMi4wLCAxMCkpOyAgLy8gMTAyMy4wCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn geometric_sum(a1: f64, q: f64, n: usize) -&gt; f64 {
     if q == 1.0 {
         a1 * n as f64
@@ -277,6 +320,8 @@ fn main() {
 <h3 id="23-斐波那契数列"><a class="header" href="#23-斐波那契数列">2.3 斐波那契数列</a></h3>
 <p>斐波那契数列（Fibonacci Sequence）是递推数列的经典代表：</p>
 <p>$$ F_0 = 0, \quad F_1 = 1, \quad F_n = F_{n-1} + F_{n-2} \quad (n \ge 2) $$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZmliX2l0ZXJhdGl2ZShuOiB1MzIpIC0+IHUzMiB7CiAgICBpZiBuID09IDAgeyByZXR1cm4gMDsgfQogICAgaWYgbiA9PSAxIHsgcmV0dXJuIDE7IH0KCiAgICBsZXQgbXV0IHByZXYgPSAwOyAgLy8gRihuLTIpCiAgICBsZXQgbXV0IGN1cnIgPSAxOyAgLy8gRihuLTEpCgogICAgZm9yIF8gaW4gMi4uPW4gewogICAgICAgIGxldCBuZXh0ID0gcHJldiArIGN1cnI7CiAgICAgICAgcHJldiA9IGN1cnI7CiAgICAgICAgY3VyciA9IG5leHQ7CiAgICB9CiAgICBjdXJyCn0KCmZuIG1haW4oKSB7CiAgICBmb3IgaSBpbiAwLi49MTAgewogICAgICAgIHByaW50bG4hKCJGe30gPSB7fSIsIGksIGZpYl9pdGVyYXRpdmUoaSkpOwogICAgfQogICAgLy8gRjA9MCwgRjE9MSwgRjI9MSwgRjM9MiwgRjQ9MywgRjU9NSwgRjY9OCwgRjc9MTMsIEY4PTIxLCBGOT0zNCwgRjEwPTU1Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn fib_iterative(n: u32) -&gt; u32 {
     if n == 0 { return 0; }
     if n == 1 { return 1; }
@@ -306,6 +351,8 @@ fn main() {
 <blockquote>
 <p><strong>结论：</strong> 调和级数 $\sum_{n=1}^{\infty} \frac{1}{n}$ 发散（其和趋向于无穷大），尽管增长速度非常缓慢。$H_n$ 的增长速度约为 $\ln(n) + \gamma$，其中 $\gamma \approx 0.5772$ 是欧拉-马歇罗尼常数。</p>
 </blockquote>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gaGFybW9uaWNfbnVtYmVyKG46IHUzMikgLT4gZjY0IHsKICAgICgxLi49bikubWFwKHxrfCAxLjAgLyBrIGFzIGY2NCkuc3VtKCkKfQoKZm4gbWFpbigpIHsKICAgIHByaW50bG4hKCJIKDEwKSA9IHs6LjZ9IiwgaGFybW9uaWNfbnVtYmVyKDEwKSk7ICAgIC8vIDIuOTI4OTY4CiAgICBwcmludGxuISgiSCgxMDApID0gezouNn0iLCBoYXJtb25pY19udW1iZXIoMTAwKSk7ICAvLyA1LjE4NzM3OAogICAgcHJpbnRsbiEoIkgoMTAwMCkgPSB7Oi42fSIsIGhhcm1vbmljX251bWJlcigxMDAwKSk7IC8vIDcuNDg1NDcxCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn harmonic_number(n: u32) -&gt; f64 {
     (1..=n).map(|k| 1.0 / k as f64).sum()
 }
@@ -328,6 +375,8 @@ fn main() {
 <h3 id="33-与斐波那契数列的关系"><a class="header" href="#33-与斐波那契数列的关系">3.3 与斐波那契数列的关系</a></h3>
 <p>斐波那契数列相邻项的极限趋向于黄金分割数：</p>
 <p>$$ \lim_{n \to \infty} \frac{F(n+1)}{F(n)} = \phi $$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZmliKG46IHUzMikgLT4gdTY0IHsKICAgIGlmIG4gPT0gMCB7IHJldHVybiAwOyB9CiAgICBpZiBuID09IDEgeyByZXR1cm4gMTsgfQogICAgbGV0IChtdXQgcHJldiwgbXV0IGN1cnIpID0gKDB1NjQsIDF1NjQpOwogICAgZm9yIF8gaW4gMi4uPW4gewogICAgICAgIGxldCBuZXh0ID0gcHJldiArIGN1cnI7CiAgICAgICAgcHJldiA9IGN1cnI7CiAgICAgICAgY3VyciA9IG5leHQ7CiAgICB9CiAgICBjdXJyCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgcGhpID0gKDEuMCArIDUuMF9mNjQuc3FydCgpKSAvIDIuMDsKICAgIHByaW50bG4hKCLpu4Tph5HliIblibLmlbAgz4YgPSB7Oi4xNX0iLCBwaGkpOwoKICAgIC8vIOmqjOivgeebuOmCu+mhueS5i+avlOi2i+i/keS6jiDPhgogICAgZm9yIG4gaW4gWzEwLCAxNSwgMjAsIDI1LCAzMF0gewogICAgICAgIGxldCByYXRpbyA9IGZpYihuICsgMSkgYXMgZjY0IC8gZmliKG4pIGFzIGY2NDsKICAgICAgICBwcmludGxuISgiRnt9L0Z7fSA9IHs6LjE1fSAgKOivr+W3rjogezouMmV9KSIsCiAgICAgICAgICAgIG4gKyAxLCBuLCByYXRpbywgKHJhdGlvIC0gcGhpKS5hYnMoKSk7CiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn fib(n: u32) -&gt; u64 {
     if n == 0 { return 0; }
     if n == 1 { return 1; }
@@ -358,6 +407,8 @@ fn main() {
 <h2 id="四欧拉数与欧拉恒等式"><a class="header" href="#四欧拉数与欧拉恒等式">四、欧拉数与欧拉恒等式</a></h2>
 <h3 id="41-欧拉数自然常数"><a class="header" href="#41-欧拉数自然常数">4.1 欧拉数（自然常数）</a></h3>
 <p>$$ e = \lim_{n \to \infty} \left(1 + \frac{1}{n}\right)^n \approx 2.718281828459045 $$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gY29tcHV0ZV9lKGl0ZXJhdGlvbnM6IHUzMikgLT4gZjY0IHsKICAgICgxLi49aXRlcmF0aW9ucykubWFwKHxufCB7CiAgICAgICAgbGV0IG5fZiA9IG4gYXMgZjY0OwogICAgICAgICgxLjAgKyAxLjAgLyBuX2YpLnBvd2Yobl9mKQogICAgfSkubGFzdCgpLnVud3JhcCgpCn0KCmZuIG1haW4oKSB7CiAgICBwcmludGxuISgiZSAo6L+R5Ly8KSA9IHs6LjE1fSIsIGNvbXB1dGVfZSgxMDAwMDApKTsKICAgIHByaW50bG4hKCJlICjmoIflh4blupMpID0gezouMTV9Iiwgc3RkOjpmNjQ6OmNvbnN0czo6RSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn compute_e(iterations: u32) -&gt; f64 {
     (1..=iterations).map(|n| {
         let n_f = n as f64;
@@ -379,6 +430,8 @@ fn main() {
 <p><strong>核心定理：</strong></p>
 <p>$$ \gcd(a, b) = \gcd(b, a \bmod b) $$</p>
 <p>反复应用这个等式，直到余数为 0，此时的除数就是最大公约数。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZ2NkKG11dCBhOiB1NjQsIG11dCBiOiB1NjQpIC0+IHU2NCB7CiAgICB3aGlsZSBiICE9IDAgewogICAgICAgIGxldCB0ZW1wID0gYjsKICAgICAgICBiID0gYSAlIGI7CiAgICAgICAgYSA9IHRlbXA7CiAgICB9CiAgICBhCn0KCmZuIGxjbShhOiB1NjQsIGI6IHU2NCkgLT4gdTY0IHsKICAgIGEgLyBnY2QoYSwgYikgKiBiICAvLyDlhYjpmaTlkI7kuZjvvIzpgb/lhY3muqLlh7oKfQoKZm4gbWFpbigpIHsKICAgIHByaW50bG4hKCJnY2QoNDgsIDE4KSA9IHt9IiwgZ2NkKDQ4LCAxOCkpOyAgLy8gNgogICAgcHJpbnRsbiEoImdjZCgxMDAsIDc1KSA9IHt9IiwgZ2NkKDEwMCwgNzUpKTsgIC8vIDI1CiAgICBwcmludGxuISgibGNtKDQ4LCAxOCkgPSB7fSIsIGxjbSg0OCwgMTgpKTsgIC8vIDE0NAp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn gcd(mut a: u64, mut b: u64) -&gt; u64 {
     while b != 0 {
         let temp = b;
@@ -402,6 +455,8 @@ fn main() {
 <h3 id="61-圆周率的计算"><a class="header" href="#61-圆周率的计算">6.1 圆周率的计算</a></h3>
 <p>丘德诺夫斯基算法（Chudnovsky Algorithm）是计算圆周率最快的算法之一，由丘德诺夫斯基兄弟在1988年发现，每迭代一次增加约14位精度：</p>
 <p>$$ \frac{1}{\pi} = 12 \sum_{k=0}^{\infty} \frac{(-1)^k (6k)! (13591409 + 545140134k)}{(3k)! (k!)^3 (640320)^{3k + 3/2}} $$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZmFjdG9yaWFsKG46IHU2NCkgLT4gdTY0IHsKICAgICgxLi49bikucHJvZHVjdCgpCn0KCmZuIGNodWRub3Zza3lfcGkodGVybXM6IHVzaXplKSAtPiBmNjQgewogICAgbGV0IG11dCBzdW0gPSAwLjBfZjY0OwogICAgZm9yIGsgaW4gMC4udGVybXMgewogICAgICAgIGxldCBrX2YgPSBrIGFzIGY2NDsKICAgICAgICBsZXQgbnVtZXJhdG9yID0gKC0xLjBfZjY0KS5wb3dpKGsgYXMgaTMyKQogICAgICAgICAgICAqIGZhY3RvcmlhbCg2ICogayBhcyB1NjQpIGFzIGY2NAogICAgICAgICAgICAqICgxMzU5MTQwOS4wICsgNTQ1MTQwMTM0LjAgKiBrX2YpOwogICAgICAgIGxldCBkZW5vbWluYXRvciA9IGZhY3RvcmlhbCgzICogayBhcyB1NjQpIGFzIGY2NAogICAgICAgICAgICAqIChmYWN0b3JpYWwoayBhcyB1NjQpIGFzIGY2NCkucG93aSgzKQogICAgICAgICAgICAqICg2NDAzMjAuMF9mNjQpLnBvd2YoMy4wICoga19mICsgMS41KTsKICAgICAgICBzdW0gKz0gbnVtZXJhdG9yIC8gZGVub21pbmF0b3I7CiAgICB9CiAgICAxLjAgLyAoMTIuMCAqIHN1bSkKfQoKZm4gbWFpbigpIHsKICAgIGxldCBwaSA9IGNodWRub3Zza3lfcGkoMik7CiAgICBwcmludGxuISgiz4AgKENodWRub3Zza3ksIDLpobkpID0gezouMTV9IiwgcGkpOwogICAgcHJpbnRsbiEoIs+AICjmoIflh4blupMpID0gezouMTV9Iiwgc3RkOjpmNjQ6OmNvbnN0czo6UEkpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn factorial(n: u64) -&gt; u64 {
     (1..=n).product()
 }
@@ -462,6 +517,8 @@ fn main() {
 </table>
 </div>
 <h3 id="72-向量运算"><a class="header" href="#72-向量运算">7.2 向量运算</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZG90X3Byb2R1Y3QoYTogJltmNjRdLCBiOiAmW2Y2NF0pIC0+IGY2NCB7CiAgICBhLml0ZXIoKS56aXAoYi5pdGVyKCkpLm1hcCh8KHgsIHkpfCB4ICogeSkuc3VtKCkKfQoKZm4gdmVjdG9yX2FkZChhOiAmW2Y2NF0sIGI6ICZbZjY0XSkgLT4gVmVjPGY2ND4gewogICAgYS5pdGVyKCkuemlwKGIuaXRlcigpKS5tYXAofCh4LCB5KXwgeCArIHkpLmNvbGxlY3QoKQp9CgpmbiB2ZWN0b3Jfc2NhbGUoYTogJltmNjRdLCBzY2FsYXI6IGY2NCkgLT4gVmVjPGY2ND4gewogICAgYS5pdGVyKCkubWFwKHx4fCB4ICogc2NhbGFyKS5jb2xsZWN0KCkKfQoKZm4gbWFnbml0dWRlKHY6ICZbZjY0XSkgLT4gZjY0IHsKICAgIHYuaXRlcigpLm1hcCh8eHwgeCAqIHgpLnN1bTo6PGY2ND4oKS5zcXJ0KCkKfQoKZm4gbWFpbigpIHsKICAgIGxldCBhID0gdmVjIVsxLjAsIDIuMCwgMy4wXTsKICAgIGxldCBiID0gdmVjIVs0LjAsIDUuMCwgNi4wXTsKCiAgICBwcmludGxuISgi54K556evOiB7fSIsIGRvdF9wcm9kdWN0KCZhLCAmYikpOyAgICAgICAgICAgLy8gMzIKICAgIHByaW50bG4hKCLlkJHph4/liqA6IHs6P30iLCB2ZWN0b3JfYWRkKCZhLCAmYikpOyAgICAgICAgLy8gWzUsIDcsIDldCiAgICBwcmludGxuISgi5qCH6YeP5LmYOiB7Oj99IiwgdmVjdG9yX3NjYWxlKCZhLCAyLjApKTsgICAgIC8vIFsyLCA0LCA2XQogICAgcHJpbnRsbiEoIuWQkemHjyBhIOeahOaooTogezouNH0iLCBtYWduaXR1ZGUoJmEpKTsgICAgICAgLy8gMy43NDE3Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn dot_product(a: &amp;[f64], b: &amp;[f64]) -&gt; f64 {
     a.iter().zip(b.iter()).map(|(x, y)| x * y).sum()
 }
@@ -488,6 +545,8 @@ fn main() {
     println!("向量 a 的模: {:.4}", magnitude(&amp;a));       // 3.7417
 }</code></pre>
 <h3 id="73-矩阵运算"><a class="header" href="#73-矩阵运算">7.3 矩阵运算</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dHlwZSBNYXRyaXggPSBWZWM8VmVjPGY2ND4+OwoKZm4gbWF0cml4X211bHRpcGx5KGE6ICZNYXRyaXgsIGI6ICZNYXRyaXgpIC0+IE9wdGlvbjxNYXRyaXg+IHsKICAgIGxldCByb3dzX2EgPSBhLmxlbigpOwogICAgbGV0IGNvbHNfYSA9IGFbMF0ubGVuKCk7CiAgICBsZXQgY29sc19iID0gYlswXS5sZW4oKTsKCiAgICBpZiBjb2xzX2EgIT0gYi5sZW4oKSB7CiAgICAgICAgcmV0dXJuIE5vbmU7CiAgICB9CgogICAgbGV0IG11dCByZXN1bHQgPSB2ZWMhW3ZlYyFbMC4wOyBjb2xzX2JdOyByb3dzX2FdOwoKICAgIGZvciBpIGluIDAuLnJvd3NfYSB7CiAgICAgICAgZm9yIGogaW4gMC4uY29sc19iIHsKICAgICAgICAgICAgZm9yIGsgaW4gMC4uY29sc19hIHsKICAgICAgICAgICAgICAgIHJlc3VsdFtpXVtqXSArPSBhW2ldW2tdICogYltrXVtqXTsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KCiAgICBTb21lKHJlc3VsdCkKfQoKZm4gbWF0cml4X3RyYW5zcG9zZShhOiAmTWF0cml4KSAtPiBNYXRyaXggewogICAgbGV0IHJvd3MgPSBhLmxlbigpOwogICAgbGV0IGNvbHMgPSBhWzBdLmxlbigpOwogICAgbGV0IG11dCByZXN1bHQgPSB2ZWMhW3ZlYyFbMC4wOyByb3dzXTsgY29sc107CgogICAgZm9yIGkgaW4gMC4ucm93cyB7CiAgICAgICAgZm9yIGogaW4gMC4uY29scyB7CiAgICAgICAgICAgIHJlc3VsdFtqXVtpXSA9IGFbaV1bal07CiAgICAgICAgfQogICAgfQoKICAgIHJlc3VsdAp9CgpmbiBtYWluKCkgewogICAgbGV0IGEgPSB2ZWMhW3ZlYyFbMS4wLCAyLjBdLCB2ZWMhWzMuMCwgNC4wXV07CiAgICBsZXQgYiA9IHZlYyFbdmVjIVs1LjAsIDYuMF0sIHZlYyFbNy4wLCA4LjBdXTsKCiAgICBpZiBsZXQgU29tZShjKSA9IG1hdHJpeF9tdWx0aXBseSgmYSwgJmIpIHsKICAgICAgICBwcmludGxuISgi55+p6Zi15LmY5rOVOiIpOwogICAgICAgIGZvciByb3cgaW4gJmMgewogICAgICAgICAgICBwcmludGxuISgiICB7Oj99Iiwgcm93KTsKICAgICAgICB9CiAgICAgICAgLy8gWzE5LCAyMl0KICAgICAgICAvLyBbNDMsIDUwXQogICAgfQoKICAgIGxldCB0ID0gbWF0cml4X3RyYW5zcG9zZSgmYSk7CiAgICBwcmludGxuISgi6L2s572uOiB7Oj99IiwgdCk7CiAgICAvLyBbWzEsIDNdLCBbMiwgNF1dCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">type Matrix = Vec&lt;Vec&lt;f64&gt;&gt;;
 
 fn matrix_multiply(a: &amp;Matrix, b: &amp;Matrix) -&gt; Option&lt;Matrix&gt; {
@@ -576,6 +635,8 @@ fn main() {
 <p>等额本息月还款公式：</p>
 <p>$$ A = P \cdot \frac{i(1+i)^n}{(1+i)^n - 1} $$</p>
 <p>其中 $A$ 为每月还款金额，$P$ 为贷款本金，$i$ 为月利率，$n$ 为还款月数。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbW9udGhseV9wYXltZW50KHByaW5jaXBhbDogZjY0LCBhbm51YWxfcmF0ZTogZjY0LCBtb250aHM6IHUzMikgLT4gZjY0IHsKICAgIGxldCBtb250aGx5X3JhdGUgPSBhbm51YWxfcmF0ZSAvIDEyLjA7CiAgICBsZXQgbiA9IG1vbnRocyBhcyBmNjQ7CgogICAgcHJpbmNpcGFsICogbW9udGhseV9yYXRlICogKDEuMCArIG1vbnRobHlfcmF0ZSkucG93ZihuKQogICAgICAgIC8gKCgxLjAgKyBtb250aGx5X3JhdGUpLnBvd2YobikgLSAxLjApCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgcCA9IDEwMF8wMDAuMDsgICAgICAvLyDotLfmrL7mnKzph5EgMTAg5LiH5YWDCiAgICBsZXQgcmF0ZSA9IDAuMDU7ICAgICAgICAvLyDlubTliKnnjocgNSUKICAgIGxldCBtb250aHMgPSA2MDsgICAgICAgIC8vIDYwIOS4quaciAoKICAgIGxldCBwYXltZW50ID0gbW9udGhseV9wYXltZW50KHAsIHJhdGUsIG1vbnRocyk7CiAgICBwcmludGxuISgi5q+P5pyI6L+Y5qy+OiB7Oi4yfSDlhYMiLCBwYXltZW50KTsKICAgIHByaW50bG4hKCLmgLvov5jmrL46IHs6LjJ9IOWFgyIsIHBheW1lbnQgKiBtb250aHMgYXMgZjY0KTsKICAgIHByaW50bG4hKCLmgLvliKnmga86IHs6LjJ9IOWFgyIsIHBheW1lbnQgKiBtb250aHMgYXMgZjY0IC0gcCk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn monthly_payment(principal: f64, annual_rate: f64, months: u32) -&gt; f64 {
     let monthly_rate = annual_rate / 12.0;
     let n = months as f64;
@@ -599,6 +660,8 @@ fn main() {
 <blockquote>
 <p><strong>答案就是 $F_{11} = 89$ 种</strong>（斐波那契数列的第 11 项）。因为到达第 n 级的方法数等于到达第 n-1 级和第 n-2 级方法数之和。</p>
 </blockquote>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gY2xpbWJfc3RhaXJzKG46IHUzMikgLT4gdTY0IHsKICAgIGlmIG4gPD0gMiB7IHJldHVybiBuIGFzIHU2NDsgfQoKICAgIGxldCAobXV0IHByZXYsIG11dCBjdXJyKSA9ICgxdTY0LCAydTY0KTsKICAgIGZvciBfIGluIDMuLj1uIHsKICAgICAgICBsZXQgbmV4dCA9IHByZXYgKyBjdXJyOwogICAgICAgIHByZXYgPSBjdXJyOwogICAgICAgIGN1cnIgPSBuZXh0OwogICAgfQogICAgY3Vycgp9CgpmbiBtYWluKCkgewogICAgcHJpbnRsbiEoIjEwIOe6p+alvOair+eahOi1sOazlToge30g56eNIiwgY2xpbWJfc3RhaXJzKDEwKSk7ICAvLyA4OQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn climb_stairs(n: u32) -&gt; u64 {
     if n &lt;= 2 { return n as u64; }
 

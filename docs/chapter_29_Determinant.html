@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -201,6 +238,8 @@
 <li>主对角线（左上到右下）：$a_{11}a_{22}$，取正号</li>
 <li>副对角线（右上到左下）：$a_{12}a_{21}$，取负号</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZGV0MihhMTE6IGY2NCwgYTEyOiBmNjQsIGEyMTogZjY0LCBhMjI6IGY2NCkgLT4gZjY0IHsKICAgIGExMSAqIGEyMiAtIGExMiAqIGEyMQp9CgpmbiBtYWluKCkgewogICAgLy8gfCAxICAyIHwKICAgIC8vIHwgMyAgNCB8CiAgICBsZXQgZGV0ID0gZGV0MigxLjAsIDIuMCwgMy4wLCA0LjApOwogICAgcHJpbnRsbiEoIuS6jOmYtuihjOWIl+W8jyA9IHt9IiwgZGV0KTsgIC8vIDEqNCAtIDIqMyA9IC0yCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn det2(a11: f64, a12: f64, a21: f64, a22: f64) -&gt; f64 {
     a11 * a22 - a12 * a21
 }
@@ -217,6 +256,8 @@ fn main() {
 <blockquote>
 <p><strong>记忆口诀：</strong> 三条主对角线方向乘积之和减去三条副对角线方向乘积之和（萨吕法则）。</p>
 </blockquote>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZGV0MyhhOiBbW2Y2NDsgM107IDNdKSAtPiBmNjQgewogICAgYVswXVswXSAqIGFbMV1bMV0gKiBhWzJdWzJdCiAgICAgICAgKyBhWzBdWzFdICogYVsxXVsyXSAqIGFbMl1bMF0KICAgICAgICArIGFbMF1bMl0gKiBhWzFdWzBdICogYVsyXVsxXQogICAgICAgIC0gYVswXVsyXSAqIGFbMV1bMV0gKiBhWzJdWzBdCiAgICAgICAgLSBhWzBdWzFdICogYVsxXVswXSAqIGFbMl1bMl0KICAgICAgICAtIGFbMF1bMF0gKiBhWzFdWzJdICogYVsyXVsxXQp9CgpmbiBtYWluKCkgewogICAgbGV0IGEgPSBbWzEuMCwgMi4wLCAzLjBdLAogICAgICAgICAgICAgWzQuMCwgNS4wLCA2LjBdLAogICAgICAgICAgICAgWzcuMCwgOC4wLCA5LjBdXTsKICAgIHByaW50bG4hKCLkuInpmLbooYzliJflvI8gPSB7fSIsIGRldDMoYSkpOyAgLy8gMAp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn det3(a: [[f64; 3]; 3]) -&gt; f64 {
     a[0][0] * a[1][1] * a[2][2]
         + a[0][1] * a[1][2] * a[2][0]
@@ -249,6 +290,8 @@ fn main() {
 <li><strong>偶排列</strong>：逆序数为偶数，符号为 $+1$</li>
 <li><strong>奇排列</strong>：逆序数为奇数，符号为 $-1$</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gaW52ZXJzaW9uX2NvdW50KHBlcm06ICZbdXNpemVdKSAtPiB1c2l6ZSB7CiAgICBsZXQgbXV0IGNvdW50ID0gMDsKICAgIGZvciBpIGluIDAuLnBlcm0ubGVuKCkgewogICAgICAgIGZvciBqIGluIChpICsgMSkuLnBlcm0ubGVuKCkgewogICAgICAgICAgICBpZiBwZXJtW2ldID4gcGVybVtqXSB7CiAgICAgICAgICAgICAgICBjb3VudCArPSAxOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQogICAgY291bnQKfQoKZm4gbWFpbigpIHsKICAgIGxldCBwZXJtID0gWzMsIDEsIDQsIDJdOwogICAgbGV0IGludiA9IGludmVyc2lvbl9jb3VudCgmcGVybSk7CiAgICBwcmludGxuISgi5o6S5YiXIHs6P30g55qE6YCG5bqP5pWwID0ge30iLCBwZXJtLCBpbnYpOyAgLy8gNAogICAgcHJpbnRsbiEoIuespuWPtyA9IHt9IiwgaWYgaW52ICUgMiA9PSAwIHsgIisxIiB9IGVsc2UgeyAiLTEiIH0pOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn inversion_count(perm: &amp;[usize]) -&gt; usize {
     let mut count = 0;
     for i in 0..perm.len() {
@@ -293,6 +336,8 @@ fn main() {
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZGV0MihhMTE6IGY2NCwgYTEyOiBmNjQsIGEyMTogZjY0LCBhMjI6IGY2NCkgLT4gZjY0IHsKICAgIGExMSAqIGEyMiAtIGExMiAqIGEyMQp9CgpmbiBtYWluKCkgewogICAgLy8g6aqM6K+B6L2s572u5LiN5Y+Y5oCnCiAgICBsZXQgZGV0X2EgPSBkZXQyKDEuMCwgMi4wLCAzLjAsIDQuMCk7CiAgICBsZXQgZGV0X2F0ID0gZGV0MigxLjAsIDMuMCwgMi4wLCA0LjApOyAgLy8g6L2s572uCiAgICBwcmludGxuISgiZGV0KEEpID0ge30sIGRldChBXlQpID0ge30iLCBkZXRfYSwgZGV0X2F0KTsKICAgIGFzc2VydF9lcSEoZGV0X2EsIGRldF9hdCk7ICAvLyDkuKTogIXnm7jnrYkKCiAgICAvLyDpqozor4HkuqTmjaLkuKTooYzlj5jlj7cKICAgIGxldCBkZXRfc3dhcHBlZCA9IGRldDIoMy4wLCA0LjAsIDEuMCwgMi4wKTsKICAgIHByaW50bG4hKCJkZXQoQSkgPSB7fSwgZGV0KOS6pOaNouihjCkgPSB7fSIsIGRldF9hLCBkZXRfc3dhcHBlZCk7CiAgICBhc3NlcnRfZXEhKGRldF9hLCAtZGV0X3N3YXBwZWQpOyAgLy8g5LqS5Li655u45Y+N5pWwCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn det2(a11: f64, a12: f64, a21: f64, a22: f64) -&gt; f64 {
     a11 * a22 - a12 * a21
 }
@@ -320,6 +365,8 @@ fn main() {
 <p>行列式可以按任意一行或一列展开：</p>
 <p>$$\det(A) = \sum_{j=1}^{n} a_{ij} C_{ij} \quad \text{（按第 } i \text{ 行展开）}$$</p>
 <p>$$\det(A) = \sum_{i=1}^{n} a_{ij} C_{ij} \quad \text{（按第 } j \text{ 列展开）}$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g6YCS5b2S6K6h566XIG4g6Zi26KGM5YiX5byP77yI5ouJ5pmu5ouJ5pav5bGV5byA77yJCmZuIGRldGVybWluYW50KG1hdHJpeDogJlZlYzxWZWM8ZjY0Pj4pIC0+IGY2NCB7CiAgICBsZXQgbiA9IG1hdHJpeC5sZW4oKTsKICAgIGlmIG4gPT0gMSB7CiAgICAgICAgcmV0dXJuIG1hdHJpeFswXVswXTsKICAgIH0KICAgIGlmIG4gPT0gMiB7CiAgICAgICAgcmV0dXJuIG1hdHJpeFswXVswXSAqIG1hdHJpeFsxXVsxXSAtIG1hdHJpeFswXVsxXSAqIG1hdHJpeFsxXVswXTsKICAgIH0KCiAgICBsZXQgbXV0IGRldCA9IDAuMDsKICAgIGZvciBqIGluIDAuLm4gewogICAgICAgIC8vIOiuoeeul+S9meWtkOW8jwogICAgICAgIGxldCBtdXQgbWlub3IgPSBWZWM6Om5ldygpOwogICAgICAgIGZvciBpIGluIDEuLm4gewogICAgICAgICAgICBsZXQgbXV0IHJvdyA9IFZlYzo6bmV3KCk7CiAgICAgICAgICAgIGZvciBrIGluIDAuLm4gewogICAgICAgICAgICAgICAgaWYgayAhPSBqIHsKICAgICAgICAgICAgICAgICAgICByb3cucHVzaChtYXRyaXhbaV1ba10pOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgICAgIG1pbm9yLnB1c2gocm93KTsKICAgICAgICB9CgogICAgICAgIGxldCBzaWduID0gaWYgaiAlIDIgPT0gMCB7IDEuMCB9IGVsc2UgeyAtMS4wIH07CiAgICAgICAgZGV0ICs9IHNpZ24gKiBtYXRyaXhbMF1bal0gKiBkZXRlcm1pbmFudCgmbWlub3IpOwogICAgfQogICAgZGV0Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgYSA9IHZlYyFbCiAgICAgICAgdmVjIVsxLjAsIDIuMCwgMy4wXSwKICAgICAgICB2ZWMhWzAuMCwgNC4wLCA1LjBdLAogICAgICAgIHZlYyFbMC4wLCAwLjAsIDYuMF0sCiAgICBdOwogICAgcHJpbnRsbiEoIuihjOWIl+W8jyA9IHt9IiwgZGV0ZXJtaW5hbnQoJmEpKTsgIC8vIDEqNCo2ID0gMjQKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// 递归计算 n 阶行列式（拉普拉斯展开）
 fn determinant(matrix: &amp;Vec&lt;Vec&lt;f64&gt;&gt;) -&gt; f64 {
     let n = matrix.len();
@@ -368,6 +415,8 @@ fn main() {
 </blockquote>
 <h3 id="52-范德蒙行列式"><a class="header" href="#52-范德蒙行列式">5.2 范德蒙行列式</a></h3>
 <p>$$V_n = \begin{vmatrix} 1 &amp; 1 &amp; \cdots &amp; 1 \ x_1 &amp; x_2 &amp; \cdots &amp; x_n \ x_1^2 &amp; x_2^2 &amp; \cdots &amp; x_n^2 \ \vdots &amp; \vdots &amp; \ddots &amp; \vdots \ x_1^{n-1} &amp; x_2^{n-1} &amp; \cdots &amp; x_n^{n-1} \end{vmatrix} = \prod_{1 \le i &lt; j \le n} (x_j - x_i)$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gdmFuZGVybW9uZGVfZGV0ZXJtaW5hbnQoeDogJltmNjRdKSAtPiBmNjQgewogICAgbGV0IG4gPSB4LmxlbigpOwogICAgbGV0IG11dCBkZXQgPSAxLjA7CiAgICBmb3IgaSBpbiAwLi5uIHsKICAgICAgICBmb3IgaiBpbiAoaSArIDEpLi5uIHsKICAgICAgICAgICAgZGV0ICo9IHhbal0gLSB4W2ldOwogICAgICAgIH0KICAgIH0KICAgIGRldAp9CgpmbiBtYWluKCkgewogICAgbGV0IHggPSB2ZWMhWzEuMCwgMi4wLCAzLjBdOwogICAgcHJpbnRsbiEoIuiMg+W+t+iSmeihjOWIl+W8jyA9IHt9IiwgdmFuZGVybW9uZGVfZGV0ZXJtaW5hbnQoJngpKTsKICAgIC8vICgyLTEpKDMtMSkoMy0yKSA9IDIKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn vandermonde_determinant(x: &amp;[f64]) -&gt; f64 {
     let n = x.len();
     let mut det = 1.0;
@@ -393,6 +442,8 @@ fn main() {
 <p>对于 $n$ 元线性方程组 $Ax = b$，若系数矩阵 $A$ 的行列式 $|A| \neq 0$，则方程组有唯一解：</p>
 <p>$$x_i = \frac{|A_i|}{|A|}$$</p>
 <p>其中 $A_i$ 是将 $A$ 的第 $i$ 列替换为 $b$ 后得到的矩阵。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g55So5YWL6I6x5aeG5rOV5YiZ6Kej5LqM5YWD57q/5oCn5pa556iL57uECi8vIGExMSp4ICsgYTEyKnkgPSBiMQovLyBhMjEqeCArIGEyMip5ID0gYjIKZm4gY3JhbWVyMihhMTE6IGY2NCwgYTEyOiBmNjQsIGEyMTogZjY0LCBhMjI6IGY2NCwgYjE6IGY2NCwgYjI6IGY2NCkgLT4gT3B0aW9uPChmNjQsIGY2NCk+IHsKICAgIGxldCBkZXRfYSA9IGRldDIoYTExLCBhMTIsIGEyMSwgYTIyKTsKICAgIGlmIGRldF9hID09IDAuMCB7CiAgICAgICAgcmV0dXJuIE5vbmU7ICAvLyDml6Dop6PmiJbml6DnqbflpJrop6MKICAgIH0KCiAgICBsZXQgZGV0X3ggPSBkZXQyKGIxLCBhMTIsIGIyLCBhMjIpOwogICAgbGV0IGRldF95ID0gZGV0MihhMTEsIGIxLCBhMjEsIGIyKTsKCiAgICBTb21lKChkZXRfeCAvIGRldF9hLCBkZXRfeSAvIGRldF9hKSkKfQoKZm4gbWFpbigpIHsKICAgIC8vIOm4oeWFlOWQjOesvOmXrumimO+8mgogICAgLy8g5aS05YWxIDM1IOS4qu+8jOiEmuWFsSA5NCDlj6oKICAgIC8vIHggKyB5ID0gMzUKICAgIC8vIDJ4ICsgNHkgPSA5NAogICAgbWF0Y2ggY3JhbWVyMigxLjAsIDEuMCwgMi4wLCA0LjAsIDM1LjAsIDk0LjApIHsKICAgICAgICBTb21lKCh4LCB5KSkgPT4gcHJpbnRsbiEoIum4oToge30g5Y+qLCDlhZQ6IHt9IOWPqiIsIHgsIHkpLCAgLy8g6bihIDIzLCDlhZQgMTIKICAgICAgICBOb25lID0+IHByaW50bG4hKCLmlrnnqIvnu4Tml6Dop6PmiJbmnInml6DnqbflpJrop6MiKSwKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// 用克莱姆法则解二元线性方程组
 // a11*x + a12*y = b1
 // a21*x + a22*y = b2
@@ -438,6 +489,8 @@ fn main() {
 <li>负值：反转空间的定向（左手系）</li>
 <li>零值：矩阵将空间压缩到低维（不可逆）</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gcGFyYWxsZWxvZ3JhbV9hcmVhKHgxOiBmNjQsIHkxOiBmNjQsIHgyOiBmNjQsIHkyOiBmNjQpIC0+IGY2NCB7CiAgICBkZXQyKHgxLCB5MSwgeDIsIHkyKS5hYnMoKQp9CgpmbiBtYWluKCkgewogICAgLy8g55Sx5ZCR6YePICgzLCAwKSDlkowgKDAsIDQpIOW8oOaIkOeahOW5s+ihjOWbm+i+ueW9ogogICAgbGV0IGFyZWEgPSBwYXJhbGxlbG9ncmFtX2FyZWEoMy4wLCAwLjAsIDAuMCwgNC4wKTsKICAgIHByaW50bG4hKCLlubPooYzlm5vovrnlvaLpnaLnp68gPSB7fSIsIGFyZWEpOyAgLy8gMTIKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn parallelogram_area(x1: f64, y1: f64, x2: f64, y2: f64) -&gt; f64 {
     det2(x1, y1, x2, y2).abs()
 }
@@ -449,7 +502,13 @@ fn main() {
 }</code></pre>
 <hr>
 <h2 id="八使用-nalgebra-计算行列式"><a class="header" href="#八使用-nalgebra-计算行列式">八、使用 nalgebra 计算行列式</a></h2>
-<pre class="playground"><code class="language-rust edition2024">use nalgebra::Matrix3;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KbmFsZ2VicmEgPSAiMC4zMyIKKi8KdXNlIG5hbGdlYnJhOjpNYXRyaXgzOwoKZm4gbWFpbigpIHsKICAgIGxldCBhID0gTWF0cml4Mzo6bmV3KAogICAgICAgIDEuMCwgMi4wLCAzLjAsCiAgICAgICAgNC4wLCA1LjAsIDYuMCwKICAgICAgICA3LjAsIDguMCwgMTAuMCwKICAgICk7CgogICAgbGV0IGRldCA9IGEuZGV0ZXJtaW5hbnQoKTsKICAgIHByaW50bG4hKCLooYzliJflvI8gPSB7fSIsIGRldCk7ICAvLyAtMwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+nalgebra = "0.33"
+*/
+use nalgebra::Matrix3;
 
 fn main() {
     let a = Matrix3::new(

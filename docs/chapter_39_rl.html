@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -791,7 +828,13 @@ FFFH
 HFFG
 </code></pre>
 <p>S = 起点, F = 冰面（安全）, H = 冰洞（掉入则失败）, G = 目标（到达则成功）</p>
-<pre class="playground"><code class="language-rust edition2024">use rand::Rng;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjguNSIKKi8KdXNlIHJhbmQ6OlJuZzsKCi8vLyBGcm96ZW5MYWtlIOeOr+WigwpzdHJ1Y3QgRnJvemVuTGFrZSB7CiAgICAvLy8gNHg0IOe9keagvO+8jOWFsSAxNiDkuKrnirbmgIEKICAgIGdyaWQ6IFtpODsgMTZdLAogICAgY3VycmVudF9zdGF0ZTogdXNpemUsCn0KCmltcGwgRnJvemVuTGFrZSB7CiAgICBmbiBuZXcoKSAtPiBTZWxmIHsKICAgICAgICAvLyAwPeWuieWFqCwgMT3lhrDmtJ4sIDI96LW354K5LCAzPee7iOeCuQogICAgICAgIGxldCBncmlkID0gWwogICAgICAgICAgICAyLCAwLCAwLCAwLCAgLy8gU0ZGRgogICAgICAgICAgICAwLCAxLCAwLCAxLCAgLy8gRkhGSAogICAgICAgICAgICAwLCAwLCAwLCAxLCAgLy8gRkZGSAogICAgICAgICAgICAxLCAwLCAwLCAzLCAgLy8gSEZGRwogICAgICAgIF07CiAgICAgICAgU2VsZiB7IGdyaWQsIGN1cnJlbnRfc3RhdGU6IDAgfQogICAgfQoKICAgIC8vLyA0IOS4quWKqOS9nO+8mjA95bemLCAxPeS4iywgMj3lj7MsIDM95LiKCiAgICBmbiBzdGVwKCZtdXQgc2VsZiwgYWN0aW9uOiB1c2l6ZSkgLT4gKHVzaXplLCBmNjQsIGJvb2wpIHsKICAgICAgICBsZXQgcyA9IHNlbGYuY3VycmVudF9zdGF0ZSBhcyBpMzI7CiAgICAgICAgbGV0IHJvdyA9IHMgLyA0OwogICAgICAgIGxldCBjb2wgPSBzICUgNDsKCiAgICAgICAgbGV0IChuZXdfcm93LCBuZXdfY29sKSA9IG1hdGNoIGFjdGlvbiB7CiAgICAgICAgICAgIDAgPT4gKHJvdywgY29sIC0gMSksICAgICAvLyDlt6YKICAgICAgICAgICAgMSA9PiAocm93ICsgMSwgY29sKSwgICAgIC8vIOS4iwogICAgICAgICAgICAyID0+IChyb3csIGNvbCArIDEpLCAgICAgLy8g5Y+zCiAgICAgICAgICAgIDMgPT4gKHJvdyAtIDEsIGNvbCksICAgICAvLyDkuIoKICAgICAgICAgICAgXyA9PiAocm93LCBjb2wpLAogICAgICAgIH07CgogICAgICAgIC8vIOi+ueeVjOajgOafpe+8mui2heWHuui+ueeVjOWImeWOn+WcsOS4jeWKqAogICAgICAgIGxldCBuZXdfc3RhdGUgPSBpZiBuZXdfcm93IDwgMCB8fCBuZXdfcm93ID4gMyB8fCBuZXdfY29sIDwgMCB8fCBuZXdfY29sID4gMyB7CiAgICAgICAgICAgIHNlbGYuY3VycmVudF9zdGF0ZQogICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgIChuZXdfcm93ICogNCArIG5ld19jb2wpIGFzIHVzaXplCiAgICAgICAgfTsKCiAgICAgICAgc2VsZi5jdXJyZW50X3N0YXRlID0gbmV3X3N0YXRlOwoKICAgICAgICBsZXQgcmV3YXJkID0gaWYgc2VsZi5ncmlkW25ld19zdGF0ZV0gPT0gMyB7IDEuMCB9IGVsc2UgeyAwLjAgfTsKICAgICAgICBsZXQgZG9uZSA9IHNlbGYuZ3JpZFtuZXdfc3RhdGVdID09IDEgfHwgc2VsZi5ncmlkW25ld19zdGF0ZV0gPT0gMzsKCiAgICAgICAgKG5ld19zdGF0ZSwgcmV3YXJkLCBkb25lKQogICAgfQoKICAgIGZuIHJlc2V0KCZtdXQgc2VsZikgLT4gdXNpemUgewogICAgICAgIHNlbGYuY3VycmVudF9zdGF0ZSA9IDA7CiAgICAgICAgMAogICAgfQp9CgovLy8gUS1MZWFybmluZyDmmbrog73kvZMKc3RydWN0IFFMZWFybmVyIHsKICAgIHFfdGFibGU6IFtbZjY0OyA0XTsgMTZdLCAvLyAxNiDkuKrnirbmgIHvvIw0IOS4quWKqOS9nAogICAgbHI6IGY2NCwKICAgIGdhbW1hOiBmNjQsCiAgICBlcHNpbG9uOiBmNjQsCiAgICBlcHNpbG9uX21pbjogZjY0LAogICAgZXBzaWxvbl9kZWNheTogZjY0LAp9CgppbXBsIFFMZWFybmVyIHsKICAgIGZuIG5ldyhscjogZjY0LCBnYW1tYTogZjY0LCBlcHNpbG9uOiBmNjQpIC0+IFNlbGYgewogICAgICAgIFNlbGYgewogICAgICAgICAgICBxX3RhYmxlOiBbWzAuMDsgNF07IDE2XSwKICAgICAgICAgICAgbHIsCiAgICAgICAgICAgIGdhbW1hLAogICAgICAgICAgICBlcHNpbG9uLAogICAgICAgICAgICBlcHNpbG9uX21pbjogMC4wMSwKICAgICAgICAgICAgZXBzaWxvbl9kZWNheTogMC45OTUsCiAgICAgICAgfQogICAgfQoKICAgIGZuIHNlbGVjdF9hY3Rpb24oJnNlbGYsIHN0YXRlOiB1c2l6ZSkgLT4gdXNpemUgewogICAgICAgIGxldCBtdXQgcm5nID0gcmFuZDo6dGhyZWFkX3JuZygpOwogICAgICAgIGlmIHJuZy5nZW46OjxmNjQ+KCkgPCBzZWxmLmVwc2lsb24gewogICAgICAgICAgICBybmcuZ2VuX3JhbmdlKDAuLjQpCiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgc2VsZi5xX3RhYmxlW3N0YXRlXQogICAgICAgICAgICAgICAgLml0ZXIoKQogICAgICAgICAgICAgICAgLmVudW1lcmF0ZSgpCiAgICAgICAgICAgICAgICAubWF4X2J5KHwoXywgYSksIChfLCBiKXwgYS5wYXJ0aWFsX2NtcChiKS51bndyYXAoKSkKICAgICAgICAgICAgICAgIC5tYXAofChpZHgsIF8pfCBpZHgpCiAgICAgICAgICAgICAgICAudW53cmFwKCkKICAgICAgICB9CiAgICB9CgogICAgZm4gdXBkYXRlKCZtdXQgc2VsZiwgczogdXNpemUsIGE6IHVzaXplLCByOiBmNjQsIHNfbmV4dDogdXNpemUsIGRvbmU6IGJvb2wpIHsKICAgICAgICBsZXQgbWF4X3EgPSBpZiBkb25lIHsKICAgICAgICAgICAgMC4wCiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgc2VsZi5xX3RhYmxlW3NfbmV4dF0uaXRlcigpLmNsb25lZCgpLmZvbGQoZjY0OjpORUdfSU5GSU5JVFksIGY2NDo6bWF4KQogICAgICAgIH07CiAgICAgICAgbGV0IHRhcmdldCA9IHIgKyBzZWxmLmdhbW1hICogbWF4X3E7CiAgICAgICAgc2VsZi5xX3RhYmxlW3NdW2FdICs9IHNlbGYubHIgKiAodGFyZ2V0IC0gc2VsZi5xX3RhYmxlW3NdW2FdKTsKICAgIH0KCiAgICBmbiBkZWNheV9lcHNpbG9uKCZtdXQgc2VsZikgewogICAgICAgIHNlbGYuZXBzaWxvbiA9IChzZWxmLmVwc2lsb24gKiBzZWxmLmVwc2lsb25fZGVjYXkpLm1heChzZWxmLmVwc2lsb25fbWluKTsKICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIGxldCBtdXQgZW52ID0gRnJvemVuTGFrZTo6bmV3KCk7CiAgICBsZXQgbXV0IGFnZW50ID0gUUxlYXJuZXI6Om5ldygwLjEsIDAuOTksIDEuMCk7CiAgICBsZXQgZXBpc29kZXMgPSAxMF8wMDA7CgogICAgcHJpbnRsbiEoIj09PSBGcm96ZW5MYWtlIFEtTGVhcm5pbmcg6K6t57uDID09PVxuIik7CgogICAgZm9yIGVwIGluIDAuLmVwaXNvZGVzIHsKICAgICAgICBsZXQgbXV0IHN0YXRlID0gZW52LnJlc2V0KCk7CiAgICAgICAgbGV0IG11dCB0b3RhbF9yZXdhcmQgPSAwLjA7CgogICAgICAgIGxvb3AgewogICAgICAgICAgICBsZXQgYWN0aW9uID0gYWdlbnQuc2VsZWN0X2FjdGlvbihzdGF0ZSk7CiAgICAgICAgICAgIGxldCAobmV4dF9zdGF0ZSwgcmV3YXJkLCBkb25lKSA9IGVudi5zdGVwKGFjdGlvbik7CiAgICAgICAgICAgIGFnZW50LnVwZGF0ZShzdGF0ZSwgYWN0aW9uLCByZXdhcmQsIG5leHRfc3RhdGUsIGRvbmUpOwogICAgICAgICAgICB0b3RhbF9yZXdhcmQgKz0gcmV3YXJkOwogICAgICAgICAgICBzdGF0ZSA9IG5leHRfc3RhdGU7CgogICAgICAgICAgICBpZiBkb25lIHsgYnJlYWs7IH0KICAgICAgICB9CgogICAgICAgIGFnZW50LmRlY2F5X2Vwc2lsb24oKTsKCiAgICAgICAgaWYgKGVwICsgMSkgJSAxMDAwID09IDAgewogICAgICAgICAgICBsZXQgd2lucyA9IGV2YWx1YXRlKCZtdXQgZW52LCAmYWdlbnQsIDEwMCk7CiAgICAgICAgICAgIHByaW50bG4hKAogICAgICAgICAgICAgICAgIkVwaXNvZGUge306IM61PXs6LjR9LCDog5znjoc9ezouMH0lIiwKICAgICAgICAgICAgICAgIGVwICsgMSwgYWdlbnQuZXBzaWxvbiwgd2lucwogICAgICAgICAgICApOwogICAgICAgIH0KICAgIH0KCiAgICAvLyDmiZPljbDlrabliLDnmoTnrZbnlaUKICAgIHByaW50bG4hKCJcbj09PSDlrabliLDnmoTmnIDkvJjnrZbnlaUgPT09Iik7CiAgICBsZXQgYWN0aW9uX25hbWVzID0gWyLihpAiLCAi4oaTIiwgIuKGkiIsICLihpEiXTsKICAgIGZvciBzIGluIDAuLjE2IHsKICAgICAgICBsZXQgYmVzdCA9IGFnZW50LnFfdGFibGVbc10KICAgICAgICAgICAgLml0ZXIoKQogICAgICAgICAgICAuZW51bWVyYXRlKCkKICAgICAgICAgICAgLm1heF9ieSh8KF8sIGEpLCAoXywgYil8IGEucGFydGlhbF9jbXAoYikudW53cmFwKCkpCiAgICAgICAgICAgIC5tYXAofChpZHgsIF8pfCBpZHgpCiAgICAgICAgICAgIC51bndyYXAoKTsKICAgICAgICBwcmludCEoInt9IiwgYWN0aW9uX25hbWVzW2Jlc3RdKTsKICAgICAgICBpZiAocyArIDEpICUgNCA9PSAwIHsgcHJpbnRsbiEoKTsgfQogICAgfQp9CgovLy8g6K+E5Lyw5b2T5YmN562W55Wl55qE6IOc546HCmZuIGV2YWx1YXRlKGVudjogJm11dCBGcm96ZW5MYWtlLCBhZ2VudDogJlFMZWFybmVyLCB0cmlhbHM6IHVzaXplKSAtPiBmNjQgewogICAgbGV0IG11dCB3aW5zID0gMDsKICAgIGZvciBfIGluIDAuLnRyaWFscyB7CiAgICAgICAgbGV0IG11dCBzdGF0ZSA9IGVudi5yZXNldCgpOwogICAgICAgIGxvb3AgewogICAgICAgICAgICBsZXQgYWN0aW9uID0gYWdlbnQucV90YWJsZVtzdGF0ZV0KICAgICAgICAgICAgICAgIC5pdGVyKCkKICAgICAgICAgICAgICAgIC5lbnVtZXJhdGUoKQogICAgICAgICAgICAgICAgLm1heF9ieSh8KF8sIGEpLCAoXywgYil8IGEucGFydGlhbF9jbXAoYikudW53cmFwKCkpCiAgICAgICAgICAgICAgICAubWFwKHwoaWR4LCBfKXwgaWR4KQogICAgICAgICAgICAgICAgLnVud3JhcCgpOwogICAgICAgICAgICBsZXQgKG5leHRfc3RhdGUsIF9yZXdhcmQsIGRvbmUpID0gZW52LnN0ZXAoYWN0aW9uKTsKICAgICAgICAgICAgc3RhdGUgPSBuZXh0X3N0YXRlOwogICAgICAgICAgICBpZiBkb25lIHsKICAgICAgICAgICAgICAgIGlmIGVudi5ncmlkW3N0YXRlXSA9PSAzIHsgd2lucyArPSAxOyB9CiAgICAgICAgICAgICAgICBicmVhazsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KICAgIHdpbnMgYXMgZjY0IC8gdHJpYWxzIGFzIGY2NCAqIDEwMC4wCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.8.5"
+*/
+use rand::Rng;
 
 /// FrozenLake 环境
 struct FrozenLake {
@@ -989,7 +1032,13 @@ fn evaluate(env: &amp;mut FrozenLake, agent: &amp;QLearner, trials: usize) -&gt;
 </table>
 </div>
 <h3 id="91-使用-ndarray-进行矩阵运算"><a class="header" href="#91-使用-ndarray-进行矩阵运算">9.1 使用 ndarray 进行矩阵运算</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use ndarray::{array, Array2};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KbmRhcnJheSA9ICIwLjE2IgoqLwp1c2UgbmRhcnJheTo6e2FycmF5LCBBcnJheTJ9OwoKZm4gbWFpbigpIHsKICAgIC8vIFEg6KGo55SoIG5kYXJyYXkg6KGo56S6CiAgICBsZXQgbXV0IHFfdGFibGU6IEFycmF5MjxmNjQ+ID0gQXJyYXkyOjp6ZXJvcygoMTYsIDQpKTsKCiAgICAvLyDorr7nva7liJ3lp4vlgLwKICAgIHFfdGFibGVbWzAsIDJdXSA9IDAuNTsgLy8g54q25oCBIDDvvIzliqjkvZwi5Y+zIgogICAgcV90YWJsZVtbMSwgMV1dID0gMC4zOyAvLyDnirbmgIEgMe+8jOWKqOS9nCLkuIsiCgogICAgLy8g6I635Y+W5p+Q54q25oCB55qE5pyA5aSnIFEg5YC8CiAgICBsZXQgc3RhdGUgPSAwOwogICAgbGV0IG1heF9xID0gcV90YWJsZS5yb3coc3RhdGUpLml0ZXIoKS5jbG9uZWQoKQogICAgICAgIC5mb2xkKGY2NDo6TkVHX0lORklOSVRZLCBmNjQ6Om1heCk7CiAgICBwcmludGxuISgi54q25oCBIHt9IOeahOacgOWkpyBRIOWAvDogezouMn0iLCBzdGF0ZSwgbWF4X3EpOwoKICAgIC8vIOiOt+WPluacgOS8mOWKqOS9nAogICAgbGV0IGJlc3RfYWN0aW9uID0gcV90YWJsZS5yb3coc3RhdGUpCiAgICAgICAgLml0ZXIoKS5lbnVtZXJhdGUoKQogICAgICAgIC5tYXhfYnkofChfLCBhKSwgKF8sIGIpfCBhLnBhcnRpYWxfY21wKGIpLnVud3JhcCgpKQogICAgICAgIC5tYXAofChpZHgsIF8pfCBpZHgpCiAgICAgICAgLnVud3JhcCgpOwogICAgcHJpbnRsbiEoIuacgOS8mOWKqOS9nDoge30iLCBiZXN0X2FjdGlvbik7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+ndarray = "0.16"
+*/
+use ndarray::{array, Array2};
 
 fn main() {
     // Q 表用 ndarray 表示

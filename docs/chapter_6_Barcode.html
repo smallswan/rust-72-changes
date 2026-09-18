@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -320,6 +357,8 @@ c = \left(10 - \left(\sum_{i=1}^{6} d_{2i-1} \times 3 + \sum_{i=1}^{6} d_{2i}\ri
 $$</p>
 <p>其中 $d_1, d_2, \ldots, d_{12}$ 为前 12 位数字。</p>
 <h3 id="642-rust-实现-ean-13-校验码"><a class="header" href="#642-rust-实现-ean-13-校验码">6.4.2 Rust 实现 EAN-13 校验码</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gY2FsY3VsYXRlX2VhbjEzX2NoZWNrX2RpZ2l0KGRpZ2l0czogJlt1ODsgMTJdKSAtPiB1OCB7CiAgICBsZXQgbXV0IHN1bSA9IDB1MzI7CiAgICBmb3IgKGksICZkKSBpbiBkaWdpdHMuaXRlcigpLmVudW1lcmF0ZSgpIHsKICAgICAgICAvLyDku47lj7PlkJHlt6bvvIzmiYDku6XntKLlvJUgMCDlr7nlupTmnIDlj7PovrnvvIjlpYfmlbDkvY3vvIkKICAgICAgICBpZiBpICUgMiA9PSAwIHsKICAgICAgICAgICAgc3VtICs9IChkIGFzIHUzMikgKiAzOwogICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgIHN1bSArPSBkIGFzIHUzMjsKICAgICAgICB9CiAgICB9CiAgICBsZXQgcmVtYWluZGVyID0gc3VtICUgMTA7CiAgICAoKDEwIC0gcmVtYWluZGVyKSAlIDEwKSBhcyB1OAp9CgpmbiB2YWxpZGF0ZV9lYW4xMyhjb2RlOiAmc3RyKSAtPiBib29sIHsKICAgIGlmIGNvZGUubGVuKCkgIT0gMTMgfHwgIWNvZGUuY2hhcnMoKS5hbGwofGN8IGMuaXNfYXNjaWlfZGlnaXQoKSkgewogICAgICAgIHJldHVybiBmYWxzZTsKICAgIH0KICAgIGxldCBkaWdpdHM6IFZlYzx1OD4gPSBjb2RlLmJ5dGVzKCkubWFwKHxifCBiIC0gYicwJykuY29sbGVjdCgpOwogICAgbGV0IGlucHV0X2NoZWNrID0gZGlnaXRzWzEyXTsKICAgIGxldCBjb21wdXRlZCA9IGNhbGN1bGF0ZV9lYW4xM19jaGVja19kaWdpdCgKICAgICAgICAmZGlnaXRzWy4uMTJdLnRyeV9pbnRvKCkudW53cmFwKCkKICAgICk7CiAgICBpbnB1dF9jaGVjayA9PSBjb21wdXRlZAp9CgpmbiBtYWluKCkgewogICAgbGV0IGRpZ2l0cyA9IFs2LCA5LCAwLCAxLCAyLCAzLCA0LCA1LCA2LCA3LCA4LCA5XTsKICAgIGxldCBjaGVjayA9IGNhbGN1bGF0ZV9lYW4xM19jaGVja19kaWdpdCgmZGlnaXRzKTsKICAgIHByaW50bG4hKCLmoKHpqoznoIE6IHt9IiwgY2hlY2spOyAvLyDovpPlh7o6IOagoemqjOeggTogMgoKICAgIGxldCBmdWxsX2NvZGUgPSAiNjkwMTIzNDU2Nzg5MiI7CiAgICBwcmludGxuISgie30g5qCh6aqM57uT5p6cOiB7fSIsIGZ1bGxfY29kZSwgdmFsaWRhdGVfZWFuMTMoZnVsbF9jb2RlKSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn calculate_ean13_check_digit(digits: &amp;[u8; 12]) -&gt; u8 {
     let mut sum = 0u32;
     for (i, &amp;d) in digits.iter().enumerate() {
@@ -380,7 +419,13 @@ barcode = "0.1"
 image = "0.24"
 </code></pre>
 <p>生成 Code 128 条形码的示例：</p>
-<pre class="playground"><code class="language-rust edition2024">use barcode::sym::code128::Code128;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaW1hZ2UgPSAiMC4yNSIKKi8KdXNlIGJhcmNvZGU6OnN5bTo6Y29kZTEyODo6Q29kZTEyODsKdXNlIGJhcmNvZGU6OmdlbmVyYXRvcnM6OmltYWdlOjpJbWFnZTsKdXNlIGJhcmNvZGU6OmdlbmVyYXRvcnM6OkdlbmVyYXRvcjsKCmZuIG1haW4oKSB7CiAgICBsZXQgZGF0YSA9ICJSVVNULTIwMjQiOwogICAgbGV0IGJhcmNvZGUgPSBDb2RlMTI4OjpuZXcoZGF0YSkudW53cmFwKCk7CiAgICBsZXQgZ2VuZXJhdG9yID0gSW1hZ2U6OnBuZygpOwogICAgbGV0IGJ5dGVzID0gZ2VuZXJhdG9yLmdlbmVyYXRlKCZiYXJjb2RlKS51bndyYXAoKTsKICAgIHN0ZDo6ZnM6OndyaXRlKCJydXN0MjAyNC5wbmciLCBieXRlcykudW53cmFwKCk7CiAgICBwcmludGxuISgi5p2h5b2i56CB5bey55Sf5oiQOiBydXN0MjAyNC5wbmciKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+image = "0.25"
+*/
+use barcode::sym::code128::Code128;
 use barcode::generators::image::Image;
 use barcode::generators::Generator;
 
@@ -394,6 +439,8 @@ fn main() {
 }</code></pre>
 <h3 id="652-手动生成简单-code-128"><a class="header" href="#652-手动生成简单-code-128">6.5.2 手动生成简单 Code 128</a></h3>
 <p>为了深入理解编码原理，下面手动实现一个简化的 Code 128 编码器，仅支持 Code B 字符集（ASCII 32-127）。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Y29uc3QgQ09ERTEyOF9CX1NUQVJUOiB1OCA9IDEwNDsKY29uc3QgQ09ERTEyOF9TVE9QOiB1OCA9IDEwNjsKCi8vIENvZGUgQiDlrZfnrKblgLzmmKDlsITvvJrnqbrmoLwoMzIpIC0+IDAsICchJygzMykgLT4gMSwgLi4uLCAnWicoOTApIC0+IDU4LCAuLi4KZm4gY2hhcl90b19jb2RlMTI4X2IoYzogY2hhcikgLT4gT3B0aW9uPHU4PiB7CiAgICBsZXQgY29kZSA9IGMgYXMgdTg7CiAgICBpZiAoMzIuLj0xMjcpLmNvbnRhaW5zKCZjb2RlKSB7CiAgICAgICAgU29tZShjb2RlIC0gMzIpCiAgICB9IGVsc2UgewogICAgICAgIE5vbmUKICAgIH0KfQoKZm4gY29kZTEyOF9jaGVja3N1bShzdGFydDogdTgsIHZhbHVlczogJlt1OF0pIC0+IHU4IHsKICAgIGxldCBtdXQgc3VtID0gc3RhcnQgYXMgdTMyOwogICAgZm9yIChpLCAmdikgaW4gdmFsdWVzLml0ZXIoKS5lbnVtZXJhdGUoKSB7CiAgICAgICAgc3VtICs9ICgoaSArIDEpIGFzIHUzMikgKiAodiBhcyB1MzIpOwogICAgfQogICAgKHN1bSAlIDEwMykgYXMgdTgKfQoKZm4gZW5jb2RlX2NvZGUxMjhfYih0ZXh0OiAmc3RyKSAtPiBPcHRpb248VmVjPHU4Pj4gewogICAgbGV0IG11dCB2YWx1ZXMgPSB2ZWMhW0NPREUxMjhfQl9TVEFSVF07CiAgICBmb3IgYyBpbiB0ZXh0LmNoYXJzKCkgewogICAgICAgIHZhbHVlcy5wdXNoKGNoYXJfdG9fY29kZTEyOF9iKGMpPyk7CiAgICB9CiAgICBsZXQgY2hlY2sgPSBjb2RlMTI4X2NoZWNrc3VtKENPREUxMjhfQl9TVEFSVCwgJnZhbHVlc1sxLi5dKTsKICAgIHZhbHVlcy5wdXNoKGNoZWNrKTsKICAgIHZhbHVlcy5wdXNoKENPREUxMjhfU1RPUCk7CiAgICBTb21lKHZhbHVlcykKfQoKZm4gbWFpbigpIHsKICAgIGxldCB0ZXh0ID0gIkhFTExPIjsKICAgIG1hdGNoIGVuY29kZV9jb2RlMTI4X2IodGV4dCkgewogICAgICAgIFNvbWUoZW5jb2RlZCkgPT4gewogICAgICAgICAgICBwcmludGxuISgiJ3t9JyDnmoQgQ29kZSAxMjgg57yW56CB5YC8OiB7Oj99IiwgdGV4dCwgZW5jb2RlZCk7CiAgICAgICAgfQogICAgICAgIE5vbmUgPT4gcHJpbnRsbiEoIuWMheWQq+S4jeaUr+aMgeeahOWtl+espiIpLAogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">const CODE128_B_START: u8 = 104;
 const CODE128_STOP: u8 = 106;
 
@@ -437,6 +484,8 @@ fn main() {
 }</code></pre>
 <h3 id="653-将编码值渲染为位图"><a class="header" href="#653-将编码值渲染为位图">6.5.3 将编码值渲染为位图</a></h3>
 <p>Code 128 每个字符由 11 个模块组成，条和空的模式由查找表确定。以下是将编码值渲染为简单文本表示的示例：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8gQ29kZSAxMjgg5a2X56ym5qih5byP6KGo77yI566A5YyW77yM5LuF5bGV56S66YOo5YiG77yJCi8vIOavj+S4quWtl+espueUsSAxMSDkuKrmqKHlnZfnu4TmiJDvvJoxIOihqOekuuadoe+8jDAg6KGo56S656m6CmNvbnN0IENPREUxMjhfUEFUVEVSTlM6IFsmc3RyOyAxMDddID0gWwogICAgIjExMDExMDAxMTAwIiwgIjExMDAxMTAxMTAwIiwgIjExMDAxMTAwMTEwIiwgLy8gMC0yICjnqbrmoLwsICEsICIpCiAgICAvLyAuLi4g55yB55Wl5Lit6Ze05p2h55uuCiAgICAiMTEwMDAxMTEwMTAxMSIsIC8vIFNUT1AgKDEwNikKXTsKCmZuIHJlbmRlcl9jb2RlMTI4X2JhcnModmFsdWVzOiAmW3U4XSkgLT4gU3RyaW5nIHsKICAgIGxldCBtdXQgcmVzdWx0ID0gU3RyaW5nOjpuZXcoKTsKICAgIGZvciAmdiBpbiB2YWx1ZXMgewogICAgICAgIGxldCBwYXR0ZXJuID0gQ09ERTEyOF9QQVRURVJOUy5nZXQodiBhcyB1c2l6ZSkudW53cmFwX29yKCYiIik7CiAgICAgICAgcmVzdWx0LnB1c2hfc3RyKHBhdHRlcm4pOwogICAgfQogICAgcmVzdWx0Cn0KCmZuIGJhcnNfdG9fYXNjaWkoYmFyczogJnN0cikgLT4gU3RyaW5nIHsKICAgIGJhcnMuY2hhcnMoKQogICAgICAgIC5tYXAofGN8IGlmIGMgPT0gJzEnIHsgJ+KWiCcgfSBlbHNlIHsgJyAnIH0pCiAgICAgICAgLmNvbGxlY3QoKQp9CgpmbiBtYWluKCkgewogICAgbGV0IHRleHQgPSAiSEkiOwogICAgaWYgbGV0IFNvbWUodmFsdWVzKSA9IGVuY29kZV9jb2RlMTI4X2IodGV4dCkgewogICAgICAgIGxldCBiYXJzID0gcmVuZGVyX2NvZGUxMjhfYmFycygmdmFsdWVzKTsKICAgICAgICBwcmludGxuISgie30iLCBiYXJzX3RvX2FzY2lpKCZiYXJzKSk7CiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// Code 128 字符模式表（简化，仅展示部分）
 // 每个字符由 11 个模块组成：1 表示条，0 表示空
 const CODE128_PATTERNS: [&amp;str; 107] = [
@@ -481,6 +530,8 @@ fn main() {
 </ol>
 <h3 id="662-rust-实现简单的条码校验"><a class="header" href="#662-rust-实现简单的条码校验">6.6.2 Rust 实现简单的条码校验</a></h3>
 <p>在实际系统中，接收到的条码数据应进行格式和校验码验证：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#I1tkZXJpdmUoRGVidWcpXQplbnVtIEJhcmNvZGVFcnJvciB7CiAgICBJbnZhbGlkTGVuZ3RoLAogICAgSW52YWxpZENoYXJhY3RlciwKICAgIENoZWNrc3VtTWlzbWF0Y2gsCn0KCnN0cnVjdCBFYW4xMyhTdHJpbmcpOwoKaW1wbCBFYW4xMyB7CiAgICBmbiBuZXcoY29kZTogJnN0cikgLT4gUmVzdWx0PFNlbGYsIEJhcmNvZGVFcnJvcj4gewogICAgICAgIGlmIGNvZGUubGVuKCkgIT0gMTMgewogICAgICAgICAgICByZXR1cm4gRXJyKEJhcmNvZGVFcnJvcjo6SW52YWxpZExlbmd0aCk7CiAgICAgICAgfQogICAgICAgIGlmICFjb2RlLmNoYXJzKCkuYWxsKHxjfCBjLmlzX2FzY2lpX2RpZ2l0KCkpIHsKICAgICAgICAgICAgcmV0dXJuIEVycihCYXJjb2RlRXJyb3I6OkludmFsaWRDaGFyYWN0ZXIpOwogICAgICAgIH0KICAgICAgICBsZXQgZGlnaXRzOiBWZWM8dTg+ID0gY29kZS5ieXRlcygpLm1hcCh8YnwgYiAtIGInMCcpLmNvbGxlY3QoKTsKICAgICAgICBsZXQgbXV0IHN1bSA9IDB1MzI7CiAgICAgICAgZm9yIChpLCAmZCkgaW4gZGlnaXRzWy4uMTJdLml0ZXIoKS5lbnVtZXJhdGUoKSB7CiAgICAgICAgICAgIGlmIGkgJSAyID09IDAgewogICAgICAgICAgICAgICAgc3VtICs9IChkIGFzIHUzMikgKiAzOwogICAgICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAgICAgc3VtICs9IGQgYXMgdTMyOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIGxldCBjaGVjayA9ICgoMTAgLSAoc3VtICUgMTApKSAlIDEwKSBhcyB1ODsKICAgICAgICBpZiBkaWdpdHNbMTJdICE9IGNoZWNrIHsKICAgICAgICAgICAgcmV0dXJuIEVycihCYXJjb2RlRXJyb3I6OkNoZWNrc3VtTWlzbWF0Y2gpOwogICAgICAgIH0KICAgICAgICBPayhFYW4xMyhjb2RlLnRvX3N0cmluZygpKSkKICAgIH0KCiAgICBmbiBjb3VudHJ5X3ByZWZpeCgmc2VsZikgLT4gJnN0ciB7CiAgICAgICAgJnNlbGYuMFsuLjNdCiAgICB9CgogICAgZm4gYXNfc3RyKCZzZWxmKSAtPiAmc3RyIHsKICAgICAgICAmc2VsZi4wCiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBtYXRjaCBFYW4xMzo6bmV3KCI2OTAxMjM0NTY3ODkyIikgewogICAgICAgIE9rKGVhbikgPT4gewogICAgICAgICAgICBwcmludGxuISgi5pyJ5pWI55qEIEVBTi0xMzoge30iLCBlYW4uYXNfc3RyKCkpOwogICAgICAgICAgICBwcmludGxuISgi5Zu95a625YmN57yAOiB7fSIsIGVhbi5jb3VudHJ5X3ByZWZpeCgpKTsKICAgICAgICB9CiAgICAgICAgRXJyKGUpID0+IHByaW50bG4hKCLmoKHpqozlpLHotKU6IHs6P30iLCBlKSwKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">#[derive(Debug)]
 enum BarcodeError {
     InvalidLength,

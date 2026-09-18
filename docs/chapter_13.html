@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -219,6 +256,8 @@
 <p><strong>信息熵（Entropy）</strong> 表示随机变量的不确定性，也代表了数据的最小平均编码长度：</p>
 <p>$$H(X) = -\sum_{i=1}^{n} p(x_i) \log_2 p(x_i)$$</p>
 <p>其中 $p(x_i)$ 是符号 $x_i$ 出现的概率。熵越大，数据的不确定性越高，可压缩的空间越小；熵越小，数据的规律性越强，可压缩的空间越大。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gc2hhbm5vbl9lbnRyb3B5KGRhdGE6ICZbdThdKSAtPiBmNjQgewogICAgbGV0IG11dCBmcmVxID0gWzB1c2l6ZTsgMjU2XTsKICAgIGZvciAmYnl0ZSBpbiBkYXRhIHsKICAgICAgICBmcmVxW2J5dGUgYXMgdXNpemVdICs9IDE7CiAgICB9CgogICAgbGV0IGxlbiA9IGRhdGEubGVuKCkgYXMgZjY0OwogICAgbGV0IG11dCBlbnRyb3B5ID0gMC4wOwoKICAgIGZvciAmY291bnQgaW4gJmZyZXEgewogICAgICAgIGlmIGNvdW50ID4gMCB7CiAgICAgICAgICAgIGxldCBwID0gY291bnQgYXMgZjY0IC8gbGVuOwogICAgICAgICAgICBlbnRyb3B5IC09IHAgKiBwLmxvZzIoKTsKICAgICAgICB9CiAgICB9CgogICAgZW50cm9weQp9CgpmbiBtYWluKCkgewogICAgLy8g6auY5bqm6KeE5b6L55qE5pWw5o2u77yM54a15L2O77yM5Y+v5Y6L57yp5oCn6auYCiAgICBsZXQgcmVwZXRpdGl2ZSA9IGIiQUFBQUFBQUFBQUJCQkJCQkJCQkIiOwogICAgcHJpbnRsbiEoIumHjeWkjeaVsOaNrueGtTogezouNH0gYml0cy9ieXRlIiwgc2hhbm5vbl9lbnRyb3B5KHJlcGV0aXRpdmUpKTsKCiAgICAvLyDpmo/mnLrmlbDmja7vvIznhrXpq5jvvIzmjqXov5EgOCBiaXRzL2J5dGXvvIzpmr7ku6XljovnvKkKICAgIGxldCByYW5kb20gPSBbMHgzRiwgMHhBNywgMHgxMiwgMHhFOSwgMHg1NSwgMHg4QywgMHgyMSwgMHg3Ql07CiAgICBwcmludGxuISgi6ZqP5py65pWw5o2u54a1OiB7Oi40fSBiaXRzL2J5dGUiLCBzaGFubm9uX2VudHJvcHkoJnJhbmRvbSkpOwoKICAgIC8vIOiLseaWh+aWh+acrO+8jOeGtee6piA0LTUgYml0cy9ieXRlCiAgICBsZXQgdGV4dCA9IGIiSGVsbG8sIFdvcmxkISBUaGlzIGlzIGEgdGVzdCBvZiBlbnRyb3B5IGNhbGN1bGF0aW9uLiI7CiAgICBwcmludGxuISgi6Iux5paH5paH5pys54a1OiB7Oi40fSBiaXRzL2J5dGUiLCBzaGFubm9uX2VudHJvcHkodGV4dCkpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn shannon_entropy(data: &amp;[u8]) -&gt; f64 {
     let mut freq = [0usize; 256];
     for &amp;byte in data {
@@ -281,6 +320,8 @@ fn main() {
 <li>重复步骤 3，直到只剩一棵树</li>
 <li>从根节点出发，左分支标记 0，右分支标记 1，到达叶子节点的路径即为该符号的编码</li>
 </ol>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6Y29sbGVjdGlvbnM6OntCVHJlZU1hcCwgQmluYXJ5SGVhcH07CgojW2Rlcml2ZShEZWJ1ZywgQ2xvbmUpXQpzdHJ1Y3QgSHVmZm1hbk5vZGUgewogICAgZnJlcTogdXNpemUsCiAgICBzeW1ib2w6IE9wdGlvbjx1OD4sCiAgICBsZWZ0OiBPcHRpb248Qm94PEh1ZmZtYW5Ob2RlPj4sCiAgICByaWdodDogT3B0aW9uPEJveDxIdWZmbWFuTm9kZT4+LAp9CgppbXBsIEh1ZmZtYW5Ob2RlIHsKICAgIGZuIG5ld19sZWFmKHN5bWJvbDogdTgsIGZyZXE6IHVzaXplKSAtPiBTZWxmIHsKICAgICAgICBIdWZmbWFuTm9kZSB7CiAgICAgICAgICAgIGZyZXEsCiAgICAgICAgICAgIHN5bWJvbDogU29tZShzeW1ib2wpLAogICAgICAgICAgICBsZWZ0OiBOb25lLAogICAgICAgICAgICByaWdodDogTm9uZSwKICAgICAgICB9CiAgICB9CgogICAgZm4gbmV3X2ludGVybmFsKGxlZnQ6IEh1ZmZtYW5Ob2RlLCByaWdodDogSHVmZm1hbk5vZGUpIC0+IFNlbGYgewogICAgICAgIEh1ZmZtYW5Ob2RlIHsKICAgICAgICAgICAgZnJlcTogbGVmdC5mcmVxICsgcmlnaHQuZnJlcSwKICAgICAgICAgICAgc3ltYm9sOiBOb25lLAogICAgICAgICAgICBsZWZ0OiBTb21lKEJveDo6bmV3KGxlZnQpKSwKICAgICAgICAgICAgcmlnaHQ6IFNvbWUoQm94OjpuZXcocmlnaHQpKSwKICAgICAgICB9CiAgICB9Cn0KCmltcGwgUGFydGlhbEVxIGZvciBIdWZmbWFuTm9kZSB7CiAgICBmbiBlcSgmc2VsZiwgb3RoZXI6ICZTZWxmKSAtPiBib29sIHsKICAgICAgICBzZWxmLmZyZXEgPT0gb3RoZXIuZnJlcQogICAgfQp9CgppbXBsIEVxIGZvciBIdWZmbWFuTm9kZSB7fQoKaW1wbCBQYXJ0aWFsT3JkIGZvciBIdWZmbWFuTm9kZSB7CiAgICBmbiBwYXJ0aWFsX2NtcCgmc2VsZiwgb3RoZXI6ICZTZWxmKSAtPiBPcHRpb248c3RkOjpjbXA6Ok9yZGVyaW5nPiB7CiAgICAgICAgb3RoZXIuZnJlcS5wYXJ0aWFsX2NtcCgmc2VsZi5mcmVxKSAgLy8g5pyA5bCP5aCGCiAgICB9Cn0KCmltcGwgT3JkIGZvciBIdWZmbWFuTm9kZSB7CiAgICBmbiBjbXAoJnNlbGYsIG90aGVyOiAmU2VsZikgLT4gc3RkOjpjbXA6Ok9yZGVyaW5nIHsKICAgICAgICBvdGhlci5mcmVxLmNtcCgmc2VsZi5mcmVxKQogICAgfQp9CgpmbiBidWlsZF9jb2Rlcyhub2RlOiAmSHVmZm1hbk5vZGUsIHByZWZpeDogU3RyaW5nLCBjb2RlczogJm11dCBCVHJlZU1hcDx1OCwgU3RyaW5nPikgewogICAgaWYgbGV0IFNvbWUoc3ltYm9sKSA9IG5vZGUuc3ltYm9sIHsKICAgICAgICBjb2Rlcy5pbnNlcnQoc3ltYm9sLCBpZiBwcmVmaXguaXNfZW1wdHkoKSB7ICIwIi50b19zdHJpbmcoKSB9IGVsc2UgeyBwcmVmaXggfSk7CiAgICB9IGVsc2UgewogICAgICAgIGlmIGxldCBTb21lKHJlZiBsZWZ0KSA9IG5vZGUubGVmdCB7CiAgICAgICAgICAgIGJ1aWxkX2NvZGVzKGxlZnQsIGZvcm1hdCEoInt9MCIsIHByZWZpeCksIGNvZGVzKTsKICAgICAgICB9CiAgICAgICAgaWYgbGV0IFNvbWUocmVmIHJpZ2h0KSA9IG5vZGUucmlnaHQgewogICAgICAgICAgICBidWlsZF9jb2RlcyhyaWdodCwgZm9ybWF0ISgie30xIiwgcHJlZml4KSwgY29kZXMpOwogICAgICAgIH0KICAgIH0KfQoKZm4gaHVmZm1hbl9lbmNvZGUoZGF0YTogJlt1OF0pIC0+IChCVHJlZU1hcDx1OCwgU3RyaW5nPiwgU3RyaW5nKSB7CiAgICAvLyDnu5/orqHpopHnjocKICAgIGxldCBtdXQgZnJlcSA9IFswdXNpemU7IDI1Nl07CiAgICBmb3IgJmJ5dGUgaW4gZGF0YSB7CiAgICAgICAgZnJlcVtieXRlIGFzIHVzaXplXSArPSAxOwogICAgfQoKICAgIC8vIOaehOW7uuacgOWwj+WghgogICAgbGV0IG11dCBoZWFwID0gQmluYXJ5SGVhcDo6bmV3KCk7CiAgICBmb3IgKHN5bWJvbCwgY291bnQpIGluIGZyZXEuaXRlcigpLmVudW1lcmF0ZSgpIHsKICAgICAgICBpZiAqY291bnQgPiAwIHsKICAgICAgICAgICAgaGVhcC5wdXNoKEh1ZmZtYW5Ob2RlOjpuZXdfbGVhZihzeW1ib2wgYXMgdTgsICpjb3VudCkpOwogICAgICAgIH0KICAgIH0KCiAgICAvLyDmnoTlu7ogSHVmZm1hbiDmoJEKICAgIHdoaWxlIGhlYXAubGVuKCkgPiAxIHsKICAgICAgICBsZXQgbGVmdCA9IGhlYXAucG9wKCkudW53cmFwKCk7CiAgICAgICAgbGV0IHJpZ2h0ID0gaGVhcC5wb3AoKS51bndyYXAoKTsKICAgICAgICBoZWFwLnB1c2goSHVmZm1hbk5vZGU6Om5ld19pbnRlcm5hbChsZWZ0LCByaWdodCkpOwogICAgfQoKICAgIC8vIOeUn+aIkOe8lueggeihqAogICAgbGV0IG11dCBjb2RlcyA9IEJUcmVlTWFwOjpuZXcoKTsKICAgIGlmIGxldCBTb21lKHJvb3QpID0gaGVhcC5wb3AoKSB7CiAgICAgICAgYnVpbGRfY29kZXMoJnJvb3QsIFN0cmluZzo6bmV3KCksICZtdXQgY29kZXMpOwogICAgfQoKICAgIC8vIOe8lueggeaVsOaNrgogICAgbGV0IG11dCBlbmNvZGVkID0gU3RyaW5nOjpuZXcoKTsKICAgIGZvciAmYnl0ZSBpbiBkYXRhIHsKICAgICAgICBlbmNvZGVkLnB1c2hfc3RyKGNvZGVzLmdldCgmYnl0ZSkudW53cmFwKCkpOwogICAgfQoKICAgIChjb2RlcywgZW5jb2RlZCkKfQoKZm4gbWFpbigpIHsKICAgIGxldCB0ZXh0ID0gYiJ0aGlzIGlzIGFuIGV4YW1wbGUgb2YgYSBodWZmbWFuIHRyZWUiOwogICAgbGV0IChjb2RlcywgZW5jb2RlZCkgPSBodWZmbWFuX2VuY29kZSh0ZXh0KTsKCiAgICBwcmludGxuISgi5Y6f5paHOiB7fSIsIFN0cmluZzo6ZnJvbV91dGY4X2xvc3N5KHRleHQpKTsKICAgIHByaW50bG4hKCLljp/mlofplb/luqY6IHt9IGJ5dGVzIiwgdGV4dC5sZW4oKSk7CiAgICBwcmludGxuISgiXG5IdWZmbWFuIOe8lueggeihqDoiKTsKICAgIGZvciAoc3ltYm9sLCBjb2RlKSBpbiAmY29kZXMgewogICAgICAgIHByaW50bG4hKCIgICd7fScgPT4ge30iLCAqc3ltYm9sIGFzIGNoYXIsIGNvZGUpOwogICAgfQoKICAgIHByaW50bG4hKCJcbue8lueggeWQjjoge30iLCBlbmNvZGVkKTsKICAgIHByaW50bG4hKCLnvJbnoIHlkI7plb/luqY6IHt9IGJpdHMgPSB7Oi4yfSBieXRlcyIsIGVuY29kZWQubGVuKCksIGVuY29kZWQubGVuKCkgYXMgZjY0IC8gOC4wKTsKICAgIHByaW50bG4hKCLljovnvKnnjoc6IHs6LjJ9JSIsIChlbmNvZGVkLmxlbigpIGFzIGY2NCAvIDguMCkgLyB0ZXh0LmxlbigpIGFzIGY2NCAqIDEwMC4wKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::collections::{BTreeMap, BinaryHeap};
 
 #[derive(Debug, Clone)]
@@ -447,6 +488,8 @@ fn main() {
 </div>
 <p><strong>DCT 变换的核心思想：</strong></p>
 <p>DCT（Discrete Cosine Transform，离散余弦变换）将空间域的图像数据转换到频率域。图像的能量主要集中在低频部分，高频部分（代表细节和噪声）可以被大量量化甚至丢弃而不明显影响视觉质量。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8gSlBFRyDotKjph4/lm6DlrZDkuI7ljovnvKnnjofnmoTnpLrmhI8KZm4ganBlZ19jb21wcmVzc2lvbl9pbmZvKCkgewogICAgbGV0IHF1YWxpdGllcyA9IFsKICAgICAgICAoOTUsICLmnoHkvbMiLCAi5Yeg5LmO5peg5o2fIiksCiAgICAgICAgKDg1LCAi5b6I5aW9IiwgIuagh+WHhui0qOmHjyIpLAogICAgICAgICg3NSwgIuWlvSIsICJXZWIg5bi455SoIiksCiAgICAgICAgKDUwLCAi5Lit562JIiwgIuaYjuaYvuWOi+e8qeeXlei/uSIpLAogICAgICAgICgyNSwgIuS9jiIsICLkuKXph43lpLHnnJ8iKSwKICAgICAgICAoMTAsICLmnoHkvY4iLCAi5Z2X54q25Lyq5b2x5piO5pi+IiksCiAgICBdOwoKICAgIHByaW50bG4hKCJKUEVHIOi0qOmHj+iuvue9ruS4juaViOaenOWvueeFpzoiKTsKICAgIHByaW50bG4hKCJ7OjwxMH0gezo8MTB9IHs6PDIwfSIsICLotKjph4/lm6DlrZAiLCAi5pWI5p6cIiwgIuivtOaYjiIpOwogICAgZm9yIChxLCBlZmZlY3QsIGRlc2MpIGluICZxdWFsaXRpZXMgewogICAgICAgIHByaW50bG4hKCJ7OjwxMH0gezo8MTB9IHs6PDIwfSIsIHEsIGVmZmVjdCwgZGVzYyk7CiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBqcGVnX2NvbXByZXNzaW9uX2luZm8oKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// JPEG 质量因子与压缩率的示意
 fn jpeg_compression_info() {
     let qualities = [
@@ -519,6 +562,8 @@ fn main() {
 flate2 = "1.0"
 </code></pre>
 <p><strong>Gzip 压缩与解压：</strong></p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KZmxhdGUyID0gIjEuMS41IgoqLwp1c2UgZmxhdGUyOjp3cml0ZTo6e0d6RW5jb2RlciwgR3pEZWNvZGVyfTsKdXNlIGZsYXRlMjo6Q29tcHJlc3Npb247CnVzZSBzdGQ6OmlvOjp7c2VsZiwgV3JpdGV9OwoKZm4gZ3ppcF9jb21wcmVzcyhkYXRhOiAmW3U4XSkgLT4gaW86OlJlc3VsdDxWZWM8dTg+PiB7CiAgICBsZXQgbXV0IGVuY29kZXIgPSBHekVuY29kZXI6Om5ldyhWZWM6Om5ldygpLCBDb21wcmVzc2lvbjo6ZGVmYXVsdCgpKTsKICAgIGVuY29kZXIud3JpdGVfYWxsKGRhdGEpPzsKICAgIGVuY29kZXIuZmluaXNoKCkKfQoKZm4gZ3ppcF9kZWNvbXByZXNzKGRhdGE6ICZbdThdKSAtPiBpbzo6UmVzdWx0PFZlYzx1OD4+IHsKICAgIGxldCBtdXQgZGVjb2RlciA9IEd6RGVjb2Rlcjo6bmV3KFZlYzo6bmV3KCkpOwogICAgZGVjb2Rlci53cml0ZV9hbGwoZGF0YSk/OwogICAgZGVjb2Rlci5maW5pc2goKQp9CgpmbiBtYWluKCkgLT4gaW86OlJlc3VsdDwoKT4gewogICAgbGV0IG9yaWdpbmFsID0gYiJSdXN0IGlzIGEgc3lzdGVtcyBwcm9ncmFtbWluZyBsYW5ndWFnZSB0aGF0IHJ1bnMgYmxhemluZ2x5IGZhc3QsIFwKICAgICAgICAgICAgICAgICAgICAgIHByZXZlbnRzIHNlZ2ZhdWx0cywgYW5kIGd1YXJhbnRlZXMgdGhyZWFkIHNhZmV0eS4gXAogICAgICAgICAgICAgICAgICAgICAgUnVzdCBpcyBhbHNvIGEgZ3JlYXQgbGFuZ3VhZ2UgZm9yIHdlYiBkZXZlbG9wbWVudCwgXAogICAgICAgICAgICAgICAgICAgICAgd2l0aCBmcmFtZXdvcmtzIGxpa2UgQWN0aXggYW5kIEF4dW0gcHJvdmlkaW5nIGhpZ2gtcGVyZm9ybWFuY2UgXAogICAgICAgICAgICAgICAgICAgICAgSFRUUCBzZXJ2ZXJzLiBUaGUgUnVzdCBlY29zeXN0ZW0gaXMgZ3Jvd2luZyByYXBpZGx5LCBcCiAgICAgICAgICAgICAgICAgICAgICB3aXRoIHRob3VzYW5kcyBvZiBjcmF0ZXMgYXZhaWxhYmxlIG9uIGNyYXRlcy5pby4iOwoKICAgIHByaW50bG4hKCLljp/lp4vmlbDmja7lpKflsI86IHt9IGJ5dGVzIiwgb3JpZ2luYWwubGVuKCkpOwoKICAgIC8vIOWOi+e8qQogICAgbGV0IGNvbXByZXNzZWQgPSBnemlwX2NvbXByZXNzKG9yaWdpbmFsKT87CiAgICBwcmludGxuISgi5Y6L57yp5ZCO5aSn5bCPOiB7fSBieXRlcyIsIGNvbXByZXNzZWQubGVuKCkpOwogICAgcHJpbnRsbiEoIuWOi+e8qeeOhzogezouMn0lIiwgY29tcHJlc3NlZC5sZW4oKSBhcyBmNjQgLyBvcmlnaW5hbC5sZW4oKSBhcyBmNjQgKiAxMDAuMCk7CgogICAgLy8g6Kej5Y6LCiAgICBsZXQgZGVjb21wcmVzc2VkID0gZ3ppcF9kZWNvbXByZXNzKCZjb21wcmVzc2VkKT87CiAgICBwcmludGxuISgi6Kej5Y6L5ZCO5aSn5bCPOiB7fSBieXRlcyIsIGRlY29tcHJlc3NlZC5sZW4oKSk7CiAgICBwcmludGxuISgi5pWw5o2u5LiA6Ie05oCnOiB7fSIsIG9yaWdpbmFsLnRvX3ZlYygpID09IGRlY29tcHJlc3NlZCk7CgogICAgLy8g5LiN5ZCM5Y6L57yp57qn5Yir5a+55q+UCiAgICBwcmludGxuISgiXG7kuI3lkIzljovnvKnnuqfliKvlr7nmr5Q6Iik7CiAgICBmb3IgbGV2ZWwgaW4gW0NvbXByZXNzaW9uOjpub25lKCksIENvbXByZXNzaW9uOjpmYXN0KCksIENvbXByZXNzaW9uOjpkZWZhdWx0KCksIENvbXByZXNzaW9uOjpiZXN0KCldIHsKICAgICAgICBsZXQgbXV0IGVuY29kZXIgPSBHekVuY29kZXI6Om5ldyhWZWM6Om5ldygpLCBsZXZlbCk7CiAgICAgICAgZW5jb2Rlci53cml0ZV9hbGwob3JpZ2luYWwpPzsKICAgICAgICBsZXQgcmVzdWx0ID0gZW5jb2Rlci5maW5pc2goKT87CiAgICAgICAgcHJpbnRsbiEoIue6p+WIqyB7Oj99OiB7fSBieXRlcyIsIGxldmVsLmxldmVsKCksIHJlc3VsdC5sZW4oKSk7CiAgICB9CgogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/*
 [dependencies]
 flate2 = "1.1.5"
@@ -626,6 +671,8 @@ fn decompress_file(input_path: &amp;str, output_path: &amp;str) -&gt; io::Result
 zip = "0.6"
 </code></pre>
 <p><strong>创建 ZIP 压缩文件：</strong></p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KemlwID0gIjAuNiIKKi8KdXNlIHN0ZDo6ZnM6OkZpbGU7CnVzZSBzdGQ6OmlvOjp7c2VsZiwgUmVhZCwgV3JpdGV9Owp1c2UgemlwOjp3cml0ZTo6RmlsZU9wdGlvbnM7CnVzZSB6aXA6OkNvbXByZXNzaW9uTWV0aG9kOwoKZm4gY3JlYXRlX3ppcF9hcmNoaXZlKG91dHB1dF9wYXRoOiAmc3RyLCBmaWxlczogJlsoJnN0ciwgJlt1OF0pXSkgLT4gaW86OlJlc3VsdDwoKT4gewogICAgbGV0IGZpbGUgPSBGaWxlOjpjcmVhdGUob3V0cHV0X3BhdGgpPzsKICAgIGxldCBtdXQgemlwID0gemlwOjpaaXBXcml0ZXI6Om5ldyhmaWxlKTsKCiAgICBsZXQgb3B0aW9ucyA9IEZpbGVPcHRpb25zOjpkZWZhdWx0KCkKICAgICAgICAuY29tcHJlc3Npb25fbWV0aG9kKENvbXByZXNzaW9uTWV0aG9kOjpEZWZsYXRlZCkKICAgICAgICAudW5peF9wZXJtaXNzaW9ucygwbzc1NSk7CgogICAgZm9yIChuYW1lLCBjb250ZW50KSBpbiBmaWxlcyB7CiAgICAgICAgemlwLnN0YXJ0X2ZpbGUoKm5hbWUsIG9wdGlvbnMpPzsKICAgICAgICB6aXAud3JpdGVfYWxsKGNvbnRlbnQpPzsKICAgIH0KCiAgICB6aXAuZmluaXNoKCk/OwogICAgcHJpbnRsbiEoIlpJUCDmlofku7blt7LliJvlu7o6IHt9Iiwgb3V0cHV0X3BhdGgpOwogICAgT2soKCkpCn0KCmZuIG1haW4oKSAtPiBpbzo6UmVzdWx0PCgpPiB7CiAgICBsZXQgZmlsZXMgPSBbCiAgICAgICAgKCJyZWFkbWUudHh0IiwgYiJUaGlzIGlzIGEgUkVBRE1FIGZpbGUuXG4iIGFzICZbdThdKSwKICAgICAgICAoImRhdGEuanNvbiIsIGIie1wibmFtZVwiOiBcIlJ1c3RcIiwgXCJ2ZXJzaW9uXCI6IFwiMS43MFwifVxuIiBhcyAmW3U4XSksCiAgICAgICAgKCJoZWxsby5ycyIsIGIiZm4gbWFpbigpIHsgcHJpbnRsbiEoXCJIZWxsbywgUnVzdCFcIik7IH1cbiIgYXMgJlt1OF0pLAogICAgXTsKCiAgICBjcmVhdGVfemlwX2FyY2hpdmUoImFyY2hpdmUuemlwIiwgJmZpbGVzKT87CgogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/*
 [dependencies]
 zip = "0.6"
@@ -665,7 +712,13 @@ fn main() -&gt; io::Result&lt;()&gt; {
     Ok(())
 }</code></pre>
 <p><strong>读取 ZIP 压缩文件：</strong></p>
-<pre class="playground"><code class="language-rust edition2024">use std::fs::File;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KemlwID0gIjAuNiIKKi8KdXNlIHN0ZDo6ZnM6OkZpbGU7CnVzZSBzdGQ6OmlvOjp7c2VsZiwgUmVhZH07CnVzZSB6aXA6OlppcEFyY2hpdmU7CgpmbiByZWFkX3ppcF9hcmNoaXZlKHBhdGg6ICZzdHIpIC0+IGlvOjpSZXN1bHQ8KCk+IHsKICAgIGxldCBmaWxlID0gRmlsZTo6b3BlbihwYXRoKT87CiAgICBsZXQgbXV0IGFyY2hpdmUgPSBaaXBBcmNoaXZlOjpuZXcoZmlsZSk/OwoKICAgIHByaW50bG4hKCJaSVAg5paH5Lu25YyF5ZCrIHt9IOS4quadoeebrjoiLCBhcmNoaXZlLmxlbigpKTsKICAgIHByaW50bG4hKCJ7OjwyMH0gezo8MTB9IHs6PDEwfSIsICLmlofku7blkI0iLCAi5Y6L57yp5ZCOIiwgIuWOn+Wni+Wkp+WwjyIpOwogICAgcHJpbnRsbiEoInt9IiwgIi0iLnJlcGVhdCg0NSkpOwoKICAgIGZvciBpIGluIDAuLmFyY2hpdmUubGVuKCkgewogICAgICAgIGxldCBtdXQgZmlsZSA9IGFyY2hpdmUuYnlfaW5kZXgoaSk/OwogICAgICAgIGxldCBuYW1lID0gZmlsZS5uYW1lKCk7CiAgICAgICAgbGV0IGNvbXByZXNzZWQgPSBmaWxlLmNvbXByZXNzZWRfc2l6ZSgpOwogICAgICAgIGxldCBzaXplID0gZmlsZS5zaXplKCk7CgogICAgICAgIHByaW50bG4hKCJ7OjwyMH0gezo8MTB9IHs6PDEwfSIsIG5hbWUsIGNvbXByZXNzZWQsIHNpemUpOwoKICAgICAgICAvLyDor7vlj5bmlofku7blhoXlrrkKICAgICAgICBsZXQgbXV0IGNvbnRlbnRzID0gU3RyaW5nOjpuZXcoKTsKICAgICAgICBmaWxlLnJlYWRfdG9fc3RyaW5nKCZtdXQgY29udGVudHMpPzsKICAgICAgICBwcmludGxuISgiICDlhoXlrrnpooTop4g6IHt9IiwgJmNvbnRlbnRzWy4uY29udGVudHMubGVuKCkubWluKDUwKV0pOwogICAgfQoKICAgIE9rKCgpKQp9CgpmbiBtYWluKCkgLT4gaW86OlJlc3VsdDwoKT4gewogICAgcmVhZF96aXBfYXJjaGl2ZSgiYXJjaGl2ZS56aXAiKT87CiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+zip = "0.6"
+*/
+use std::fs::File;
 use std::io::{self, Read};
 use zip::ZipArchive;
 
@@ -716,6 +769,8 @@ fn main() -&gt; io::Result&lt;()&gt; {
 </table>
 </div>
 <p><strong>不同压缩算法的对比：</strong></p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gY29tcHJlc3Npb25fY29tcGFyaXNvbigpIHsKICAgIGxldCBhbGdvcml0aG1zID0gWwogICAgICAgICgiR3ppcCAoZmxhdGUyKSIsICLpgJrnlKjvvIzlhbzlrrnmgKflpb0iLCAi5Lit562JIiwgIumrmCIpLAogICAgICAgICgiTFo0IiwgIuaegemAn+WOi+e8qeino+WOiyIsICLkvY4iLCAi5b6I6auYIiksCiAgICAgICAgKCJac3RkIiwgIkZhY2Vib29rIOW8gOWPke+8jOWOi+e8qeeOh+WSjOmAn+W6puWdh+ihoSIsICLpq5giLCAi6auYIiksCiAgICAgICAgKCJMWk1BL1haIiwgIuaegemrmOWOi+e8qeeOhyIsICLlvojpq5giLCAi5Lit562JIiksCiAgICAgICAgKCJCcm90bGkiLCAiR29vZ2xlIOW8gOWPke+8jFdlYiDkvJjljJYiLCAi6auYIiwgIumrmCIpLAogICAgXTsKCiAgICBwcmludGxuISgiezo8MTV9IHs6PDMwfSB7OjwxMH0gezo8MTB9IiwgIueul+azlSIsICLnibnngrkiLCAi5Y6L57yp546HIiwgIumAn+W6piIpOwogICAgcHJpbnRsbiEoInt9IiwgIi0iLnJlcGVhdCg3MCkpOwogICAgZm9yIChuYW1lLCBmZWF0dXJlLCByYXRpbywgc3BlZWQpIGluICZhbGdvcml0aG1zIHsKICAgICAgICBwcmludGxuISgiezo8MTV9IHs6PDMwfSB7OjwxMH0gezo8MTB9IiwgbmFtZSwgZmVhdHVyZSwgcmF0aW8sIHNwZWVkKTsKICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIGNvbXByZXNzaW9uX2NvbXBhcmlzb24oKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn compression_comparison() {
     let algorithms = [
         ("Gzip (flate2)", "通用，兼容性好", "中等", "高"),
@@ -736,7 +791,13 @@ fn main() {
     compression_comparison();
 }</code></pre>
 <h3 id="44-内存中的压缩与解压示例"><a class="header" href="#44-内存中的压缩与解压示例">4.4 内存中的压缩与解压示例</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use flate2::{read::ZlibDecoder, write::ZlibEncoder, Compression};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KZmxhdGUyID0gIjEiCiovCnVzZSBmbGF0ZTI6OntyZWFkOjpabGliRGVjb2Rlciwgd3JpdGU6OlpsaWJFbmNvZGVyLCBDb21wcmVzc2lvbn07CnVzZSBzdGQ6OmlvOjp7c2VsZiwgUmVhZCwgV3JpdGV9OwoKZm4gemxpYl9yb3VuZHRyaXAoZGF0YTogJlt1OF0pIC0+IGlvOjpSZXN1bHQ8Ym9vbD4gewogICAgLy8g5Y6L57ypCiAgICBsZXQgbXV0IGVuY29kZXIgPSBabGliRW5jb2Rlcjo6bmV3KFZlYzo6bmV3KCksIENvbXByZXNzaW9uOjpkZWZhdWx0KCkpOwogICAgZW5jb2Rlci53cml0ZV9hbGwoZGF0YSk/OwogICAgbGV0IGNvbXByZXNzZWQgPSBlbmNvZGVyLmZpbmlzaCgpPzsKCiAgICAvLyDop6PljosKICAgIGxldCBtdXQgZGVjb2RlciA9IFpsaWJEZWNvZGVyOjpuZXcoJmNvbXByZXNzZWRbLi5dKTsKICAgIGxldCBtdXQgZGVjb21wcmVzc2VkID0gVmVjOjpuZXcoKTsKICAgIGRlY29kZXIucmVhZF90b19lbmQoJm11dCBkZWNvbXByZXNzZWQpPzsKCiAgICBPayhkYXRhID09IGRlY29tcHJlc3NlZC5hc19zbGljZSgpKQp9CgpmbiBtYWluKCkgLT4gaW86OlJlc3VsdDwoKT4gewogICAgbGV0IHRlc3RfZGF0YSA9IFsKICAgICAgICBiIlNob3J0IHRleHQiLnRvX3ZlYygpLAogICAgICAgIHZlYyFbMHU4OyAxMDAwXSwgICAgICAgICAgIC8vIOWFqOmbtuaVsOaNru+8iOmrmOW6puWPr+WOi+e8qe+8iQogICAgICAgICgwLi49MjU1KS5jb2xsZWN0KCksICAgICAgIC8vIOWdh+WMgOWIhuW4g+aVsOaNru+8iOmavuS7peWOi+e8qe+8iQogICAgICAgICJSdXN0ICIucmVwZWF0KDEwMCkuaW50b19ieXRlcygpLCAgLy8g6YeN5aSN5pWw5o2uCiAgICBdOwoKICAgIGZvciAoaSwgZGF0YSkgaW4gdGVzdF9kYXRhLml0ZXIoKS5lbnVtZXJhdGUoKSB7CiAgICAgICAgbGV0IG11dCBlbmNvZGVyID0gWmxpYkVuY29kZXI6Om5ldyhWZWM6Om5ldygpLCBDb21wcmVzc2lvbjo6ZGVmYXVsdCgpKTsKICAgICAgICBlbmNvZGVyLndyaXRlX2FsbChkYXRhKT87CiAgICAgICAgbGV0IGNvbXByZXNzZWQgPSBlbmNvZGVyLmZpbmlzaCgpPzsKCiAgICAgICAgbGV0IHJhdGlvID0gY29tcHJlc3NlZC5sZW4oKSBhcyBmNjQgLyBkYXRhLmxlbigpIGFzIGY2NDsKICAgICAgICBsZXQgb2sgPSB6bGliX3JvdW5kdHJpcChkYXRhKT87CgogICAgICAgIHByaW50bG4hKAogICAgICAgICAgICAi5rWL6K+VIHt9OiDljp/lp4sge30gYnl0ZXMsIOWOi+e8qeWQjiB7fSBieXRlcywg5q+U546HIHs6LjJ9JSwg5LiA6Ie05oCnIHt9IiwKICAgICAgICAgICAgaSArIDEsCiAgICAgICAgICAgIGRhdGEubGVuKCksCiAgICAgICAgICAgIGNvbXByZXNzZWQubGVuKCksCiAgICAgICAgICAgIHJhdGlvICogMTAwLjAsCiAgICAgICAgICAgIG9rCiAgICAgICAgKTsKICAgIH0KCiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+flate2 = "1"
+*/
+use flate2::{read::ZlibDecoder, write::ZlibEncoder, Compression};
 use std::io::{self, Read, Write};
 
 fn zlib_roundtrip(data: &amp;[u8]) -&gt; io::Result&lt;bool&gt; {

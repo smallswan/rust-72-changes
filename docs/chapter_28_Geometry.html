@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -213,6 +250,8 @@
 <p>$$S = \frac{1}{2}ab\sin\theta$$</p>
 <p><strong>海伦公式（已知三边长）：</strong></p>
 <p>$$S = \sqrt{p(p-a)(p-b)(p-c)} \quad \left(p = \frac{a+b+c}{2}\right)$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gdHJpYW5nbGVfYXJlYV9zaWRlcyhhOiBmNjQsIGI6IGY2NCwgYzogZjY0KSAtPiBmNjQgewogICAgbGV0IHAgPSAoYSArIGIgKyBjKSAvIDIuMDsKICAgIChwICogKHAgLSBhKSAqIChwIC0gYikgKiAocCAtIGMpKS5zcXJ0KCkKfQoKZm4gdHJpYW5nbGVfYXJlYV9hbmdsZShhOiBmNjQsIGI6IGY2NCwgYW5nbGVfcmFkOiBmNjQpIC0+IGY2NCB7CiAgICAwLjUgKiBhICogYiAqIGFuZ2xlX3JhZC5zaW4oKQp9CgpmbiBtYWluKCkgewogICAgLy8g5rW35Lym5YWs5byP77ya6L656ZW/5Li6IDMsIDQsIDUg55qE5LiJ6KeS5b2iCiAgICBsZXQgYXJlYSA9IHRyaWFuZ2xlX2FyZWFfc2lkZXMoMy4wLCA0LjAsIDUuMCk7CiAgICBwcmludGxuISgi5rW35Lym5YWs5byPOiDpnaLnp68gPSB7fSIsIGFyZWEpOyAgLy8gNi4wCgogICAgLy8g5Lik6L655aS56KeS77ya6L656ZW/IDMg5ZKMIDTvvIzlpLnop5IgOTDCsAogICAgbGV0IGFyZWEyID0gdHJpYW5nbGVfYXJlYV9hbmdsZSgzLjAsIDQuMCwgc3RkOjpmNjQ6OmNvbnN0czo6RlJBQ19QSV8yKTsKICAgIHByaW50bG4hKCLkuKTovrnlpLnop5I6IOmdouenryA9IHt9IiwgYXJlYTIpOyAgLy8gNi4wCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn triangle_area_sides(a: f64, b: f64, c: f64) -&gt; f64 {
     let p = (a + b + c) / 2.0;
     (p * (p - a) * (p - b) * (p - c)).sqrt()
@@ -256,6 +295,8 @@ fn main() {
 <p><strong>面积：</strong> $S = \pi ab$</p>
 <p><strong>周长（拉马努金第二近似公式）：</strong></p>
 <p>$$ L \approx \pi(a + b)\left(1 + \frac{3h}{10 + \sqrt{4 - 3h}}\right) \quad h = \frac{(a-b)^2}{(a+b)^2} $$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZWxsaXBzZV9hcmVhKGE6IGY2NCwgYjogZjY0KSAtPiBmNjQgewogICAgc3RkOjpmNjQ6OmNvbnN0czo6UEkgKiBhICogYgp9CgpmbiBlbGxpcHNlX3BlcmltZXRlcihhOiBmNjQsIGI6IGY2NCkgLT4gZjY0IHsKICAgIGxldCBoID0gKChhIC0gYikgKiAoYSAtIGIpKSAvICgoYSArIGIpICogKGEgKyBiKSk7CiAgICBzdGQ6OmY2NDo6Y29uc3RzOjpQSSAqIChhICsgYikgKiAoMS4wICsgMy4wICogaCAvICgxMC4wICsgKDQuMCAtIDMuMCAqIGgpLnNxcnQoKSkpCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgYSA9IDUuMDsKICAgIGxldCBiID0gMy4wOwogICAgcHJpbnRsbiEoIuakreWchumdouenrzogezouNH0iLCBlbGxpcHNlX2FyZWEoYSwgYikpOyAgICAgICAvLyA0Ny4xMjM5CiAgICBwcmludGxuISgi5qSt5ZyG5ZGo6ZW/OiB7Oi40fSIsIGVsbGlwc2VfcGVyaW1ldGVyKGEsIGIpKTsgICAvLyDiiYggMjUuNTI2Nwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn ellipse_area(a: f64, b: f64) -&gt; f64 {
     std::f64::consts::PI * a * b
 }
@@ -287,6 +328,8 @@ fn main() {
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6ZjY0Ojpjb25zdHM6OlBJOwoKZm4gc3BoZXJlX3ZvbHVtZShyOiBmNjQpIC0+IGY2NCB7CiAgICA0LjAgLyAzLjAgKiBQSSAqIHIucG93aSgzKQp9CgpmbiBzcGhlcmVfc3VyZmFjZShyOiBmNjQpIC0+IGY2NCB7CiAgICA0LjAgKiBQSSAqIHIucG93aSgyKQp9CgpmbiBjeWxpbmRlcl92b2x1bWUocjogZjY0LCBoOiBmNjQpIC0+IGY2NCB7CiAgICBQSSAqIHIucG93aSgyKSAqIGgKfQoKZm4gY29uZV92b2x1bWUocjogZjY0LCBoOiBmNjQpIC0+IGY2NCB7CiAgICAxLjAgLyAzLjAgKiBQSSAqIHIucG93aSgyKSAqIGgKfQoKZm4gbWFpbigpIHsKICAgIGxldCByID0gNS4wOwogICAgcHJpbnRsbiEoIueQg+S9k+S9k+enryAocj01KTogezouNH0iLCBzcGhlcmVfdm9sdW1lKHIpKTsgICAvLyA1MjMuNTk4OAogICAgcHJpbnRsbiEoIueQg+S9k+ihqOmdouenryAocj01KTogezouNH0iLCBzcGhlcmVfc3VyZmFjZShyKSk7ICAvLyAzMTQuMTU5MwogICAgcHJpbnRsbiEoIuWchuafseS9k+S9k+enryAocj0zLCBoPTEwKTogezouNH0iLCBjeWxpbmRlcl92b2x1bWUoMy4wLCAxMC4wKSk7ICAvLyAyODIuNzQzMwogICAgcHJpbnRsbiEoIuWchumUpeS9k+S9k+enryAocj0zLCBoPTEwKTogezouNH0iLCBjb25lX3ZvbHVtZSgzLjAsIDEwLjApKTsgICAgICAvLyA5NC4yNDc4Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::f64::consts::PI;
 
 fn sphere_volume(r: f64) -&gt; f64 {
@@ -321,6 +364,8 @@ fn main() {
 <p><strong>点斜式：</strong> $y - y_0 = m(x - x_0)$</p>
 <p><strong>点到直线的距离：</strong></p>
 <p>$$ d = \frac{|ax_0 + by_0 + c|}{\sqrt{a^2 + b^2}} $$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gcG9pbnRfdG9fbGluZV9kaXN0YW5jZShweDogZjY0LCBweTogZjY0LCBhOiBmNjQsIGI6IGY2NCwgYzogZjY0KSAtPiBmNjQgewogICAgKGEgKiBweCArIGIgKiBweSArIGMpLmFicygpIC8gKGEgKiBhICsgYiAqIGIpLnNxcnQoKQp9CgpmbiBtYWluKCkgewogICAgLy8g54K5ICgxLCAyKSDliLDnm7Tnur8gM3ggKyA0eSArIDUgPSAwIOeahOi3neemuwogICAgbGV0IGQgPSBwb2ludF90b19saW5lX2Rpc3RhbmNlKDEuMCwgMi4wLCAzLjAsIDQuMCwgNS4wKTsKICAgIHByaW50bG4hKCLngrnliLDnm7Tnur/nmoTot53nprs6IHs6LjR9IiwgZCk7ICAvLyAzLjYKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn point_to_line_distance(px: f64, py: f64, a: f64, b: f64, c: f64) -&gt; f64 {
     (a * px + b * py + c).abs() / (a * a + b * b).sqrt()
 }
@@ -366,6 +411,8 @@ fn main() {
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gcm90YXRlX3BvaW50KHg6IGY2NCwgeTogZjY0LCBhbmdsZV9yYWQ6IGY2NCkgLT4gKGY2NCwgZjY0KSB7CiAgICBsZXQgY29zX2EgPSBhbmdsZV9yYWQuY29zKCk7CiAgICBsZXQgc2luX2EgPSBhbmdsZV9yYWQuc2luKCk7CiAgICAoeCAqIGNvc19hIC0geSAqIHNpbl9hLCB4ICogc2luX2EgKyB5ICogY29zX2EpCn0KCmZuIHNjYWxlX3BvaW50KHg6IGY2NCwgeTogZjY0LCBzeDogZjY0LCBzeTogZjY0KSAtPiAoZjY0LCBmNjQpIHsKICAgICh4ICogc3gsIHkgKiBzeSkKfQoKZm4gbWFpbigpIHsKICAgIGxldCAoeCwgeSkgPSAoMS4wLCAwLjApOwoKICAgIC8vIOaXi+i9rCA5MMKw77yIz4AvMu+8iQogICAgbGV0IChyeCwgcnkpID0gcm90YXRlX3BvaW50KHgsIHksIHN0ZDo6ZjY0Ojpjb25zdHM6OkZSQUNfUElfMik7CiAgICBwcmludGxuISgi5peL6L2sIDkwwrA6ICh7Oi40fSwgezouNH0pIiwgcngsIHJ5KTsgIC8vICgwLCAxKQoKICAgIC8vIOaXi+i9rCA0NcKw77yIz4AvNO+8iQogICAgbGV0IChyeCwgcnkpID0gcm90YXRlX3BvaW50KHgsIHksIHN0ZDo6ZjY0Ojpjb25zdHM6OkZSQUNfUElfNCk7CiAgICBwcmludGxuISgi5peL6L2sIDQ1wrA6ICh7Oi40fSwgezouNH0pIiwgcngsIHJ5KTsgIC8vICgwLjcwNzEsIDAuNzA3MSkKCiAgICAvLyDnvKnmlL4gMiDlgI0KICAgIGxldCAoc3gsIHN5KSA9IHNjYWxlX3BvaW50KHgsIHksIDIuMCwgMi4wKTsKICAgIHByaW50bG4hKCLnvKnmlL4gMiDlgI06ICh7Oi40fSwgezouNH0pIiwgc3gsIHN5KTsgIC8vICgyLCAwKQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn rotate_point(x: f64, y: f64, angle_rad: f64) -&gt; (f64, f64) {
     let cos_a = angle_rad.cos();
     let sin_a = angle_rad.sin();
@@ -406,7 +453,13 @@ fn main() {
 <h2 id="六用-rust-绘制几何图形"><a class="header" href="#六用-rust-绘制几何图形">六、用 Rust 绘制几何图形</a></h2>
 <p>使用 <code>plotters</code> 库可以在 Rust 中绘制各种几何图形。</p>
 <h3 id="61-绘制抛物线"><a class="header" href="#61-绘制抛物线">6.1 绘制抛物线</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use plotters::prelude::*;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcGxvdHRlcnMgPSAiMC4zIgoqLwp1c2UgcGxvdHRlcnM6OnByZWx1ZGU6Oio7CgpmbiBtYWluKCkgLT4gUmVzdWx0PCgpLCBCb3g8ZHluIHN0ZDo6ZXJyb3I6OkVycm9yPj4gewogICAgbGV0IHJvb3QgPSBCaXRNYXBCYWNrZW5kOjpuZXcoInBsb3QucG5nIiwgKDY0MCwgNDgwKSkuaW50b19kcmF3aW5nX2FyZWEoKTsKICAgIHJvb3QuZmlsbCgmV0hJVEUpPzsKCiAgICBsZXQgbXV0IGNoYXJ0ID0gQ2hhcnRCdWlsZGVyOjpvbigmcm9vdCkKICAgICAgICAuY2FwdGlvbigieSA9IHjCsiIsICgic2Fucy1zZXJpZiIsIDUwKS5pbnRvX2ZvbnQoKSkKICAgICAgICAubWFyZ2luKDUpCiAgICAgICAgLnhfbGFiZWxfYXJlYV9zaXplKDMwKQogICAgICAgIC55X2xhYmVsX2FyZWFfc2l6ZSgzMCkKICAgICAgICAuYnVpbGRfY2FydGVzaWFuXzJkKC0xZjMyLi4xZjMyLCAtMC4xZjMyLi4xZjMyKT87CgogICAgY2hhcnQuY29uZmlndXJlX21lc2goKS5kcmF3KCk/OwoKICAgIGNoYXJ0CiAgICAgICAgLmRyYXdfc2VyaWVzKExpbmVTZXJpZXM6Om5ldygKICAgICAgICAgICAgKC01MC4uPTUwKS5tYXAofHh8IHggYXMgZjMyIC8gNTAuMCkubWFwKHx4fCAoeCwgeCAqIHgpKSwKICAgICAgICAgICAgJlJFRCwKICAgICAgICApKT8KICAgICAgICAubGFiZWwoInkgPSB4wrIiKQogICAgICAgIC5sZWdlbmQofCh4LCB5KXwgUGF0aEVsZW1lbnQ6Om5ldyh2ZWMhWyh4LCB5KSwgKHggKyAyMCwgeSldLCAmUkVEKSk7CgogICAgY2hhcnQKICAgICAgICAuY29uZmlndXJlX3Nlcmllc19sYWJlbHMoKQogICAgICAgIC5iYWNrZ3JvdW5kX3N0eWxlKCZXSElURS5taXgoMC44KSkKICAgICAgICAuYm9yZGVyX3N0eWxlKCZCTEFDSykKICAgICAgICAuZHJhdygpPzsKCiAgICByb290LnByZXNlbnQoKT87CiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+plotters = "0.3"
+*/
+use plotters::prelude::*;
 
 fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
     let root = BitMapBackend::new("plot.png", (640, 480)).into_drawing_area();

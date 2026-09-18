@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -480,7 +517,13 @@ tokio-rustls = "0.26"
 rustls-pemfile = "2"
 webpki-roots = "0.26"
 </code></pre>
-<pre class="playground"><code class="language-rust edition2024">use tokio::net::TcpStream;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KdG9raW8gPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJmdWxsIl0gfQoqLwp1c2UgdG9raW86Om5ldDo6VGNwU3RyZWFtOwp1c2UgdG9raW9fcnVzdGxzOjp7VGxzQ29ubmVjdG9yLCBydXN0bHM6OntDbGllbnRDb25maWcsIFJvb3RDZXJ0U3RvcmUsIFNlcnZlck5hbWV9fTsKdXNlIHN0ZDo6c3luYzo6QXJjOwoKYXN5bmMgZm4gaHR0cHNfZ2V0KGhvc3Q6ICZzdHIsIHBhdGg6ICZzdHIpIC0+IFJlc3VsdDxTdHJpbmcsIEJveDxkeW4gc3RkOjplcnJvcjo6RXJyb3I+PiB7CiAgICAvLyDliJvlu7ogVExTIOmFjee9rgogICAgbGV0IG11dCByb290X3N0b3JlID0gUm9vdENlcnRTdG9yZTo6ZW1wdHkoKTsKICAgIHJvb3Rfc3RvcmUuZXh0ZW5kKHdlYnBraV9yb290czo6VExTX1NFUlZFUl9ST09UUy5pdGVyKCkuY2xvbmVkKCkpOwoKICAgIGxldCBjb25maWcgPSBDbGllbnRDb25maWc6OmJ1aWxkZXIoKQogICAgICAgIC53aXRoX3Jvb3RfY2VydGlmaWNhdGVzKHJvb3Rfc3RvcmUpCiAgICAgICAgLndpdGhfbm9fY2xpZW50X2F1dGgoKTsKCiAgICBsZXQgY29ubmVjdG9yID0gVGxzQ29ubmVjdG9yOjpmcm9tKEFyYzo6bmV3KGNvbmZpZykpOwoKICAgIC8vIOW7uueriyBUQ1Ag6L+e5o6lCiAgICBsZXQgdGNwX3N0cmVhbSA9IFRjcFN0cmVhbTo6Y29ubmVjdChmb3JtYXQhKCJ7fTo0NDMiLCBob3N0KSkuYXdhaXQ/OwoKICAgIC8vIFRMUyDmj6HmiYsKICAgIGxldCBzZXJ2ZXJfbmFtZSA9IFNlcnZlck5hbWU6OnRyeV9mcm9tKGhvc3QpPzsKICAgIGxldCBtdXQgdGxzX3N0cmVhbSA9IGNvbm5lY3Rvci5jb25uZWN0KHNlcnZlcl9uYW1lLCB0Y3Bfc3RyZWFtKS5hd2FpdD87CgogICAgLy8g5Y+R6YCBIEhUVFAg6K+35rGCCiAgICBsZXQgcmVxdWVzdCA9IGZvcm1hdCEoCiAgICAgICAgIkdFVCB7fSBIVFRQLzEuMVxyXG5Ib3N0OiB7fVxyXG5Db25uZWN0aW9uOiBjbG9zZVxyXG5cclxuIiwKICAgICAgICBwYXRoLCBob3N0CiAgICApOwogICAgdG9raW86OmlvOjpBc3luY1dyaXRlRXh0Ojp3cml0ZV9hbGwoJm11dCB0bHNfc3RyZWFtLCByZXF1ZXN0LmFzX2J5dGVzKCkpLmF3YWl0PzsKCiAgICAvLyDor7vlj5blk43lupQKICAgIGxldCBtdXQgcmVzcG9uc2UgPSBWZWM6Om5ldygpOwogICAgdG9raW86OmlvOjpBc3luY1JlYWRFeHQ6OnJlYWRfdG9fZW5kKCZtdXQgdGxzX3N0cmVhbSwgJm11dCByZXNwb25zZSkuYXdhaXQ/OwoKICAgIE9rKFN0cmluZzo6ZnJvbV91dGY4X2xvc3N5KCZyZXNwb25zZSkudG9fc3RyaW5nKCkpCn0KCiNbdG9raW86Om1haW5dCmFzeW5jIGZuIG1haW4oKSAtPiBSZXN1bHQ8KCksIEJveDxkeW4gc3RkOjplcnJvcjo6RXJyb3I+PiB7CiAgICBsZXQgcmVzcG9uc2UgPSBodHRwc19nZXQoInd3dy5ydXN0LWxhbmcub3JnIiwgIi8iKS5hd2FpdD87CiAgICBwcmludGxuISgi5ZON5bqU6ZW/5bqmOiB7fSDlrZfoioIiLCByZXNwb25zZS5sZW4oKSk7CiAgICBwcmludGxuISgi5YmNIDUwMCDlrZfnrKY6XG57fSIsICZyZXNwb25zZVsuLnJlc3BvbnNlLmxlbigpLm1pbig1MDApXSk7CiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+*/
+use tokio::net::TcpStream;
 use tokio_rustls::{TlsConnector, rustls::{ClientConfig, RootCertStore, ServerName}};
 use std::sync::Arc;
 

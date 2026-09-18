@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -439,7 +476,13 @@ qrcode = "0.14"
 image = "0.25"
 </code></pre>
 <h3 id="752-生成基本二维码"><a class="header" href="#752-生成基本二维码">7.5.2 生成基本二维码</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use qrcode::QrCode;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcXJjb2RlID0gIjAuMTQiCiovCnVzZSBxcmNvZGU6OlFyQ29kZTsKCmZuIG1haW4oKSAtPiBSZXN1bHQ8KCksIEJveDxkeW4gc3RkOjplcnJvcjo6RXJyb3I+PiB7CiAgICAvLyDnlJ/miJDkuoznu7TnoIEKICAgIGxldCBjb2RlID0gUXJDb2RlOjpuZXcoImh0dHBzOi8vd3d3LnJ1c3QtbGFuZy5vcmciKT87CgogICAgLy8g5Zyo57uI56uv5omT5Y2w5LqM57u056CB77yIQVNDSUkg5b2i5byP77yJCiAgICBwcmludGxuISgie30iLCBjb2RlLnJlbmRlcjo6PGNoYXI+KCkKICAgICAgICAucXVpZXRfem9uZShmYWxzZSkKICAgICAgICAubW9kdWxlX2RpbWVuc2lvbnMoMiwgMSkKICAgICAgICAuYnVpbGQoKSk7CgogICAgLy8g6L6T5Ye65LqM57u056CB55qE5Z+65pys5L+h5oGvCiAgICBwcmludGxuISgi54mI5pysOiB7fSIsIGNvZGUudmVyc2lvbigpKTsKICAgIHByaW50bG4hKCLlrr3luqY6IHt9IOaooeWdlyIsIGNvZGUud2lkdGgoKSk7CgogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+qrcode = "0.14"
+*/
+use qrcode::QrCode;
 
 fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
     // 生成二维码
@@ -480,7 +523,14 @@ fn generate_qr_image(data: &amp;str, size: u32) -&gt; ImageBuffer&lt;Rgba&lt;u8&
 }
 <span class="boring">}</span></code></pre>
 <h3 id="754-自定义颜色的二维码"><a class="header" href="#754-自定义颜色的二维码">7.5.4 自定义颜色的二维码</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use image::{ImageBuffer, Rgba, Rgb};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaW1hZ2UgPSAiMC4yNSIKcXJjb2RlID0gIjAuMTQiCiovCnVzZSBpbWFnZTo6e0ltYWdlQnVmZmVyLCBSZ2JhLCBSZ2J9Owp1c2UgcXJjb2RlOjp7UXJDb2RlLCBDb2xvcn07CgpmbiBnZW5lcmF0ZV9jb2xvcmVkX3FyKAogICAgZGF0YTogJnN0ciwKICAgIGZnX2NvbG9yOiBbdTg7IDNdLAogICAgYmdfY29sb3I6IFt1ODsgM10sCiAgICBtb2R1bGVfc2l6ZTogdTMyLAopIC0+IEltYWdlQnVmZmVyPFJnYmE8dTg+LCBWZWM8dTg+PiB7CiAgICBsZXQgY29kZSA9IFFyQ29kZTo6bmV3KGRhdGEpLnVud3JhcCgpOwogICAgbGV0IGJvcmRlciA9IDQ7CiAgICBsZXQgd2lkdGggPSBjb2RlLndpZHRoKCk7CiAgICBsZXQgaW1nX3NpemUgPSAod2lkdGggKyBib3JkZXIgKiAyKSBhcyB1MzIgKiBtb2R1bGVfc2l6ZTsKCiAgICBsZXQgbXV0IGltZyA9IEltYWdlQnVmZmVyOjpmcm9tX3BpeGVsKAogICAgICAgIGltZ19zaXplLAogICAgICAgIGltZ19zaXplLAogICAgICAgIFJnYmEoW2JnX2NvbG9yWzBdLCBiZ19jb2xvclsxXSwgYmdfY29sb3JbMl0sIDI1NV0pLAogICAgKTsKCiAgICBmb3IgeSBpbiAwLi53aWR0aCB7CiAgICAgICAgZm9yIHggaW4gMC4ud2lkdGggewogICAgICAgICAgICBsZXQgY29sb3IgPSBpZiBjb2RlWyh4LCB5KV0gPT0gQ29sb3I6OkRhcmsgewogICAgICAgICAgICAgICAgUmdiYShbZmdfY29sb3JbMF0sIGZnX2NvbG9yWzFdLCBmZ19jb2xvclsyXSwgMjU1XSkKICAgICAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgICAgIFJnYmEoW2JnX2NvbG9yWzBdLCBiZ19jb2xvclsxXSwgYmdfY29sb3JbMl0sIDI1NV0pCiAgICAgICAgICAgIH07CgogICAgICAgICAgICAvLyDnu5jliLbmqKHlnZcKICAgICAgICAgICAgZm9yIGR5IGluIDAuLm1vZHVsZV9zaXplIHsKICAgICAgICAgICAgICAgIGZvciBkeCBpbiAwLi5tb2R1bGVfc2l6ZSB7CiAgICAgICAgICAgICAgICAgICAgbGV0IHB4ID0gKHggYXMgdTMyICsgYm9yZGVyIGFzIHUzMikgKiBtb2R1bGVfc2l6ZSArIGR4OwogICAgICAgICAgICAgICAgICAgIGxldCBweSA9ICh5IGFzIHUzMiArIGJvcmRlciBhcyB1MzIpICogbW9kdWxlX3NpemUgKyBkeTsKICAgICAgICAgICAgICAgICAgICBpbWcucHV0X3BpeGVsKHB4LCBweSwgY29sb3IpOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQoKICAgIGltZwp9CgpmbiBtYWluKCkgewogICAgLy8g55Sf5oiQ6JOd6Imy5YmN5pmv44CB55m96Imy6IOM5pmv55qE5LqM57u056CBCiAgICBsZXQgcXIgPSBnZW5lcmF0ZV9jb2xvcmVkX3FyKAogICAgICAgICJodHRwczovL3d3dy5ydXN0LWxhbmcub3JnIiwKICAgICAgICBbMCwgMTAwLCAyMDBdLCAgIC8vIOiTneiJsuWJjeaZrwogICAgICAgIFsyNTUsIDI1NSwgMjU1XSwgIC8vIOeZveiJsuiDjOaZrwogICAgICAgIDEwLAogICAgKTsKICAgIHFyLnNhdmUoInFyX2JsdWUucG5nIikudW53cmFwKCk7CgogICAgLy8g55Sf5oiQ57qi6Imy5YmN5pmv55qE5LqM57u056CBCiAgICBsZXQgcXJfcmVkID0gZ2VuZXJhdGVfY29sb3JlZF9xcigKICAgICAgICAiSGVsbG8sIFJ1c3QhIiwKICAgICAgICBbMjIwLCA1MCwgNTBdLCAgIC8vIOe6ouiJsuWJjeaZrwogICAgICAgIFsyNTUsIDI1NSwgMjU1XSwgIC8vIOeZveiJsuiDjOaZrwogICAgICAgIDEwLAogICAgKTsKICAgIHFyX3JlZC5zYXZlKCJxcl9yZWQucG5nIikudW53cmFwKCk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+image = "0.25"
+qrcode = "0.14"
+*/
+use image::{ImageBuffer, Rgba, Rgb};
 use qrcode::{QrCode, Color};
 
 fn generate_colored_qr(
@@ -543,7 +593,14 @@ fn main() {
 }</code></pre>
 <h3 id="755-带logo的二维码"><a class="header" href="#755-带logo的二维码">7.5.5 带Logo的二维码</a></h3>
 <p>利用 QR 码的纠错能力，可以在二维码中心放置 Logo 而不影响识别。需要使用较高的纠错等级（H 级，30% 容错）。</p>
-<pre class="playground"><code class="language-rust edition2024">use image::{GenericImage, ImageBuffer, Rgba, imageops};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaW1hZ2UgPSAiMC4yNSIKcXJjb2RlID0gIjAuMTQiCiovCnVzZSBpbWFnZTo6e0dlbmVyaWNJbWFnZSwgSW1hZ2VCdWZmZXIsIFJnYmEsIGltYWdlb3BzfTsKdXNlIHFyY29kZTo6e1FyQ29kZSwgRWNMZXZlbH07CgpmbiBnZW5lcmF0ZV9xcl93aXRoX2xvZ28oCiAgICBkYXRhOiAmc3RyLAogICAgbG9nb19wYXRoOiAmc3RyLAogICAgc2l6ZTogdTMyLAogICAgbG9nb19yYXRpbzogZjMyLCAgLy8gTG9nbyDljaDkuoznu7TnoIHnmoTmr5TkvovvvIjlu7rorq4gMC4yLTAuM++8iQopIC0+IFJlc3VsdDxJbWFnZUJ1ZmZlcjxSZ2JhPHU4PiwgVmVjPHU4Pj4sIEJveDxkeW4gc3RkOjplcnJvcjo6RXJyb3I+PiB7CiAgICAvLyAxLiDkvb/nlKggSCDnuqfnuqDplJnnlJ/miJDkuoznu7TnoIEKICAgIGxldCBjb2RlID0gUXJDb2RlOjp3aXRoX2Vycm9yX2NvcnJlY3Rpb25fbGV2ZWwoCiAgICAgICAgZGF0YS5hc19ieXRlcygpLAogICAgICAgIEVjTGV2ZWw6OkgsICAvLyAzMCUg57qg6ZSZ5a656YePCiAgICApPzsKCiAgICAvLyAyLiDmuLLmn5Pkuoznu7TnoIEKICAgIGxldCBib3JkZXIgPSA0OwogICAgbGV0IG1vZHVsZV9zaXplID0gKHNpemUgYXMgZjMyIC8gKGNvZGUud2lkdGgoKSBhcyBmMzIgKyAyLjAgKiBib3JkZXIgYXMgZjMyKSkuY2VpbCgpIGFzIHUzMjsKICAgIGxldCBtdXQgcXJfaW1nID0gY29kZS5yZW5kZXI6OjxSZ2JhPHU4Pj4oKQogICAgICAgIC5taW5fZGltZW5zaW9ucyhzaXplLCBzaXplKQogICAgICAgIC5xdWlldF96b25lKHRydWUpCiAgICAgICAgLm1vZHVsZV9kaW1lbnNpb25zKG1vZHVsZV9zaXplLCBtb2R1bGVfc2l6ZSkKICAgICAgICAuYnVpbGQoKTsKCiAgICAvLyAzLiDliqDovb0gTG9nbwogICAgbGV0IGxvZ28gPSBpbWFnZTo6b3Blbihsb2dvX3BhdGgpPy50b19yZ2JhOCgpOwogICAgbGV0IChxcl93LCBxcl9oKSA9IHFyX2ltZy5kaW1lbnNpb25zKCk7CgogICAgLy8gNC4g6K6h566XIExvZ28g5bC65a+45ZKM5L2N572u77yI5bGF5Lit77yJCiAgICBsZXQgbG9nb193ID0gKHFyX3cgYXMgZjMyICogbG9nb19yYXRpbykgYXMgdTMyOwogICAgbGV0IGxvZ29faCA9IChxcl9oIGFzIGYzMiAqIGxvZ29fcmF0aW8pIGFzIHUzMjsKICAgIGxldCByZXNpemVkX2xvZ28gPSBsb2dvLnJlc2l6ZShsb2dvX3csIGxvZ29faCwgaW1hZ2VvcHM6OkZpbHRlclR5cGU6OkxhbmN6b3MzKTsKCiAgICAvLyA1LiDmt7vliqDnmb3oibLog4zmma/ljLrln58KICAgIGxldCBwYWRkaW5nID0gMTA7CiAgICBsZXQgYmdfdyA9IGxvZ29fdyArIHBhZGRpbmcgKiAyOwogICAgbGV0IGJnX2ggPSBsb2dvX2ggKyBwYWRkaW5nICogMjsKICAgIGxldCBtdXQgYmcgPSBJbWFnZUJ1ZmZlcjo6ZnJvbV9waXhlbChiZ193LCBiZ19oLCBSZ2JhKFsyNTUsIDI1NSwgMjU1LCAyNTVdKSk7CiAgICBiZy5jb3B5X2Zyb20oJnJlc2l6ZWRfbG9nbywgcGFkZGluZywgcGFkZGluZyk/OwoKICAgIC8vIDYuIOWwhiBMb2dvIOaUvue9ruWcqOS6jOe7tOeggeS4reW/gwogICAgbGV0IHggPSAocXJfdyAtIGJnX3cpIC8gMjsKICAgIGxldCB5ID0gKHFyX2ggLSBiZ19oKSAvIDI7CiAgICBxcl9pbWcuY29weV9mcm9tKCZiZywgeCwgeSk/OwoKICAgIE9rKHFyX2ltZykKfQoKZm4gbWFpbigpIC0+IFJlc3VsdDwoKSwgQm94PGR5biBzdGQ6OmVycm9yOjpFcnJvcj4+IHsKICAgIGxldCBxciA9IGdlbmVyYXRlX3FyX3dpdGhfbG9nbygKICAgICAgICAiaHR0cHM6Ly93d3cucnVzdC1sYW5nLm9yZyIsCiAgICAgICAgImltYWdlcy9ydXN0LWxvZ28tYmxrLnN2ZyIsCiAgICAgICAgNjAwLAogICAgICAgIDAuMjUsCiAgICApPzsKICAgIHFyLnNhdmUoInFyX3dpdGhfbG9nby5wbmciKT87CiAgICBwcmludGxuISgi5bimIExvZ28g55qE5LqM57u056CB5bey55Sf5oiQOiBxcl93aXRoX2xvZ28ucG5nIik7CiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+image = "0.25"
+qrcode = "0.14"
+*/
+use image::{GenericImage, ImageBuffer, Rgba, imageops};
 use qrcode::{QrCode, EcLevel};
 
 fn generate_qr_with_logo(
@@ -608,7 +665,13 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 bardecoder = "0.5"
 image = "0.25"
 </code></pre>
-<pre class="playground"><code class="language-rust edition2024">use bardecoder::decode::Decode;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaW1hZ2UgPSAiMC4yNSIKKi8KdXNlIGJhcmRlY29kZXI6OmRlY29kZTo6RGVjb2RlOwp1c2UgaW1hZ2U6OkR5bmFtaWNJbWFnZTsKCmZuIGRlY29kZV9xcihpbWFnZV9wYXRoOiAmc3RyKSAtPiBSZXN1bHQ8U3RyaW5nLCBCb3g8ZHluIHN0ZDo6ZXJyb3I6OkVycm9yPj4gewogICAgbGV0IGltZyA9IGltYWdlOjpvcGVuKGltYWdlX3BhdGgpPzsKICAgIGxldCBkZWNvZGVyID0gYmFyZGVjb2Rlcjo6ZGVmYXVsdF9kZWNvZGVyKCk7CgogICAgbGV0IHJlc3VsdHMgPSBkZWNvZGVyLmRlY29kZSgmaW1nKTsKICAgIGZvciByZXN1bHQgaW4gcmVzdWx0cyB7CiAgICAgICAgbWF0Y2ggcmVzdWx0IHsKICAgICAgICAgICAgT2soY29udGVudCkgPT4gewogICAgICAgICAgICAgICAgcHJpbnRsbiEoIuino+eggee7k+aenDoge30iLCBjb250ZW50KTsKICAgICAgICAgICAgICAgIHJldHVybiBPayhjb250ZW50KTsKICAgICAgICAgICAgfQogICAgICAgICAgICBFcnIoZSkgPT4gcHJpbnRsbiEoIuino+eggeWksei0pTogezo/fSIsIGUpLAogICAgICAgIH0KICAgIH0KCiAgICBFcnIoIuaXoOazleino+eggeS6jOe7tOeggSIuaW50bygpKQp9CgpmbiBtYWluKCkgewogICAgbWF0Y2ggZGVjb2RlX3FyKCJxcl9jb2RlLnBuZyIpIHsKICAgICAgICBPayhjb250ZW50KSA9PiBwcmludGxuISgi5LqM57u056CB5YaF5a65OiB7fSIsIGNvbnRlbnQpLAogICAgICAgIEVycihlKSA9PiBwcmludGxuISgi6ZSZ6K+vOiB7fSIsIGUpLAogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+image = "0.25"
+*/
+use bardecoder::decode::Decode;
 use image::DynamicImage;
 
 fn decode_qr(image_path: &amp;str) -&gt; Result&lt;String, Box&lt;dyn std::error::Error&gt;&gt; {
@@ -636,7 +699,14 @@ fn main() {
     }
 }</code></pre>
 <h3 id="757-批量生成二维码"><a class="header" href="#757-批量生成二维码">7.5.7 批量生成二维码</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use image::{GenericImage, ImageBuffer, Rgba};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaW1hZ2UgPSAiMC4yNSIKcXJjb2RlID0gIjAuMTQiCiovCnVzZSBpbWFnZTo6e0dlbmVyaWNJbWFnZSwgSW1hZ2VCdWZmZXIsIFJnYmF9Owp1c2UgcXJjb2RlOjpRckNvZGU7CnVzZSBzdGQ6OmZzOwoKLy8vIOaJuemHj+eUn+aIkOS6jOe7tOeggeW5tuS/neWtmApmbiBiYXRjaF9nZW5lcmF0ZV9xcl9jb2RlcygKICAgIGRhdGFfbGlzdDogJlsoJnN0ciwgJnN0cildLCAgLy8gKOaVsOaNriwg6L6T5Ye65paH5Lu25ZCNKQogICAgc2l6ZTogdTMyLAopIC0+IFJlc3VsdDwoKSwgQm94PGR5biBzdGQ6OmVycm9yOjpFcnJvcj4+IHsKICAgIGZvciAoZGF0YSwgZmlsZW5hbWUpIGluIGRhdGFfbGlzdCB7CiAgICAgICAgbGV0IGNvZGUgPSBRckNvZGU6Om5ldyhkYXRhLmFzX2J5dGVzKCkpPzsKICAgICAgICBsZXQgYm9yZGVyID0gNDsKICAgICAgICBsZXQgbW9kdWxlX3NpemUgPSAoc2l6ZSBhcyBmMzIgLyAoY29kZS53aWR0aCgpIGFzIGYzMiArIDIuMCAqIGJvcmRlciBhcyBmMzIpKS5jZWlsKCkgYXMgdTMyOwoKICAgICAgICBsZXQgaW1nID0gY29kZS5yZW5kZXI6OjxSZ2JhPHU4Pj4oKQogICAgICAgICAgICAubWluX2RpbWVuc2lvbnMoc2l6ZSwgc2l6ZSkKICAgICAgICAgICAgLnF1aWV0X3pvbmUodHJ1ZSkKICAgICAgICAgICAgLm1vZHVsZV9kaW1lbnNpb25zKG1vZHVsZV9zaXplLCBtb2R1bGVfc2l6ZSkKICAgICAgICAgICAgLmJ1aWxkKCk7CgogICAgICAgIGltZy5zYXZlKGZpbGVuYW1lKT87CiAgICAgICAgcHJpbnRsbiEoIuW3sueUn+aIkDoge30gLT4ge30iLCBkYXRhLCBmaWxlbmFtZSk7CiAgICB9CgogICAgT2soKCkpCn0KCmZuIG1haW4oKSAtPiBSZXN1bHQ8KCksIEJveDxkeW4gc3RkOjplcnJvcjo6RXJyb3I+PiB7CiAgICBsZXQgZGF0YV9saXN0ID0gJlsKICAgICAgICAoImh0dHBzOi8vd3d3LnJ1c3QtbGFuZy5vcmciLCAicXJfcnVzdC5wbmciKSwKICAgICAgICAoImh0dHBzOi8vY3JhdGVzLmlvIiwgInFyX2NyYXRlcy5wbmciKSwKICAgICAgICAoImh0dHBzOi8vZG9jcy5ycyIsICJxcl9kb2NzLnBuZyIpLAogICAgICAgICgiaHR0cHM6Ly9naXRodWIuY29tL3J1c3QtbGFuZy9ydXN0IiwgInFyX2dpdGh1Yi5wbmciKSwKICAgIF07CgogICAgLy8g5Yib5bu66L6T5Ye655uu5b2VCiAgICBmczo6Y3JlYXRlX2Rpcl9hbGwoIm91dHB1dF9xciIpPzsKCiAgICBiYXRjaF9nZW5lcmF0ZV9xcl9jb2RlcyhkYXRhX2xpc3QsIDMwMCk/OwoKICAgIE9rKCgpKQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+image = "0.25"
+qrcode = "0.14"
+*/
+use image::{GenericImage, ImageBuffer, Rgba};
 use qrcode::QrCode;
 use std::fs;
 
@@ -680,7 +750,14 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 }</code></pre>
 <h3 id="758-合并多个二维码"><a class="header" href="#758-合并多个二维码">7.5.8 合并多个二维码</a></h3>
 <p>以下代码将多个二维码横向合并为一张图片：</p>
-<pre class="playground"><code class="language-rust edition2024">use image::{GenericImage, ImageBuffer, Rgba};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaW1hZ2UgPSAiMC4yNSIKcXJjb2RlID0gIjAuMTQiCiovCnVzZSBpbWFnZTo6e0dlbmVyaWNJbWFnZSwgSW1hZ2VCdWZmZXIsIFJnYmF9Owp1c2UgcXJjb2RlOjpRckNvZGU7CgpmbiBnZW5lcmF0ZV9xcl9pbWFnZShkYXRhOiAmc3RyLCBzaXplOiB1MzIpIC0+IEltYWdlQnVmZmVyPFJnYmE8dTg+LCBWZWM8dTg+PiB7CiAgICBsZXQgY29kZSA9IFFyQ29kZTo6bmV3KGRhdGEuYXNfYnl0ZXMoKSkudW53cmFwKCk7CiAgICBsZXQgYm9yZGVyID0gNDsKICAgIGxldCBtb2R1bGVfc2l6ZSA9IChzaXplIGFzIGYzMiAvIChjb2RlLndpZHRoKCkgYXMgZjMyICsgMi4wICogYm9yZGVyIGFzIGYzMikpLmNlaWwoKSBhcyB1MzI7CgogICAgY29kZS5yZW5kZXI6OjxSZ2JhPHU4Pj4oKQogICAgICAgIC5taW5fZGltZW5zaW9ucyhzaXplLCBzaXplKQogICAgICAgIC5xdWlldF96b25lKHRydWUpCiAgICAgICAgLm1vZHVsZV9kaW1lbnNpb25zKG1vZHVsZV9zaXplLCBtb2R1bGVfc2l6ZSkKICAgICAgICAuYnVpbGQoKQp9CgpmbiBjb21iaW5lX3FyX2NvZGVzX2hvcml6b250YWxseSgKICAgIGltZzE6ICZJbWFnZUJ1ZmZlcjxSZ2JhPHU4PiwgVmVjPHU4Pj4sCiAgICBpbWcyOiAmSW1hZ2VCdWZmZXI8UmdiYTx1OD4sIFZlYzx1OD4+LAogICAgZ2FwOiB1MzIsCikgLT4gSW1hZ2VCdWZmZXI8UmdiYTx1OD4sIFZlYzx1OD4+IHsKICAgIC8vIDEuIOiuoeeul+aWsOWbvueJh+eahOWwuuWvuAogICAgbGV0ICh3MSwgaDEpID0gaW1nMS5kaW1lbnNpb25zKCk7CiAgICBsZXQgKHcyLCBoMikgPSBpbWcyLmRpbWVuc2lvbnMoKTsKICAgIGxldCBmaW5hbF93aWR0aCA9IHcxICsgZ2FwICsgdzI7CiAgICBsZXQgZmluYWxfaGVpZ2h0ID0gaDEubWF4KGgyKTsKCiAgICAvLyAyLiDliJvlu7rmlrDnlLvluIPvvIzlubbloavlhYXnmb3oibLog4zmma8KICAgIGxldCBtdXQgY29tYmluZWQgPQogICAgICAgIEltYWdlQnVmZmVyOjpmcm9tX3BpeGVsKGZpbmFsX3dpZHRoLCBmaW5hbF9oZWlnaHQsIFJnYmEoWzI1NSwgMjU1LCAyNTUsIDI1NV0pKTsKCiAgICAvLyAzLiDlsIbnrKzkuIDlvKDlm77lpI3liLbliLDlt6bkvqcgKDAsIDApIOS9jee9rgogICAgY29tYmluZWQuY29weV9mcm9tKGltZzEsIDAsIDApLnVud3JhcCgpOwoKICAgIC8vIDQuIOWwhuesrOS6jOW8oOWbvuWkjeWItuWIsOWPs+S+pyAodzEgKyBnYXAsIDApIOS9jee9rgogICAgY29tYmluZWQuY29weV9mcm9tKGltZzIsIHcxICsgZ2FwLCAwKS51bndyYXAoKTsKCiAgICBjb21iaW5lZAp9CgpmbiBtYWluKCkgewogICAgLy8gMS4g55Sf5oiQ5Lik5Liq5LqM57u056CB5Zu+5YOP77yM5bC65a+46K6+5Li6IDIwMHgyMDAKICAgIGxldCBxcjEgPSBnZW5lcmF0ZV9xcl9pbWFnZSgiaHR0cHM6Ly9xci5hbGlwYXkuY29tL2ZreDE4MjAzODQwZXFibzY0OHdkbzk1IiwgMjAwKTsKICAgIGxldCBxcjIgPSBnZW5lcmF0ZV9xcl9pbWFnZSgid3hwOi8vZjJmMFF1V29rcS0waVdPSnJCT1ZIejd2VkxvT2hyQ2huTUkyOENPcGRTbUZ6UnMiLCAyMDApOwoKICAgIC8vIDIuIOaoquWQkeWQiOW5tu+8jOmXtOmalCAyMCDlg4/ntKAKICAgIGxldCBjb21iaW5lZCA9IGNvbWJpbmVfcXJfY29kZXNfaG9yaXpvbnRhbGx5KCZxcjEsICZxcjIsIDIwKTsKCiAgICAvLyAzLiDkv53lrZjmnIDnu4jlm77niYcKICAgIGNvbWJpbmVkLnNhdmUoIi90bXAvY29tYmluZWRfcXJfY29kZXMucG5nIikudW53cmFwKCk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+image = "0.25"
+qrcode = "0.14"
+*/
+use image::{GenericImage, ImageBuffer, Rgba};
 use qrcode::QrCode;
 
 fn generate_qr_image(data: &amp;str, size: u32) -&gt; ImageBuffer&lt;Rgba&lt;u8&gt;, Vec&lt;u8&gt;&gt; {

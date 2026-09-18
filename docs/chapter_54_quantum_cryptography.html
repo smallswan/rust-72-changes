@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -369,6 +406,8 @@ pqcrypto-dilithium = "0.5"
 rand = "0.8"
 </code></pre>
 <h3 id="kyber-密钥封装示例"><a class="header" href="#kyber-密钥封装示例">Kyber 密钥封装示例</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHBxY3J5cHRvX2t5YmVyOjpreWJlcjc2ODsKdXNlIHBxY3J5cHRvX3RyYWl0czo6a2VtOjp7Q2lwaGVydGV4dCwgUHVibGljS2V5LCBTZWNyZXRLZXksIFNoYXJlZFNlY3JldH07CgpmbiBtYWluKCkgewogICAgLy8gMS4g5o6l5pS25pa577yIQm9i77yJ55Sf5oiQ5a+G6ZKl5a+5CiAgICBsZXQgKHBrLCBzaykgPSBreWJlcjc2ODo6a2V5cGFpcigpOwogICAgcHJpbnRsbiEoIkJvYiDnlJ/miJDkuoYgS3liZXItNzY4IOWvhumSpeWvuSIpOwogICAgcHJpbnRsbiEoIuWFrOmSpemVv+W6pjoge30gYnl0ZXMiLCBway5hc19ieXRlcygpLmxlbigpKTsKICAgIHByaW50bG4hKCLnp4HpkqXplb/luqY6IHt9IGJ5dGVzIiwgc2suYXNfYnl0ZXMoKS5sZW4oKSk7CgogICAgLy8gMi4g5Y+R6YCB5pa577yIQWxpY2XvvInkvb/nlKggQm9iIOeahOWFrOmSpeWwgeijheWvhumSpQogICAgbGV0IChjaXBoZXJ0ZXh0LCBzaGFyZWRfc2VjcmV0X2FsaWNlKSA9IGt5YmVyNzY4OjplbmNhcHN1bGF0ZSgmcGspOwogICAgcHJpbnRsbiEoIlxuQWxpY2Ug5bCB6KOF5LqG5YWx5Lqr5a+G6ZKlIik7CiAgICBwcmludGxuISgi5a+G5paH6ZW/5bqmOiB7fSBieXRlcyIsIGNpcGhlcnRleHQuYXNfYnl0ZXMoKS5sZW4oKSk7CiAgICBwcmludGxuISgiQWxpY2Ug55qE5YWx5Lqr5a+G6ZKlOiB7OjAyeD99Iiwgc2hhcmVkX3NlY3JldF9hbGljZS5hc19ieXRlcygpKTsKCiAgICAvLyAzLiBCb2Ig5L2/55So56eB6ZKl6Kej5bCB6KOF77yM5oGi5aSN5YWx5Lqr5a+G6ZKlCiAgICBsZXQgc2hhcmVkX3NlY3JldF9ib2IgPSBreWJlcjc2ODo6ZGVjYXBzdWxhdGUoJmNpcGhlcnRleHQsICZzayk7CiAgICBwcmludGxuISgiXG5Cb2Ig6Kej5bCB6KOF5LqG5YWx5Lqr5a+G6ZKlIik7CiAgICBwcmludGxuISgiQm9iIOeahOWFseS6q+WvhumSpTogICB7OjAyeD99Iiwgc2hhcmVkX3NlY3JldF9ib2IuYXNfYnl0ZXMoKSk7CgogICAgLy8gNC4g6aqM6K+B5Y+M5pa55a+G6ZKl5LiA6Ie0CiAgICBhc3NlcnRfZXEhKAogICAgICAgIHNoYXJlZF9zZWNyZXRfYWxpY2UuYXNfYnl0ZXMoKSwKICAgICAgICBzaGFyZWRfc2VjcmV0X2JvYi5hc19ieXRlcygpLAogICAgICAgICLlhbHkuqvlr4bpkqXkuI3kuIDoh7TvvIEiCiAgICApOwogICAgcHJpbnRsbiEoIlxu4pyTIOWFseS6q+WvhumSpeS4gOiHtO+8jOWPr+S7peW8gOWni+WvueensOWKoOWvhumAmuS/oSIpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use pqcrypto_kyber::kyber768;
 use pqcrypto_traits::kem::{Ciphertext, PublicKey, SecretKey, SharedSecret};
 
@@ -399,6 +438,8 @@ fn main() {
     println!("\n✓ 共享密钥一致，可以开始对称加密通信");
 }</code></pre>
 <h3 id="dilithium-数字签名示例"><a class="header" href="#dilithium-数字签名示例">Dilithium 数字签名示例</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHBxY3J5cHRvX2RpbGl0aGl1bTo6ZGlsaXRoaXVtMzsKdXNlIHBxY3J5cHRvX3RyYWl0czo6c2lnbjo6e1B1YmxpY0tleSwgU2VjcmV0S2V5LCBTaWduZWRNZXNzYWdlLCBTaWduZXIsIFZlcmlmaWVyfTsKCmZuIG1haW4oKSB7CiAgICAvLyAxLiDnlJ/miJDnrb7lkI3lr4bpkqXlr7kKICAgIGxldCAocGssIHNrKSA9IGRpbGl0aGl1bTM6OmtleXBhaXIoKTsKICAgIHByaW50bG4hKCLnlJ/miJDkuoYgRGlsaXRoaXVtMyDnrb7lkI3lr4bpkqXlr7kiKTsKICAgIHByaW50bG4hKCLlhazpkqXplb/luqY6IHt9IGJ5dGVzIiwgcGsuYXNfYnl0ZXMoKS5sZW4oKSk7CiAgICBwcmludGxuISgi56eB6ZKl6ZW/5bqmOiB7fSBieXRlcyIsIHNrLmFzX2J5dGVzKCkubGVuKCkpOwoKICAgIC8vIDIuIOW+heetvuWQjeeahOa2iOaBrwogICAgbGV0IG1lc3NhZ2UgPSBiIui/meaYr+S4gOS7vemcgOimgemHj+WtkOWuieWFqOS/neaKpOeahOmHjeimgeWQiOWQjCI7CiAgICBwcmludGxuISgiXG7lvoXnrb7lkI3mtojmga86IHt9IiwgU3RyaW5nOjpmcm9tX3V0ZjhfbG9zc3kobWVzc2FnZSkpOwoKICAgIC8vIDMuIOS9v+eUqOengemSpeetvuWQjQogICAgbGV0IHNpZ25lZF9tc2cgPSBzay5zaWduKG1lc3NhZ2UpOwogICAgcHJpbnRsbiEoIuetvuWQjeWujOaIkCIpOwogICAgcHJpbnRsbiEoIuetvuWQjemVv+W6pjoge30gYnl0ZXMiLCBzaWduZWRfbXNnLmFzX2J5dGVzKCkubGVuKCkpOwoKICAgIC8vIDQuIOS9v+eUqOWFrOmSpemqjOivgeetvuWQjQogICAgbGV0IHZlcmlmaWVkID0gcGsudmVyaWZ5KCZzaWduZWRfbXNnLCBtZXNzYWdlKTsKICAgIG1hdGNoIHZlcmlmaWVkIHsKICAgICAgICBPaygoKSkgPT4gcHJpbnRsbiEoIuKckyDnrb7lkI3pqozor4HpgJrov4ciKSwKICAgICAgICBFcnIoZSkgPT4gcHJpbnRsbiEoIuKclyDnrb7lkI3pqozor4HlpLHotKU6IHs6P30iLCBlKSwKICAgIH0KCiAgICAvLyA1LiDpqozor4Hnr6HmlLnmo4DmtYsKICAgIGxldCBtdXQgdGFtcGVyZWRfbXNnID0gbWVzc2FnZS50b192ZWMoKTsKICAgIHRhbXBlcmVkX21zZ1swXSBePSAweEZGOyAvLyDnr6HmlLnnrKzkuIDkuKrlrZfoioIKICAgIGxldCB0YW1wZXJlZF9zaWduZWQgPSBzay5zaWduKCZ0YW1wZXJlZF9tc2cpOwogICAgCiAgICBtYXRjaCBway52ZXJpZnkoJnRhbXBlcmVkX3NpZ25lZCwgbWVzc2FnZSkgewogICAgICAgIE9rKCgpKSA9PiBwcmludGxuISgi5byC5bi477ya56+h5pS55pyq6KKr5Y+R546wIiksCiAgICAgICAgRXJyKF8pID0+IHByaW50bG4hKCLinJMg5q2j56Gu5qOA5rWL5Yiw5raI5oGv56+h5pS5IiksCiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use pqcrypto_dilithium::dilithium3;
 use pqcrypto_traits::sign::{PublicKey, SecretKey, SignedMessage, Signer, Verifier};
 

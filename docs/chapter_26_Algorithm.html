@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -275,6 +312,8 @@ fn bubble_sort(arr: &amp;mut [i32]) {
 <h2 id="二算法思想"><a class="header" href="#二算法思想">二、算法思想</a></h2>
 <h3 id="21-枚举法brute-force"><a class="header" href="#21-枚举法brute-force">2.1 枚举法（Brute Force）</a></h3>
 <p>枚举法是最直接的算法思想：遍历所有可能的情况，逐一验证是否满足条件。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g5L6L77ya5om+5Ye6IDF+MTAwIOS4reeahOaJgOaciee0oOaVsApmbiBmaW5kX3ByaW1lcyhsaW1pdDogdTMyKSAtPiBWZWM8dTMyPiB7CiAgICBsZXQgbXV0IHByaW1lcyA9IFZlYzo6bmV3KCk7CiAgICBmb3IgbiBpbiAyLi49bGltaXQgewogICAgICAgIGxldCBtdXQgaXNfcHJpbWUgPSB0cnVlOwogICAgICAgIGZvciBpIGluIDIuLm4gewogICAgICAgICAgICBpZiBuICUgaSA9PSAwIHsKICAgICAgICAgICAgICAgIGlzX3ByaW1lID0gZmFsc2U7CiAgICAgICAgICAgICAgICBicmVhazsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBpZiBpc19wcmltZSB7CiAgICAgICAgICAgIHByaW1lcy5wdXNoKG4pOwogICAgICAgIH0KICAgIH0KICAgIHByaW1lcwp9CgpmbiBtYWluKCkgewogICAgcHJpbnRsbiEoIns6P30iLCBmaW5kX3ByaW1lcyg1MCkpOwogICAgLy8gWzIsIDMsIDUsIDcsIDExLCAxMywgMTcsIDE5LCAyMywgMjksIDMxLCAzNywgNDEsIDQzLCA0N10KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// 例：找出 1~100 中的所有素数
 fn find_primes(limit: u32) -&gt; Vec&lt;u32&gt; {
     let mut primes = Vec::new();
@@ -308,6 +347,8 @@ fn main() {
 <li><strong>解决</strong>：递归解决子问题（若子问题足够小，直接求解）</li>
 <li><strong>合并</strong>：将子问题的解合并为原问题的解</li>
 </ol>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g5b2S5bm25o6S5bqP77yITWVyZ2UgU29ydO+8iS0g57uP5YW45YiG5rK7566X5rOVCmZuIG1lcmdlX3NvcnQoYXJyOiAmbXV0IFtpMzJdKSB7CiAgICBsZXQgbGVuID0gYXJyLmxlbigpOwogICAgaWYgbGVuIDw9IDEgewogICAgICAgIHJldHVybjsKICAgIH0KCiAgICBsZXQgbWlkID0gbGVuIC8gMjsKICAgIG1lcmdlX3NvcnQoJm11dCBhcnJbLi5taWRdKTsKICAgIG1lcmdlX3NvcnQoJm11dCBhcnJbbWlkLi5dKTsKCiAgICAvLyDlkIjlubbkuKTkuKrmnInluo/mlbDnu4QKICAgIGxldCBtdXQgdGVtcCA9IGFyci50b192ZWMoKTsKICAgIG1lcmdlKCZhcnJbLi5taWRdLCAmYXJyW21pZC4uXSwgJm11dCB0ZW1wKTsKICAgIGFyci5jb3B5X2Zyb21fc2xpY2UoJnRlbXApOwp9CgpmbiBtZXJnZShsZWZ0OiAmW2kzMl0sIHJpZ2h0OiAmW2kzMl0sIHJlc3VsdDogJm11dCBbaTMyXSkgewogICAgbGV0IChtdXQgaSwgbXV0IGosIG11dCBrKSA9ICgwLCAwLCAwKTsKCiAgICB3aGlsZSBpIDwgbGVmdC5sZW4oKSAmJiBqIDwgcmlnaHQubGVuKCkgewogICAgICAgIGlmIGxlZnRbaV0gPD0gcmlnaHRbal0gewogICAgICAgICAgICByZXN1bHRba10gPSBsZWZ0W2ldOwogICAgICAgICAgICBpICs9IDE7CiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgcmVzdWx0W2tdID0gcmlnaHRbal07CiAgICAgICAgICAgIGogKz0gMTsKICAgICAgICB9CiAgICAgICAgayArPSAxOwogICAgfQoKICAgIHdoaWxlIGkgPCBsZWZ0LmxlbigpIHsKICAgICAgICByZXN1bHRba10gPSBsZWZ0W2ldOwogICAgICAgIGkgKz0gMTsKICAgICAgICBrICs9IDE7CiAgICB9CgogICAgd2hpbGUgaiA8IHJpZ2h0LmxlbigpIHsKICAgICAgICByZXN1bHRba10gPSByaWdodFtqXTsKICAgICAgICBqICs9IDE7CiAgICAgICAgayArPSAxOwogICAgfQp9CgpmbiBtYWluKCkgewogICAgbGV0IG11dCBhcnIgPSBbMzgsIDI3LCA0MywgMywgOSwgODIsIDEwXTsKICAgIG1lcmdlX3NvcnQoJm11dCBhcnIpOwogICAgcHJpbnRsbiEoIns6P30iLCBhcnIpOyAgLy8gWzMsIDksIDEwLCAyNywgMzgsIDQzLCA4Ml0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// 归并排序（Merge Sort）- 经典分治算法
 fn merge_sort(arr: &amp;mut [i32]) {
     let len = arr.len();
@@ -367,6 +408,8 @@ fn main() {
 <li><strong>最优子结构</strong>：问题的最优解包含子问题的最优解</li>
 <li><strong>重叠子问题</strong>：子问题会被重复计算多次</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g5paQ5rOi6YKj5aWR5pWw5YiXIC0g5Yqo5oCB6KeE5YiS6Kej5rOVCmZuIGZpYl9kcChuOiB1MzIpIC0+IHU2NCB7CiAgICBpZiBuID09IDAgeyByZXR1cm4gMDsgfQogICAgaWYgbiA9PSAxIHsgcmV0dXJuIDE7IH0KCiAgICBsZXQgbXV0IGRwID0gdmVjIVswdTY0OyAobiArIDEpIGFzIHVzaXplXTsKICAgIGRwWzFdID0gMTsKCiAgICBmb3IgaSBpbiAyLi49biBhcyB1c2l6ZSB7CiAgICAgICAgZHBbaV0gPSBkcFtpIC0gMV0gKyBkcFtpIC0gMl07CiAgICB9CgogICAgZHBbbiBhcyB1c2l6ZV0KfQoKLy8g56m66Ze05LyY5YyW54mIIC0g5Y+q5L+d55WZ5YmN5Lik5Liq54q25oCBCmZuIGZpYl9kcF9vcHRpbWl6ZWQobjogdTMyKSAtPiB1NjQgewogICAgaWYgbiA9PSAwIHsgcmV0dXJuIDA7IH0KICAgIGlmIG4gPT0gMSB7IHJldHVybiAxOyB9CgogICAgbGV0IChtdXQgcHJldiwgbXV0IGN1cnIpID0gKDB1NjQsIDF1NjQpOwogICAgZm9yIF8gaW4gMi4uPW4gewogICAgICAgIGxldCBuZXh0ID0gcHJldiArIGN1cnI7CiAgICAgICAgcHJldiA9IGN1cnI7CiAgICAgICAgY3VyciA9IG5leHQ7CiAgICB9CiAgICBjdXJyCn0KCmZuIG1haW4oKSB7CiAgICBwcmludGxuISgiRig1MCkgPSB7fSIsIGZpYl9kcCg1MCkpOyAgICAgICAgICAgLy8gMTI1ODYyNjkwMjUKICAgIHByaW50bG4hKCJGKDUwKSA9IHt9IiwgZmliX2RwX29wdGltaXplZCg1MCkpOyAgLy8gMTI1ODYyNjkwMjUKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// 斐波那契数列 - 动态规划解法
 fn fib_dp(n: u32) -&gt; u64 {
     if n == 0 { return 0; }
@@ -401,6 +444,8 @@ fn main() {
     println!("F(50) = {}", fib_dp_optimized(50));  // 12586269025
 }</code></pre>
 <p><strong>经典问题：0/1 背包问题</strong></p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8gMC8xIOiDjOWMhemXrumimAovLyDmnIkgbiDkuKrnianlk4HvvIzmr4/kuKrnianlk4HmnInph43ph48gd2VpZ2h0W2ldIOWSjOS7t+WAvCB2YWx1ZVtpXQovLyDog4zljIXlrrnph4/kuLogV++8jOaxguiDveijheWFpeeahOacgOWkp+S7t+WAvAoKZm4ga25hcHNhY2sod2VpZ2h0czogJlt1c2l6ZV0sIHZhbHVlczogJlt1c2l6ZV0sIGNhcGFjaXR5OiB1c2l6ZSkgLT4gdXNpemUgewogICAgbGV0IG4gPSB3ZWlnaHRzLmxlbigpOwogICAgbGV0IG11dCBkcCA9IHZlYyFbdmVjIVswOyBjYXBhY2l0eSArIDFdOyBuICsgMV07CgogICAgZm9yIGkgaW4gMS4uPW4gewogICAgICAgIGZvciB3IGluIDAuLj1jYXBhY2l0eSB7CiAgICAgICAgICAgIGlmIHdlaWdodHNbaSAtIDFdIDw9IHcgewogICAgICAgICAgICAgICAgLy8g5Y+v5Lul6YCJ5oup5pS+5YWl5oiW5LiN5pS+5YWlCiAgICAgICAgICAgICAgICBkcFtpXVt3XSA9IGRwW2kgLSAxXVt3XS5tYXgoCiAgICAgICAgICAgICAgICAgICAgZHBbaSAtIDFdW3cgLSB3ZWlnaHRzW2kgLSAxXV0gKyB2YWx1ZXNbaSAtIDFdCiAgICAgICAgICAgICAgICApOwogICAgICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAgICAgZHBbaV1bd10gPSBkcFtpIC0gMV1bd107CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9CgogICAgZHBbbl1bY2FwYWNpdHldCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgd2VpZ2h0cyA9IHZlYyFbMiwgMywgNCwgNV07CiAgICBsZXQgdmFsdWVzID0gdmVjIVszLCA0LCA1LCA2XTsKICAgIGxldCBjYXBhY2l0eSA9IDg7CgogICAgcHJpbnRsbiEoIuacgOWkp+S7t+WAvDoge30iLCBrbmFwc2Fjaygmd2VpZ2h0cywgJnZhbHVlcywgY2FwYWNpdHkpKTsgIC8vIDEwCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// 0/1 背包问题
 // 有 n 个物品，每个物品有重量 weight[i] 和价值 value[i]
 // 背包容量为 W，求能装入的最大价值
@@ -438,6 +483,8 @@ fn main() {
 <h3 id="24-贪心算法greedy-algorithm"><a class="header" href="#24-贪心算法greedy-algorithm">2.4 贪心算法（Greedy Algorithm）</a></h3>
 <p>贪心算法的核心思想：<strong>每一步都做出当前看起来最优的选择，希望最终得到全局最优解</strong>。</p>
 <p>贪心算法不一定能得到全局最优解，但在某些问题上是有效的。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g5om+6Zu26ZKx6Zeu6aKY77yI6LSq5b+D6Kej5rOV77yJCi8vIOWBh+iuvuehrOW4gemdoumineS4uiAxLCA1LCAxMCwgMjUsIDUwCmZuIG1ha2VfY2hhbmdlKGFtb3VudDogdXNpemUpIC0+IFZlYzx1c2l6ZT4gewogICAgbGV0IGNvaW5zID0gdmVjIVs1MCwgMjUsIDEwLCA1LCAxXTsKICAgIGxldCBtdXQgY2hhbmdlID0gVmVjOjpuZXcoKTsKICAgIGxldCBtdXQgcmVtYWluaW5nID0gYW1vdW50OwoKICAgIGZvciAmY29pbiBpbiAmY29pbnMgewogICAgICAgIHdoaWxlIHJlbWFpbmluZyA+PSBjb2luIHsKICAgICAgICAgICAgY2hhbmdlLnB1c2goY29pbik7CiAgICAgICAgICAgIHJlbWFpbmluZyAtPSBjb2luOwogICAgICAgIH0KICAgIH0KCiAgICBjaGFuZ2UKfQoKZm4gbWFpbigpIHsKICAgIGxldCBhbW91bnQgPSA4NzsKICAgIGxldCBjaGFuZ2UgPSBtYWtlX2NoYW5nZShhbW91bnQpOwogICAgcHJpbnRsbiEoIuaJviB7fSDliIbpkrE6IHs6P30iLCBhbW91bnQsIGNoYW5nZSk7CiAgICAvLyDmib4gODcg5YiG6ZKxOiBbNTAsIDI1LCAxMCwgMSwgMV0KICAgIHByaW50bG4hKCLnoazluIHmlbDph486IHt9IiwgY2hhbmdlLmxlbigpKTsgIC8vIDUKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// 找零钱问题（贪心解法）
 // 假设硬币面额为 1, 5, 10, 25, 50
 fn make_change(amount: usize) -&gt; Vec&lt;usize&gt; {
@@ -467,6 +514,8 @@ fn main() {
 </blockquote>
 <h3 id="25-回溯法backtracking"><a class="header" href="#25-回溯法backtracking">2.5 回溯法（Backtracking）</a></h3>
 <p>回溯法的核心思想：<strong>系统地搜索问题的解空间，当发现当前路径不可能得到解时，回溯到上一步尝试其他路径</strong>。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g5YWo5o6S5YiX6Zeu6aKYCmZuIHBlcm11dGF0aW9ucyhudW1zOiAmbXV0IFtpMzJdKSAtPiBWZWM8VmVjPGkzMj4+IHsKICAgIGxldCBtdXQgcmVzdWx0ID0gVmVjOjpuZXcoKTsKICAgIGJhY2t0cmFjayhudW1zLCAwLCAmbXV0IHJlc3VsdCk7CiAgICByZXN1bHQKfQoKZm4gYmFja3RyYWNrKG51bXM6ICZtdXQgW2kzMl0sIHN0YXJ0OiB1c2l6ZSwgcmVzdWx0OiAmbXV0IFZlYzxWZWM8aTMyPj4pIHsKICAgIGlmIHN0YXJ0ID09IG51bXMubGVuKCkgewogICAgICAgIHJlc3VsdC5wdXNoKG51bXMudG9fdmVjKCkpOwogICAgICAgIHJldHVybjsKICAgIH0KCiAgICBmb3IgaSBpbiBzdGFydC4ubnVtcy5sZW4oKSB7CiAgICAgICAgbnVtcy5zd2FwKHN0YXJ0LCBpKTsgICAgICAgICAgIC8vIOWBmumAieaLqQogICAgICAgIGJhY2t0cmFjayhudW1zLCBzdGFydCArIDEsIHJlc3VsdCk7ICAvLyDpgJLlvZIKICAgICAgICBudW1zLnN3YXAoc3RhcnQsIGkpOyAgICAgICAgICAgLy8g5pKk6ZSA6YCJ5oup77yI5Zue5rqv77yJCiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgbXV0IG51bXMgPSBbMSwgMiwgM107CiAgICBsZXQgcGVybXMgPSBwZXJtdXRhdGlvbnMoJm11dCBudW1zKTsKICAgIGZvciBwIGluICZwZXJtcyB7CiAgICAgICAgcHJpbnRsbiEoIns6P30iLCBwKTsKICAgIH0KICAgIC8vIFsxLCAyLCAzXSwgWzEsIDMsIDJdLCBbMiwgMSwgM10sIFsyLCAzLCAxXSwgWzMsIDIsIDFdLCBbMywgMSwgMl0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// 全排列问题
 fn permutations(nums: &amp;mut [i32]) -&gt; Vec&lt;Vec&lt;i32&gt;&gt; {
     let mut result = Vec::new();
@@ -499,6 +548,8 @@ fn main() {
 <h2 id="三搜索算法"><a class="header" href="#三搜索算法">三、搜索算法</a></h2>
 <h3 id="31-深度优先搜索dfs"><a class="header" href="#31-深度优先搜索dfs">3.1 深度优先搜索（DFS）</a></h3>
 <p>DFS 沿着一条路径尽可能深地搜索，直到无法继续才回溯。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g5Zu+55qE5rex5bqm5LyY5YWI5pCc57SiCnVzZSBzdGQ6OmNvbGxlY3Rpb25zOjp7SGFzaE1hcCwgSGFzaFNldH07CgpzdHJ1Y3QgR3JhcGggewogICAgYWRqOiBIYXNoTWFwPGkzMiwgVmVjPGkzMj4+LAp9CgppbXBsIEdyYXBoIHsKICAgIGZuIG5ldygpIC0+IFNlbGYgewogICAgICAgIEdyYXBoIHsgYWRqOiBIYXNoTWFwOjpuZXcoKSB9CiAgICB9CgogICAgZm4gYWRkX2VkZ2UoJm11dCBzZWxmLCB1OiBpMzIsIHY6IGkzMikgewogICAgICAgIHNlbGYuYWRqLmVudHJ5KHUpLm9yX2luc2VydF93aXRoKFZlYzo6bmV3KS5wdXNoKHYpOwogICAgICAgIHNlbGYuYWRqLmVudHJ5KHYpLm9yX2luc2VydF93aXRoKFZlYzo6bmV3KS5wdXNoKHUpOwogICAgfQoKICAgIGZuIGRmcygmc2VsZiwgc3RhcnQ6IGkzMikgLT4gVmVjPGkzMj4gewogICAgICAgIGxldCBtdXQgdmlzaXRlZCA9IEhhc2hTZXQ6Om5ldygpOwogICAgICAgIGxldCBtdXQgcmVzdWx0ID0gVmVjOjpuZXcoKTsKICAgICAgICBzZWxmLmRmc19oZWxwZXIoc3RhcnQsICZtdXQgdmlzaXRlZCwgJm11dCByZXN1bHQpOwogICAgICAgIHJlc3VsdAogICAgfQoKICAgIGZuIGRmc19oZWxwZXIoJnNlbGYsIG5vZGU6IGkzMiwgdmlzaXRlZDogJm11dCBIYXNoU2V0PGkzMj4sIHJlc3VsdDogJm11dCBWZWM8aTMyPikgewogICAgICAgIHZpc2l0ZWQuaW5zZXJ0KG5vZGUpOwogICAgICAgIHJlc3VsdC5wdXNoKG5vZGUpOwoKICAgICAgICBpZiBsZXQgU29tZShuZWlnaGJvcnMpID0gc2VsZi5hZGouZ2V0KCZub2RlKSB7CiAgICAgICAgICAgIGZvciAmbmVpZ2hib3IgaW4gbmVpZ2hib3JzIHsKICAgICAgICAgICAgICAgIGlmICF2aXNpdGVkLmNvbnRhaW5zKCZuZWlnaGJvcikgewogICAgICAgICAgICAgICAgICAgIHNlbGYuZGZzX2hlbHBlcihuZWlnaGJvciwgdmlzaXRlZCwgcmVzdWx0KTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIGxldCBtdXQgZ3JhcGggPSBHcmFwaDo6bmV3KCk7CiAgICBncmFwaC5hZGRfZWRnZSgwLCAxKTsKICAgIGdyYXBoLmFkZF9lZGdlKDAsIDIpOwogICAgZ3JhcGguYWRkX2VkZ2UoMSwgMyk7CiAgICBncmFwaC5hZGRfZWRnZSgxLCA0KTsKICAgIGdyYXBoLmFkZF9lZGdlKDIsIDUpOwoKICAgIHByaW50bG4hKCJERlM6IHs6P30iLCBncmFwaC5kZnMoMCkpOyAgLy8gWzAsIDEsIDMsIDQsIDIsIDVdCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// 图的深度优先搜索
 use std::collections::{HashMap, HashSet};
 
@@ -549,6 +600,8 @@ fn main() {
 }</code></pre>
 <h3 id="32-广度优先搜索bfs"><a class="header" href="#32-广度优先搜索bfs">3.2 广度优先搜索（BFS）</a></h3>
 <p>BFS 逐层扩展搜索，先访问所有邻居，再访问邻居的邻居。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g5Zu+55qE5bm/5bqm5LyY5YWI5pCc57SiCnVzZSBzdGQ6OmNvbGxlY3Rpb25zOjp7SGFzaE1hcCwgSGFzaFNldCwgVmVjRGVxdWV9OwoKc3RydWN0IEdyYXBoIHsKICAgIGFkajogSGFzaE1hcDxpMzIsIFZlYzxpMzI+PiwKfQoKaW1wbCBHcmFwaCB7CiAgICBmbiBuZXcoKSAtPiBTZWxmIHsKICAgICAgICBHcmFwaCB7IGFkajogSGFzaE1hcDo6bmV3KCkgfQogICAgfQoKICAgIGZuIGFkZF9lZGdlKCZtdXQgc2VsZiwgdTogaTMyLCB2OiBpMzIpIHsKICAgICAgICBzZWxmLmFkai5lbnRyeSh1KS5vcl9pbnNlcnRfd2l0aChWZWM6Om5ldykucHVzaCh2KTsKICAgICAgICBzZWxmLmFkai5lbnRyeSh2KS5vcl9pbnNlcnRfd2l0aChWZWM6Om5ldykucHVzaCh1KTsKICAgIH0KCiAgICBmbiBiZnMoJnNlbGYsIHN0YXJ0OiBpMzIpIC0+IFZlYzxpMzI+IHsKICAgICAgICBsZXQgbXV0IHZpc2l0ZWQgPSBIYXNoU2V0OjpuZXcoKTsKICAgICAgICBsZXQgbXV0IHF1ZXVlID0gVmVjRGVxdWU6Om5ldygpOwogICAgICAgIGxldCBtdXQgcmVzdWx0ID0gVmVjOjpuZXcoKTsKCiAgICAgICAgdmlzaXRlZC5pbnNlcnQoc3RhcnQpOwogICAgICAgIHF1ZXVlLnB1c2hfYmFjayhzdGFydCk7CgogICAgICAgIHdoaWxlIGxldCBTb21lKG5vZGUpID0gcXVldWUucG9wX2Zyb250KCkgewogICAgICAgICAgICByZXN1bHQucHVzaChub2RlKTsKCiAgICAgICAgICAgIGlmIGxldCBTb21lKG5laWdoYm9ycykgPSBzZWxmLmFkai5nZXQoJm5vZGUpIHsKICAgICAgICAgICAgICAgIGZvciAmbmVpZ2hib3IgaW4gbmVpZ2hib3JzIHsKICAgICAgICAgICAgICAgICAgICBpZiAhdmlzaXRlZC5jb250YWlucygmbmVpZ2hib3IpIHsKICAgICAgICAgICAgICAgICAgICAgICAgdmlzaXRlZC5pbnNlcnQobmVpZ2hib3IpOwogICAgICAgICAgICAgICAgICAgICAgICBxdWV1ZS5wdXNoX2JhY2sobmVpZ2hib3IpOwogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0KCiAgICAgICAgcmVzdWx0CiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgbXV0IGdyYXBoID0gR3JhcGg6Om5ldygpOwogICAgZ3JhcGguYWRkX2VkZ2UoMCwgMSk7CiAgICBncmFwaC5hZGRfZWRnZSgwLCAyKTsKICAgIGdyYXBoLmFkZF9lZGdlKDEsIDMpOwogICAgZ3JhcGguYWRkX2VkZ2UoMSwgNCk7CiAgICBncmFwaC5hZGRfZWRnZSgyLCA1KTsKCiAgICBwcmludGxuISgiQkZTOiB7Oj99IiwgZ3JhcGguYmZzKDApKTsgIC8vIFswLCAxLCAyLCAzLCA0LCA1XQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// 图的广度优先搜索
 use std::collections::{HashMap, HashSet, VecDeque};
 
@@ -625,6 +678,8 @@ fn main() {
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g5b+r6YCf5o6S5bqPCmZuIHF1aWNrX3NvcnQoYXJyOiAmbXV0IFtpMzJdKSB7CiAgICBpZiBhcnIubGVuKCkgPD0gMSB7CiAgICAgICAgcmV0dXJuOwogICAgfQoKICAgIGxldCBwaXZvdF9pbmRleCA9IHBhcnRpdGlvbihhcnIpOwogICAgbGV0IChsZWZ0LCByaWdodCkgPSBhcnIuc3BsaXRfYXRfbXV0KHBpdm90X2luZGV4KTsKICAgIHF1aWNrX3NvcnQobGVmdCk7CiAgICBxdWlja19zb3J0KCZtdXQgcmlnaHRbMS4uXSk7Cn0KCmZuIHBhcnRpdGlvbihhcnI6ICZtdXQgW2kzMl0pIC0+IHVzaXplIHsKICAgIGxldCBsZW4gPSBhcnIubGVuKCk7CiAgICBsZXQgcGl2b3QgPSBhcnJbbGVuIC0gMV07CiAgICBsZXQgbXV0IGkgPSAwOwoKICAgIGZvciBqIGluIDAuLmxlbiAtIDEgewogICAgICAgIGlmIGFycltqXSA8PSBwaXZvdCB7CiAgICAgICAgICAgIGFyci5zd2FwKGksIGopOwogICAgICAgICAgICBpICs9IDE7CiAgICAgICAgfQogICAgfQoKICAgIGFyci5zd2FwKGksIGxlbiAtIDEpOwogICAgaQp9CgpmbiBtYWluKCkgewogICAgbGV0IG11dCBhcnIgPSBbNjQsIDM0LCAyNSwgMTIsIDIyLCAxMSwgOTBdOwogICAgcXVpY2tfc29ydCgmbXV0IGFycik7CiAgICBwcmludGxuISgiezo/fSIsIGFycik7ICAvLyBbMTEsIDEyLCAyMiwgMjUsIDM0LCA2NCwgOTBdCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// 快速排序
 fn quick_sort(arr: &amp;mut [i32]) {
     if arr.len() &lt;= 1 {
@@ -662,6 +717,8 @@ fn main() {
 <h2 id="五经典问题选讲"><a class="header" href="#五经典问题选讲">五、经典问题选讲</a></h2>
 <h3 id="51-八皇后问题"><a class="header" href="#51-八皇后问题">5.1 八皇后问题</a></h3>
 <p>在 8×8 的棋盘上放置 8 个皇后，使它们互不攻击（不在同一行、列、对角线）。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gc29sdmVfbl9xdWVlbnMobjogdXNpemUpIC0+IFZlYzxWZWM8U3RyaW5nPj4gewogICAgbGV0IG11dCBib2FyZCA9IHZlYyFbdmVjIVsnLic7IG5dOyBuXTsKICAgIGxldCBtdXQgcmVzdWx0ID0gVmVjOjpuZXcoKTsKICAgIGJhY2t0cmFja19xdWVlbigmbXV0IGJvYXJkLCAwLCAmbXV0IHJlc3VsdCk7CiAgICByZXN1bHQKfQoKZm4gYmFja3RyYWNrX3F1ZWVuKGJvYXJkOiAmbXV0IFZlYzxWZWM8Y2hhcj4+LCByb3c6IHVzaXplLCByZXN1bHQ6ICZtdXQgVmVjPFZlYzxTdHJpbmc+PikgewogICAgbGV0IG4gPSBib2FyZC5sZW4oKTsKICAgIGlmIHJvdyA9PSBuIHsKICAgICAgICByZXN1bHQucHVzaChib2FyZC5pdGVyKCkubWFwKHxyfCByLml0ZXIoKS5jb2xsZWN0KCkpLmNvbGxlY3QoKSk7CiAgICAgICAgcmV0dXJuOwogICAgfQoKICAgIGZvciBjb2wgaW4gMC4ubiB7CiAgICAgICAgaWYgaXNfdmFsaWQoYm9hcmQsIHJvdywgY29sKSB7CiAgICAgICAgICAgIGJvYXJkW3Jvd11bY29sXSA9ICdRJzsKICAgICAgICAgICAgYmFja3RyYWNrX3F1ZWVuKGJvYXJkLCByb3cgKyAxLCByZXN1bHQpOwogICAgICAgICAgICBib2FyZFtyb3ddW2NvbF0gPSAnLic7CiAgICAgICAgfQogICAgfQp9CgpmbiBpc192YWxpZChib2FyZDogJlZlYzxWZWM8Y2hhcj4+LCByb3c6IHVzaXplLCBjb2w6IHVzaXplKSAtPiBib29sIHsKICAgIGxldCBuID0gYm9hcmQubGVuKCk7CgogICAgLy8g5qOA5p+l5YiXCiAgICBmb3IgaSBpbiAwLi5yb3cgewogICAgICAgIGlmIGJvYXJkW2ldW2NvbF0gPT0gJ1EnIHsKICAgICAgICAgICAgcmV0dXJuIGZhbHNlOwogICAgICAgIH0KICAgIH0KCiAgICAvLyDmo4Dmn6Xlt6bkuIrlr7nop5Lnur8KICAgIGZvciBpIGluIDEuLj1yb3cgewogICAgICAgIGlmIGNvbCA+PSBpICYmIGJvYXJkW3JvdyAtIGldW2NvbCAtIGldID09ICdRJyB7CiAgICAgICAgICAgIHJldHVybiBmYWxzZTsKICAgICAgICB9CiAgICB9CgogICAgLy8g5qOA5p+l5Y+z5LiK5a+56KeS57q/CiAgICBmb3IgaSBpbiAxLi49cm93IHsKICAgICAgICBpZiBjb2wgKyBpIDwgbiAmJiBib2FyZFtyb3cgLSBpXVtjb2wgKyBpXSA9PSAnUScgewogICAgICAgICAgICByZXR1cm4gZmFsc2U7CiAgICAgICAgfQogICAgfQoKICAgIHRydWUKfQoKZm4gbWFpbigpIHsKICAgIGxldCBzb2x1dGlvbnMgPSBzb2x2ZV9uX3F1ZWVucyg4KTsKICAgIHByaW50bG4hKCI4IOeah+WQjumXrumimOWFseaciSB7fSDnp43op6Pms5UiLCBzb2x1dGlvbnMubGVuKCkpOyAgLy8gOTIKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn solve_n_queens(n: usize) -&gt; Vec&lt;Vec&lt;String&gt;&gt; {
     let mut board = vec![vec!['.'; n]; n];
     let mut result = Vec::new();
@@ -717,6 +774,8 @@ fn main() {
     println!("8 皇后问题共有 {} 种解法", solutions.len());  // 92
 }</code></pre>
 <h3 id="52-最长公共子序列lcs"><a class="header" href="#52-最长公共子序列lcs">5.2 最长公共子序列（LCS）</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g5Yqo5oCB6KeE5YiS5rGC6Kej5pyA6ZW/5YWs5YWx5a2Q5bqP5YiXCmZuIGxvbmdlc3RfY29tbW9uX3N1YnNlcXVlbmNlKHRleHQxOiAmc3RyLCB0ZXh0MjogJnN0cikgLT4gdXNpemUgewogICAgbGV0IG0gPSB0ZXh0MS5sZW4oKTsKICAgIGxldCBuID0gdGV4dDIubGVuKCk7CiAgICBsZXQgbXV0IGRwID0gdmVjIVt2ZWMhWzA7IG4gKyAxXTsgbSArIDFdOwoKICAgIGxldCBjaGFyczE6IFZlYzxjaGFyPiA9IHRleHQxLmNoYXJzKCkuY29sbGVjdCgpOwogICAgbGV0IGNoYXJzMjogVmVjPGNoYXI+ID0gdGV4dDIuY2hhcnMoKS5jb2xsZWN0KCk7CgogICAgZm9yIGkgaW4gMS4uPW0gewogICAgICAgIGZvciBqIGluIDEuLj1uIHsKICAgICAgICAgICAgaWYgY2hhcnMxW2kgLSAxXSA9PSBjaGFyczJbaiAtIDFdIHsKICAgICAgICAgICAgICAgIGRwW2ldW2pdID0gZHBbaSAtIDFdW2ogLSAxXSArIDE7CiAgICAgICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgICAgICBkcFtpXVtqXSA9IGRwW2kgLSAxXVtqXS5tYXgoZHBbaV1baiAtIDFdKTsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KCiAgICBkcFttXVtuXQp9CgpmbiBtYWluKCkgewogICAgcHJpbnRsbiEoInt9IiwgbG9uZ2VzdF9jb21tb25fc3Vic2VxdWVuY2UoIkFCQ0RFIiwgIkFDRSIpKTsgICAgIC8vIDMgKCJBQ0UiKQogICAgcHJpbnRsbiEoInt9IiwgbG9uZ2VzdF9jb21tb25fc3Vic2VxdWVuY2UoIkFCQyIsICJERUYiKSk7ICAgICAgIC8vIDAKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// 动态规划求解最长公共子序列
 fn longest_common_subsequence(text1: &amp;str, text2: &amp;str) -&gt; usize {
     let m = text1.len();

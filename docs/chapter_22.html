@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -239,6 +276,8 @@
 <li>否则 $i \leftarrow i + 1$，重复步骤 2</li>
 </ol>
 <p><strong>时间复杂度：</strong> 最坏情况下为 $O(m \times n)$，即文本串和模式串的长度乘积。当文本串中存在大量与模式串部分匹配的子串时，性能退化严重。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOaatOWKm+Wtl+espuS4suWMuemFjQovLy8g6L+U5Zue5omA5pyJ5Yy56YWN5L2N572u55qE6LW35aeL5LiL5qCHCnB1YiBmbiBicnV0ZV9mb3JjZV9zZWFyY2godGV4dDogJnN0ciwgcGF0dGVybjogJnN0cikgLT4gVmVjPHVzaXplPiB7CiAgICBsZXQgdGV4dF9ieXRlcyA9IHRleHQuYXNfYnl0ZXMoKTsKICAgIGxldCBwYXR0ZXJuX2J5dGVzID0gcGF0dGVybi5hc19ieXRlcygpOwogICAgbGV0IG4gPSB0ZXh0X2J5dGVzLmxlbigpOwogICAgbGV0IG0gPSBwYXR0ZXJuX2J5dGVzLmxlbigpOwogICAgbGV0IG11dCByZXN1bHQgPSBWZWM6Om5ldygpOwoKICAgIGlmIG0gPT0gMCB8fCBtID4gbiB7CiAgICAgICAgcmV0dXJuIHJlc3VsdDsKICAgIH0KCiAgICBmb3IgaSBpbiAwLi49KG4gLSBtKSB7CiAgICAgICAgbGV0IG11dCBtYXRjaGVkID0gdHJ1ZTsKICAgICAgICBmb3IgaiBpbiAwLi5tIHsKICAgICAgICAgICAgaWYgdGV4dF9ieXRlc1tpICsgal0gIT0gcGF0dGVybl9ieXRlc1tqXSB7CiAgICAgICAgICAgICAgICBtYXRjaGVkID0gZmFsc2U7CiAgICAgICAgICAgICAgICBicmVhazsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBpZiBtYXRjaGVkIHsKICAgICAgICAgICAgcmVzdWx0LnB1c2goaSk7CiAgICAgICAgfQogICAgfQoKICAgIHJlc3VsdAp9CgpmbiBtYWluKCkgewogICAgbGV0IHRleHQgPSAiYWJhYmNhYmNhYmFiYyI7CiAgICBsZXQgcGF0dGVybiA9ICJhYmMiOwogICAgbGV0IHBvc2l0aW9ucyA9IGJydXRlX2ZvcmNlX3NlYXJjaCh0ZXh0LCBwYXR0ZXJuKTsKICAgIHByaW50bG4hKCLljLnphY3kvY3nva46IHs6P30iLCBwb3NpdGlvbnMpOyAvLyBbMiwgNSwgMTBdCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 暴力字符串匹配
 /// 返回所有匹配位置的起始下标
 pub fn brute_force_search(text: &amp;str, pattern: &amp;str) -&gt; Vec&lt;usize&gt; {
@@ -323,6 +362,8 @@ $$</p>
 <li><strong>总计：$O(m + n)$</strong></li>
 </ul>
 <h4 id="rust-实现"><a class="header" href="#rust-实现">Rust 实现</a></h4>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIGh0dHBzOi8vZ2l0aHViLmNvbS9UaGVBbGdvcml0aG1zL1J1c3QvYmxvYi9tYXN0ZXIvc3JjL3N0cmluZy9rbnV0aF9tb3JyaXNfcHJhdHQucnMKcHViIGZuIGtudXRoX21vcnJpc19wcmF0dChzdDogU3RyaW5nLCBwYXQ6IFN0cmluZykgLT4gVmVjPHVzaXplPiB7CiAgICBpZiBzdC5pc19lbXB0eSgpIHx8IHBhdC5pc19lbXB0eSgpIHsKICAgICAgICByZXR1cm4gdmVjIVtdOwogICAgfQoKICAgIGxldCBzdHJpbmcgPSBzdC5pbnRvX2J5dGVzKCk7CiAgICBsZXQgcGF0dGVybiA9IHBhdC5pbnRvX2J5dGVzKCk7CgogICAgLy8gYnVpbGQgdGhlIHBhcnRpYWwgbWF0Y2ggdGFibGUKICAgIGxldCBtdXQgcGFydGlhbCA9IHZlYyFbMF07CiAgICBmb3IgaSBpbiAxLi5wYXR0ZXJuLmxlbigpIHsKICAgICAgICBsZXQgbXV0IGogPSBwYXJ0aWFsW2kgLSAxXTsKICAgICAgICB3aGlsZSBqID4gMCAmJiBwYXR0ZXJuW2pdICE9IHBhdHRlcm5baV0gewogICAgICAgICAgICBqID0gcGFydGlhbFtqIC0gMV07CiAgICAgICAgfQogICAgICAgIHBhcnRpYWwucHVzaChpZiBwYXR0ZXJuW2pdID09IHBhdHRlcm5baV0geyBqICsgMSB9IGVsc2UgeyBqIH0pOwogICAgfQoKICAgIC8vIGFuZCByZWFkICdzdHJpbmcnIHRvIGZpbmQgJ3BhdHRlcm4nCiAgICBsZXQgbXV0IHJldCA9IHZlYyFbXTsKICAgIGxldCBtdXQgaiA9IDA7CgogICAgZm9yIChpLCAmYykgaW4gc3RyaW5nLml0ZXIoKS5lbnVtZXJhdGUoKSB7CiAgICAgICAgd2hpbGUgaiA+IDAgJiYgYyAhPSBwYXR0ZXJuW2pdIHsKICAgICAgICAgICAgaiA9IHBhcnRpYWxbaiAtIDFdOwogICAgICAgIH0KICAgICAgICBpZiBjID09IHBhdHRlcm5bal0gewogICAgICAgICAgICBqICs9IDE7CiAgICAgICAgfQogICAgICAgIGlmIGogPT0gcGF0dGVybi5sZW4oKSB7CiAgICAgICAgICAgIHJldC5wdXNoKGkgKyAxIC0gaik7CiAgICAgICAgICAgIGogPSBwYXJ0aWFsW2ogLSAxXTsKICAgICAgICB9CiAgICB9CgogICAgcmV0Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgcmVzdWx0ID0ga251dGhfbW9ycmlzX3ByYXR0KFN0cmluZzo6ZnJvbSgiYWJhYmNhYmMiKSwgU3RyaW5nOjpmcm9tKCJhYmMiKSk7CiAgICBwcmludGxuISgiezo/fSIsIHJlc3VsdCk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// https://github.com/TheAlgorithms/Rust/blob/master/src/string/knuth_morris_pratt.rs
 pub fn knuth_morris_pratt(st: String, pat: String) -&gt; Vec&lt;usize&gt; {
     if st.is_empty() || pat.is_empty() {
@@ -897,7 +938,14 @@ lazy_static = "1"
 <p>在实际开发中，不同编程语言有不同的命名规范。Rust 使用蛇形命名（snake_case），而 Java/C# 使用驼峰命名（camelCase），数据库字段也常用蛇形命名。下面通过正则表达式实现命名风格的转换。</p>
 <pre><code class="language-shell"> echo "camelToSnakeName" | sed 's/\([a-z0-9]\)\([A-Z]\)/\1_\2/g' | tr '[:lower:]' '[:upper:]'
 </code></pre>
-<pre class="playground"><code class="language-rust edition2024">// Cargo.toml dependencies:
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KbGF6eV9zdGF0aWMgPSAiMSIKcmVnZXggPSAiMSIKKi8KLy8gQ2FyZ28udG9tbCBkZXBlbmRlbmNpZXM6Ci8vIGxhenlfc3RhdGljID0gIjEiCi8vIHJlZ2V4ID0gIjEiCgp1c2UgbGF6eV9zdGF0aWM6Omxhenlfc3RhdGljOwp1c2UgcmVnZXg6OkNhcHR1cmVzOwp1c2UgcmVnZXg6OlJlZ2V4OwoKbGF6eV9zdGF0aWMhIHsKICAgIC8vIOmpvOWzsOWRveWQjei9rOibh+W9ou+8muesrOS4gOmBjeWkhOeQhiAi5Lu75oSP5a2X56ymICsg5aSn5YaZ5a2X5q+N5byA5aS05Y2V6K+NIiDovrnnlYwKICAgIC8vIOWmgiAiRmFsY29uSGVhdnkiIC0+ICJGYWxjb25fSGVhdnkiCiAgICBzdGF0aWMgcmVmIENBTUVMX1RPX1NOQUtFMTogUmVnZXggPSBSZWdleDo6bmV3KHIiKC4pKFtBLVpdW2Etel0rKSIpLnVud3JhcCgpOwogICAgLy8g56ys5LqM6YGN5aSE55CGICLlsI/lhpkv5pWw5a2XICsg5aSn5YaZIiDovrnnlYzvvIzlpoIgIkhlYXZ5Um9ja2V0IiAtPiAiSGVhdnlfUm9ja2V0IgogICAgc3RhdGljIHJlZiBDQU1FTF9UT19TTkFLRTI6IFJlZ2V4ID0gUmVnZXg6Om5ldyhyIihbYS16MC05XSkoW0EtWl0pIikudW53cmFwKCk7Cn0KCi8vLyDpqbzls7Dlkb3lkI3ovazkuLrom4flvaLlkb3lkI3vvIjlhajlpKflhpnvvIkKLy8vIOS+i++8miJGYWxjb25IZWF2eVJvY2tldCIgLT4gIkZBTENPTl9IRUFWWV9ST0NLRVQiCnB1YiBmbiBjYW1lbF90b19zbmFrZShvcmlnaW46ICZzdHIpIC0+IFN0cmluZyB7CiAgICBsZXQgcmVzdWx0MCA9IENBTUVMX1RPX1NOQUtFMS5yZXBsYWNlX2FsbChvcmlnaW4sIHxjYXBzOiAmQ2FwdHVyZXN8IHsKICAgICAgICBmb3JtYXQhKCJ7fV97fSIsICZjYXBzWzFdLCAmY2Fwc1syXSkKICAgIH0pOwogICAgbGV0IHJlc3VsdCA9IENBTUVMX1RPX1NOQUtFMi5yZXBsYWNlX2FsbCgmcmVzdWx0MCwgfGNhcHM6ICZDYXB0dXJlc3wgewogICAgICAgIGZvcm1hdCEoInt9X3t9IiwgJmNhcHNbMV0sICZjYXBzWzJdKQogICAgfSk7CiAgICByZXN1bHQudG9fdXBwZXJjYXNlKCkKfQoKLy8vIOibh+W9ouWRveWQjei9rOS4uuW4leaWr+WNoeWRveWQjeazle+8iOavj+S4quWNleivjemmluWtl+avjeWkp+WGme+8jOaXoOWIhumalOespu+8iQovLy8g5L6L77yaImZhbGNvbl9oZWF2eV9yb2NrZXQiIC0+ICJGYWxjb25IZWF2eVJvY2tldCIKcHViIGZuIHNuYWtlX3RvX3Bhc2NhbChvcmlnaW46ICZzdHIpIC0+IFN0cmluZyB7CiAgICBvcmlnaW4KICAgICAgICAuc3BsaXQoJ18nKQogICAgICAgIC5tYXAofHdvcmR8IHsKICAgICAgICAgICAgbGV0IG11dCBjaGFycyA9IHdvcmQuY2hhcnMoKTsKICAgICAgICAgICAgbWF0Y2ggY2hhcnMubmV4dCgpIHsKICAgICAgICAgICAgICAgIFNvbWUoY2gpID0+IHsKICAgICAgICAgICAgICAgICAgICBsZXQgbXV0IHMgPSBjaC50b191cHBlcmNhc2UoKS5jb2xsZWN0Ojo8U3RyaW5nPigpOwogICAgICAgICAgICAgICAgICAgIHMucHVzaF9zdHIoY2hhcnMuYXNfc3RyKCkpOwogICAgICAgICAgICAgICAgICAgIHMKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIE5vbmUgPT4gU3RyaW5nOjpuZXcoKSwKICAgICAgICAgICAgfQogICAgICAgIH0pCiAgICAgICAgLmNvbGxlY3Q6OjxTdHJpbmc+KCkKfQoKLy8vIOibh+W9ouWRveWQjei9rOmpvOWzsOWRveWQje+8iOW4leaWr+WNoeWRveWQjeazlemmluWtl+avjeWwj+WGme+8iQovLy8g5L6L77yaImZhbGNvbl9oZWF2eV9yb2NrZXQiIC0+ICJmYWxjb25IZWF2eVJvY2tldCIKcHViIGZuIHNuYWtlX3RvX2NhbWVsKHM6ICZzdHIpIC0+IFN0cmluZyB7CiAgICBsZXQgcmVzdWx0ID0gc25ha2VfdG9fcGFzY2FsKHMpOwogICAgbGV0IG11dCBjaGFycyA9IHJlc3VsdC5jaGFycygpOwogICAgbWF0Y2ggY2hhcnMubmV4dCgpIHsKICAgICAgICBTb21lKGNoKSA9PiB7CiAgICAgICAgICAgIGxldCBtdXQgcyA9IGNoLnRvX2xvd2VyY2FzZSgpLmNvbGxlY3Q6OjxTdHJpbmc+KCk7CiAgICAgICAgICAgIHMucHVzaF9zdHIoY2hhcnMuYXNfc3RyKCkpOwogICAgICAgICAgICBzCiAgICAgICAgfQogICAgICAgIE5vbmUgPT4gU3RyaW5nOjpuZXcoKSwKICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIC8vIOa1i+ivlempvOWzsCAtPiDom4flvaIKICAgIGxldCBmaWVsZHNfdmVjID0gdmVjIVsiRmFsY29uSGVhdnlSb2NrZXQiLCAiSFRUUFJlc3BvbnNlQ29kZVhZWiJdOwogICAgZm9yICZmaWVsZCBpbiAmZmllbGRzX3ZlYyB7CiAgICAgICAgbGV0IHJlc3VsdCA9IGNhbWVsX3RvX3NuYWtlKGZpZWxkKTsKICAgICAgICBwcmludGxuISgiY2FtZWxfdG9fc25ha2Uoe30pID0ge30iLCBmaWVsZCwgcmVzdWx0KTsKICAgIH0KCiAgICBwcmludGxuISgiIik7CgogICAgLy8g5rWL6K+V6JuH5b2iIC0+IOW4leaWr+WNoQogICAgbGV0IGNvbHVtbnNfdmVjID0gdmVjIVsiZmFsY29uX2hlYXZ5X3JvY2tldCIsICJodHRwX3Jlc3BvbnNlX2NvZGVfeHl6Il07CiAgICBmb3IgJmNvbCBpbiAmY29sdW1uc192ZWMgewogICAgICAgIGxldCByZXN1bHQgPSBzbmFrZV90b19wYXNjYWwoY29sKTsKICAgICAgICBwcmludGxuISgic25ha2VfdG9fcGFzY2FsKHt9KSA9IHt9IiwgY29sLCByZXN1bHQpOwogICAgfQoKICAgIHByaW50bG4hKCIiKTsKCiAgICAvLyDmtYvor5Xom4flvaIgLT4g6am85bOwCiAgICBmb3IgJmNvbCBpbiAmY29sdW1uc192ZWMgewogICAgICAgIGxldCByZXN1bHQgPSBzbmFrZV90b19jYW1lbChjb2wpOwogICAgICAgIHByaW50bG4hKCJzbmFrZV90b19jYW1lbCh7fSkgPSB7fSIsIGNvbCwgcmVzdWx0KTsKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+lazy_static = "1"
+regex = "1"
+*/
+// Cargo.toml dependencies:
 // lazy_static = "1"
 // regex = "1"
 
@@ -992,6 +1040,8 @@ fn main() {
 <p>线性查找（Linear Search）是最简单的查找算法：从数据结构的第一个元素开始，逐个与目标值进行比较，直到找到目标或遍历完所有元素。</p>
 <p><strong>时间复杂度：</strong> $O(n)$，其中 $n$ 为数据规模。</p>
 <p><strong>适用场景：</strong> 无序数据、小规模数据、链表等不支持随机访问的数据结构。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOe6v+aAp+afpeaJvu+8mui/lOWbnuebruagh+WAvOeahOe0ouW8le+8jOacquaJvuWIsOi/lOWbniBOb25lCnB1YiBmbiBsaW5lYXJfc2VhcmNoPFQ6IFBhcnRpYWxFcT4oYXJyOiAmW1RdLCB0YXJnZXQ6ICZUKSAtPiBPcHRpb248dXNpemU+IHsKICAgIGZvciAoaSwgaXRlbSkgaW4gYXJyLml0ZXIoKS5lbnVtZXJhdGUoKSB7CiAgICAgICAgaWYgaXRlbSA9PSB0YXJnZXQgewogICAgICAgICAgICByZXR1cm4gU29tZShpKTsKICAgICAgICB9CiAgICB9CiAgICBOb25lCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgYXJyID0gdmVjIVs1LCAzLCA4LCAxLCA5LCAyXTsKICAgIGlmIGxldCBTb21lKGlkeCkgPSBsaW5lYXJfc2VhcmNoKCZhcnIsICY4KSB7CiAgICAgICAgcHJpbnRsbiEoIuaJvuWIsCA477yM57Si5byV5Li6IHt9IiwgaWR4KTsKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 线性查找：返回目标值的索引，未找到返回 None
 pub fn linear_search&lt;T: PartialEq&gt;(arr: &amp;[T], target: &amp;T) -&gt; Option&lt;usize&gt; {
     for (i, item) in arr.iter().enumerate() {
@@ -1026,6 +1076,8 @@ fn main() {
 k = \lfloor \log_2 n \rfloor + 1
 $$</p>
 <p>即时间复杂度为 $O(\log n)$。对于 $n = 10^6$ 的有序数组，最多只需约 20 次比较即可找到目标。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOWKm+aJo++8iDcwNC4g5LqM5YiG5p+l5om+KSBodHRwczovL2xlZXRjb2RlLWNuLmNvbS9wcm9ibGVtcy9iaW5hcnktc2VhcmNoLwpwdWIgZm4gc2VhcmNoKG51bXM6IFZlYzxpMzI+LCB0YXJnZXQ6IGkzMikgLT4gaTMyIHsKICAgIC8vIHRhcmdldOWcqFtsZWZ0LHJpZ2h0XeS4reafpeaJvgogICAgbGV0IGxlbiA9IG51bXMubGVuKCk7CiAgICBsZXQgbXV0IGxlZnQgPSAwOwogICAgbGV0IG11dCByaWdodCA9IGxlbiAtIDE7CiAgICBsZXQgbXV0IHBpdm90OwogICAgd2hpbGUgbGVmdCA8PSByaWdodCB7CiAgICAgICAgcGl2b3QgPSBsZWZ0ICsgKHJpZ2h0IC0gbGVmdCkgLyAyOwogICAgICAgIC8vIOazqOaEj3VzaXpl55qE6IyD5Zu05ZKMbnVtc+eahOS4i+agh+iMg+WbtAogICAgICAgIGlmIG51bXNbcGl2b3RdID09IHRhcmdldCB7CiAgICAgICAgICAgIHJldHVybiBwaXZvdCBhcyBpMzI7CiAgICAgICAgfQogICAgICAgIGlmIHRhcmdldCA8IG51bXNbcGl2b3RdIHsKICAgICAgICAgICAgaWYgcGl2b3QgPT0gMCB7CiAgICAgICAgICAgICAgICBicmVhazsKICAgICAgICAgICAgfQogICAgICAgICAgICByaWdodCA9IHBpdm90IC0gMTsKICAgICAgICB9IGVsc2UgewogICAgICAgICAgICBpZiBwaXZvdCA9PSBsZW4gLSAxIHsKICAgICAgICAgICAgICAgIGJyZWFrOwogICAgICAgICAgICB9CiAgICAgICAgICAgIGxlZnQgPSBwaXZvdCArIDE7CiAgICAgICAgfQogICAgfQogICAgLTEKfQoKZm4gbWFpbigpIHsKICAgIGxldCBudW1zID0gdmVjIVstMSwgMCwgMywgNSwgOSwgMTJdOwogICAgbGV0IHRhcmdldCA9IDk7CiAgICBsZXQgcmVzdWx0ID0gc2VhcmNoKG51bXMsIHRhcmdldCk7CiAgICBwcmludGxuISgicmVzdWx0OiB7fSIsIHJlc3VsdCk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 力扣（704. 二分查找) https://leetcode-cn.com/problems/binary-search/
 pub fn search(nums: Vec&lt;i32&gt;, target: i32) -&gt; i32 {
     // target在[left,right]中查找
@@ -1069,6 +1121,8 @@ fn main() {
 <li>处理哈希冲突（链地址法、开放寻址法等）</li>
 </ol>
 <p>Rust 标准库中的 <code>HashMap</code> 和 <code>HashSet</code> 就是基于哈希查找实现的。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6Y29sbGVjdGlvbnM6Okhhc2hNYXA7CgpmbiBtYWluKCkgewogICAgbGV0IG11dCBtYXAgPSBIYXNoTWFwOjpuZXcoKTsKICAgIG1hcC5pbnNlcnQoImFwcGxlIiwgMyk7CiAgICBtYXAuaW5zZXJ0KCJiYW5hbmEiLCA1KTsKICAgIG1hcC5pbnNlcnQoImNoZXJyeSIsIDIpOwoKICAgIC8vIOWTiOW4jOafpeaJvu+8mk8oMSkg5bmz5Z2H5pe26Ze05aSN5p2C5bqmCiAgICBpZiBsZXQgU29tZSgmY291bnQpID0gbWFwLmdldCgiYmFuYW5hIikgewogICAgICAgIHByaW50bG4hKCJiYW5hbmEg55qE5pWw6YePOiB7fSIsIGNvdW50KTsKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::collections::HashMap;
 
 fn main() {
@@ -1139,6 +1193,8 @@ $$</p>
 <li><strong>插入</strong>：按照查找路径走到空位置，将新节点插入</li>
 <li><strong>删除</strong>：分三种情况——叶子节点直接删除；只有一个子节点则用子节点替代；有两个子节点则用中序后继（或前驱）替代</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8gQ2FyZ28udG9tbCBkZXBlbmRlbmNpZXPvvIhQbGF5Z3JvdW5kIOi/kOihjOaXtumcgOa3u+WKoO+8iToKLy8g5peg6ZyA56ys5LiJ5pa5IGNyYXRl77yM57qv5qCH5YeG5bqTCgovLyEg5LqM5Y+J5qCRCi8vISBodHRwczovL2xlZXRjb2RlLWNuLmNvbS90YWcvYmluYXJ5LXRyZWUvcHJvYmxlbXNldC8KCnVzZSBzdGQ6OmNlbGw6OlJlZkNlbGw7CnVzZSBzdGQ6OmNtcDo6bWF4Owp1c2Ugc3RkOjpyYzo6UmM7CgojW2Rlcml2ZShEZWJ1ZywgUGFydGlhbEVxLCBFcSldCnB1YiBzdHJ1Y3QgVHJlZU5vZGUgewogICAgcHViIHZhbDogaTMyLAogICAgcHViIGxlZnQ6IE9wdGlvbjxSYzxSZWZDZWxsPFRyZWVOb2RlPj4+LAogICAgcHViIHJpZ2h0OiBPcHRpb248UmM8UmVmQ2VsbDxUcmVlTm9kZT4+PiwKfQoKaW1wbCBUcmVlTm9kZSB7CiAgICAjW2lubGluZV0KICAgIHB1YiBmbiBuZXcodmFsOiBpMzIpIC0+IFNlbGYgewogICAgICAgIFRyZWVOb2RlIHsKICAgICAgICAgICAgdmFsLAogICAgICAgICAgICBsZWZ0OiBOb25lLAogICAgICAgICAgICByaWdodDogTm9uZSwKICAgICAgICB9CiAgICB9CgogICAgLy8vIOagkeeahOa3seW6pu+8muS5n+ensOS4uuagkeeahOmrmOW6pu+8jOagkeS4reaJgOaciee7k+eCueeahOWxguasoeacgOWkp+WAvOensOS4uuagkeeahOa3seW6pgogICAgcHViIGZuIGdldF9oZWlnaHQocm9vdDogJk9wdGlvbjxSYzxSZWZDZWxsPFRyZWVOb2RlPj4+KSAtPiBpMzIgewogICAgICAgIGZuIGRmcyhyb290OiAmT3B0aW9uPFJjPFJlZkNlbGw8VHJlZU5vZGU+Pj4pIC0+IGkzMiB7CiAgICAgICAgICAgIG1hdGNoIHJvb3QgewogICAgICAgICAgICAgICAgTm9uZSA9PiAwLAogICAgICAgICAgICAgICAgU29tZShub2RlKSA9PiB7CiAgICAgICAgICAgICAgICAgICAgbGV0IG5vZGUgPSBub2RlLmJvcnJvdygpOwogICAgICAgICAgICAgICAgICAgIDEgKyBtYXgoZGZzKCZub2RlLmxlZnQpLCBkZnMoJm5vZGUucmlnaHQpKQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIGRmcyhyb290KQogICAgfQp9CgovLy8g5LuO5bGC5bqP6YGN5Y6G5pWw57uE5p6E5bu65LqM5Y+J5qCR77yIaTMyOjpNSU4g6KGo56S656m66IqC54K577yJCi8vLyDmoIflh4blsYLluo86IOWvueS6juS4i+aghyBp77yM5bem5a2Q6IqC54K5ID0gMippKzHvvIzlj7PlrZDoioLngrkgPSAyKmkrMgpmbiBidWlsZF90cmVlX2Zyb21fbGV2ZWxfb3JkZXIoYXJyOiAmW2kzMl0pIC0+IE9wdGlvbjxSYzxSZWZDZWxsPFRyZWVOb2RlPj4+IHsKICAgIGlmIGFyci5pc19lbXB0eSgpIHx8IGFyclswXSA9PSBpMzI6Ok1JTiB7CiAgICAgICAgcmV0dXJuIE5vbmU7CiAgICB9CgogICAgbGV0IHJvb3QgPSBSYzo6bmV3KFJlZkNlbGw6Om5ldyhUcmVlTm9kZTo6bmV3KGFyclswXSkpKTsKICAgIGxldCBtdXQgcXVldWU6IFZlYzxSYzxSZWZDZWxsPFRyZWVOb2RlPj4+ID0gdmVjIVtSYzo6Y2xvbmUoJnJvb3QpXTsKICAgIGxldCBtdXQgaSA9IDE7CgogICAgd2hpbGUgaSA8IGFyci5sZW4oKSB7CiAgICAgICAgbGV0IGN1cnJlbnQgPSBxdWV1ZS5yZW1vdmUoMCk7CgogICAgICAgIC8vIOW3puWtkOiKgueCuQogICAgICAgIGlmIGkgPCBhcnIubGVuKCkgJiYgYXJyW2ldICE9IGkzMjo6TUlOIHsKICAgICAgICAgICAgbGV0IGxlZnRfY2hpbGQgPSBSYzo6bmV3KFJlZkNlbGw6Om5ldyhUcmVlTm9kZTo6bmV3KGFycltpXSkpKTsKICAgICAgICAgICAgY3VycmVudC5ib3Jyb3dfbXV0KCkubGVmdCA9IFNvbWUoUmM6OmNsb25lKCZsZWZ0X2NoaWxkKSk7CiAgICAgICAgICAgIHF1ZXVlLnB1c2gobGVmdF9jaGlsZCk7CiAgICAgICAgfQogICAgICAgIGkgKz0gMTsKCiAgICAgICAgLy8g5Y+z5a2Q6IqC54K5CiAgICAgICAgaWYgaSA8IGFyci5sZW4oKSAmJiBhcnJbaV0gIT0gaTMyOjpNSU4gewogICAgICAgICAgICBsZXQgcmlnaHRfY2hpbGQgPSBSYzo6bmV3KFJlZkNlbGw6Om5ldyhUcmVlTm9kZTo6bmV3KGFycltpXSkpKTsKICAgICAgICAgICAgY3VycmVudC5ib3Jyb3dfbXV0KCkucmlnaHQgPSBTb21lKFJjOjpjbG9uZSgmcmlnaHRfY2hpbGQpKTsKICAgICAgICAgICAgcXVldWUucHVzaChyaWdodF9jaGlsZCk7CiAgICAgICAgfQogICAgICAgIGkgKz0gMTsKICAgIH0KCiAgICBTb21lKHJvb3QpCn0KCi8vLyAyMzAuIOS6jOWPieaQnOe0ouagkeS4reesrEvlsI/nmoTlhYPntKAgaHR0cHM6Ly9sZWV0Y29kZS5jbi9wcm9ibGVtcy9rdGgtc21hbGxlc3QtZWxlbWVudC1pbi1hLWJzdC8KLy8vIOS4reW6j+mBjeWOhiBCU1TvvIznrKwgayDkuKrlhYPntKDljbPkuLrnrKwgayDlsI8KcHViIGZuIGt0aF9zbWFsbGVzdChyb290OiBPcHRpb248UmM8UmVmQ2VsbDxUcmVlTm9kZT4+PiwgazogaTMyKSAtPiBpMzIgewogICAgZm4gaW5vcmRlcihub2RlOiAmT3B0aW9uPFJjPFJlZkNlbGw8VHJlZU5vZGU+Pj4sIHJlc3VsdDogJm11dCBWZWM8aTMyPikgewogICAgICAgIGlmIGxldCBTb21lKG4pID0gbm9kZSB7CiAgICAgICAgICAgIGxldCBuID0gbi5ib3Jyb3coKTsKICAgICAgICAgICAgaW5vcmRlcigmbi5sZWZ0LCByZXN1bHQpOwogICAgICAgICAgICByZXN1bHQucHVzaChuLnZhbCk7CiAgICAgICAgICAgIGlub3JkZXIoJm4ucmlnaHQsIHJlc3VsdCk7CiAgICAgICAgfQogICAgfQoKICAgIGxldCBtdXQgcmVzdWx0ID0gdmVjIVtdOwogICAgaW5vcmRlcigmcm9vdCwgJm11dCByZXN1bHQpOwoKICAgIC8vIOS4reW6j+mBjeWOhue7k+aenOaJk+WNsO+8iOi+heWKqeinguWvn++8iQogICAgcHJpbnRsbiEoIuS4reW6j+mBjeWOhue7k+aenDogezo/fSIsIHJlc3VsdCk7CgogICAgcmVzdWx0WyhrIC0gMSkgYXMgdXNpemVdCn0KCmZuIG1haW4oKSB7CiAgICAvLyDmnoTlu7rkuozlj4nmkJzntKLmoJE6CiAgICAvLyAgICAgICAzCiAgICAvLyAgICAgIC8gXAogICAgLy8gICAgIDEgICA0CiAgICAvLyAgICAgIFwKICAgIC8vICAgICAgIDIKICAgIC8vIOS4reW6j+mBjeWOhjogWzEsIDIsIDMsIDRdCiAgICAvLyDnrKwgMSDlsI8gPSAxCiAgICBsZXQgbm9kZTIgPSBSYzo6bmV3KFJlZkNlbGw6Om5ldyhUcmVlTm9kZTo6bmV3KDIpKSk7CiAgICBsZXQgbm9kZTEgPSBSYzo6bmV3KFJlZkNlbGw6Om5ldyhUcmVlTm9kZSB7CiAgICAgICAgdmFsOiAxLAogICAgICAgIGxlZnQ6IE5vbmUsCiAgICAgICAgcmlnaHQ6IFNvbWUoUmM6OmNsb25lKCZub2RlMikpLAogICAgfSkpOwogICAgbGV0IG5vZGU0ID0gUmM6Om5ldyhSZWZDZWxsOjpuZXcoVHJlZU5vZGU6Om5ldyg0KSkpOwogICAgbGV0IG5vZGUzID0gUmM6Om5ldyhSZWZDZWxsOjpuZXcoVHJlZU5vZGUgewogICAgICAgIHZhbDogMywKICAgICAgICBsZWZ0OiBTb21lKFJjOjpjbG9uZSgmbm9kZTEpKSwKICAgICAgICByaWdodDogU29tZShSYzo6Y2xvbmUoJm5vZGU0KSksCiAgICB9KSk7CiAgICBsZXQgcm9vdCA9IFNvbWUobm9kZTMpOwoKICAgIGxldCBrID0gMTsKICAgIGxldCByZXN1bHQgPSBrdGhfc21hbGxlc3Qocm9vdCwgayk7CiAgICBwcmludGxuISgi56ysIHt9IOWwj+eahOWFg+e0oDoge30iLCBrLCByZXN1bHQpOwoKICAgIC8vIOS5n+WPr+S7peS9v+eUqOi+heWKqeWHveaVsOS7juWxguW6j+aVsOe7hOaehOW7uu+8iGkzMjo6TUlOID0g56m66IqC54K577yJCiAgICBsZXQgYXJyID0gdmVjIVszLCAxLCA0LCBpMzI6Ok1JTiwgMl07CiAgICBsZXQgcm9vdDIgPSBidWlsZF90cmVlX2Zyb21fbGV2ZWxfb3JkZXIoJmFycik7CiAgICBwcmludGxuISgiXG7moJHnmoTpq5jluqY6IHt9IiwgVHJlZU5vZGU6OmdldF9oZWlnaHQoJnJvb3QyKSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// Cargo.toml dependencies（Playground 运行时需添加）:
 // 无需第三方 crate，纯标准库
 
@@ -1464,6 +1520,8 @@ $$</p>
 <li>压缩率高，内存占用低</li>
 <li>支持多种分词器（中文分词需配合 jieba-rs 等）</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8gQ2FyZ28udG9tbAovLyBbZGVwZW5kZW5jaWVzXQovLyB0YW50aXZ5ID0gIjAuMjIiCgp1c2UgdGFudGl2eTo6c2NoZW1hOjoqOwp1c2UgdGFudGl2eTo6e0luZGV4LCBJbmRleFdyaXRlciwgZG9jfTsKCmZuIG1haW4oKSAtPiB0YW50aXZ5OjpSZXN1bHQ8KCk+IHsKICAgIC8vIDEuIOWumuS5iSBzY2hlbWEKICAgIGxldCBtdXQgc2NoZW1hX2J1aWxkZXIgPSBTY2hlbWE6OmJ1aWxkZXIoKTsKICAgIGxldCB0aXRsZSA9IHNjaGVtYV9idWlsZGVyLmFkZF90ZXh0X2ZpZWxkKCJ0aXRsZSIsIFRFWFQgfCBTVE9SRUQpOwogICAgbGV0IGJvZHkgPSBzY2hlbWFfYnVpbGRlci5hZGRfdGV4dF9maWVsZCgiYm9keSIsIFRFWFQpOwogICAgbGV0IHNjaGVtYSA9IHNjaGVtYV9idWlsZGVyLmJ1aWxkKCk7CgogICAgLy8gMi4g5Yib5bu657Si5byVCiAgICBsZXQgaW5kZXggPSBJbmRleDo6Y3JlYXRlX2luX3JhbShzY2hlbWEuY2xvbmUoKSk7CiAgICBsZXQgbXV0IHdyaXRlciA9IGluZGV4LndyaXRlcig1MF8wMDBfMDAwKT87CgogICAgLy8gMy4g5re75Yqg5paH5qGjCiAgICB3cml0ZXIuYWRkX2RvY3VtZW50KGRvYyEoCiAgICAgICAgdGl0bGUgPT4gIlJ1c3Qg57yW56iL6K+t6KiAIiwKICAgICAgICBib2R5ID0+ICJSdXN0IOaYr+S4gOmXqOazqOmHjeWuieWFqOaAp+OAgeW5tuWPkeaAp+WSjOaAp+iDveeahOezu+e7n+e8lueoi+ivreiogCIKICAgICkpOwogICAgd3JpdGVyLmFkZF9kb2N1bWVudChkb2MhKAogICAgICAgIHRpdGxlID0+ICJHbyDnvJbnqIvor63oqIAiLAogICAgICAgIGJvZHkgPT4gIkdvIOaYr+S4gOmXqOazqOmHjeeugOa0geaAp+WSjOW5tuWPkeaAp+eahOe8lueoi+ivreiogCIKICAgICkpOwogICAgd3JpdGVyLmNvbW1pdCgpPzsKCiAgICAvLyA0LiDmkJzntKIKICAgIGxldCByZWFkZXIgPSBpbmRleC5yZWFkZXIoKT87CiAgICBsZXQgc2VhcmNoZXIgPSByZWFkZXIuc2VhcmNoZXIoKTsKICAgIGxldCBxdWVyeV9wYXJzZXIgPSBRdWVyeVBhcnNlcjo6Zm9yX2luZGV4KCZpbmRleCwgdmVjIVt0aXRsZSwgYm9keV0pOwogICAgbGV0IHF1ZXJ5ID0gcXVlcnlfcGFyc2VyLnBhcnNlX3F1ZXJ5KCJSdXN0IOWuieWFqCIpPzsKCiAgICBsZXQgdG9wX2RvY3MgPSBzZWFyY2hlci5zZWFyY2goJnF1ZXJ5LCAmVG9wRG9jczo6d2l0aF9saW1pdCgxMCkpPzsKICAgIGZvciAoX3Njb3JlLCBkb2NfYWRkcmVzcykgaW4gdG9wX2RvY3MgewogICAgICAgIGxldCByZXRyaWV2ZWRfZG9jID0gc2VhcmNoZXIuZG9jKGRvY19hZGRyZXNzKT87CiAgICAgICAgcHJpbnRsbiEoIuWMuemFjeaWh+ahozoge30iLCBzY2hlbWEudG9fanNvbigmcmV0cmlldmVkX2RvYykpOwogICAgfQoKICAgIE9rKCgpKQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// Cargo.toml
 // [dependencies]
 // tantivy = "0.22"

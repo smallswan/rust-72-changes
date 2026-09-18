@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -708,7 +745,14 @@ Header Payload Signature
 <li>使用短过期时间，配合刷新令牌机制</li>
 </ul>
 <h3 id="4854-rust实现jwt签发与验证"><a class="header" href="#4854-rust实现jwt签发与验证">48.5.4 Rust实现：JWT签发与验证</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use jsonwebtoken::{
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KanNvbndlYnRva2VuID0gIjkiCnNlcmRlID0geyB2ZXJzaW9uID0gIjEiLCBmZWF0dXJlcyA9IFsiZGVyaXZlIl0gfQoqLwp1c2UganNvbndlYnRva2VuOjp7CiAgICBkZWNvZGUsIGVuY29kZSwgQWxnb3JpdGhtLCBEZWNvZGluZ0tleSwgRW5jb2RpbmdLZXksIEhlYWRlciwgVmFsaWRhdGlvbiwKfTsKdXNlIHNlcmRlOjp7RGVzZXJpYWxpemUsIFNlcmlhbGl6ZX07CnVzZSBzdGQ6OnRpbWU6OntTeXN0ZW1UaW1lLCBVTklYX0VQT0NIfTsKCiNbZGVyaXZlKERlYnVnLCBTZXJpYWxpemUsIERlc2VyaWFsaXplKV0Kc3RydWN0IENsYWltcyB7CiAgICBzdWI6IFN0cmluZywgICAgICAgICAgIC8vIOeUqOaIt0lECiAgICBpc3M6IFN0cmluZywgICAgICAgICAgIC8vIOetvuWPkeiAhQogICAgYXVkOiBTdHJpbmcsICAgICAgICAgICAvLyDlj5fkvJcKICAgIGV4cDogdXNpemUsICAgICAgICAgICAgLy8g6L+H5pyf5pe26Ze0CiAgICBpYXQ6IHVzaXplLCAgICAgICAgICAgIC8vIOetvuWPkeaXtumXtAogICAgc2NvcGU6IFN0cmluZywgICAgICAgICAvLyDmnYPpmZDojIPlm7QKICAgICNbc2VyZGUoc2tpcF9zZXJpYWxpemluZ19pZiA9ICJPcHRpb246OmlzX25vbmUiKV0KICAgIHJvbGU6IE9wdGlvbjxTdHJpbmc+LCAgLy8g6KeS6ImyCn0KCmZuIG5vdygpIC0+IHVzaXplIHsKICAgIFN5c3RlbVRpbWU6Om5vdygpCiAgICAgICAgLmR1cmF0aW9uX3NpbmNlKFVOSVhfRVBPQ0gpCiAgICAgICAgLnVud3JhcCgpCiAgICAgICAgLmFzX3NlY3MoKSBhcyB1c2l6ZQp9CgovLyDkvb/nlKjpnZ7lr7nnp7Dlr4bpkqXvvIhSUzI1Nu+8ieetvuWPkUpXVApmbiBjcmVhdGVfand0X3JzMjU2KAogICAgdXNlcl9pZDogJnN0ciwKICAgIHByaXZhdGVfa2V5X3BlbTogJnN0ciwKKSAtPiBSZXN1bHQ8U3RyaW5nLCBqc29ud2VidG9rZW46OmVycm9yczo6RXJyb3I+IHsKICAgIGxldCBub3dfdHMgPSBub3coKTsKICAgIGxldCBjbGFpbXMgPSBDbGFpbXMgewogICAgICAgIHN1YjogdXNlcl9pZC50b19zdHJpbmcoKSwKICAgICAgICBpc3M6ICJhdXRoLXNlcnZlciIudG9fc3RyaW5nKCksCiAgICAgICAgYXVkOiAicmVzb3VyY2UtYXBpIi50b19zdHJpbmcoKSwKICAgICAgICBpYXQ6IG5vd190cywKICAgICAgICBleHA6IG5vd190cyArIDM2MDAsCiAgICAgICAgc2NvcGU6ICJyZWFkOnVzZXJzIHJlYWQ6b3JkZXJzIi50b19zdHJpbmcoKSwKICAgICAgICByb2xlOiBTb21lKCJ1c2VyIi50b19zdHJpbmcoKSksCiAgICB9OwogICAgCiAgICBsZXQgaGVhZGVyID0gSGVhZGVyOjpuZXcoQWxnb3JpdGhtOjpSUzI1Nik7CiAgICBsZXQgZW5jb2Rpbmdfa2V5ID0gRW5jb2RpbmdLZXk6OmZyb21fcnNhX3BlbShwcml2YXRlX2tleV9wZW0uYXNfYnl0ZXMoKSk/OwogICAgCiAgICBlbmNvZGUoJmhlYWRlciwgJmNsYWltcywgJmVuY29kaW5nX2tleSkKfQoKLy8g5L2/55So5YWs6ZKl6aqM6K+BSldUCmZuIHZlcmlmeV9qd3RfcnMyNTYoCiAgICB0b2tlbjogJnN0ciwKICAgIHB1YmxpY19rZXlfcGVtOiAmc3RyLAopIC0+IFJlc3VsdDxDbGFpbXMsIGpzb253ZWJ0b2tlbjo6ZXJyb3JzOjpFcnJvcj4gewogICAgbGV0IG11dCB2YWxpZGF0aW9uID0gVmFsaWRhdGlvbjo6bmV3KEFsZ29yaXRobTo6UlMyNTYpOwogICAgdmFsaWRhdGlvbi5zZXRfaXNzdWVyKCZbImF1dGgtc2VydmVyIl0pOwogICAgdmFsaWRhdGlvbi5zZXRfYXVkaWVuY2UoJlsicmVzb3VyY2UtYXBpIl0pOwogICAgdmFsaWRhdGlvbi5zZXRfcmVxdWlyZWRfc3BlY19jbGFpbXMoJlsiZXhwIiwgImlzcyIsICJhdWQiXSk7CiAgICAKICAgIGxldCBkZWNvZGluZ19rZXkgPSBEZWNvZGluZ0tleTo6ZnJvbV9yc2FfcGVtKHB1YmxpY19rZXlfcGVtLmFzX2J5dGVzKCkpPzsKICAgIGxldCB0b2tlbl9kYXRhID0gZGVjb2RlOjo8Q2xhaW1zPih0b2tlbiwgJmRlY29kaW5nX2tleSwgJnZhbGlkYXRpb24pPzsKICAgIAogICAgT2sodG9rZW5fZGF0YS5jbGFpbXMpCn0KCi8vIOajgOafpeeJueWumuadg+mZkApmbiBoYXNfc2NvcGUoY2xhaW1zOiAmQ2xhaW1zLCByZXF1aXJlZDogJnN0cikgLT4gYm9vbCB7CiAgICBjbGFpbXMuc2NvcGUuc3BsaXRfd2hpdGVzcGFjZSgpLmFueSh8c3wgcyA9PSByZXF1aXJlZCkKfQoKZm4gbWFpbigpIC0+IFJlc3VsdDwoKSwgQm94PGR5biBzdGQ6OmVycm9yOjpFcnJvcj4+IHsKICAgIC8vIOazqOaEj++8muWunumZhemhueebruS4reW6lOS7juWuieWFqOWtmOWCqOivu+WPluWvhumSpQogICAgbGV0IHByaXZhdGVfa2V5ID0gaW5jbHVkZV9zdHIhKCJwcml2YXRlX2tleS5wZW0iKTsKICAgIGxldCBwdWJsaWNfa2V5ID0gaW5jbHVkZV9zdHIhKCJwdWJsaWNfa2V5LnBlbSIpOwogICAgCiAgICAvLyDnrb7lj5EKICAgIGxldCB0b2tlbiA9IGNyZWF0ZV9qd3RfcnMyNTYoInVzZXJfMTIzIiwgcHJpdmF0ZV9rZXkpPzsKICAgIHByaW50bG4hKCJKV1Q6IHt9IiwgdG9rZW4pOwogICAgCiAgICAvLyDpqozor4EKICAgIGxldCBjbGFpbXMgPSB2ZXJpZnlfand0X3JzMjU2KCZ0b2tlbiwgcHVibGljX2tleSk/OwogICAgcHJpbnRsbiEoIumqjOivgemAmui/hzogezo/fSIsIGNsYWltcyk7CiAgICAKICAgIC8vIOadg+mZkOajgOafpQogICAgcHJpbnRsbiEoIuWPr+ivu+WPlueUqOaItzoge30iLCBoYXNfc2NvcGUoJmNsYWltcywgInJlYWQ6dXNlcnMiKSk7CiAgICBwcmludGxuISgi5Y+v5YaZ5YWl6K6i5Y2VOiB7fSIsIGhhc19zY29wZSgmY2xhaW1zLCAid3JpdGU6b3JkZXJzIikpOwogICAgCiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+jsonwebtoken = "9"
+serde = { version = "1", features = ["derive"] }
+*/
+use jsonwebtoken::{
     decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation,
 };
 use serde::{Deserialize, Serialize};
@@ -829,7 +873,13 @@ g, alice, admin
 g, bob, user
 </code></pre>
 <h3 id="4862-rust实现casbin-rbac"><a class="header" href="#4862-rust实现casbin-rbac">48.6.2 Rust实现：Casbin RBAC</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use casbin::{CoreApi, DefaultModel, Enforcer, FileAdapter, Result};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KdG9raW8gPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJmdWxsIl0gfQoqLwp1c2UgY2FzYmluOjp7Q29yZUFwaSwgRGVmYXVsdE1vZGVsLCBFbmZvcmNlciwgRmlsZUFkYXB0ZXIsIFJlc3VsdH07CgojW3Rva2lvOjptYWluXQphc3luYyBmbiBtYWluKCkgLT4gUmVzdWx0PCgpPiB7CiAgICAvLyDliqDovb3mqKHlnovlkoznrZbnlaUKICAgIGxldCBtb2RlbCA9IERlZmF1bHRNb2RlbDo6ZnJvbV9maWxlKCJtb2RlbC5jb25mIikuYXdhaXQ/OwogICAgbGV0IGFkYXB0ZXIgPSBGaWxlQWRhcHRlcjo6bmV3KCJwb2xpY3kuY3N2Iik7CiAgICBsZXQgZW5mb3JjZXIgPSBFbmZvcmNlcjo6bmV3KG1vZGVsLCBhZGFwdGVyKS5hd2FpdD87CiAgICAKICAgIC8vIOajgOafpeadg+mZkAogICAgbGV0IGNoZWNrcyA9IHZlYyFbCiAgICAgICAgKCJhbGljZSIsICIvdXNlcnMiLCAiR0VUIiksICAgIC8vIGFkbWlu6KeS6Imy77yM5YWB6K64CiAgICAgICAgKCJhbGljZSIsICIvdXNlcnMiLCAiUE9TVCIpLCAgIC8vIGFkbWlu6KeS6Imy77yM5YWB6K64CiAgICAgICAgKCJib2IiLCAiL3Byb2ZpbGUiLCAiR0VUIiksICAgIC8vIHVzZXLop5LoibLvvIzlhYHorrgKICAgICAgICAoImJvYiIsICIvdXNlcnMiLCAiR0VUIiksICAgICAgLy8gdXNlcuinkuiJsu+8jOaLkue7nQogICAgICAgICgiY2hhcmxpZSIsICIvdXNlcnMiLCAiR0VUIiksICAvLyDml6Dop5LoibLvvIzmi5Lnu50KICAgIF07CiAgICAKICAgIGZvciAoc3ViLCBvYmosIGFjdCkgaW4gJmNoZWNrcyB7CiAgICAgICAgbGV0IGFsbG93ZWQgPSBlbmZvcmNlci5lbmZvcmNlKChzdWIudG9fc3RyaW5nKCksIG9iai50b19zdHJpbmcoKSwgYWN0LnRvX3N0cmluZygpKSk/OwogICAgICAgIHByaW50bG4hKCJ7fSDog73lkKYge30ge30/IHt9Iiwgc3ViLCBhY3QsIG9iaiwgYWxsb3dlZCk7CiAgICB9CiAgICAKICAgIC8vIOWKqOaAgea3u+WKoOetlueVpQogICAgZW5mb3JjZXIuYWRkX3BvbGljeSh2ZWMhWyJ1c2VyIi50b19zdHJpbmcoKSwgIi9vcmRlcnMiLnRvX3N0cmluZygpLCAiR0VUIi50b19zdHJpbmcoKV0pLmF3YWl0PzsKICAgIAogICAgLy8g5Yqo5oCB5re75Yqg6KeS6ImyCiAgICBlbmZvcmNlci5hZGRfZ3JvdXBpbmdfcG9saWN5KHZlYyFbImNoYXJsaWUiLnRvX3N0cmluZygpLCAidXNlciIudG9fc3RyaW5nKCldKS5hd2FpdD87CiAgICAKICAgIGxldCBhbGxvd2VkID0gZW5mb3JjZXIuZW5mb3JjZSgoImNoYXJsaWUiLCAiL29yZGVycyIsICJHRVQiKSk/OwogICAgcHJpbnRsbiEoIua3u+WKoOinkuiJsuWQju+8jGNoYXJsaWUg6IO95ZCmIEdFVCAvb3JkZXJzPyB7fSIsIGFsbG93ZWQpOwogICAgCiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+*/
+use casbin::{CoreApi, DefaultModel, Enforcer, FileAdapter, Result};
 
 #[tokio::main]
 async fn main() -&gt; Result&lt;()&gt; {

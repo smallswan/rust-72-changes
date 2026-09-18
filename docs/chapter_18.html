@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -209,6 +246,8 @@
 <h3 id="rust-中的-swap-方法"><a class="header" href="#rust-中的-swap-方法">Rust 中的 swap 方法</a></h3>
 <p>Rust 标准库提供了多种 swap 方法，覆盖了不同的数据结构：</p>
 <h4 id="1-sliceswap--交换切片中两个位置的元素"><a class="header" href="#1-sliceswap--交换切片中两个位置的元素">1. slice.swap() – 交换切片中两个位置的元素</a></h4>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgYXJyID0gWzEsIDIsIDMsIDQsIDVdOwogICAgYXJyLnN3YXAoMCwgNCk7CiAgICBwcmludGxuISgiezo/fSIsIGFycik7IC8vIFs1LCAyLCAzLCA0LCAxXQoKICAgIGFyci5zd2FwKDEsIDMpOwogICAgcHJpbnRsbiEoIns6P30iLCBhcnIpOyAvLyBbNSwgNCwgMywgMiwgMV0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let mut arr = [1, 2, 3, 4, 5];
     arr.swap(0, 4);
@@ -218,12 +257,16 @@
     println!("{:?}", arr); // [5, 4, 3, 2, 1]
 }</code></pre>
 <h4 id="2-vecswap--交换-vec-中两个位置的元素"><a class="header" href="#2-vecswap--交换-vec-中两个位置的元素">2. Vec::swap() – 交换 Vec 中两个位置的元素</a></h4>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgdmVjID0gdmVjIVsiYSIsICJiIiwgImMiLCAiZCJdOwogICAgdmVjLnN3YXAoMCwgMyk7CiAgICBwcmludGxuISgiezo/fSIsIHZlYyk7IC8vIFsiZCIsICJiIiwgImMiLCAiYSJdCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let mut vec = vec!["a", "b", "c", "d"];
     vec.swap(0, 3);
     println!("{:?}", vec); // ["d", "b", "c", "a"]
 }</code></pre>
 <h4 id="3-stdmemswap--交换两个变量的值"><a class="header" href="#3-stdmemswap--交换两个变量的值">3. std::mem::swap – 交换两个变量的值</a></h4>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6bWVtOwoKZm4gbWFpbigpIHsKICAgIGxldCBtdXQgYSA9IFN0cmluZzo6ZnJvbSgiaGVsbG8iKTsKICAgIGxldCBtdXQgYiA9IFN0cmluZzo6ZnJvbSgid29ybGQiKTsKCiAgICBtZW06OnN3YXAoJm11dCBhLCAmbXV0IGIpOwogICAgcHJpbnRsbiEoImEgPSB7fSwgYiA9IHt9IiwgYSwgYik7IC8vIGEgPSB3b3JsZCwgYiA9IGhlbGxvCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::mem;
 
 fn main() {
@@ -236,6 +279,8 @@ fn main() {
 <p><code>std::mem::swap</code> 可以交换任意类型的两个值，不仅限于数值类型。它的底层实现使用了 <code>std::ptr::swap_nonoverlapping</code>，对于大型结构体也能高效完成（只交换内存，不涉及深拷贝）。</p>
 <h3 id="异或交换不用临时变量"><a class="header" href="#异或交换不用临时变量">异或交换（不用临时变量）</a></h3>
 <p>利用异或运算的自反性 $a \oplus b \oplus a = b$，可以不借助临时变量实现交换：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4geG9yX3N3YXAoYTogJm11dCBpMzIsIGI6ICZtdXQgaTMyKSB7CiAgICAqYSBePSAqYjsKICAgICpiIF49ICphOwogICAgKmEgXj0gKmI7Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgbXV0IHggPSA0MjsKICAgIGxldCBtdXQgeSA9IDk5OwogICAgcHJpbnRsbiEoIuS6pOaNouWJjTogeCA9IHt9LCB5ID0ge30iLCB4LCB5KTsKICAgIHhvcl9zd2FwKCZtdXQgeCwgJm11dCB5KTsKICAgIHByaW50bG4hKCLkuqTmjaLlkI46IHggPSB7fSwgeSA9IHt9IiwgeCwgeSk7IC8vIHggPSA5OSwgeSA9IDQyCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn xor_swap(a: &amp;mut i32, b: &amp;mut i32) {
     *a ^= *b;
     *b ^= *a;
@@ -256,6 +301,8 @@ fn main() {
 <p><a href="https://leetcode.cn/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/">剑指 Offer 03. 数组中重复的数字</a></p>
 <p><strong>题目</strong>：在一个长度为 n 的数组 <code>nums</code> 里的所有数字都在 $0 \sim n-1$ 的范围内。找出数组中任意一个重复的数字。</p>
 <p><strong>思路</strong>：利用原地交换，将每个数字放到它“应该在“的位置。如果目标位置已经有相同的数字，说明找到了重复。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOaWueazle+8muWOn+WcsOS6pOaNogpwdWIgZm4gZmluZF9yZXBlYXRfbnVtYmVyX3YzKG51bXM6IFZlYzxpMzI+KSAtPiBpMzIgewogICAgbGV0IGxlbiA9IG51bXMubGVuKCk7CiAgICBsZXQgbXV0IG5ld19udW1zID0gbnVtczsKICAgIGxldCBtdXQgaSA9IDA7CiAgICB3aGlsZSBpIDwgbGVuIHsKICAgICAgICBsZXQgbnVtID0gbmV3X251bXNbaV0gYXMgdXNpemU7CiAgICAgICAgaWYgbnVtID09IGkgewogICAgICAgICAgICBpICs9IDE7CiAgICAgICAgICAgIGNvbnRpbnVlOwogICAgICAgIH0KICAgICAgICBpZiBuZXdfbnVtc1tudW1dIGFzIHVzaXplID09IG51bSB7CiAgICAgICAgICAgIHJldHVybiBudW0gYXMgaTMyOwogICAgICAgIH0KICAgICAgICBuZXdfbnVtcy5zd2FwKGksIG51bSk7CiAgICB9CgogICAgLTEKfQoKZm4gbWFpbigpIHsKICAgIGxldCBkb2N1bWVudHMgPSBWZWM6OmZyb20oWzIsIDUsIDMsIDAsIDUsIDBdKTsKICAgIGxldCByZXN1bHQgPSBmaW5kX3JlcGVhdF9udW1iZXJfdjMoZG9jdW1lbnRzKTsKICAgIHByaW50bG4hKCJyZXN1bHQ6IHt9IiwgcmVzdWx0KTsgLy8gNSDmiJYgMAp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 方法：原地交换
 pub fn find_repeat_number_v3(nums: Vec&lt;i32&gt;) -&gt; i32 {
     let len = nums.len();
@@ -288,6 +335,8 @@ fn main() {
 </ul>
 <h3 id="更多-swap-应用场景"><a class="header" href="#更多-swap-应用场景">更多 swap 应用场景</a></h3>
 <h4 id="选择排序中的交换"><a class="header" href="#选择排序中的交换">选择排序中的交换</a></h4>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gc2VsZWN0aW9uX3NvcnQoYXJyOiAmbXV0IFtpMzJdKSB7CiAgICBsZXQgbiA9IGFyci5sZW4oKTsKICAgIGZvciBpIGluIDAuLm4gewogICAgICAgIGxldCBtdXQgbWluX2lkeCA9IGk7CiAgICAgICAgZm9yIGogaW4gKGkgKyAxKS4ubiB7CiAgICAgICAgICAgIGlmIGFycltqXSA8IGFyclttaW5faWR4XSB7CiAgICAgICAgICAgICAgICBtaW5faWR4ID0gajsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBpZiBtaW5faWR4ICE9IGkgewogICAgICAgICAgICBhcnIuc3dhcChpLCBtaW5faWR4KTsKICAgICAgICB9CiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgbXV0IGFyciA9IFs2NCwgMjUsIDEyLCAyMiwgMTFdOwogICAgc2VsZWN0aW9uX3NvcnQoJm11dCBhcnIpOwogICAgcHJpbnRsbiEoIns6P30iLCBhcnIpOyAvLyBbMTEsIDEyLCAyMiwgMjUsIDY0XQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn selection_sort(arr: &amp;mut [i32]) {
     let n = arr.len();
     for i in 0..n {
@@ -309,6 +358,8 @@ fn main() {
     println!("{:?}", arr); // [11, 12, 22, 25, 64]
 }</code></pre>
 <h4 id="快速排序中的交换"><a class="header" href="#快速排序中的交换">快速排序中的交换</a></h4>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gcXVpY2tfc29ydChhcnI6ICZtdXQgW2kzMl0pIHsKICAgIGlmIGFyci5sZW4oKSA8PSAxIHsKICAgICAgICByZXR1cm47CiAgICB9CiAgICBsZXQgcGl2b3QgPSBwYXJ0aXRpb24oYXJyKTsKICAgIHF1aWNrX3NvcnQoJm11dCBhcnJbLi5waXZvdF0pOwogICAgcXVpY2tfc29ydCgmbXV0IGFycltwaXZvdCArIDEuLl0pOwp9CgpmbiBwYXJ0aXRpb24oYXJyOiAmbXV0IFtpMzJdKSAtPiB1c2l6ZSB7CiAgICBsZXQgbGVuID0gYXJyLmxlbigpOwogICAgbGV0IHBpdm90X2lkeCA9IGxlbiAvIDI7CiAgICBhcnIuc3dhcChwaXZvdF9pZHgsIGxlbiAtIDEpOyAvLyDlsIZwaXZvdOaUvuWIsOacq+WwvgogICAgbGV0IG11dCBpID0gMDsKICAgIGZvciBqIGluIDAuLmxlbiAtIDEgewogICAgICAgIGlmIGFycltqXSA8IGFycltsZW4gLSAxXSB7CiAgICAgICAgICAgIGFyci5zd2FwKGksIGopOwogICAgICAgICAgICBpICs9IDE7CiAgICAgICAgfQogICAgfQogICAgYXJyLnN3YXAoaSwgbGVuIC0gMSk7IC8vIOWwhnBpdm905pS+5Yiw5q2j56Gu5L2N572uCiAgICBpCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgbXV0IGFyciA9IFszLCA2LCA4LCAxMCwgMSwgMiwgMV07CiAgICBxdWlja19zb3J0KCZtdXQgYXJyKTsKICAgIHByaW50bG4hKCJ7Oj99IiwgYXJyKTsgLy8gWzEsIDEsIDIsIDMsIDYsIDgsIDEwXQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn quick_sort(arr: &amp;mut [i32]) {
     if arr.len() &lt;= 1 {
         return;
@@ -345,18 +396,24 @@ fn main() {
 <p>$$[a_0, a_1, \ldots, a_{n-2}, a_{n-1}] \xrightarrow{\text{reverse}} [a_{n-1}, a_{n-2}, \ldots, a_1, a_0]$$</p>
 <h3 id="rust-中的-reverse-方法"><a class="header" href="#rust-中的-reverse-方法">Rust 中的 reverse 方法</a></h3>
 <h4 id="1-slicereverse--原地反转切片"><a class="header" href="#1-slicereverse--原地反转切片">1. slice.reverse() – 原地反转切片</a></h4>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgYXJyID0gWzEsIDIsIDMsIDQsIDVdOwogICAgYXJyLnJldmVyc2UoKTsKICAgIHByaW50bG4hKCJ7Oj99IiwgYXJyKTsgLy8gWzUsIDQsIDMsIDIsIDFdCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let mut arr = [1, 2, 3, 4, 5];
     arr.reverse();
     println!("{:?}", arr); // [5, 4, 3, 2, 1]
 }</code></pre>
 <h4 id="2-vecreverse--原地反转-vec"><a class="header" href="#2-vecreverse--原地反转-vec">2. Vec::reverse() – 原地反转 Vec</a></h4>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgdmVjID0gdmVjIVsiYXBwbGUiLCAiYmFuYW5hIiwgImNoZXJyeSJdOwogICAgdmVjLnJldmVyc2UoKTsKICAgIHByaW50bG4hKCJ7Oj99IiwgdmVjKTsgLy8gWyJjaGVycnkiLCAiYmFuYW5hIiwgImFwcGxlIl0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let mut vec = vec!["apple", "banana", "cherry"];
     vec.reverse();
     println!("{:?}", vec); // ["cherry", "banana", "apple"]
 }</code></pre>
 <h4 id="3-iteratorrev--反转迭代器惰性不修改原数据"><a class="header" href="#3-iteratorrev--反转迭代器惰性不修改原数据">3. Iterator::rev() – 反转迭代器（惰性，不修改原数据）</a></h4>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBhcnIgPSBbMSwgMiwgMywgNCwgNV07CgogICAgLy8gcmV2KCkg6L+U5Zue5LiA5Liq5Y+N6L2s55qE6L+t5Luj5Zmo77yM5LiN5L+u5pS55Y6f5pWw57uECiAgICBmb3IgaXRlbSBpbiBhcnIuaXRlcigpLnJldigpIHsKICAgICAgICBwcmludCEoInt9ICIsIGl0ZW0pOyAvLyA1IDQgMyAyIDEKICAgIH0KICAgIHByaW50bG4hKCk7CgogICAgLy8g5pS26ZuG5Li65paw55qEIFZlYwogICAgbGV0IHJldmVyc2VkOiBWZWM8aTMyPiA9IGFyci5pdGVyKCkucmV2KCkuY29waWVkKCkuY29sbGVjdCgpOwogICAgcHJpbnRsbiEoIns6P30iLCByZXZlcnNlZCk7IC8vIFs1LCA0LCAzLCAyLCAxXQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let arr = [1, 2, 3, 4, 5];
 
@@ -374,6 +431,8 @@ fn main() {
 <p><strong>注意</strong>：<code>slice.reverse()</code> 是原地修改，而 <code>Iterator::rev()</code> 是惰性操作，返回一个新的迭代器视图，不会修改原始数据。</p>
 </blockquote>
 <h3 id="字符串反转"><a class="header" href="#字符串反转">字符串反转</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gcmV2ZXJzZV9zdHJpbmcoczogJnN0cikgLT4gU3RyaW5nIHsKICAgIHMuY2hhcnMoKS5yZXYoKS5jb2xsZWN0KCkKfQoKZm4gbWFpbigpIHsKICAgIGxldCBvcmlnaW5hbCA9ICJoZWxsbyI7CiAgICBsZXQgcmV2ZXJzZWQgPSByZXZlcnNlX3N0cmluZyhvcmlnaW5hbCk7CiAgICBwcmludGxuISgie30gLT4ge30iLCBvcmlnaW5hbCwgcmV2ZXJzZWQpOyAvLyBoZWxsbyAtPiBvbGxlaAoKICAgIC8vIOWkhOeQhuWMheWQq+S4reaWh+eahOWtl+espuS4sgogICAgbGV0IGNoaW5lc2UgPSAi5L2g5aW95LiW55WMIjsKICAgIGxldCByZXZlcnNlZF9jbiA9IHJldmVyc2Vfc3RyaW5nKGNoaW5lc2UpOwogICAgcHJpbnRsbiEoInt9IC0+IHt9IiwgY2hpbmVzZSwgcmV2ZXJzZWRfY24pOyAvLyDkvaDlpb3kuJbnlYwgLT4g55WM5LiW5aW95L2gCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn reverse_string(s: &amp;str) -&gt; String {
     s.chars().rev().collect()
 }
@@ -393,6 +452,8 @@ fn main() {
 </blockquote>
 <h3 id="链表反转"><a class="header" href="#链表反转">链表反转</a></h3>
 <p>链表反转是面试中的高频题目，体现了 swap 操作在指针操作中的应用：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#I1tkZXJpdmUoRGVidWcpXQpzdHJ1Y3QgTGlzdE5vZGUgewogICAgdmFsOiBpMzIsCiAgICBuZXh0OiBPcHRpb248Qm94PExpc3ROb2RlPj4sCn0KCmltcGwgTGlzdE5vZGUgewogICAgZm4gbmV3KHZhbDogaTMyKSAtPiBTZWxmIHsKICAgICAgICBMaXN0Tm9kZSB7IHZhbCwgbmV4dDogTm9uZSB9CiAgICB9Cn0KCi8vLyDlj43ovazpk77ooajvvIjov63ku6Pms5XvvIkKZm4gcmV2ZXJzZV9saXN0KGhlYWQ6IE9wdGlvbjxCb3g8TGlzdE5vZGU+PikgLT4gT3B0aW9uPEJveDxMaXN0Tm9kZT4+IHsKICAgIGxldCBtdXQgcHJldiA9IE5vbmU7CiAgICBsZXQgbXV0IGN1cnJlbnQgPSBoZWFkOwoKICAgIHdoaWxlIGxldCBTb21lKG11dCBub2RlKSA9IGN1cnJlbnQgewogICAgICAgIGN1cnJlbnQgPSBub2RlLm5leHQudGFrZSgpOyAvLyDmmoLlrZjkuIvkuIDkuKroioLngrkKICAgICAgICBub2RlLm5leHQgPSBwcmV2OyAgICAgICAgICAgLy8g5Y+N6L2s5oyH6ZKICiAgICAgICAgcHJldiA9IFNvbWUobm9kZSk7ICAgICAgICAgIC8vIOWJjei/mwogICAgfQoKICAgIHByZXYKfQoKZm4gbWFpbigpIHsKICAgIC8vIOaehOW7uumTvuihqCAxIC0+IDIgLT4gMyAtPiA0IC0+IDUKICAgIGxldCBtdXQgaGVhZCA9IFNvbWUoQm94OjpuZXcoTGlzdE5vZGU6Om5ldygxKSkpOwogICAgbGV0IG11dCBjdXJyZW50ID0gaGVhZC5hc19tdXQoKS51bndyYXAoKTsKICAgIGZvciBpIGluIDIuLj01IHsKICAgICAgICBjdXJyZW50Lm5leHQgPSBTb21lKEJveDo6bmV3KExpc3ROb2RlOjpuZXcoaSkpKTsKICAgICAgICBjdXJyZW50ID0gY3VycmVudC5uZXh0LmFzX211dCgpLnVud3JhcCgpOwogICAgfQoKICAgIGxldCByZXZlcnNlZCA9IHJldmVyc2VfbGlzdChoZWFkKTsKICAgIC8vIOi+k+WHujogNSAtPiA0IC0+IDMgLT4gMiAtPiAxCiAgICBsZXQgbXV0IG5vZGUgPSAmcmV2ZXJzZWQ7CiAgICB3aGlsZSBsZXQgU29tZShuKSA9IG5vZGUgewogICAgICAgIHByaW50ISgie30gLT4gIiwgbi52YWwpOwogICAgICAgIG5vZGUgPSAmbi5uZXh0OwogICAgfQogICAgcHJpbnRsbiEoIk5vbmUiKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">#[derive(Debug)]
 struct ListNode {
     val: i32,
@@ -441,6 +502,8 @@ fn main() {
 <p><a href="https://leetcode-cn.com/problems/fan-zhuan-dan-ci-shun-xu-lcof/">剑指 Offer 58 - I. 翻转单词顺序</a></p>
 <p><strong>题目</strong>：输入一个英文句子，翻转句子中单词的顺序，但单词内字符的顺序不变。</p>
 <p><strong>思路</strong>：先将整个字符串按空格分割为单词数组，然后反转整个数组，最后拼接。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#cHViIGZuIHJldmVyc2Vfd29yZHMoczogU3RyaW5nKSAtPiBTdHJpbmcgewogICAgbGV0IG11dCB3b3JkczogVmVjPCZzdHI+ID0gcy5zcGxpdCgnICcpLmNvbGxlY3QoKTsKICAgIGxldCBtdXQgcmVzdWx0ID0gU3RyaW5nOjpuZXcoKTsKICAgIHdvcmRzLnJldmVyc2UoKTsKICAgIGZvciB3b3JkIGluIHdvcmRzIHsKICAgICAgICAvLyDms6jmhI/vvJrmjInnhaciICLliIblibLvvIznu5PmnpzkuK3nqbrlrZfnrKbkuLLkuLoiIuiAjOS4jeaYryIgIgogICAgICAgIGlmICF3b3JkLmlzX2VtcHR5KCkgewogICAgICAgICAgICByZXN1bHQgPSBmb3JtYXQhKCJ7fSB7fSIsIHJlc3VsdCwgd29yZCk7CiAgICAgICAgfQogICAgfQogICAgcmVzdWx0LnRyaW0oKS50b19zdHJpbmcoKQp9CgpmbiBtYWluKCkgewogICAgbGV0IG1lc3NhZ2UgPSAidGhlIHNreSBpcyBibHVlIjsKICAgIGxldCByZXN1bHQgPSByZXZlcnNlX3dvcmRzKG1lc3NhZ2UudG9fc3RyaW5nKCkpOwogICAgcHJpbnRsbiEoInJlc3VsdDoge30iLCByZXN1bHQpOyAvLyAiYmx1ZSBpcyBza3kgdGhlIgp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">pub fn reverse_words(s: String) -&gt; String {
     let mut words: Vec&lt;&amp;str&gt; = s.split(' ').collect();
     let mut result = String::new();
@@ -466,6 +529,8 @@ fn main() {
 </ul>
 <h3 id="回文判断"><a class="header" href="#回文判断">回文判断</a></h3>
 <p>利用反转操作可以方便地判断一个字符串是否为回文：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gaXNfcGFsaW5kcm9tZShzOiAmc3RyKSAtPiBib29sIHsKICAgIGxldCBjaGFyczogVmVjPGNoYXI+ID0gcy5jaGFycygpLmNvbGxlY3QoKTsKICAgIGxldCBuID0gY2hhcnMubGVuKCk7CiAgICBmb3IgaSBpbiAwLi5uIC8gMiB7CiAgICAgICAgaWYgY2hhcnNbaV0gIT0gY2hhcnNbbiAtIDEgLSBpXSB7CiAgICAgICAgICAgIHJldHVybiBmYWxzZTsKICAgICAgICB9CiAgICB9CiAgICB0cnVlCn0KCmZuIG1haW4oKSB7CiAgICBwcmludGxuISgiXCJyYWNlY2FyXCIg5piv5Zue5paHOiB7fSIsIGlzX3BhbGluZHJvbWUoInJhY2VjYXIiKSk7IC8vIHRydWUKICAgIHByaW50bG4hKCJcImhlbGxvXCIg5piv5Zue5paHOiB7fSIsIGlzX3BhbGluZHJvbWUoImhlbGxvIikpOyAgICAgLy8gZmFsc2UKICAgIHByaW50bG4hKCJcIuS4iua1t+iHquadpeawtOadpeiHqua1t+S4ilwiIOaYr+WbnuaWhzoge30iLCBpc19wYWxpbmRyb21lKCLkuIrmtbfoh6rmnaXmsLTmnaXoh6rmtbfkuIoiKSk7IC8vIHRydWUKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn is_palindrome(s: &amp;str) -&gt; bool {
     let chars: Vec&lt;char&gt; = s.chars().collect();
     let n = chars.len();
@@ -484,6 +549,8 @@ fn main() {
 }</code></pre>
 <h3 id="整数反转"><a class="header" href="#整数反转">整数反转</a></h3>
 <p><a href="https://leetcode-cn.com/problems/reverse-integer/">7. 整数反转</a></p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#cHViIGZuIHJldmVyc2UoeDogaTMyKSAtPiBpMzIgewogICAgbGV0IHNpZ24gPSB4LnNpZ251bSgpOwogICAgbGV0IG11dCBuID0gKHggYXMgaTY0KS5hYnMoKTsKICAgIGxldCBtdXQgcmVzdWx0OiBpNjQgPSAwOwoKICAgIHdoaWxlIG4gPiAwIHsKICAgICAgICByZXN1bHQgPSByZXN1bHQgKiAxMCArIG4gJSAxMDsKICAgICAgICBuIC89IDEwOwogICAgfQoKICAgIHJlc3VsdCAqPSBzaWduIGFzIGk2NDsKCiAgICBpZiByZXN1bHQgPiBpMzI6Ok1BWCBhcyBpNjQgfHwgcmVzdWx0IDwgaTMyOjpNSU4gYXMgaTY0IHsKICAgICAgICByZXR1cm4gMDsKICAgIH0KCiAgICByZXN1bHQgYXMgaTMyCn0KCmZuIG1haW4oKSB7CiAgICBwcmludGxuISgie30iLCByZXZlcnNlKDEyMykpOyAgICAvLyAzMjEKICAgIHByaW50bG4hKCJ7fSIsIHJldmVyc2UoLTEyMykpOyAgIC8vIC0zMjEKICAgIHByaW50bG4hKCJ7fSIsIHJldmVyc2UoMTIwKSk7ICAgIC8vIDIxCiAgICBwcmludGxuISgie30iLCByZXZlcnNlKDApKTsgICAgICAvLyAwCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">pub fn reverse(x: i32) -&gt; i32 {
     let sign = x.signum();
     let mut n = (x as i64).abs();
@@ -541,6 +608,8 @@ reverse(mid, len);     // 翻转后半部分
 <h3 id="rust-中的-rotate-方法"><a class="header" href="#rust-中的-rotate-方法">Rust 中的 rotate 方法</a></h3>
 <p>Rust 标准库为切片提供了内置的旋转方法：</p>
 <h4 id="1-slicerotate_left--左旋"><a class="header" href="#1-slicerotate_left--左旋">1. slice.rotate_left() – 左旋</a></h4>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgYXJyID0gWzEsIDIsIDMsIDQsIDUsIDYsIDddOwogICAgYXJyLnJvdGF0ZV9sZWZ0KDMpOwogICAgcHJpbnRsbiEoIns6P30iLCBhcnIpOyAvLyBbNCwgNSwgNiwgNywgMSwgMiwgM10KCiAgICAvLyDml4vovazotoXov4fplb/luqbml7boh6rliqjlj5bmqKEKICAgIGxldCBtdXQgYXJyID0gWzEsIDIsIDMsIDQsIDVdOwogICAgYXJyLnJvdGF0ZV9sZWZ0KDcpOyAvLyDnrYnku7fkuo4gcm90YXRlX2xlZnQoMikKICAgIHByaW50bG4hKCJ7Oj99IiwgYXJyKTsgLy8gWzMsIDQsIDUsIDEsIDJdCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let mut arr = [1, 2, 3, 4, 5, 6, 7];
     arr.rotate_left(3);
@@ -552,6 +621,8 @@ reverse(mid, len);     // 翻转后半部分
     println!("{:?}", arr); // [3, 4, 5, 1, 2]
 }</code></pre>
 <h4 id="2-slicerotate_right--右旋"><a class="header" href="#2-slicerotate_right--右旋">2. slice.rotate_right() – 右旋</a></h4>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgYXJyID0gWzEsIDIsIDMsIDQsIDUsIDYsIDddOwogICAgYXJyLnJvdGF0ZV9yaWdodCgzKTsKICAgIHByaW50bG4hKCJ7Oj99IiwgYXJyKTsgLy8gWzUsIDYsIDcsIDEsIDIsIDMsIDRdCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let mut arr = [1, 2, 3, 4, 5, 6, 7];
     arr.rotate_right(3);
@@ -564,6 +635,8 @@ reverse(mid, len);     // 翻转后半部分
 <p><a href="https://leetcode.cn/problems/rotate-array/description/">189. 轮转数组</a></p>
 <p><strong>题目</strong>：给定一个数组，将数组中的元素向右轮转 k 个位置。</p>
 <p><strong>思路</strong>：使用三次翻转法。右旋 k 位 = 先整体翻转，再分别翻转前 k 个和后 n-k 个。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#cHViIGZuIHJvdGF0ZShudW1zOiAmbXV0IFZlYzxpMzI+LCBrOiBpMzIpIHsKICAgIGxldCBsZW4gPSBudW1zLmxlbigpOwogICAgaWYgbGVuIDw9IDEgewogICAgICAgIHJldHVybjsKICAgIH0KICAgIGxldCBvZmZzZXQgPSAoayBhcyB1c2l6ZSkgJSBsZW47CiAgICBpZiBvZmZzZXQgPT0gMCB7CiAgICAgICAgcmV0dXJuOwogICAgfQoKICAgIC8vIOesrOS4gOasoee/u+i9rO+8muaVtOS9k+e/u+i9rAogICAgbnVtcy5yZXZlcnNlKCk7CgogICAgLy8g56ys5LqM5qyh57+76L2s77ya57+76L2s5YmNb2Zmc2V05Liq5YWD57SgCiAgICBmb3IgaSBpbiAwLi5vZmZzZXQgLyAyIHsKICAgICAgICBudW1zLnN3YXAoaSwgb2Zmc2V0IC0gaSAtIDEpOwogICAgfQoKICAgIC8vIOesrOS4ieasoee/u+i9rO+8mue/u+i9rOWQjihsZW4gLSBvZmZzZXQp5Liq5YWD57SgCiAgICBmb3IgaiBpbiAwLi4obGVuIC0gb2Zmc2V0KSAvIDIgewogICAgICAgIG51bXMuc3dhcChqICsgb2Zmc2V0LCBsZW4gLSBqIC0gMSk7CiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgbXV0IG51bXMgPSB2ZWMhWzEsIDIsIDMsIDQsIDUsIDYsIDddOwogICAgbGV0IGsgPSAzOwogICAgcm90YXRlKCZtdXQgbnVtcywgayk7CiAgICBwcmludGxuISgicmVzdWx0OiB7Oj99IiwgbnVtcyk7IC8vIFs1LCA2LCA3LCAxLCAyLCAzLCA0XQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">pub fn rotate(nums: &amp;mut Vec&lt;i32&gt;, k: i32) {
     let len = nums.len();
     if len &lt;= 1 {
@@ -611,6 +684,8 @@ fn main() {
 <span class="boring">}</span></code></pre>
 <h3 id="字符串旋转判断"><a class="header" href="#字符串旋转判断">字符串旋转判断</a></h3>
 <p>判断一个字符串是否是另一个字符串旋转得到的：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gaXNfcm90YXRpb24oczE6ICZzdHIsIHMyOiAmc3RyKSAtPiBib29sIHsKICAgIGlmIHMxLmxlbigpICE9IHMyLmxlbigpIHsKICAgICAgICByZXR1cm4gZmFsc2U7CiAgICB9CiAgICAvLyDlsIZzMeS4juiHqui6q+aLvOaOpe+8jHMy5aaC5p6c5pivczHnmoTml4vovazvvIzlv4XnhLbmmK/mi7zmjqXlkI7nmoTlrZDkuLIKICAgIGxldCBkb3VibGVkID0gZm9ybWF0ISgie317fSIsIHMxLCBzMSk7CiAgICBkb3VibGVkLmNvbnRhaW5zKHMyKQp9CgpmbiBtYWluKCkgewogICAgcHJpbnRsbiEoInt9IiwgaXNfcm90YXRpb24oIndhdGVyYm90dGxlIiwgImVyYm90dGxld2F0IikpOyAvLyB0cnVlCiAgICBwcmludGxuISgie30iLCBpc19yb3RhdGlvbigiYWJjZGUiLCAiY2RlYWIiKSk7ICAgICAgICAgICAgIC8vIHRydWUKICAgIHByaW50bG4hKCJ7fSIsIGlzX3JvdGF0aW9uKCJhYmNkZSIsICJhYmNlZCIpKTsgICAgICAgICAgICAgLy8gZmFsc2UKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn is_rotation(s1: &amp;str, s2: &amp;str) -&gt; bool {
     if s1.len() != s2.len() {
         return false;
@@ -633,6 +708,8 @@ fn main() {
         └── rotate（旋转）= 三次 reverse
 </code></pre>
 <p>用代码验证这一关系：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgYXJyID0gWzEsIDIsIDMsIDQsIDUsIDYsIDddOwoKICAgIC8vIHJvdGF0ZV9sZWZ0KDMpIOetieS7t+S6juS4ieasoSByZXZlcnNlCiAgICBsZXQgbXV0IGFycjIgPSBhcnIuY2xvbmUoKTsKICAgIGFycjJbMC4uM10ucmV2ZXJzZSgpOwogICAgYXJyMlszLi5dLnJldmVyc2UoKTsKICAgIGFycjIucmV2ZXJzZSgpOwogICAgcHJpbnRsbiEoIuS4ieasoXJldmVyc2U6IHs6P30iLCBhcnIyKTsgLy8gWzQsIDUsIDYsIDcsIDEsIDIsIDNdCgogICAgLy8g5L2/55So5qCH5YeG5bqTIHJvdGF0ZV9sZWZ0CiAgICBhcnIucm90YXRlX2xlZnQoMyk7CiAgICBwcmludGxuISgicm90YXRlX2xlZnQ6IHs6P30iLCBhcnIpOyAvLyBbNCwgNSwgNiwgNywgMSwgMiwgM10KCiAgICBhc3NlcnRfZXEhKGFyciwgYXJyMik7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let mut arr = [1, 2, 3, 4, 5, 6, 7];
 

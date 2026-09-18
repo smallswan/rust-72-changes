@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -235,6 +272,8 @@
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gdmVjdG9yX2FkZChhOiAmW2Y2NF0sIGI6ICZbZjY0XSkgLT4gVmVjPGY2ND4gewogICAgYS5pdGVyKCkuemlwKGIuaXRlcigpKS5tYXAofCh4LCB5KXwgeCArIHkpLmNvbGxlY3QoKQp9CgpmbiB2ZWN0b3Jfc2NhbGUoYTogJltmNjRdLCBrOiBmNjQpIC0+IFZlYzxmNjQ+IHsKICAgIGEuaXRlcigpLm1hcCh8eHwgeCAqIGspLmNvbGxlY3QoKQp9CgpmbiBtYWluKCkgewogICAgbGV0IGEgPSB2ZWMhWzEuMCwgMi4wLCAzLjBdOwogICAgbGV0IGIgPSB2ZWMhWzQuMCwgNS4wLCA2LjBdOwoKICAgIHByaW50bG4hKCJhICsgYiA9IHs6P30iLCB2ZWN0b3JfYWRkKCZhLCAmYikpOyAgICAgLy8gWzUsIDcsIDldCiAgICBwcmludGxuISgiMmEgPSB7Oj99IiwgdmVjdG9yX3NjYWxlKCZhLCAyLjApKTsgICAgIC8vIFsyLCA0LCA2XQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn vector_add(a: &amp;[f64], b: &amp;[f64]) -&gt; Vec&lt;f64&gt; {
     a.iter().zip(b.iter()).map(|(x, y)| x + y).collect()
 }
@@ -275,6 +314,8 @@ fn main() {
 <h3 id="34-求向量夹角"><a class="header" href="#34-求向量夹角">3.4 求向量夹角</a></h3>
 <p>$$\cos\theta = \frac{\vec{a} \cdot \vec{b}}{|\vec{a}| |\vec{b}|}$$</p>
 <p>$$\theta = \arccos\left(\frac{\vec{a} \cdot \vec{b}}{|\vec{a}| |\vec{b}|}\right)$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZG90X3Byb2R1Y3QoYTogJltmNjRdLCBiOiAmW2Y2NF0pIC0+IGY2NCB7CiAgICBhLml0ZXIoKS56aXAoYi5pdGVyKCkpLm1hcCh8KHgsIHkpfCB4ICogeSkuc3VtKCkKfQoKZm4gbWFnbml0dWRlKGE6ICZbZjY0XSkgLT4gZjY0IHsKICAgIGEuaXRlcigpLm1hcCh8eHwgeCAqIHgpLnN1bTo6PGY2ND4oKS5zcXJ0KCkKfQoKZm4gYW5nbGVfYmV0d2VlbihhOiAmW2Y2NF0sIGI6ICZbZjY0XSkgLT4gZjY0IHsKICAgIGxldCBkb3QgPSBkb3RfcHJvZHVjdChhLCBiKTsKICAgIGxldCBtYWdfYSA9IG1hZ25pdHVkZShhKTsKICAgIGxldCBtYWdfYiA9IG1hZ25pdHVkZShiKTsKICAgIChkb3QgLyAobWFnX2EgKiBtYWdfYikpLmFjb3MoKQp9CgpmbiBtYWluKCkgewogICAgbGV0IGEgPSB2ZWMhWzEuMCwgMC4wXTsKICAgIGxldCBiID0gdmVjIVswLjAsIDEuMF07CgogICAgcHJpbnRsbiEoIueCueenrzoge30iLCBkb3RfcHJvZHVjdCgmYSwgJmIpKTsgICAgICAgICAgIC8vIDAKICAgIHByaW50bG4hKCLlpLnop5I6IHs6LjJ9IOW8p+W6piA9IHs6LjJ9wrAiLCBhbmdsZV9iZXR3ZWVuKCZhLCAmYiksIGFuZ2xlX2JldHdlZW4oJmEsICZiKS50b19kZWdyZWVzKCkpOwogICAgLy8gMS41NyDlvKfluqYgPSA5MMKwCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn dot_product(a: &amp;[f64], b: &amp;[f64]) -&gt; f64 {
     a.iter().zip(b.iter()).map(|(x, y)| x * y).sum()
 }
@@ -307,6 +348,8 @@ fn main() {
 <h3 id="42-几何意义"><a class="header" href="#42-几何意义">4.2 几何意义</a></h3>
 <p>$$|\vec{a} \times \vec{b}| = |\vec{a}| |\vec{b}| \sin\theta$$</p>
 <p>叉积的结果是一个向量，其方向垂直于 $\vec{a}$ 和 $\vec{b}$ 所在的平面（右手定则），大小等于以 $\vec{a}$ 和 $\vec{b}$ 为邻边的平行四边形的面积。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gY3Jvc3NfcHJvZHVjdChhOiAmW2Y2NDsgM10sIGI6ICZbZjY0OyAzXSkgLT4gW2Y2NDsgM10gewogICAgWwogICAgICAgIGFbMV0gKiBiWzJdIC0gYVsyXSAqIGJbMV0sCiAgICAgICAgYVsyXSAqIGJbMF0gLSBhWzBdICogYlsyXSwKICAgICAgICBhWzBdICogYlsxXSAtIGFbMV0gKiBiWzBdLAogICAgXQp9CgpmbiBtYWluKCkgewogICAgbGV0IGEgPSBbMS4wLCAwLjAsIDAuMF07CiAgICBsZXQgYiA9IFswLjAsIDEuMCwgMC4wXTsKCiAgICBsZXQgYyA9IGNyb3NzX3Byb2R1Y3QoJmEsICZiKTsKICAgIHByaW50bG4hKCJhIMOXIGIgPSB7Oj99IiwgYyk7ICAvLyBbMCwgMCwgMV0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn cross_product(a: &amp;[f64; 3], b: &amp;[f64; 3]) -&gt; [f64; 3] {
     [
         a[1] * b[2] - a[2] * b[1],
@@ -340,6 +383,8 @@ fn main() {
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbDFfbm9ybShhOiAmW2Y2NF0pIC0+IGY2NCB7CiAgICBhLml0ZXIoKS5tYXAofHh8IHguYWJzKCkpLnN1bSgpCn0KCmZuIGwyX25vcm0oYTogJltmNjRdKSAtPiBmNjQgewogICAgYS5pdGVyKCkubWFwKHx4fCB4ICogeCkuc3VtOjo8ZjY0PigpLnNxcnQoKQp9CgpmbiBsX2luZl9ub3JtKGE6ICZbZjY0XSkgLT4gZjY0IHsKICAgIGEuaXRlcigpLm1hcCh8eHwgeC5hYnMoKSkuZm9sZCgwLjAsIGY2NDo6bWF4KQp9CgpmbiBtYWluKCkgewogICAgbGV0IGEgPSB2ZWMhWzMuMCwgLTQuMF07CiAgICBwcmludGxuISgiTDEg6IyD5pWwOiB7fSIsIGwxX25vcm0oJmEpKTsgICAgICAvLyA3CiAgICBwcmludGxuISgiTDIg6IyD5pWwOiB7fSIsIGwyX25vcm0oJmEpKTsgICAgICAvLyA1CiAgICBwcmludGxuISgiTOKIniDojIPmlbA6IHt9IiwgbF9pbmZfbm9ybSgmYSkpOyAgLy8gNAp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn l1_norm(a: &amp;[f64]) -&gt; f64 {
     a.iter().map(|x| x.abs()).sum()
 }
@@ -374,6 +419,8 @@ fn main() {
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gY29zaW5lX3NpbWlsYXJpdHkoYTogJltmNjRdLCBiOiAmW2Y2NF0pIC0+IGY2NCB7CiAgICBsZXQgZG90ID0gZG90X3Byb2R1Y3QoYSwgYik7CiAgICBsZXQgbWFnX2EgPSBtYWduaXR1ZGUoYSk7CiAgICBsZXQgbWFnX2IgPSBtYWduaXR1ZGUoYik7CiAgICBkb3QgLyAobWFnX2EgKiBtYWdfYikKfQoKZm4gbWFpbigpIHsKICAgIGxldCBkb2MxID0gdmVjIVsxLjAsIDIuMCwgMS4wLCAwLjBdOyAgLy8g5paH5qGjMeeahOivjemikeWQkemHjwogICAgbGV0IGRvYzIgPSB2ZWMhWzEuMCwgMi4wLCAxLjAsIDAuMF07ICAvLyDmlofmoaMy77yI5LiO5paH5qGjMeebuOWQjO+8iQogICAgbGV0IGRvYzMgPSB2ZWMhWzAuMCwgMC4wLCAwLjAsIDEuMF07ICAvLyDmlofmoaMz77yI5a6M5YWo5LiN5ZCM77yJCgogICAgcHJpbnRsbiEoImRvYzEg5LiOIGRvYzIg55u45Ly85bqmOiB7Oi40fSIsIGNvc2luZV9zaW1pbGFyaXR5KCZkb2MxLCAmZG9jMikpOyAgLy8gMS4wMDAwCiAgICBwcmludGxuISgiZG9jMSDkuI4gZG9jMyDnm7jkvLzluqY6IHs6LjR9IiwgY29zaW5lX3NpbWlsYXJpdHkoJmRvYzEsICZkb2MzKSk7ICAvLyAwLjAwMDAKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn cosine_similarity(a: &amp;[f64], b: &amp;[f64]) -&gt; f64 {
     let dot = dot_product(a, b);
     let mag_a = magnitude(a);
@@ -444,6 +491,8 @@ fn main() {
 <p>$$\vec{\beta}_3 = \vec{\alpha}_3 - \frac{(\vec{\alpha}_3, \vec{\beta}_1)}{(\vec{\beta}_1, \vec{\beta}_1)}\vec{\beta}_1 - \frac{(\vec{\alpha}_3, \vec{\beta}_2)}{(\vec{\beta}_2, \vec{\beta}_2)}\vec{\beta}_2$$</p>
 <p>一般地：
 $$ \vec{\beta}_k = \vec{\alpha}<em>k - \sum</em>{j=1}^{k-1} \frac{(\vec{\alpha}_k, \vec{\beta}_j)}{(\vec{\beta}_j, \vec{\beta}_j)}\vec{\beta}_j $$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZ3JhbV9zY2htaWR0KHZlY3RvcnM6ICZbVmVjPGY2ND5dKSAtPiBWZWM8VmVjPGY2ND4+IHsKICAgIGxldCBtdXQgcmVzdWx0ID0gVmVjOjpuZXcoKTsKCiAgICBmb3IgdiBpbiB2ZWN0b3JzIHsKICAgICAgICBsZXQgbXV0IHUgPSB2LmNsb25lKCk7CiAgICAgICAgZm9yIG9ydGhvIGluICZyZXN1bHQgewogICAgICAgICAgICBsZXQgcHJvaiA9IGRvdF9wcm9kdWN0KHYsIG9ydGhvKSAvIGRvdF9wcm9kdWN0KG9ydGhvLCBvcnRobyk7CiAgICAgICAgICAgIHUgPSB1Lml0ZXIoKS56aXAob3J0aG8uaXRlcigpKS5tYXAofChhLCBiKXwgYSAtIHByb2ogKiBiKS5jb2xsZWN0KCk7CiAgICAgICAgfQogICAgICAgIHJlc3VsdC5wdXNoKHUpOwogICAgfQoKICAgIHJlc3VsdAp9CgpmbiBtYWluKCkgewogICAgbGV0IHZlY3RvcnMgPSB2ZWMhWwogICAgICAgIHZlYyFbMS4wLCAxLjAsIDAuMF0sCiAgICAgICAgdmVjIVsxLjAsIDAuMCwgMS4wXSwKICAgICAgICB2ZWMhWzAuMCwgMS4wLCAxLjBdLAogICAgXTsKCiAgICBsZXQgb3J0aG9nb25hbCA9IGdyYW1fc2NobWlkdCgmdmVjdG9ycyk7CiAgICBwcmludGxuISgi5q2j5Lqk5YyW57uT5p6cOiIpOwogICAgZm9yIHYgaW4gJm9ydGhvZ29uYWwgewogICAgICAgIHByaW50bG4hKCIgIHs6P30iLCB2KTsKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn gram_schmidt(vectors: &amp;[Vec&lt;f64&gt;]) -&gt; Vec&lt;Vec&lt;f64&gt;&gt; {
     let mut result = Vec::new();
 
@@ -476,7 +525,13 @@ fn main() {
 <h2 id="九向量与矩阵的关系"><a class="header" href="#九向量与矩阵的关系">九、向量与矩阵的关系</a></h2>
 <p>矩阵可以对向量进行线性变换，包括拉升、压缩、旋转、剪切、平移等操作。</p>
 <h3 id="91-旋转变换"><a class="header" href="#91-旋转变换">9.1 旋转变换</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use nalgebra::{Rotation2, Vector2};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KbmFsZ2VicmEgPSAiMC4zMyIKKi8KdXNlIG5hbGdlYnJhOjp7Um90YXRpb24yLCBWZWN0b3IyfTsKCmZuIG1haW4oKSB7CiAgICBsZXQgdiA9IFZlY3RvcjI6Om5ldygxLjAsIDAuMCk7CiAgICBsZXQgYW5nbGUgPSBzdGQ6OmY2NDo6Y29uc3RzOjpGUkFDX1BJXzQ7IC8vIDQ1wrAKCiAgICBsZXQgcm90YXRpb24gPSBSb3RhdGlvbjI6Om5ldyhhbmdsZSk7CiAgICBsZXQgcm90YXRlZCA9IHJvdGF0aW9uICogdjsKCiAgICBwcmludGxuISgi5Y6f5ZCR6YePOiB7Oj99Iiwgdik7CiAgICBwcmludGxuISgi5peL6L2sIDQ1wrAg5ZCOOiB7Oj99Iiwgcm90YXRlZCk7CiAgICAvLyAoMC43MDcxLCAwLjcwNzEpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+nalgebra = "0.33"
+*/
+use nalgebra::{Rotation2, Vector2};
 
 fn main() {
     let v = Vector2::new(1.0, 0.0);
@@ -490,6 +545,8 @@ fn main() {
     // (0.7071, 0.7071)
 }</code></pre>
 <h3 id="92-缩放变换"><a class="header" href="#92-缩放变换">9.2 缩放变换</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gc2NhbGVfdmVjdG9yKHY6ICZbZjY0XSwgc3g6IGY2NCwgc3k6IGY2NCkgLT4gVmVjPGY2ND4gewogICAgdmVjIVt2WzBdICogc3gsIHZbMV0gKiBzeV0KfQoKZm4gbWFpbigpIHsKICAgIGxldCB2ID0gdmVjIVsxLjAsIDEuMF07CiAgICBsZXQgc2NhbGVkID0gc2NhbGVfdmVjdG9yKCZ2LCAyLjAsIDAuNSk7CiAgICBwcmludGxuISgi57yp5pS+5ZCOOiB7Oj99Iiwgc2NhbGVkKTsgIC8vIFsyLjAsIDAuNV0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn scale_vector(v: &amp;[f64], sx: f64, sy: f64) -&gt; Vec&lt;f64&gt; {
     vec![v[0] * sx, v[1] * sy]
 }
@@ -502,6 +559,8 @@ fn main() {
 <hr>
 <h2 id="十向量在-rust-中的应用"><a class="header" href="#十向量在-rust-中的应用">十、向量在 Rust 中的应用</a></h2>
 <h3 id="101-使用-nalgebra"><a class="header" href="#101-使用-nalgebra">10.1 使用 nalgebra</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIG5hbGdlYnJhIGFzIG5hOwp1c2UgbmE6OntWZWN0b3IzLCBQb2ludDN9OwoKZm4gbWFpbigpIHsKICAgIGxldCBhID0gVmVjdG9yMzo6bmV3KDEuMCwgMi4wLCAzLjApOwogICAgbGV0IGIgPSBWZWN0b3IzOjpuZXcoNC4wLCA1LjAsIDYuMCk7CgogICAgLy8g5ZCR6YeP5Yqg5rOVCiAgICBsZXQgYyA9IGEgKyBiOwogICAgcHJpbnRsbiEoImEgKyBiID0gezo/fSIsIGMpOwoKICAgIC8vIOWQkemHj+aVsOS5mAogICAgbGV0IGQgPSBhICogMi4wOwogICAgcHJpbnRsbiEoIjJhID0gezo/fSIsIGQpOwoKICAgIC8vIOeCueenrwogICAgbGV0IGRvdCA9IGEuZG90KCZiKTsKICAgIHByaW50bG4hKCJhIMK3IGIgPSB7fSIsIGRvdCk7ICAvLyAzMi4wCgogICAgLy8g5Y+J56evCiAgICBsZXQgY3Jvc3MgPSBhLmNyb3NzKCZiKTsKICAgIHByaW50bG4hKCJhIMOXIGIgPSB7Oj99IiwgY3Jvc3MpOyAgLy8gKC0zLCA2LCAtMykKCiAgICAvLyDojIPmlbAKICAgIGxldCBub3JtID0gYS5ub3JtKCk7CiAgICBwcmludGxuISgifGF8ID0ge30iLCBub3JtKTsgIC8vIDMuNzQxNwoKICAgIC8vIOW9kuS4gOWMlgogICAgbGV0IHVuaXQgPSBhLm5vcm1hbGl6ZSgpOwogICAgcHJpbnRsbiEoIuWNleS9jeWQkemHjyA9IHs6P30iLCB1bml0KTsKCiAgICAvLyDot53nprsKICAgIGxldCBkaXN0ID0gYS5tZXRyaWNfZGlzdGFuY2UoJmIpOwogICAgcHJpbnRsbiEoIui3neemuyA9IHt9IiwgZGlzdCk7CgogICAgLy8g54K5IChQb2ludCkg5LiO5ZCR6YePIChWZWN0b3IpIOeahOWMuuWIqwogICAgbGV0IHAgPSBQb2ludDM6Om5ldygxLjAsIDIuMCwgMy4wKTsKICAgIGxldCBxID0gUG9pbnQzOjpuZXcoNC4wLCA1LjAsIDYuMCk7CiAgICBsZXQgdmVjID0gcSAtIHA7ICAvLyDnu5PmnpzmmK8gVmVjdG9yMwogICAgcHJpbnRsbiEoIuS4pOeCuemXtOeahOWQkemHjyA9IHs6P30iLCB2ZWMpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use nalgebra as na;
 use na::{Vector3, Point3};
 

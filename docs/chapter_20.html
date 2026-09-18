@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -224,6 +261,8 @@
 <li><strong>非加密哈希（Non-cryptographic Hash）</strong>：追求速度，用于哈希表、数据校验、布隆过滤器等场景。不要求抗碰撞性等密码学安全性质。</li>
 <li><strong>加密哈希（Cryptographic Hash）</strong>：追求安全性，用于密码存储、数字签名、消息认证等场景。必须满足单向性和抗碰撞性。</li>
 </ol>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KIHNoYTIgPSAiMC4xMS4wLXJjLjMiCiBoZXggPSAiMC40LjMiCiovCi8vIOmdnuWKoOWvhuWTiOW4jCB2cyDliqDlr4blk4jluIznmoTnroDljZXlr7nmr5TnpLrkvosKdXNlIHN0ZDo6Y29sbGVjdGlvbnM6Okhhc2hNYXA7CnVzZSBzaGEyOjp7U2hhMjU2LCBEaWdlc3R9OwoKZm4gbWFpbigpIHsKICAgIC8vIOmdnuWKoOWvhuWTiOW4jO+8mkhhc2hNYXAg5YaF6YOo5L2/55SoIFNpcEhhc2gKICAgIGxldCBtdXQgbWFwID0gSGFzaE1hcDo6bmV3KCk7CiAgICBtYXAuaW5zZXJ0KCJrZXkxIiwgInZhbHVlMSIpOwogICAgcHJpbnRsbiEoIkhhc2hNYXAg5p+l5om+IGtleTE6IHs6P30iLCBtYXAuZ2V0KCJrZXkxIikpOwoKICAgIC8vIOWKoOWvhuWTiOW4jO+8mlNIQS0yNTYKICAgIGxldCBtdXQgaGFzaGVyID0gU2hhMjU2OjpuZXcoKTsKICAgIGhhc2hlci51cGRhdGUoYiJoZWxsbyB3b3JsZCIpOwogICAgbGV0IHJlc3VsdCA9IGhhc2hlci5maW5hbGl6ZSgpOwogICAgcHJpbnRsbiEoIlNIQS0yNTYoJ2hlbGxvIHdvcmxkJykgPSB7fSIsIGhleDo6ZW5jb2RlKHJlc3VsdCkpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/*
 [dependencies]
  sha2 = "0.11.0-rc.3"
@@ -261,7 +300,12 @@ fn main() {
 <p>$$CRC(M) = M(x) \cdot x^{32} \mod G(x)$$</p>
 <p>常用的 CRC32 生成多项式为：</p>
 <p>$$G(x) = x^{32} + x^{26} + x^{23} + x^{22} + x^{16} + x^{12} + x^{11} + x^{10} + x^8 + x^7 + x^5 + x^4 + x^2 + x + 1$$</p>
-<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: crc32fast = "1"
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KY3JjMzJmYXN0ID0gIjEiCiovCnVzZSBjcmMzMmZhc3Q6Okhhc2hlcjsKCmZuIG1haW4oKSB7CiAgICBsZXQgbXV0IGhhc2hlciA9IEhhc2hlcjo6bmV3KCk7CiAgICBoYXNoZXIudXBkYXRlKGIiaGVsbG8gd29ybGQiKTsKICAgIGxldCBjaGVja3N1bSA9IGhhc2hlci5maW5hbGl6ZSgpOwogICAgcHJpbnRsbiEoIkNSQzMyKCdoZWxsbyB3b3JsZCcpID0gezowOHh9IiwgY2hlY2tzdW0pOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+crc32fast = "1"
+*/
 use crc32fast::Hasher;
 
 fn main() {
@@ -275,6 +319,8 @@ fn main() {
 <h3 id="siphash"><a class="header" href="#siphash">SipHash</a></h3>
 <p><a href="https://www.131002.net/siphash/siphash.pdf">SipHash</a> 是一种快速但“密码学强度“的伪随机函数，由 Aumasson 和 Bernstein 设计。SipHash is a fast but ‘cryptographically strong’ pseudo-random function by Aumasson and Bernstein.</p>
 <p><strong>Rust 的 <code>HashMap</code> 和 <code>HashSet</code> 默认使用 SipHash 作为哈希算法</strong>，这是 Rust 标准库的一个重要安全设计决策。SipHash 能够有效抵抗 HashDoS（哈希碰撞拒绝服务）攻击，攻击者无法通过构造特定输入来制造大量哈希碰撞。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8gUnVzdCDmoIflh4blupMgSGFzaE1hcCDpu5jorqTkvb/nlKggU2lwSGFzaAp1c2Ugc3RkOjpjb2xsZWN0aW9uczo6SGFzaE1hcDsKdXNlIHN0ZDo6aGFzaDo6e0hhc2gsIEhhc2hlcn07CnVzZSBzdGQ6OmNvbGxlY3Rpb25zOjpoYXNoX21hcDo6RGVmYXVsdEhhc2hlcjsKCmZuIGdldF9oYXNoPFQ6IEhhc2g+KHQ6ICZUKSAtPiB1NjQgewogICAgbGV0IG11dCBzID0gRGVmYXVsdEhhc2hlcjo6bmV3KCk7CiAgICB0Lmhhc2goJm11dCBzKTsKICAgIHMuZmluaXNoKCkKfQoKZm4gbWFpbigpIHsKICAgIGxldCBoYXNoMSA9IGdldF9oYXNoKCYiaGVsbG8iKTsKICAgIGxldCBoYXNoMiA9IGdldF9oYXNoKCYid29ybGQiKTsKICAgIHByaW50bG4hKCJTaXBIYXNoKFwiaGVsbG9cIikgPSB7fSIsIGhhc2gxKTsKICAgIHByaW50bG4hKCJTaXBIYXNoKFwid29ybGRcIikgPSB7fSIsIGhhc2gyKTsKCiAgICAvLyBIYXNoTWFwIOWGhemDqOiHquWKqOS9v+eUqCBTaXBIYXNoCiAgICBsZXQgbXV0IHNjb3JlcyA9IEhhc2hNYXA6Om5ldygpOwogICAgc2NvcmVzLmluc2VydCgiQWxpY2UiLCA5NSk7CiAgICBzY29yZXMuaW5zZXJ0KCJCb2IiLCA4Nyk7CiAgICBwcmludGxuISgic2NvcmVzOiB7Oj99Iiwgc2NvcmVzKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// Rust 标准库 HashMap 默认使用 SipHash
 use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
@@ -301,6 +347,8 @@ fn main() {
 <h3 id="xxhash--xxh3"><a class="header" href="#xxhash--xxh3">XxHash / XXH3</a></h3>
 <p><a href="https://www.5axxw.com/wiki/content/8g09uv">XxHash</a> 是一种非常快速的非加密哈希算法，由 Yann Collet 设计。XXH3 是其最新版本，在大数据量场景下性能极为出色。</p>
 <p><a href="https://github.com/shepmaster/twox-hash">twox-hash</a> 是 XxHash 的 Rust 实现，XxHash是一种非常快速的哈希算法。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KeHhoYXNoLXJ1c3QgPSB7IHZlcnNpb24gPSAiMC44IiwgZmVhdHVyZXMgPSBbInh4aDMiXSB9CiovCnVzZSB4eGhhc2hfcnVzdDo6eHhoMzo6eHhoM18xMjg7CgpmbiBtYWluKCkgewogICAgbGV0IGhhc2ggPSB4eGgzXzEyOChiImhlbGxvIHdvcmxkIik7CiAgICBwcmludGxuISgiWFhIMy0xMjgoJ2hlbGxvIHdvcmxkJykgPSB7OjAxNnh9IiwgaGFzaCk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/*
 [dependencies]
 xxhash-rust = { version = "0.8", features = ["xxh3"] }
@@ -314,6 +362,8 @@ fn main() {
 <h3 id="highwayhash"><a class="header" href="#highwayhash">HighwayHash</a></h3>
 <p><a href="https://github.com/google/highwayhash">HighwayHash</a> 是 Google 开发的一种高速哈希算法，设计目标是能够在短字符串和长字符串上都达到极高的吞吐量。它支持 64 位、128 位和 256 位输出。</p>
 <p><a href="https://github.com/nickbabcock/highway-rs">highway-rs</a> 是 HighwayHash 的 Rust 实现。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaGlnaHdheSA9ICIxIgoqLwp1c2UgaGlnaHdheTo6e0hpZ2h3YXlIYXNoLCBIaWdod2F5SGFzaGVyLCBLZXl9OwoKZm4gbWFpbigpIHsKICAgIC8vIEdlbmVyYXRlIDEyOGJpdCBoYXNoCiAgICBsZXQga2V5ID0gS2V5KFsxLCAyLCAzLCA0XSk7CiAgICBsZXQgbXV0IGhhc2hlcjEyOCA9IEhpZ2h3YXlIYXNoZXI6Om5ldyhrZXkpOwogICAgaGFzaGVyMTI4LmFwcGVuZCgmWzI1NV0pOwogICAgbGV0IHJlczEyODogW3U2NDsgMl0gPSBoYXNoZXIxMjguZmluYWxpemUxMjgoKTsKICAgIHByaW50bG4hKCIxMjgtYml0IGhhc2g6IHs6P30iLCByZXMxMjgpOwogICAgYXNzZXJ0X2VxIShbMHhiYjAwN2QyNDYyZTc3ZjNjLCAweDIyNDUwOGY5MTZiMzk5MWZdLCByZXMxMjgpOwogICAgcHJpbnRsbiEoIjEyOC1iaXQgaGFzaCBhc3NlcnRpb24gcGFzc2VkISIpOwoKICAgIC8vIEdlbmVyYXRlIDI1NmJpdCBoYXNoCiAgICBsZXQga2V5ID0gS2V5KFsxLCAyLCAzLCA0XSk7CiAgICBsZXQgbXV0IGhhc2hlcjI1NiA9IEhpZ2h3YXlIYXNoZXI6Om5ldyhrZXkpOwogICAgaGFzaGVyMjU2LmFwcGVuZCgmWzI1NV0pOwogICAgbGV0IHJlczI1NjogW3U2NDsgNF0gPSBoYXNoZXIyNTYuZmluYWxpemUyNTYoKTsKICAgIHByaW50bG4hKCIyNTYtYml0IGhhc2g6IHs6P30iLCByZXMyNTYpOwogICAgbGV0IGV4cGVjdGVkOiBbdTY0OyA0XSA9IFsKICAgICAgICAweDcxNjFjYWRiZjdjZDcwZTEsCiAgICAgICAgMHhhYWM0OTA1ZGU2MmIyZjVlLAogICAgICAgIDB4N2IwMmI5MzY5MzNmYWE3LAogICAgICAgIDB4YzhlZmNmYzQ1YjIzOWY4ZCwKICAgIF07CiAgICBhc3NlcnRfZXEhKGV4cGVjdGVkLCByZXMyNTYpOwogICAgcHJpbnRsbiEoIjI1Ni1iaXQgaGFzaCBhc3NlcnRpb24gcGFzc2VkISIpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/*
 [dependencies]
 highway = "1"
@@ -373,6 +423,8 @@ fn main() {
 </ul>
 <h3 id="md5"><a class="header" href="#md5">MD5</a></h3>
 <p><a href="https://baike.baidu.com/link?url=rqoWQjzXxNj-EcP5xwsA9wUgTfjgpmuUT_i9xeWSCYHjpBf16kMFv7Z5ECpdzLTo">MD5</a>（Message-Digest Algorithm 5）由 Ronald Rivest 于 1991 年设计，输出 128 位（16 字节）哈希值。MD5 曾广泛用于文件校验和数字签名，但<strong>现已不安全</strong>——2004 年王小云教授团队发现了 MD5 的碰撞攻击方法，此后 MD5 不再被推荐用于任何安全敏感场景。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KbWQtNSA9ICIwLjEwIgpoZXggPSAiMC40LjMiCiovCnVzZSBtZDU6OntNZDUsIERpZ2VzdH07CgpmbiBtYWluKCkgewogICAgbGV0IG11dCBoYXNoZXIgPSBNZDU6Om5ldygpOwogICAgaGFzaGVyLnVwZGF0ZShiImhlbGxvIHdvcmxkIik7CiAgICBsZXQgcmVzdWx0ID0gaGFzaGVyLmZpbmFsaXplKCk7CiAgICBwcmludGxuISgiTUQ1KCdoZWxsbyB3b3JsZCcpID0ge30iLCBoZXg6OmVuY29kZShyZXN1bHQpKTsKICAgIC8vIOi+k+WHujogNWViNjNiYmJlMDFlZWVkMDkzY2IyMmJiOGY1YWNkYzMKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/*
 [dependencies]
 md-5 = "0.10"
@@ -411,7 +463,14 @@ fn main() {
 <li><strong>压缩函数</strong>：每个块经过 64 轮压缩运算，更新 8 个 32 位的工作变量</li>
 <li><strong>输出拼接</strong>：最终将 8 个工作变量拼接为 256 位输出</li>
 </ol>
-<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: sha2 = "0.10"
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaGV4ID0gIjAuNCIKc2hhMiA9ICIwLjExIgoqLwovLyBDYXJnby50b21sOiBzaGEyID0gIjAuMTAiCnVzZSBzaGEyOjp7U2hhMjU2LCBTaGE1MTIsIERpZ2VzdH07CgpmbiBtYWluKCkgewogICAgLy8gU0hBLTI1NgogICAgbGV0IG11dCBoYXNoZXIyNTYgPSBTaGEyNTY6Om5ldygpOwogICAgaGFzaGVyMjU2LnVwZGF0ZShiImhlbGxvIHdvcmxkIik7CiAgICBsZXQgcmVzdWx0MjU2ID0gaGFzaGVyMjU2LmZpbmFsaXplKCk7CiAgICBwcmludGxuISgiU0hBLTI1NignaGVsbG8gd29ybGQnKSA9IHt9IiwgaGV4OjplbmNvZGUocmVzdWx0MjU2KSk7CgogICAgLy8gU0hBLTUxMgogICAgbGV0IG11dCBoYXNoZXI1MTIgPSBTaGE1MTI6Om5ldygpOwogICAgaGFzaGVyNTEyLnVwZGF0ZShiImhlbGxvIHdvcmxkIik7CiAgICBsZXQgcmVzdWx0NTEyID0gaGFzaGVyNTEyLmZpbmFsaXplKCk7CiAgICBwcmludGxuISgiU0hBLTUxMignaGVsbG8gd29ybGQnKSA9IHt9IiwgaGV4OjplbmNvZGUocmVzdWx0NTEyKSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+hex = "0.4"
+sha2 = "0.11"
+*/
+// Cargo.toml: sha2 = "0.10"
 use sha2::{Sha256, Sha512, Digest};
 
 fn main() {
@@ -436,12 +495,13 @@ fn main() {
 </ol>
 <p>$$Keccak<a href="M">r, c, d</a> = Sponge[f, pad, r](M, d)$$</p>
 <p>其中 $r$ 为比特率（rate），$c$ 为容量（capacity），$d$ 为输出长度。安全性与容量 $c$ 成正比。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KIHNoYTMgPSAiMC4xMCIKIGhleCA9ICIwLjQuMyIKKi8KdXNlIHNoYTM6OntTaGEzXzI1NiwgRGlnZXN0fTsKCmZuIG1haW4oKSB7CiAgICBsZXQgbXV0IGhhc2hlciA9IFNoYTNfMjU2OjpuZXcoKTsKICAgIGhhc2hlci51cGRhdGUoYiJoZWxsbyB3b3JsZCIpOwogICAgbGV0IHJlc3VsdCA9IGhhc2hlci5maW5hbGl6ZSgpOwogICAgcHJpbnRsbiEoIlNIQTMtMjU2KCdoZWxsbyB3b3JsZCcpID0ge30iLCBoZXg6OmVuY29kZShyZXN1bHQpKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/*
 [dependencies]
  sha3 = "0.10"
  hex = "0.4.3"
 */
-// Cargo.toml: sha3 = "0.10"
 use sha3::{Sha3_256, Digest};
 
 fn main() {
@@ -458,6 +518,8 @@ fn main() {
 <li><strong>多功能</strong>：支持哈希、密钥派生（KDF）、可扩展输出（XOF）</li>
 <li><strong>安全性</strong>：基于 BLAKE2s 的安全证明</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KYmxha2UzID0gIjEiCmhleCA9ICIwLjQuMyIKKi8KdXNlIGJsYWtlMzo6SGFzaGVyOwoKZm4gbWFpbigpIHsKICAgIC8vIOWfuuacrOWTiOW4jAogICAgbGV0IGhhc2ggPSBibGFrZTM6Omhhc2goYiJoZWxsbyB3b3JsZCIpOwogICAgcHJpbnRsbiEoIkJMQUtFMygnaGVsbG8gd29ybGQnKSA9IHt9IiwgaGFzaCk7CgogICAgLy8g5rWB5byP5ZOI5biMCiAgICBsZXQgbXV0IGhhc2hlciA9IEhhc2hlcjo6bmV3KCk7CiAgICBoYXNoZXIudXBkYXRlKGIiaGVsbG8gIik7CiAgICBoYXNoZXIudXBkYXRlKGIid29ybGQiKTsKICAgIGxldCBoYXNoID0gaGFzaGVyLmZpbmFsaXplKCk7CiAgICBwcmludGxuISgiQkxBS0UzKHN0cmVhbWluZykgPSB7fSIsIGhhc2gpOwoKICAgIC8vIOWvhumSpea0vueUnwogICAgbGV0IGtleSA9IGJsYWtlMzo6ZGVyaXZlX2tleSgibXktYXBwLWtleSIsIGIic29tZS1kZXJpdmF0aW9uLWNvbnRleHQiKTsKICAgIHByaW50bG4hKCJEZXJpdmVkIGtleToge30iLCBoZXg6OmVuY29kZShrZXkpKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/*
 [dependencies]
 blake3 = "1"
@@ -488,7 +550,13 @@ fn main() {
 </span>// 使用 OpenSSL 命令行计算 SM3
 // openssl sm3 Rust实战配套代码.zip
 <span class="boring">}</span></code></pre>
-<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: sm3 = "0.4"
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc20zID0gIjAuNCIKaGV4ID0gIjAuNCIKKi8KdXNlIHNtMzo6e1NtMywgRGlnZXN0fTsKCmZuIG1haW4oKSB7CiAgICBsZXQgbXV0IGhhc2hlciA9IFNtMzo6bmV3KCk7CiAgICBoYXNoZXIudXBkYXRlKGIiaGVsbG8gd29ybGQiKTsKICAgIGxldCByZXN1bHQgPSBoYXNoZXIuZmluYWxpemUoKTsKICAgIHByaW50bG4hKCJTTTMoJ2hlbGxvIHdvcmxkJykgPSB7fSIsIGhleDo6ZW5jb2RlKHJlc3VsdCkpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+sm3 = "0.4"
+hex = "0.4"
+*/
 use sm3::{Sm3, Digest};
 
 fn main() {
@@ -535,7 +603,14 @@ fn main() {
 <li><strong>内层哈希</strong>：计算 $H((K’ \oplus ipad) \parallel m)$</li>
 <li><strong>外层哈希</strong>：计算 $H((K’ \oplus opad) \parallel \text{内层结果})$</li>
 </ol>
-<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: hmac = "0.12", sha2 = "0.10", hex = "0.4"
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaG1hYyA9ICIwLjEyIgpzaGEyID0gIjAuMTAiCmhleCA9ICIwLjQiCiovCnVzZSBobWFjOjp7SG1hYywgTWFjfTsKdXNlIHNoYTI6OlNoYTI1NjsKCnR5cGUgSG1hY1NoYTI1NiA9IEhtYWM8U2hhMjU2PjsKCmZuIG1haW4oKSB7CiAgICAvLyDliJvlu7ogSE1BQy1TSEEyNTYKICAgIGxldCBtdXQgbWFjID0gSG1hY1NoYTI1Njo6bmV3X2Zyb21fc2xpY2UoYiJteS1zZWNyZXQta2V5IikKICAgICAgICAuZXhwZWN0KCJITUFDIGNhbiB0YWtlIGtleSBvZiBhbnkgc2l6ZSIpOwogICAgbWFjLnVwZGF0ZShiImhlbGxvIHdvcmxkIik7CiAgICBsZXQgcmVzdWx0ID0gbWFjLmZpbmFsaXplKCk7CiAgICBwcmludGxuISgiSE1BQy1TSEEyNTYgPSB7fSIsIGhleDo6ZW5jb2RlKHJlc3VsdC5pbnRvX2J5dGVzKCkpKTsKCiAgICAvLyDpqozor4EgSE1BQwogICAgdXNlIGhtYWM6Ok1hYzsKICAgIGxldCBtdXQgbWFjMiA9IEhtYWNTaGEyNTY6Om5ld19mcm9tX3NsaWNlKGIibXktc2VjcmV0LWtleSIpLnVud3JhcCgpOwogICAgbWFjMi51cGRhdGUoYiJoZWxsbyB3b3JsZCIpOwogICAgbWFjMi52ZXJpZnkocmVzdWx0LmludG9fYnl0ZXMoKSkuZXhwZWN0KCJITUFDIHZlcmlmaWNhdGlvbiBmYWlsZWQiKTsKICAgIHByaW50bG4hKCJITUFDIHZlcmlmaWNhdGlvbiBwYXNzZWQhIik7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+hmac = "0.12"
+sha2 = "0.10"
+hex = "0.4"
+*/
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
 
@@ -558,7 +633,13 @@ fn main() {
 }</code></pre>
 <h3 id="gmac--gcm-模式"><a class="header" href="#gmac--gcm-模式">GMAC / GCM 模式</a></h3>
 <p>GCM（Galois/Counter Mode）是一种同时提供加密和认证的模式，其中的认证部分使用 GMAC。GCM 模式广泛应用于 TLS 1.2/1.3、IPsec 等协议中。</p>
-<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: aes-gcm = "0.10"
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KYWVzLWdjbSA9ICIwLjEwIgpoZXggPSAiMC40IgoqLwp1c2UgYWVzX2djbTo6e0FlczI1NkdjbSwgS2V5LCBOb25jZX07CnVzZSBhZXNfZ2NtOjphZWFkOjp7QWVhZCwgS2V5SW5pdH07CgpmbiBtYWluKCkgewogICAgbGV0IGtleSA9IEtleTo6PEFlczI1NkdjbT46OmZyb21fc2xpY2UoYiJhbiBleGFtcGxlIHZlcnkgdmVyeSBzZWNyZXQga2V5ISIpOwogICAgbGV0IGNpcGhlciA9IEFlczI1NkdjbTo6bmV3KGtleSk7CiAgICBsZXQgbm9uY2UgPSBOb25jZTo6ZnJvbV9zbGljZShiInVuaXF1ZSBub25jZSIpOyAvLyA5Ni1iaXRzOyB1bmlxdWUgcGVyIG1lc3NhZ2UKCiAgICBsZXQgY2lwaGVydGV4dCA9IGNpcGhlci5lbmNyeXB0KG5vbmNlLCBiInBsYWludGV4dCBtZXNzYWdlIi5hc19yZWYoKSkKICAgICAgICAuZXhwZWN0KCJlbmNyeXB0aW9uIGZhaWx1cmUiKTsKICAgIHByaW50bG4hKCJDaXBoZXJ0ZXh0OiB7fSIsIGhleDo6ZW5jb2RlKCZjaXBoZXJ0ZXh0KSk7CgogICAgbGV0IHBsYWludGV4dCA9IGNpcGhlci5kZWNyeXB0KG5vbmNlLCBjaXBoZXJ0ZXh0LmFzX3JlZigpKQogICAgICAgIC5leHBlY3QoImRlY3J5cHRpb24gZmFpbHVyZSIpOwogICAgcHJpbnRsbiEoIlBsYWludGV4dDoge30iLCBTdHJpbmc6OmZyb21fdXRmOF9sb3NzeSgmcGxhaW50ZXh0KSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+aes-gcm = "0.10"
+hex = "0.4"
+*/
 use aes_gcm::{Aes256Gcm, Key, Nonce};
 use aes_gcm::aead::{Aead, KeyInit};
 
@@ -579,12 +660,16 @@ fn main() {
 <p>在实际的互联网应用中，哈希函数常用于 API 签名验证。签名验证的核心流程是：将请求参数按规则排序、拼接后追加密钥，再进行哈希运算，将得到的签名值与请求中携带的签名进行比对。</p>
 <h3 id="支付宝签名验证"><a class="header" href="#支付宝签名验证">支付宝签名验证</a></h3>
 <p>以下是一个完整的支付宝签名验证实现，支持 MD5 和 SHA256 两种签名方式：</p>
-<pre class="playground"><code class="language-rust edition2024">// Cargo.toml dependencies:
-// md-5 = "0.10"
-// sha2 = "0.10"
-// digest = "0.10"
-// chrono = { version = "0.4", features = ["clock"] }
-// lazy_static = "1"
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KY2hyb25vID0geyB2ZXJzaW9uID0gIjAuNCIsIGZlYXR1cmVzID0gWyJjbG9jayJdIH0KbGF6eV9zdGF0aWMgPSAiMSIKbWQ1ID0gIjAuMTAiCnNoYTIgPSAiMC4xMCIKZGlnZXN0ID0gIjAuMTAiCiovCnVzZSBtZDU6Ok1kNTsKdXNlIHNoYTI6OlNoYTI1NjsKdXNlIGRpZ2VzdDo6RGlnZXN0Owp1c2Ugc3RkOjpjb2xsZWN0aW9uczo6SGFzaE1hcDsKdXNlIGNocm9ubzo6VXRjOwp1c2UgbGF6eV9zdGF0aWM6Omxhenlfc3RhdGljOwoKY29uc3QgQUxJUEFZX1NJR05fU0VDUkVUX0tFWTogJnN0ciA9ICJhYmNkZWZnaCI7CgpsYXp5X3N0YXRpYyEgewogICAgc3RhdGljIHJlZiBTVVBQT1JUX1NJR05fVFlQRTogVmVjPCYnc3RhdGljIHN0cj4gPSB2ZWMhWyJNRDUiLCAiU0hBMjU2Il07Cn0KCnB1YiBmbiB2ZXJpZnlfYWxpcGF5X3NpZ24ocGFyYW1zX21hcDogSGFzaE1hcDxTdHJpbmcsIFN0cmluZz4pIC0+IFJlc3VsdDxib29sLCAmJ3N0YXRpYyBzdHI+IHsKICAgIHBhcmFtc19tYXAuZ2V0KCJ0aW1lc3RhbXAiKS5leHBlY3QoInJlcXVpcmVkIHRpbWVzdGFtcCIpOwogICAgbGV0IHNpZ25fdHlwZSA9IHBhcmFtc19tYXAuZ2V0KCJzaWduX3R5cGUiKS5leHBlY3QoInJlcXVpcmVkIHNpZ25fdHlwZSIpOwogICAgbGV0IHNpZ25fdHlwZV9zdHIgPSBzaWduX3R5cGUuYXNfc3RyKCk7CgogICAgaWYgIVNVUFBPUlRfU0lHTl9UWVBFLmNvbnRhaW5zKCZzaWduX3R5cGVfc3RyKSB7CiAgICAgICAgcmV0dXJuIEVycigibm90IHN1cHBvcnQgdGhpcyBzaWduIHR5cGUiKTsKICAgIH0KICAgIHBhcmFtc19tYXAuZ2V0KCJzaWduIikuZXhwZWN0KCJyZXF1aXJlZCBzaWduIik7CgogICAgbGV0IG11dCBrZXlzOiBWZWM8JlN0cmluZz4gPSBwYXJhbXNfbWFwCiAgICAgICAgLmtleXMoKQogICAgICAgIC5maWx0ZXIofGt8ICprICE9ICJzaWduIiAmJiAqayAhPSAic2lnbl90eXBlIikKICAgICAgICAuY29sbGVjdCgpOwogICAga2V5cy5zb3J0KCk7CgogICAgbGV0IG11dCBwYXJhbXNfc3RyID0gU3RyaW5nOjpuZXcoKTsKICAgIGZvciBrZXkgaW4gJmtleXMgewogICAgICAgIGlmIGxldCBTb21lKHZhbHVlKSA9IHBhcmFtc19tYXAuZ2V0KCprZXkpIHsKICAgICAgICAgICAgcGFyYW1zX3N0ci5wdXNoX3N0cigmZm9ybWF0ISgie309e30mIiwga2V5LCB2YWx1ZSkpOwogICAgICAgIH0KICAgIH0KICAgIHBhcmFtc19zdHIucHVzaF9zdHIoQUxJUEFZX1NJR05fU0VDUkVUX0tFWSk7CgogICAgbGV0IHNpZ24gPSBjb21wdXRlX3NpZ24oc2lnbl90eXBlX3N0ciwgJnBhcmFtc19zdHIpOwoKICAgIGlmIGxldCBTb21lKHBhcmFtX3NpZ24pID0gcGFyYW1zX21hcC5nZXQoInNpZ24iKSB7CiAgICAgICAgT2soKnBhcmFtX3NpZ24gPT0gc2lnbikKICAgIH0gZWxzZSB7CiAgICAgICAgT2soZmFsc2UpCiAgICB9Cn0KCmZuIGNvbXB1dGVfc2lnbihzaWduX3R5cGU6ICZzdHIsIGRhdGE6ICZzdHIpIC0+IFN0cmluZyB7CiAgICBpZiBzaWduX3R5cGUgPT0gIk1ENSIgewogICAgICAgIGxldCBtdXQgbWQgPSBNZDU6Om5ldygpOwogICAgICAgIG1kLnVwZGF0ZShkYXRhLmFzX2J5dGVzKCkpOwogICAgICAgIG1kLmZpbmFsaXplKCkuaXRlcigpLm1hcCh8YnwgZm9ybWF0ISgiezowMnh9IiwgYikpLmNvbGxlY3QoKQogICAgfSBlbHNlIGlmIHNpZ25fdHlwZSA9PSAiU0hBMjU2IiB7CiAgICAgICAgbGV0IG11dCBzaGEyNTYgPSBTaGEyNTY6Om5ldygpOwogICAgICAgIHNoYTI1Ni51cGRhdGUoZGF0YS5hc19ieXRlcygpKTsKICAgICAgICBzaGEyNTYuZmluYWxpemUoKS5pdGVyKCkubWFwKHxifCBmb3JtYXQhKCJ7OjAyeH0iLCBiKSkuY29sbGVjdCgpCiAgICB9IGVsc2UgewogICAgICAgIFN0cmluZzo6bmV3KCkKICAgIH0KfQoKZm4gYWxpcGF5X3NpZ24oKSB7CiAgICBsZXQgbXV0IHBhcmFtc19tYXAgPSBIYXNoTWFwOjo8U3RyaW5nLCBTdHJpbmc+OjpuZXcoKTsKCiAgICBwYXJhbXNfbWFwLmluc2VydCgic2VydmljZSIudG9fc3RyaW5nKCksICJhcGktZGVtbyIudG9fc3RyaW5nKCkpOwogICAgcGFyYW1zX21hcC5pbnNlcnQoInBhcnRuZXIiLnRvX3N0cmluZygpLCAiMjA4ODEwMTU2ODMzODM2NCIudG9fc3RyaW5nKCkpOwogICAgcGFyYW1zX21hcC5pbnNlcnQoCiAgICAgICAgInRpbWVzdGFtcCIudG9fc3RyaW5nKCksCiAgICAgICAgVXRjOjpub3coKS50aW1lc3RhbXBfbWlsbGlzKCkudG9fc3RyaW5nKCksCiAgICApOwoKICAgIGxldCBtdXQga2V5czogVmVjPCZTdHJpbmc+ID0gcGFyYW1zX21hcAogICAgICAgIC5rZXlzKCkKICAgICAgICAuZmlsdGVyKHxrfCAqayAhPSAic2lnbiIgJiYgKmsgIT0gInNpZ25fdHlwZSIpCiAgICAgICAgLmNvbGxlY3QoKTsKICAgIGtleXMuc29ydCgpOwoKICAgIGxldCBtdXQgcGFyYW1zX3N0ciA9IFN0cmluZzo6bmV3KCk7CiAgICBmb3Iga2V5IGluICZrZXlzIHsKICAgICAgICBpZiBsZXQgU29tZSh2YWx1ZSkgPSBwYXJhbXNfbWFwLmdldCgqa2V5KSB7CiAgICAgICAgICAgIHBhcmFtc19zdHIucHVzaF9zdHIoJmZvcm1hdCEoInt9PXt9JiIsIGtleSwgdmFsdWUpKTsKICAgICAgICB9CiAgICB9CiAgICBwYXJhbXNfc3RyLnB1c2hfc3RyKEFMSVBBWV9TSUdOX1NFQ1JFVF9LRVkpOwoKICAgIHByaW50bG4hKCJwYXJhbXNfc3RyPT57fSIsIHBhcmFtc19zdHIpOwoKICAgIGxldCBzaWduX3R5cGUgPSBTVVBQT1JUX1NJR05fVFlQRVsxXTsgLy8gIlNIQTI1NiIKICAgIGxldCBzaWduID0gY29tcHV0ZV9zaWduKHNpZ25fdHlwZSwgJnBhcmFtc19zdHIpOwogICAgcHJpbnRsbiEoInNpZ249Pnt9Iiwgc2lnbik7CgogICAgcGFyYW1zX21hcC5pbnNlcnQoInNpZ25fdHlwZSIudG9fc3RyaW5nKCksIHNpZ25fdHlwZS50b19zdHJpbmcoKSk7CiAgICBwYXJhbXNfbWFwLmluc2VydCgic2lnbiIudG9fc3RyaW5nKCksIHNpZ24pOwoKICAgIGxldCBvayA9IHZlcmlmeV9hbGlwYXlfc2lnbihwYXJhbXNfbWFwKTsKICAgIHByaW50bG4hKCJ2ZXJpZnlfYWxpcGF5X3NpZ24gOiB7Oj99Iiwgb2spOwoKICAgIC8vIOa1i+ivleS4jeaUr+aMgeeahOetvuWQjeexu+WeiwogICAgbGV0IG11dCBwYXJhbXNfbWFwMiA9IEhhc2hNYXA6OjxTdHJpbmcsIFN0cmluZz46Om5ldygpOwogICAgcGFyYW1zX21hcDIuaW5zZXJ0KCJzaWduX3R5cGUiLnRvX3N0cmluZygpLCAiU0hBNTEyIi50b19zdHJpbmcoKSk7CiAgICBwYXJhbXNfbWFwMi5pbnNlcnQoCiAgICAgICAgInRpbWVzdGFtcCIudG9fc3RyaW5nKCksCiAgICAgICAgVXRjOjpub3coKS50aW1lc3RhbXBfbWlsbGlzKCkudG9fc3RyaW5nKCksCiAgICApOwogICAgbGV0IHJlc3VsdCA9IHZlcmlmeV9hbGlwYXlfc2lnbihwYXJhbXNfbWFwMik7CiAgICBwcmludGxuISgiU0hBNTEyICh1bnN1cHBvcnRlZCkgcmVzdWx0OiB7Oj99IiwgcmVzdWx0KTsKICAgIGFzc2VydCEocmVzdWx0LmlzX2VycigpLCAiRXhwZWN0ZWQgZXJyb3IgZm9yIHVuc3VwcG9ydGVkIFNIQTUxMiIpOwogICAgcHJpbnRsbiEoIkFsbCB0ZXN0cyBwYXNzZWQhIik7Cn0KCmZuIG1haW4oKSB7CiAgICBhbGlwYXlfc2lnbigpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+chrono = { version = "0.4", features = ["clock"] }
+lazy_static = "1"
+md5 = "0.10"
+sha2 = "0.10"
+digest = "0.10"
+*/
 use md5::Md5;
 use sha2::Sha256;
 use digest::Digest;
@@ -720,7 +805,14 @@ URL路径\n
 <h2 id="206-哈希的常见应用场景"><a class="header" href="#206-哈希的常见应用场景">20.6 哈希的常见应用场景</a></h2>
 <h3 id="数据完整性校验"><a class="header" href="#数据完整性校验">数据完整性校验</a></h3>
 <p>哈希函数最常见的用途之一是验证数据的完整性。下载文件时，发布方通常会提供文件的哈希值（如 SHA-256），用户下载后可以重新计算哈希值并与发布方提供的值比对，确认文件未被篡改。</p>
-<pre class="playground"><code class="language-rust edition2024">use sha2::{Sha256, Digest};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2hhMiA9ICIwLjEwIgpoZXggPSAiMC40IgoqLwp1c2Ugc2hhMjo6e1NoYTI1NiwgRGlnZXN0fTsKdXNlIHN0ZDo6ZnM6OkZpbGU7CnVzZSBzdGQ6OmlvOjp7c2VsZiwgUmVhZH07CgpmbiBjb21wdXRlX2ZpbGVfaGFzaChwYXRoOiAmc3RyKSAtPiBSZXN1bHQ8U3RyaW5nLCBpbzo6RXJyb3I+IHsKICAgIGxldCBtdXQgZmlsZSA9IEZpbGU6Om9wZW4ocGF0aCk/OwogICAgbGV0IG11dCBoYXNoZXIgPSBTaGEyNTY6Om5ldygpOwogICAgbGV0IG11dCBidWZmZXIgPSBbMHU4OyA4MTkyXTsKICAgIGxvb3AgewogICAgICAgIGxldCBuID0gZmlsZS5yZWFkKCZtdXQgYnVmZmVyKT87CiAgICAgICAgaWYgbiA9PSAwIHsgYnJlYWs7IH0KICAgICAgICBoYXNoZXIudXBkYXRlKCZidWZmZXJbLi5uXSk7CiAgICB9CiAgICBPayhoZXg6OmVuY29kZShoYXNoZXIuZmluYWxpemUoKSkpCn0KCmZuIG1haW4oKSAtPiBSZXN1bHQ8KCksIGlvOjpFcnJvcj4gewogICAgbGV0IGhhc2ggPSBjb21wdXRlX2ZpbGVfaGFzaCgiQ2FyZ28udG9tbCIpPzsKICAgIHByaW50bG4hKCJTSEEtMjU2KENhcmdvLnRvbWwpID0ge30iLCBoYXNoKTsKICAgIE9rKCgpKQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+sha2 = "0.10"
+hex = "0.4"
+*/
+use sha2::{Sha256, Digest};
 use std::fs::File;
 use std::io::{self, Read};
 
@@ -745,7 +837,12 @@ fn main() -&gt; Result&lt;(), io::Error&gt; {
 <p>存储用户密码时，<strong>绝对不能存储明文密码</strong>，也不应直接存储密码的哈希值（容易被彩虹表攻击）。正确的做法是使用<strong>加盐哈希</strong>（Salted Hash）：</p>
 <p>$$\text{stored} = H(password \parallel salt)$$</p>
 <p>其中 $salt$ 是一个随机生成的值，每个用户的 salt 都不同。更推荐的做法是使用专门的密码哈希算法如 bcrypt、scrypt 或 Argon2，它们内置了 salt 管理并增加了计算成本以抵抗暴力破解。</p>
-<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: bcrypt = "0.15"
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KYmNyeXB0ID0gIjAuMTUiCiovCnVzZSBiY3J5cHQ6OntoYXNoLCB2ZXJpZnksIERFRkFVTFRfQ09TVH07CgpmbiBtYWluKCkgLT4gUmVzdWx0PCgpLCBiY3J5cHQ6OkJjcnlwdEVycm9yPiB7CiAgICBsZXQgcGFzc3dvcmQgPSAibXktc2VjcmV0LXBhc3N3b3JkIjsKCiAgICAvLyDlk4jluIzlr4bnoIHvvIjoh6rliqjnlJ/miJAgc2FsdO+8iQogICAgbGV0IGhhc2hlZCA9IGhhc2gocGFzc3dvcmQsIERFRkFVTFRfQ09TVCk/OwogICAgcHJpbnRsbiEoIkhhc2hlZCBwYXNzd29yZDoge30iLCBoYXNoZWQpOwoKICAgIC8vIOmqjOivgeWvhueggQogICAgbGV0IHZhbGlkID0gdmVyaWZ5KHBhc3N3b3JkLCAmaGFzaGVkKT87CiAgICBwcmludGxuISgiUGFzc3dvcmQgdmFsaWQ6IHt9IiwgdmFsaWQpOwoKICAgIGxldCBpbnZhbGlkID0gdmVyaWZ5KCJ3cm9uZy1wYXNzd29yZCIsICZoYXNoZWQpPzsKICAgIHByaW50bG4hKCJXcm9uZyBwYXNzd29yZCB2YWxpZDoge30iLCBpbnZhbGlkKTsKCiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+bcrypt = "0.15"
+*/
 use bcrypt::{hash, verify, DEFAULT_COST};
 
 fn main() -&gt; Result&lt;(), bcrypt::BcryptError&gt; {
@@ -776,7 +873,12 @@ fn main() -&gt; Result&lt;(), bcrypt::BcryptError&gt; {
 <p>布隆过滤器（Bloom Filter）是一种空间高效的概率型数据结构，用于判断一个元素是否属于某个集合。它使用多个哈希函数将元素映射到位数组中。布隆过滤器可能产生<strong>假阳性</strong>（误判为存在），但不会产生<strong>假阴性</strong>（不会漏判）。</p>
 <p>对于 $m$ 位的位数组和 $k$ 个哈希函数，插入 $n$ 个元素后，假阳性概率为：</p>
 <p>$$P(\text{false positive}) \approx \left(1 - e^{-kn/m}\right)^k$$</p>
-<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: bloom = "0.3"
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KYmxvb20gPSAiMC4zIgoqLwp1c2UgYmxvb206OkJsb29tOwoKZm4gbWFpbigpIHsKICAgIGxldCBtdXQgYmxvb20gPSBCbG9vbTo6bmV3X2Zvcl9mcF9yYXRlKDEwMDAsIDAuMDEpOwoKICAgIGJsb29tLmluc2VydCgiaGVsbG8iKTsKICAgIGJsb29tLmluc2VydCgid29ybGQiKTsKCiAgICBwcmludGxuISgiQ29udGFpbnMgJ2hlbGxvJzoge30iLCBibG9vbS5jb250YWlucygmImhlbGxvIikpOyAvLyB0cnVlCiAgICBwcmludGxuISgiQ29udGFpbnMgJ3dvcmxkJzoge30iLCBibG9vbS5jb250YWlucygmIndvcmxkIikpOyAvLyB0cnVlCiAgICBwcmludGxuISgiQ29udGFpbnMgJ3J1c3QnOiAge30iLCBibG9vbS5jb250YWlucygmInJ1c3QiKSk7ICAvLyDlj6/og70gZmFsc2XvvIjlgYfpmLPmgKfmpoLnjofnuqYxJe+8iQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+bloom = "0.3"
+*/
 use bloom::Bloom;
 
 fn main() {
@@ -796,7 +898,13 @@ fn main() {
 <li>不同内容几乎不可能产生相同的哈希值（数据完整性）</li>
 <li>任何内容的修改都会导致哈希值变化（变更追踪）</li>
 </ul>
-<pre class="playground"><code class="language-rust edition2024">// Cargo.toml: sha1 = "0.10"
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2hhMSA9ICIwLjEwIgpoZXggPSAiMC40IgoqLwp1c2Ugc2hhMTo6e1NoYTEsIERpZ2VzdH07CgpmbiBtYWluKCkgewogICAgbGV0IG11dCBoYXNoZXIgPSBTaGExOjpuZXcoKTsKICAgIGhhc2hlci51cGRhdGUoYiJoZWxsbyB3b3JsZCIpOwogICAgbGV0IHJlc3VsdCA9IGhhc2hlci5maW5hbGl6ZSgpOwogICAgcHJpbnRsbiEoIlNIQS0xKCdoZWxsbyB3b3JsZCcpID0ge30iLCBoZXg6OmVuY29kZShyZXN1bHQpKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+sha1 = "0.10"
+hex = "0.4"
+*/
 use sha1::{Sha1, Digest};
 
 fn main() {

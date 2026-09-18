@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -457,6 +494,8 @@ PS C:\Users\huang&gt; chcp
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIFN0cmluZ++8muaLpeacieaJgOacieadg+eahFVURi045a2X56ym5LiyCiAgICBsZXQgbXV0IHMgPSBTdHJpbmc6OmZyb20oImhlbGxvIik7CiAgICBzLnB1c2hfc3RyKCIgd29ybGQiKTsKICAgIHByaW50bG4hKCJTdHJpbmc6IHt9Iiwgcyk7CgogICAgLy8gJnN0cu+8muWtl+espuS4suWIh+eJh++8iOWAn+eUqO+8iQogICAgbGV0IHNsaWNlOiAmc3RyID0gJnM7CiAgICBwcmludGxuISgiJnN0cjoge30iLCBzbGljZSk7CgogICAgLy8gU3RyaW5nIOS4jiAmc3RyIOeahOWFs+ezuwogICAgbGV0IG93bmVkOiBTdHJpbmcgPSBzbGljZS50b19zdHJpbmcoKTsgIC8vICZzdHIgLT4gU3RyaW5n77yI5ou36LSd77yJCiAgICBsZXQgYm9ycm93ZWQ6ICZzdHIgPSAmb3duZWQ7ICAgICAgICAgICAgIC8vIFN0cmluZyAtPiAmc3Ry77yI5YCf55So77yJCgogICAgLy8gYFZlYzx1OD5g77ya5Y6f5aeL5a2X6IqCCiAgICBsZXQgYnl0ZXM6IFZlYzx1OD4gPSBvd25lZC5pbnRvX2J5dGVzKCk7CiAgICBwcmludGxuISgiYFZlYzx1OD5gOiB7Oj99IiwgYnl0ZXMpOwoKICAgIC8vIGBWZWM8dTg+YCAtPiBTdHJpbmfvvIjpnIDopoHpqozor4FVVEYtOO+8iQogICAgbGV0IHMyID0gU3RyaW5nOjpmcm9tX3V0ZjgoYnl0ZXMpLnVud3JhcCgpOwogICAgcHJpbnRsbiEoIlN0cmluZyBmcm9tIGJ5dGVzOiB7fSIsIHMyKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // String：拥有所有权的UTF-8字符串
     let mut s = String::from("hello");
@@ -480,6 +519,8 @@ PS C:\Users\huang&gt; chcp
     println!("String from bytes: {}", s2);
 }</code></pre>
 <h3 id="252-rust中的unicode操作"><a class="header" href="#252-rust中的unicode操作">2.5.2 Rust中的Unicode操作</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOS7jlVURi045a2X6IqC5p6E6YCg5a2X56ym5LiyCiAgICBsZXQgc3BhcmtsZV9oZWFydF92ZWMgPSB2ZWMhWzI0MCwgMTU5LCAxNDYsIDE1MF07CiAgICBsZXQgc3BhcmtsZV9oZWFydCA9IFN0cmluZzo6ZnJvbV91dGY4KHNwYXJrbGVfaGVhcnRfdmVjKS51bndyYXAoKTsKICAgIGFzc2VydF9lcSEoIvCfkpYiLCBzcGFya2xlX2hlYXJ0KTsKCiAgICBsZXQgYnl0ZXMgPSBzcGFya2xlX2hlYXJ0LmludG9fYnl0ZXMoKTsKICAgIGFzc2VydF9lcSEoYnl0ZXMsIFsyNDAsIDE1OSwgMTQ2LCAxNTBdKTsKCiAgICAvLyBVbmljb2Rl6L2s5LmJ5bqP5YiXCiAgICBwcmludGxuISgiXHV7NjViMH1cdXs1MzRlfVx1ezc5M2V9XHV7NWZlYn1cdXs4YmFmfVx1e2ZmMWF9XHV7MDAzM31cdXs2NzA4fVx1ezAwMzJ9XHV7MDAzNn1cdXs2NWU1fVx1e2ZmMGN9XHV7NGUyZH1cdXs1NmZkfVx1ezU0OGN9XHV7NmQyYX1cdXs5MGZkfVx1ezYyYzl9XHV7NjVhZn1cdXs1ZWZhfVx1ezRlYTR9XHV7MzAwMn0iKTsKICAgIHByaW50bG4hKCJcdXs1Yjc4fVx1ezdmZDJ9XHV7NWYzN31cdXs1NzBifSDkvJ/lpKflpI3lhbQiKTsKCiAgICAvLyDlrZfnrKbovaxVbmljb2Rl56CB5L2NCiAgICBwcmludGxuISgiezpYfSB7Olh9IiwgJ+WNjicgYXMgdTMyLCAn5aSPJyBhcyB1MzIpOwoKICAgIC8vIEVtb2ppCiAgICBwcmludGxuISgiUnVzdOW4uOingWVtb2pp77yI6KGo5oOF56ym5Y+377yJ77yaXHV7MUYxRTh9XHV7MUYxRjN98J+mgPCfkpbwn5qA8J+Yglx1ezFGOTgwfVx1ezFGNjAyfSIpOwogICAgcHJpbnRsbiEoIuW4uOingWVtb2pp77yI5Zu95peX77yJ77yaXHV7MUYxRTh9XHV7MUYxRjN9IPCfh6jwn4ezIPCfh7rwn4e4IPCfh7fwn4e6Iik7CgogICAgLy8gQVNDSUnovazkuYkKICAgIHByaW50bG4hKCJBU0NJSeW4uOingeWtl+espu+8mlx1ezAwMjB9XHV7MDA0MH1cdXswMDIxfVx1ezAwNDF9Iik7CgogICAgLy8g5pWw5a2m56ym5Y+3CiAgICBwcmludGxuISgi5pWw5a2m56ym5Y+377ya4oiC4oiG4oiuXHV7MjIxMX1cdXsyMjAwfVx1ezIyMDh9XHV7MjIwOX1cdXsyMjJifSIpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 从UTF-8字节构造字符串
     let sparkle_heart_vec = vec![240, 159, 146, 150];
@@ -507,6 +548,8 @@ PS C:\Users\huang&gt; chcp
     println!("数学符号：∂∆∮\u{2211}\u{2200}\u{2208}\u{2209}\u{222b}");
 }</code></pre>
 <h3 id="253-stringstrvecu8转换关系与第十九章呼应"><a class="header" href="#253-stringstrvecu8转换关系与第十九章呼应">2.5.3 String/&amp;str/<code>Vec&lt;u8&gt;</code>转换关系（与第十九章呼应）</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6c3RyOwoKZm4gbWFpbigpIHsKICAgIC8vICZzdHIgLT4gU3RyaW5nCiAgICBsZXQgczogJnN0ciA9ICJoZWxsbyI7CiAgICBsZXQgb3duZWQ6IFN0cmluZyA9IFN0cmluZzo6ZnJvbShzKTsKICAgIGxldCBvd25lZDI6IFN0cmluZyA9IHMudG9fc3RyaW5nKCk7CiAgICBhc3NlcnRfZXEhKG93bmVkLCBvd25lZDIpOwoKICAgIC8vICZzdHIgLT4gJlt1OF0KICAgIGxldCBieXRlczogJlt1OF0gPSBzLmFzX2J5dGVzKCk7CiAgICBwcmludGxuISgiYnl0ZXM6IHs6P30iLCBieXRlcyk7IC8vIFsxMDQsIDEwMSwgMTA4LCAxMDgsIDExMV0KCiAgICAvLyBTdHJpbmcgLT4gJnN0cgogICAgbGV0IGhlbGxvID0gU3RyaW5nOjpmcm9tKCJoZWxsbyIpOwogICAgbGV0IHNsaWNlOiAmc3RyID0gJmhlbGxvOwogICAgbGV0IHNsaWNlMjogJnN0ciA9IGhlbGxvLmFzX3N0cigpOwogICAgYXNzZXJ0X2VxIShzbGljZSwgc2xpY2UyKTsKCiAgICAvLyBTdHJpbmcgLT4gYFZlYzx1OD5gCiAgICBsZXQgaGVsbG8gPSBTdHJpbmc6OmZyb20oImhlbGxvIik7CiAgICBsZXQgYnl0ZXNfdmVjOiBWZWM8dTg+ID0gaGVsbG8uaW50b19ieXRlcygpOwogICAgcHJpbnRsbiEoImludG9fYnl0ZXM6IHs6P30iLCBieXRlc192ZWMpOwoKICAgIC8vICZbdThdIC0+ICZzdHLvvIjlj6/og73lpLHotKXvvIkKICAgIGxldCB2YWxpZDogJlt1OF0gPSBiImhlbGxvIjsKICAgIGxldCBzOiAmc3RyID0gc3RyOjpmcm9tX3V0ZjgodmFsaWQpLnVud3JhcCgpOwogICAgcHJpbnRsbiEoImZyb21fdXRmODoge30iLCBzKTsKCiAgICBsZXQgaW52YWxpZDogJlt1OF0gPSAmWzB4ZmYsIDB4ZmVdOyAvLyDpnZ5VVEYtOAogICAgbGV0IHJlc3VsdCA9IHN0cjo6ZnJvbV91dGY4KGludmFsaWQpOwogICAgcHJpbnRsbiEoImludmFsaWQgdXRmODogezo/fSIsIHJlc3VsdCk7IC8vIEVycihVdGY4RXJyb3IpCgogICAgLy8gYFZlYzx1OD5gIC0+IFN0cmluZ++8iOWPr+iDveWksei0pe+8iQogICAgbGV0IGJ5dGVzID0gdmVjIVsxMDQsIDEwMSwgMTA4LCAxMDgsIDExMV07IC8vICJoZWxsbyLnmoRBU0NJSQogICAgbGV0IHMgPSBTdHJpbmc6OmZyb21fdXRmOChieXRlcykudW53cmFwKCk7CiAgICBwcmludGxuISgiZnJvbV91dGY4KFZlYyk6IHt9Iiwgcyk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::str;
 
 fn main() {
@@ -578,6 +621,8 @@ UPDATE uic.user SET wx_nickname = 'abc🚀🎵✨' WHERE id = 5;
 <hr>
 <h2 id="27-编码检测与转换"><a class="header" href="#27-编码检测与转换">2.7 编码检测与转换</a></h2>
 <h3 id="271-常见编码检测方法"><a class="header" href="#271-常见编码检测方法">2.7.1 常见编码检测方法</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8gUnVzdOS4reS9v+eUqCBlbmNvZGluZ19ycyDlupPov5vooYznvJbnoIHmo4DmtYvlkozovazmjaIKdXNlIGVuY29kaW5nX3JzOjp7R0JLLCBVVEZfOH07CgpmbiBtYWluKCkgewogICAgLy8gR0JL57yW56CB55qE5a2X6IqCCiAgICBsZXQgZ2JrX2J5dGVzOiBWZWM8dTg+ID0gdmVjIVsweEQ2LCAweEQwLCAweENFLCAweEM0XTsgLy8gIuS4reaWhyLnmoRHQkvnvJbnoIEKCiAgICAvLyBHQksgLT4gVVRGLTgKICAgIGxldCAoY293LCBfLCBoYWRfZXJyb3JzKSA9IEdCSy5kZWNvZGUoJmdia19ieXRlcyk7CiAgICBpZiAhaGFkX2Vycm9ycyB7CiAgICAgICAgbGV0IHV0Zjhfc3RyaW5nID0gY293LmludG9fb3duZWQoKTsKICAgICAgICBwcmludGxuISgi6L2s5o2i57uT5p6cOiB7fSIsIHV0Zjhfc3RyaW5nKTsgLy8g6L6T5Ye6OiDkuK3mlocKICAgIH0KCiAgICAvLyBVVEYtOCAtPiBHQksKICAgIGxldCB1dGY4X3N0ciA9ICLkuK3mlociOwogICAgbGV0IChnYmtfcmVzdWx0LCBfLCBfKSA9IFVURl84LmVuY29kZSh1dGY4X3N0cik7CiAgICBwcmludGxuISgiR0JL5a2X6IqCOiB7Oj99IiwgZ2JrX3Jlc3VsdCk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// Rust中使用 encoding_rs 库进行编码检测和转换
 use encoding_rs::{GBK, UTF_8};
 

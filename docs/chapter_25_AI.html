@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -380,7 +417,13 @@ fn embedding_lookup(token_id: usize, embedding_matrix: &amp;[Vec&lt;f64&gt;]) -&
 <p>Rust 虽然不如 Python 在 AI 领域普及，但凭借其高性能和安全性，正在 AI 基础设施和推理部署方面发挥越来越重要的作用。</p>
 <h3 id="61-candle"><a class="header" href="#61-candle">6.1 Candle</a></h3>
 <p>Candle 是 Hugging Face 推出的 Rust 机器学习框架，主打轻量和高效。</p>
-<pre class="playground"><code class="language-rust edition2024">use candle_core::{Device, Tensor};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KY2FuZGxlLWNvcmUgPSAiMC45IgoqLwp1c2UgY2FuZGxlX2NvcmU6OntEZXZpY2UsIFRlbnNvcn07CgpmbiBtYWluKCkgLT4gUmVzdWx0PCgpLCBCb3g8ZHluIHN0ZDo6ZXJyb3I6OkVycm9yPj4gewogICAgbGV0IGRldmljZSA9IERldmljZTo6Q3B1OwogICAgbGV0IGEgPSBUZW5zb3I6Om5ldygmW1sxLjBmMzIsIDIuMF0sIFszLjAsIDQuMF1dLCAmZGV2aWNlKT87CiAgICBsZXQgYiA9IFRlbnNvcjo6bmV3KCZbWzUuMGYzMiwgNi4wXSwgWzcuMCwgOC4wXV0sICZkZXZpY2UpPzsKICAgIGxldCBjID0gYS5tYXRtdWwoJmIpPzsKICAgIHByaW50bG4hKCJ7fSIsIGMpOwogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+candle-core = "0.9"
+*/
+use candle_core::{Device, Tensor};
 
 fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
     let device = Device::Cpu;
@@ -407,7 +450,13 @@ fn compute&lt;B: Backend&gt;() {
 <p>Burn 支持多种后端（NdArray、WGPU、Candle），允许同一套代码在不同硬件上运行。</p>
 <h3 id="63-用-rust-调用-onnx-模型"><a class="header" href="#63-用-rust-调用-onnx-模型">6.3 用 Rust 调用 ONNX 模型</a></h3>
 <p>ONNX（Open Neural Network Exchange）是开放的神经网络交换格式，允许模型在不同框架间互操作。Rust 可以通过 <code>ort</code>  crate 运行 ONNX 模型。</p>
-<pre class="playground"><code class="language-rust edition2024">use ort::{Environment, Session, Value};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KbmRhcnJheSA9ICIwLjE2IgoqLwp1c2Ugb3J0Ojp7RW52aXJvbm1lbnQsIFNlc3Npb24sIFZhbHVlfTsKCmZuIG1haW4oKSAtPiBSZXN1bHQ8KCksIEJveDxkeW4gc3RkOjplcnJvcjo6RXJyb3I+PiB7CiAgICBsZXQgZW52ID0gRW52aXJvbm1lbnQ6OmJ1aWxkZXIoKS5idWlsZCgpPzsKICAgIGxldCBzZXNzaW9uID0gU2Vzc2lvbjo6YnVpbGRlcigmZW52KT8KICAgICAgICAud2l0aF9tb2RlbF9mcm9tX2ZpbGUoIm1vZGVsLm9ubngiKT87CgogICAgbGV0IGlucHV0ID0gVmFsdWU6OmZyb21fYXJyYXkoCiAgICAgICAgbmRhcnJheTo6YXJyYXkhW1sxLjBmMzIsIDIuMCwgMy4wLCA0LjBdXQogICAgKT87CiAgICBsZXQgb3V0cHV0cyA9IHNlc3Npb24ucnVuKHZlYyFbaW5wdXRdKT87CiAgICBwcmludGxuISgi6L6T5Ye6OiB7Oj99Iiwgb3V0cHV0cyk7CiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+ndarray = "0.16"
+*/
+use ort::{Environment, Session, Value};
 
 fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
     let env = Environment::builder().build()?;

@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -235,6 +272,8 @@
 <h3 id="常见用途"><a class="header" href="#常见用途">常见用途</a></h3>
 <h4 id="1-掩码mask提取特定位"><a class="header" href="#1-掩码mask提取特定位">1. 掩码（Mask）——提取特定位</a></h4>
 <p>掩码是与运算最经典的应用。通过构造一个特定的二进制数（掩码），可以提取目标数据中的指定位。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCB2YWx1ZTogdTggPSAwYjEwMTFfMDExMDsgLy8gMTgyCgogICAgLy8g5o+Q5Y+W5L2ONOS9jQogICAgbGV0IGxvd180ID0gdmFsdWUgJiAwYjAwMDBfMTExMTsgLy8gMGIwMTEwID0gNgogICAgcHJpbnRsbiEoIuS9jjTkvY06IHs6MDRifSA9IHt9IiwgbG93XzQsIGxvd180KTsKCiAgICAvLyDmj5Dlj5bpq5g05L2NCiAgICBsZXQgaGlnaF80ID0gKHZhbHVlICYgMGIxMTExXzAwMDApID4+IDQ7IC8vIDBiMTAxMSA9IDExCiAgICBwcmludGxuISgi6auYNOS9jTogezowNGJ9ID0ge30iLCBoaWdoXzQsIGhpZ2hfNCk7CgogICAgLy8g5o+Q5Y+W56ysM+S9je+8iOS7jjDlvIDlp4vorqHmlbDvvIkKICAgIGxldCBiaXRfMyA9ICh2YWx1ZSA+PiAzKSAmIDE7CiAgICBwcmludGxuISgi56ysM+S9jToge30iLCBiaXRfMyk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let value: u8 = 0b1011_0110; // 182
 
@@ -252,6 +291,8 @@
 }</code></pre>
 <h4 id="2-清零特定位"><a class="header" href="#2-清零特定位">2. 清零特定位</a></h4>
 <p>要将某一位或某几位清零，只需构造一个掩码，目标位为 0，其余位为 1，然后做与运算。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgZmxhZ3M6IHU4ID0gMGIxMTExXzExMTE7IC8vIOaJgOacieagh+W/l+S9jemDveW8gOWQrwoKICAgIC8vIOWwhuesrDLkvY3lkoznrKw15L2N5riF6Zu2CiAgICBsZXQgbWFzayA9ICEoMGIwMTAwXzAxMDApOyAvLyAwYjEwMTFfMTAxMQogICAgZmxhZ3MgPSBmbGFncyAmIG1hc2s7CiAgICBwcmludGxuISgi5riF6Zu25ZCOOiB7OjA4Yn0iLCBmbGFncyk7IC8vIDEwMTExMDExCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let mut flags: u8 = 0b1111_1111; // 所有标志位都开启
 
@@ -262,6 +303,8 @@
 }</code></pre>
 <h4 id="3-判断奇偶"><a class="header" href="#3-判断奇偶">3. 判断奇偶</a></h4>
 <p>一个数的二进制最低位决定了它的奇偶性：最低位为 1 是奇数，为 0 是偶数。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gaXNfb2RkKG46IGkzMikgLT4gYm9vbCB7CiAgICBuICYgMSA9PSAxCn0KCmZuIGlzX2V2ZW4objogaTMyKSAtPiBib29sIHsKICAgIG4gJiAxID09IDAKfQoKZm4gbWFpbigpIHsKICAgIHByaW50bG4hKCI15piv5aWH5pWwOiB7fSIsIGlzX29kZCg1KSk7ICAgLy8gdHJ1ZQogICAgcHJpbnRsbiEoIjjmmK/lgbbmlbA6IHt9IiwgaXNfZXZlbig4KSk7ICAvLyB0cnVlCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn is_odd(n: i32) -&gt; bool {
     n &amp; 1 == 1
 }
@@ -279,6 +322,8 @@ fn main() {
 <p>Brian Kernighan 算法是位运算中最优雅的技巧之一。核心思想是：<strong><code>n &amp; (n - 1)</code> 可以将 n 的二进制表示中最低位的 1 置为 0</strong>。</p>
 <p>原理分析：对于一个二进制数 <code>n</code>，<code>n - 1</code> 会将最低位的 1 变为 0，并将该位之后的所有 0 变为 1。因此 <code>n &amp; (n - 1)</code> 恰好消除了最低位的 1。</p>
 <p>$$n &amp; (n-1) \Rightarrow \text{消除最低位的 } 1$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOe7n+iuoeS6jOi/m+WItuS4rTHnmoTkuKrmlbDvvIhCcmlhbiBLZXJuaWdoYW7nrpfms5XvvIkKZm4gY291bnRfb25lcyhuOiB1NjQpIC0+IHU2NCB7CiAgICBsZXQgbXV0IG4gPSBuOwogICAgbGV0IG11dCBjb3VudCA9IDA7CiAgICB3aGlsZSBuICE9IDAgewogICAgICAgIG4gPSBuICYgKG4gLSAxKTsgLy8g5q+P5qyh5raI6Zmk5LiA5LiqMQogICAgICAgIGNvdW50ICs9IDE7CiAgICB9CiAgICBjb3VudAp9CgpmbiBtYWluKCkgewogICAgcHJpbnRsbiEoIjE1KDExMTEp5LitMeeahOS4quaVsDoge30iLCBjb3VudF9vbmVzKDE1KSk7ICAvLyA0CiAgICBwcmludGxuISgiNygwMTExKeS4rTHnmoTkuKrmlbA6IHt9IiwgY291bnRfb25lcyg3KSk7ICAgIC8vIDMKICAgIHByaW50bG4hKCIw5LitMeeahOS4quaVsDoge30iLCBjb3VudF9vbmVzKDApKTsgICAgICAgICAgIC8vIDAKICAgIHByaW50bG4hKCIxMDI05LitMeeahOS4quaVsDoge30iLCBjb3VudF9vbmVzKDEwMjQpKTsgICAgIC8vIDEKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 统计二进制中1的个数（Brian Kernighan算法）
 fn count_ones(n: u64) -&gt; u64 {
     let mut n = n;
@@ -300,6 +345,8 @@ fn main() {
 <h3 id="判断2的幂"><a class="header" href="#判断2的幂">判断2的幂</a></h3>
 <p>利用 Brian Kernighan 算法的思想，可以高效判断一个数是否为 2 的幂。2 的幂的二进制表示中有且仅有一个 1。</p>
 <p>$$n &amp; (n-1) == 0 \text{ 且 } n &gt; 0 \Rightarrow n \text{ 是2的幂}$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gaXNfcG93ZXJfb2ZfdHdvKG46IHUzMikgLT4gYm9vbCB7CiAgICBuICE9IDAgJiYgKG4gJiAobiAtIDEpKSA9PSAwCn0KCmZuIG1haW4oKSB7CiAgICBmb3IgaSBpbiAxLi49MzIgewogICAgICAgIGlmIGlzX3Bvd2VyX29mX3R3byhpKSB7CiAgICAgICAgICAgIHByaW50bG4hKCJ7fSDmmK8y55qE5bmCIiwgaSk7CiAgICAgICAgfQogICAgfQogICAgLy8g6L6T5Ye6OiAxLCAyLCA0LCA4LCAxNiwgMzIKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn is_power_of_two(n: u32) -&gt; bool {
     n != 0 &amp;&amp; (n &amp; (n - 1)) == 0
 }
@@ -333,6 +380,8 @@ fn main() {
 <h3 id="常见用途-1"><a class="header" href="#常见用途-1">常见用途</a></h3>
 <h4 id="1-置位set-bit"><a class="header" href="#1-置位set-bit">1. 置位（Set Bit）</a></h4>
 <p>要将某一位或某几位设置为 1，构造一个掩码，目标位为 1，其余位为 0，然后做或运算。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gc2V0X2JpdChtdXQgdmFsdWU6IHU4LCBiaXRfaW5kZXg6IHVzaXplKSAtPiB1OCB7CiAgICB2YWx1ZSB8ICgxIDw8IGJpdF9pbmRleCkKfQoKZm4gbWFpbigpIHsKICAgIGxldCBtdXQgeDogdTggPSAwYjEwMTBfMDAwMDsKICAgIHggPSBzZXRfYml0KHgsIDApOyAvLyDorr7nva7nrKww5L2NCiAgICBwcmludGxuISgi6K6+572u56ysMOS9jeWQjjogezowOGJ9IiwgeCk7IC8vIDEwMTAwMDAxCiAgICB4ID0gc2V0X2JpdCh4LCAzKTsgLy8g6K6+572u56ysM+S9jQogICAgcHJpbnRsbiEoIuiuvue9ruesrDPkvY3lkI46IHs6MDhifSIsIHgpOyAvLyAxMDEwMTAwMQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn set_bit(mut value: u8, bit_index: usize) -&gt; u8 {
     value | (1 &lt;&lt; bit_index)
 }
@@ -346,6 +395,8 @@ fn main() {
 }</code></pre>
 <h4 id="2-权限组合位标志"><a class="header" href="#2-权限组合位标志">2. 权限组合（位标志）</a></h4>
 <p>位标志（bit flags）是或运算最典型的应用场景。每个标志占一个位，通过或运算可以组合多个标志。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#I1tkZXJpdmUoRGVidWcsIENsb25lLCBDb3B5KV0Kc3RydWN0IFBlcm1pc3Npb25zKHU4KTsKCmNvbnN0IFJFQUQ6IHU4ICAgID0gMGIwMDAwXzAwMDE7IC8vIDEKY29uc3QgV1JJVEU6IHU4ICAgPSAwYjAwMDBfMDAxMDsgLy8gMgpjb25zdCBFWEVDVVRFOiB1OCA9IDBiMDAwMF8wMTAwOyAvLyA0CgppbXBsIFBlcm1pc3Npb25zIHsKICAgIGZuIG5ldygpIC0+IFNlbGYgewogICAgICAgIFBlcm1pc3Npb25zKDApCiAgICB9CgogICAgZm4gYWRkKCZtdXQgc2VsZiwgcGVybTogdTgpIHsKICAgICAgICBzZWxmLjAgfD0gcGVybTsKICAgIH0KCiAgICBmbiBoYXMoJnNlbGYsIHBlcm06IHU4KSAtPiBib29sIHsKICAgICAgICAoc2VsZi4wICYgcGVybSkgIT0gMAogICAgfQoKICAgIGZuIHJlbW92ZSgmbXV0IHNlbGYsIHBlcm06IHU4KSB7CiAgICAgICAgc2VsZi4wICY9ICFwZXJtOwogICAgfQp9CgpmbiBtYWluKCkgewogICAgbGV0IG11dCBwZXJtcyA9IFBlcm1pc3Npb25zOjpuZXcoKTsKICAgIHBlcm1zLmFkZChSRUFEIHwgV1JJVEUpOyAvLyDnu4TlkIjmnYPpmZAKICAgIHByaW50bG4hKCLmnYPpmZA6IHs6MDhifSIsIHBlcm1zLjApOyAvLyAwMDAwMDAxMQoKICAgIHByaW50bG4hKCLlj6/or7s6IHt9IiwgcGVybXMuaGFzKFJFQUQpKTsgICAgLy8gdHJ1ZQogICAgcHJpbnRsbiEoIuWPr+WGmToge30iLCBwZXJtcy5oYXMoV1JJVEUpKTsgICAvLyB0cnVlCiAgICBwcmludGxuISgi5Y+v5omn6KGMOiB7fSIsIHBlcm1zLmhhcyhFWEVDVVRFKSk7IC8vIGZhbHNlCgogICAgcGVybXMucmVtb3ZlKFdSSVRFKTsKICAgIHByaW50bG4hKCLnp7vpmaTlhpnmnYPpmZDlkI7lj6/lhpk6IHt9IiwgcGVybXMuaGFzKFdSSVRFKSk7IC8vIGZhbHNlCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">#[derive(Debug, Clone, Copy)]
 struct Permissions(u8);
 
@@ -403,6 +454,8 @@ fn main() {
 <h3 id="补码表示"><a class="header" href="#补码表示">补码表示</a></h3>
 <p>在计算机中，有符号整数采用**补码（two’s complement）**表示。取反运算的结果需要结合补码来理解：</p>
 <p>$$\text{补码} = \text{原码取反} + 1$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCB4OiB1OCA9IDBiMDAwMF8xMTExOyAvLyAxNQogICAgbGV0IHkgPSAheDsKICAgIHByaW50bG4hKCIhezowOGJ9ID0gezowOGJ9IiwgeCwgeSk7IC8vICEwMDAwMTExMSA9IDExMTEwMDAwID0gMjQwCgogICAgLy8g5a+55LqO5pyJ56ym5Y+35pWw77yMIeeahOe7k+aenOaYr+ihpeeggeihqOekugogICAgbGV0IGE6IGk4ID0gNTsgIC8vIDAwMDAwMTAxCiAgICBsZXQgYiA9ICFhOyAgICAgIC8vIDExMTExMDEwID0gLTbvvIjooaXnoIHvvIkKICAgIHByaW50bG4hKCIhe30gPSB7fSIsIGEsIGIpOyAvLyAhNSA9IC02CgogICAgbGV0IGM6IGk4ID0gNjA7CiAgICBsZXQgZCA9ICFjOyAgICAgIC8vIDExMTEwMDExID0gLTYx77yI6KGl56CB77yJCiAgICBwcmludGxuISgiIXt9ID0ge30iLCBjLCBkKTsgLy8gITYwID0gLTYxCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let x: u8 = 0b0000_1111; // 15
     let y = !x;
@@ -419,6 +472,8 @@ fn main() {
 }</code></pre>
 <h3 id="rust-中的区别"><a class="header" href="#rust-中的区别">Rust 中的区别</a></h3>
 <p>Rust 中 <code>!</code> 运算符既用于按位取反（整数类型），也用于逻辑非（<code>bool</code> 类型），具体行为取决于操作数的类型：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOaVtOaVsOexu+Wei++8muaMieS9jeWPluWPjQogICAgbGV0IHg6IGkzMiA9IDBiMDAwMF8xMTExOwogICAgcHJpbnRsbiEoIuaMieS9jeWPluWPjToge30iLCAheCk7IC8vIC0xNgoKICAgIC8vIGJvb2znsbvlnovvvJrpgLvovpHpnZ4KICAgIGxldCBmbGFnID0gdHJ1ZTsKICAgIHByaW50bG4hKCLpgLvovpHpnZ46IHt9IiwgIWZsYWcpOyAvLyBmYWxzZQoKICAgIC8vIH4g6L+Q566X56ym5ZyoUnVzdOS4reW3suW8g+eUqO+8jOe7n+S4gOS9v+eUqCAhCiAgICAvLyDml6fniYhSdXN05LitIH4g55So5LqO5pW05pWw5Y+W5Y+N77yM546w5bey5LiN5o6o6I2QCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 整数类型：按位取反
     let x: i32 = 0b0000_1111;
@@ -497,6 +552,8 @@ fn main() {
 <h3 id="常见用途-2"><a class="header" href="#常见用途-2">常见用途</a></h3>
 <h4 id="1-交换变量不用临时变量"><a class="header" href="#1-交换变量不用临时变量">1. 交换变量（不用临时变量）</a></h4>
 <p>利用自反性 $a \oplus b \oplus a = b$，可以在不借助临时变量的情况下交换两个数：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4geG9yX3N3YXAoYTogJm11dCBpMzIsIGI6ICZtdXQgaTMyKSB7CiAgICAqYSBePSAqYjsKICAgICpiIF49ICphOwogICAgKmEgXj0gKmI7Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgbXV0IHggPSA0MjsKICAgIGxldCBtdXQgeSA9IDk5OwogICAgeG9yX3N3YXAoJm11dCB4LCAmbXV0IHkpOwogICAgcHJpbnRsbiEoInggPSB7fSwgeSA9IHt9IiwgeCwgeSk7IC8vIHggPSA5OSwgeSA9IDQyCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn xor_swap(a: &amp;mut i32, b: &amp;mut i32) {
     *a ^= *b;
     *b ^= *a;
@@ -514,6 +571,8 @@ fn main() {
 </blockquote>
 <h4 id="2-加密解密"><a class="header" href="#2-加密解密">2. 加密解密</a></h4>
 <p>异或运算具有对称性：$A \oplus K = C$，$C \oplus K = A$。用同一个密钥加密和解密。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4geG9yX2VuY3J5cHQocGxhaW50ZXh0OiAmW3U4XSwga2V5OiB1OCkgLT4gVmVjPHU4PiB7CiAgICBwbGFpbnRleHQuaXRlcigpLm1hcCh8JmJ8IGIgXiBrZXkpLmNvbGxlY3QoKQp9CgpmbiB4b3JfZGVjcnlwdChjaXBoZXJ0ZXh0OiAmW3U4XSwga2V5OiB1OCkgLT4gVmVjPHU4PiB7CiAgICAvLyDop6Plr4blkozliqDlr4bmmK/lkIzkuIDmk43kvZwKICAgIHhvcl9lbmNyeXB0KGNpcGhlcnRleHQsIGtleSkKfQoKZm4gbWFpbigpIHsKICAgIGxldCBtZXNzYWdlID0gYiJIZWxsbywgUnVzdCEiOwogICAgbGV0IGtleSA9IDB4NDI7CgogICAgbGV0IGVuY3J5cHRlZCA9IHhvcl9lbmNyeXB0KG1lc3NhZ2UsIGtleSk7CiAgICBsZXQgZGVjcnlwdGVkID0geG9yX2RlY3J5cHQoJmVuY3J5cHRlZCwga2V5KTsKCiAgICBwcmludGxuISgi5Y6f5paHOiB7Oj99IiwgU3RyaW5nOjpmcm9tX3V0ZjhfbG9zc3kobWVzc2FnZSkpOwogICAgcHJpbnRsbiEoIuWvhuaWhzogezo/fSIsIGVuY3J5cHRlZCk7CiAgICBwcmludGxuISgi6Kej5a+GOiB7Oj99IiwgU3RyaW5nOjpmcm9tX3V0ZjhfbG9zc3koJmRlY3J5cHRlZCkpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn xor_encrypt(plaintext: &amp;[u8], key: u8) -&gt; Vec&lt;u8&gt; {
     plaintext.iter().map(|&amp;b| b ^ key).collect()
 }
@@ -539,6 +598,8 @@ fn main() {
 <p>给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现一次的元素。</p>
 <p><strong>思路</strong>：利用归零律和交换律，所有出现两次的数异或后互相抵消为 0，最终结果就是唯一数。</p>
 <p>$$a \oplus a \oplus b \oplus b \oplus \cdots \oplus x = 0 \oplus 0 \oplus \cdots \oplus x = x$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#cHViIGZuIHNpbmdsZV9udW1iZXIobnVtczogVmVjPGkzMj4pIC0+IGkzMiB7CiAgICBudW1zLmludG9faXRlcigpLmZvbGQoMCwgfGFjYywgeHwgYWNjIF4geCkKfQoKZm4gbWFpbigpIHsKICAgIGxldCBudW1zID0gdmVjIVs0LCAxLCAyLCAxLCAyXTsKICAgIHByaW50bG4hKCLlj6rlh7rnjrDkuIDmrKHnmoTmlbDlrZc6IHt9Iiwgc2luZ2xlX251bWJlcihudW1zKSk7IC8vIDQKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">pub fn single_number(nums: Vec&lt;i32&gt;) -&gt; i32 {
     nums.into_iter().fold(0, |acc, x| acc ^ x)
 }
@@ -554,6 +615,8 @@ fn main() {
 <h3 id="原理"><a class="header" href="#原理">原理</a></h3>
 <p>左移运算将所有位向左移动指定位数，右边空出的位补 0。左移 n 位等价于乘以 $2^n$：</p>
 <p>$$x \ll n = x \times 2^n$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCB4OiBpMzIgPSA1OwogICAgbGV0IHkgPSB4IDw8IDE7IC8vIDUgKiAyID0gMTAKICAgIGxldCB6ID0geCA8PCAzOyAvLyA1ICogOCA9IDQwCiAgICBwcmludGxuISgie30gPDwgMSA9IHt9IiwgeCwgeSk7IC8vIDEwCiAgICBwcmludGxuISgie30gPDwgMyA9IHt9IiwgeCwgeik7IC8vIDQwCgogICAgLy8g5b+r6YCf6K6h566XIDIg55qE5bmCCiAgICBwcmludGxuISgiMSA8PCAxMCA9IHt9IiwgMSA8PCAxMCk7IC8vIDEwMjQKICAgIHByaW50bG4hKCIxIDw8IDIwID0ge30iLCAxIDw8IDIwKTsgLy8gMTA0ODU3Ngp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let x: i32 = 5;
     let y = x &lt;&lt; 1; // 5 * 2 = 10
@@ -567,6 +630,8 @@ fn main() {
 }</code></pre>
 <h3 id="溢出处理"><a class="header" href="#溢出处理">溢出处理</a></h3>
 <p>左移时，如果移出的高位被丢弃，可能导致溢出。Rust 在 debug 模式下会检查整数溢出，在 release 模式下会自动回绕（wrapping）。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCB4OiB1OCA9IDEyODsgLy8gMTAwMDAwMDAKICAgIGxldCB5ID0geCA8PCAxOyAgLy8gZGVidWfmqKHlvI/kuItwYW5pY++8jHJlbGVhc2XmqKHlvI/kuIvkuLowCgogICAgLy8g5L2/55Sod3JhcHBpbmfmlrnms5XmmL7lvI/lpITnkIbmuqLlh7oKICAgIGxldCBzYWZlID0geC53cmFwcGluZ19zaGwoMSk7CiAgICBwcmludGxuISgid3JhcHBpbmflt6bnp7s6IHt9Iiwgc2FmZSk7IC8vIDAKCiAgICAvLyDkvb/nlKhjaGVja2Vk5pa55rOV5qOA5p+l5rqi5Ye6CiAgICBtYXRjaCB4LmNoZWNrZWRfc2hsKDEpIHsKICAgICAgICBTb21lKHYpID0+IHByaW50bG4hKCLnu5Pmnpw6IHt9IiwgdiksCiAgICAgICAgTm9uZSA9PiBwcmludGxuISgi5bem56e75rqi5Ye677yBIiksCiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let x: u8 = 128; // 10000000
     let y = x &lt;&lt; 1;  // debug模式下panic，release模式下为0
@@ -587,6 +652,8 @@ fn main() {
 <h3 id="原理-1"><a class="header" href="#原理-1">原理</a></h3>
 <p>右移运算将所有位向右移动指定位数。右移 n 位等价于整除 $2^n$：</p>
 <p>$$x \gg n = \lfloor x / 2^n \rfloor$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOWBtuaVsOWPs+enuwogICAgbGV0IHggPSAxMDI0OwogICAgbGV0IHkgPSB4ID4+IDE7IC8vIDEwMjQgLyAyID0gNTEyCiAgICBwcmludGxuISgie30gPj4gMSA9IHt9IiwgeCwgeSk7IC8vIDUxMgoKICAgIC8vIOWlh+aVsOWPs+enu++8iOWQkeS4i+WPluaVtO+8iQogICAgbGV0IHggPSAxMTsKICAgIGxldCB5ID0geCA+PiAxOyAvLyAxMSAvIDIgPSA177yI5oiq5pat5bCP5pWw6YOo5YiG77yJCiAgICBwcmludGxuISgie30gPj4gMSA9IHt9IiwgeCwgeSk7IC8vIDUKCiAgICAvLyDlv6vpgJ/pmaTku6UgOAogICAgbGV0IHggPSAxMDAwOwogICAgbGV0IHkgPSB4ID4+IDM7IC8vIDEwMDAgLyA4ID0gMTI1CiAgICBwcmludGxuISgie30gPj4gMyA9IHt9IiwgeCwgeSk7IC8vIDEyNQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 偶数右移
     let x = 1024;
@@ -609,6 +676,8 @@ fn main() {
 <li><strong>逻辑右移</strong>：高位补 0（用于无符号数）</li>
 <li><strong>算术右移</strong>：高位补符号位（用于有符号数，保持正负不变）</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOaXoOespuWPt+aVsO+8mumAu+i+keWPs+enu++8iOmrmOS9jeihpTDvvIkKICAgIGxldCB4OiB1OCA9IDBiMTAwMF8wMDAwOyAvLyAxMjgKICAgIGxldCB5ID0geCA+PiAxOyAgICAgICAgICAgIC8vIDBiMDEwMF8wMDAwID0gNjQKICAgIHByaW50bG4hKCLml6DnrKblj7flj7Pnp7s6IHs6MDhifSAtPiB7OjA4Yn0gKHt9IC0+IHt9KSIsIHgsIHksIHgsIHkpOwoKICAgIC8vIOacieespuWPt+aVsO+8mueul+acr+WPs+enu++8iOmrmOS9jeihpeespuWPt+S9je+8iQogICAgbGV0IHg6IGk4ID0gLTEyODsgLy8gMTAwMDAwMDDvvIjooaXnoIHvvIkKICAgIGxldCB5ID0geCA+PiAxOyAgICAvLyAxMTAwMDAwMCA9IC02NO+8iOmrmOS9jeihpTHvvIkKICAgIHByaW50bG4hKCLmnInnrKblj7flj7Pnp7s6IHt9IC0+IHt9IiwgeCwgeSk7CgogICAgLy8g5q2j5pWw5pyJ56ym5Y+35Y+z56e777yI6auY5L2N6KGlMO+8iQogICAgbGV0IHg6IGk4ID0gMTI3OyAgLy8gMDExMTExMTEKICAgIGxldCB5ID0geCA+PiAxOyAgICAvLyAwMDExMTExMSA9IDYzCiAgICBwcmludGxuISgi5q2j5pWw5pyJ56ym5Y+35Y+z56e7OiB7fSAtPiB7fSIsIHgsIHkpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 无符号数：逻辑右移（高位补0）
     let x: u8 = 0b1000_0000; // 128
@@ -654,6 +723,8 @@ fn main() {
 <a href="https://doc.rust-lang.org/std/ops/trait.BitOrAssign.html">std::ops::BitOrAssign</a> The bitwise OR assignment operator <code>|=</code>.
 <a href="https://doc.rust-lang.org/std/ops/trait.BitXor.html">std::ops::BitXor</a> The bitwise XOR operator <code>^</code>.
 <a href="https://doc.rust-lang.org/std/ops/trait.Not.html">std::ops::Not</a></p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6b3BzOjp7Qml0QW5kLCBCaXRPciwgQml0WG9yLCBOb3R9OwoKI1tkZXJpdmUoRGVidWcsIENsb25lLCBDb3B5KV0Kc3RydWN0IEZsYWdzKHU4KTsKCmltcGwgQml0QW5kIGZvciBGbGFncyB7CiAgICB0eXBlIE91dHB1dCA9IFNlbGY7CiAgICBmbiBiaXRhbmQoc2VsZiwgcmhzOiBTZWxmKSAtPiBTZWxmOjpPdXRwdXQgewogICAgICAgIEZsYWdzKHNlbGYuMCAmIHJocy4wKQogICAgfQp9CgppbXBsIEJpdE9yIGZvciBGbGFncyB7CiAgICB0eXBlIE91dHB1dCA9IFNlbGY7CiAgICBmbiBiaXRvcihzZWxmLCByaHM6IFNlbGYpIC0+IFNlbGY6Ok91dHB1dCB7CiAgICAgICAgRmxhZ3Moc2VsZi4wIHwgcmhzLjApCiAgICB9Cn0KCmltcGwgQml0WG9yIGZvciBGbGFncyB7CiAgICB0eXBlIE91dHB1dCA9IFNlbGY7CiAgICBmbiBiaXR4b3Ioc2VsZiwgcmhzOiBTZWxmKSAtPiBTZWxmOjpPdXRwdXQgewogICAgICAgIEZsYWdzKHNlbGYuMCBeIHJocy4wKQogICAgfQp9CgppbXBsIE5vdCBmb3IgRmxhZ3MgewogICAgdHlwZSBPdXRwdXQgPSBTZWxmOwogICAgZm4gbm90KHNlbGYpIC0+IFNlbGY6Ok91dHB1dCB7CiAgICAgICAgRmxhZ3MoIXNlbGYuMCkKICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIGxldCBhID0gRmxhZ3MoMGIxMTAwKTsKICAgIGxldCBiID0gRmxhZ3MoMGIxMDEwKTsKICAgIHByaW50bG4hKCJhICYgYiA9IHs6P30iLCBhICYgYik7IC8vIEZsYWdzKDBiMTAwMCkKICAgIHByaW50bG4hKCJhIHwgYiA9IHs6P30iLCBhIHwgYik7IC8vIEZsYWdzKDBiMTExMCkKICAgIHByaW50bG4hKCJhIF4gYiA9IHs6P30iLCBhIF4gYik7IC8vIEZsYWdzKDBiMDExMCkKICAgIHByaW50bG4hKCIhYSAgICA9IHs6P30iLCAhYSk7ICAgICAvLyBGbGFncygwYjAwMTEpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::ops::{BitAnd, BitOr, BitXor, Not};
 
 #[derive(Debug, Clone, Copy)]
@@ -699,6 +770,8 @@ fn main() {
 <h2 id="位运算综合技巧"><a class="header" href="#位运算综合技巧">位运算综合技巧</a></h2>
 <h3 id="获取设置清除翻转特定位"><a class="header" href="#获取设置清除翻转特定位">获取、设置、清除、翻转特定位</a></h3>
 <p>以下是位操作的四大基本操作，是所有位运算技巧的基础：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOiOt+WPluesrG7kvY3nmoTlgLzvvIgw5oiWMe+8iQpmbiBnZXRfYml0KHZhbHVlOiB1MzIsIG46IHVzaXplKSAtPiB1MzIgewogICAgKHZhbHVlID4+IG4pICYgMQp9CgovLy8g6K6+572u56ysbuS9jeS4ujEKZm4gc2V0X2JpdChtdXQgdmFsdWU6IHUzMiwgbjogdXNpemUpIC0+IHUzMiB7CiAgICB2YWx1ZSB8ICgxIDw8IG4pCn0KCi8vLyDmuIXpmaTnrKxu5L2N5Li6MApmbiBjbGVhcl9iaXQobXV0IHZhbHVlOiB1MzIsIG46IHVzaXplKSAtPiB1MzIgewogICAgdmFsdWUgJiAhKDEgPDwgbikKfQoKLy8vIOe/u+i9rOesrG7kvY0KZm4gdG9nZ2xlX2JpdChtdXQgdmFsdWU6IHUzMiwgbjogdXNpemUpIC0+IHUzMiB7CiAgICB2YWx1ZSBeICgxIDw8IG4pCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgbXV0IHg6IHUzMiA9IDBiMTAxMF8wMTAxOwoKICAgIHByaW50bG4hKCLljp/lp4vlgLw6IHs6MDhifSIsIHgpOwogICAgcHJpbnRsbiEoIuesrDLkvY06IHt9IiwgZ2V0X2JpdCh4LCAyKSk7ICAgLy8gMQogICAgcHJpbnRsbiEoIuiuvue9ruesrDTkvY06IHs6MDhifSIsIHNldF9iaXQoeCwgNCkpOyAgICAvLyAxMDExXzAxMDEKICAgIHByaW50bG4hKCLmuIXpmaTnrKww5L2NOiB7OjA4Yn0iLCBjbGVhcl9iaXQoeCwgMCkpOyAgLy8gMTAxMF8wMTAwCiAgICBwcmludGxuISgi57+76L2s56ysN+S9jTogezowOGJ9IiwgdG9nZ2xlX2JpdCh4LCA3KSk7ICAvLyAwMDEwXzAxMDEKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 获取第n位的值（0或1）
 fn get_bit(value: u32, n: usize) -&gt; u32 {
     (value &gt;&gt; n) &amp; 1
@@ -730,6 +803,8 @@ fn main() {
 }</code></pre>
 <h3 id="位段bit-field"><a class="header" href="#位段bit-field">位段（Bit Field）</a></h3>
 <p>位段是一种将多个小数据打包到一个整数中的技术，常用于协议头、寄存器配置等场景。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIElQ5Y2P6K6u5aS05Lit55qE5qCH5b+X5a2X5q6177yIM+S9je+8iQojW2Rlcml2ZShEZWJ1ZyldCnN0cnVjdCBJcEZsYWdzIHsKICAgIHJlc2VydmVkOiBib29sLCAgIC8vIDHkvY0KICAgIGRvbnRfZnJhZ21lbnQ6IGJvb2wsIC8vIDHkvY0KICAgIG1vcmVfZnJhZ21lbnRzOiBib29sLCAvLyAx5L2NCn0KCmltcGwgSXBGbGFncyB7CiAgICBmbiBmcm9tX3U4KHZhbHVlOiB1OCkgLT4gU2VsZiB7CiAgICAgICAgSXBGbGFncyB7CiAgICAgICAgICAgIHJlc2VydmVkOiAodmFsdWUgJiAwYjEwMCkgIT0gMCwKICAgICAgICAgICAgZG9udF9mcmFnbWVudDogKHZhbHVlICYgMGIwMTApICE9IDAsCiAgICAgICAgICAgIG1vcmVfZnJhZ21lbnRzOiAodmFsdWUgJiAwYjAwMSkgIT0gMCwKICAgICAgICB9CiAgICB9CgogICAgZm4gdG9fdTgoJnNlbGYpIC0+IHU4IHsKICAgICAgICAoc2VsZi5yZXNlcnZlZCBhcyB1OCkgPDwgMgogICAgICAgICAgICB8IChzZWxmLmRvbnRfZnJhZ21lbnQgYXMgdTgpIDw8IDEKICAgICAgICAgICAgfCAoc2VsZi5tb3JlX2ZyYWdtZW50cyBhcyB1OCkKICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIC8vIERGPTEsIE1GPTAKICAgIGxldCBmbGFncyA9IElwRmxhZ3MgewogICAgICAgIHJlc2VydmVkOiBmYWxzZSwKICAgICAgICBkb250X2ZyYWdtZW50OiB0cnVlLAogICAgICAgIG1vcmVfZnJhZ21lbnRzOiBmYWxzZSwKICAgIH07CiAgICBsZXQgcGFja2VkID0gZmxhZ3MudG9fdTgoKTsKICAgIHByaW50bG4hKCLmiZPljIU6IHs6MDNifSA9IHt9IiwgcGFja2VkLCBwYWNrZWQpOyAvLyAwMTAgPSAyCgogICAgbGV0IHVucGFja2VkID0gSXBGbGFnczo6ZnJvbV91OCgwYjExMCk7CiAgICBwcmludGxuISgi6Kej5YyFOiB7Oj99IiwgdW5wYWNrZWQpOwogICAgLy8gSXBGbGFncyB7IHJlc2VydmVkOiB0cnVlLCBkb250X2ZyYWdtZW50OiB0cnVlLCBtb3JlX2ZyYWdtZW50czogZmFsc2UgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// IP协议头中的标志字段（3位）
 #[derive(Debug)]
 struct IpFlags {
@@ -773,6 +848,8 @@ fn main() {
 <h3 id="191-位1的个数"><a class="header" href="#191-位1的个数">191. 位1的个数</a></h3>
 <p><a href="https://leetcode-cn.com/problems/number-of-1-bits/">191. 位1的个数</a></p>
 <p>编写一个函数，输入是一个无符号整数（以二进制串的形式），返回其二进制表达式中数字为 ‘1’ 的个数。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#cHViIGZuIGhhbW1pbmdfd2VpZ2h0KG46IHUzMikgLT4gdTMyIHsKICAgIGxldCBtdXQgY291bnQgPSAwOwogICAgbGV0IG11dCBuID0gbjsKICAgIHdoaWxlIG4gIT0gMCB7CiAgICAgICAgbiAmPSBuIC0gMTsgLy8gQnJpYW4gS2VybmlnaGFu566X5rOVCiAgICAgICAgY291bnQgKz0gMTsKICAgIH0KICAgIGNvdW50Cn0KCmZuIG1haW4oKSB7CiAgICBwcmludGxuISgiMTEoMTAxMSnkuK0x55qE5Liq5pWwOiB7fSIsIGhhbW1pbmdfd2VpZ2h0KDExKSk7IC8vIDMKICAgIHByaW50bG4hKCIxMjjkuK0x55qE5Liq5pWwOiB7fSIsIGhhbW1pbmdfd2VpZ2h0KDEyOCkpOyAgICAgIC8vIDEKICAgIHByaW50bG4hKCI0Mjk0OTY3Mjkz5LitMeeahOS4quaVsDoge30iLCBoYW1taW5nX3dlaWdodCg0Mjk0OTY3MjkzKSk7IC8vIDMxCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">pub fn hamming_weight(n: u32) -&gt; u32 {
     let mut count = 0;
     let mut n = n;
@@ -791,6 +868,8 @@ fn main() {
 <h3 id="461-汉明距离"><a class="header" href="#461-汉明距离">461. 汉明距离</a></h3>
 <p><a href="https://leetcode-cn.com/problems/hamming-distance/">461. 汉明距离</a></p>
 <p>两个整数之间的汉明距离是指这两个数字二进制对应位不同的位置的数目。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#cHViIGZuIGhhbW1pbmdfZGlzdGFuY2UoeDogaTMyLCB5OiBpMzIpIC0+IGkzMiB7CiAgICBsZXQgeG9yID0geCBeIHk7IC8vIOS4jeWQjOS9jeS4ujEKICAgIGxldCBtdXQgY291bnQgPSAwOwogICAgbGV0IG11dCBuID0geG9yOwogICAgd2hpbGUgbiAhPSAwIHsKICAgICAgICBuICY9IG4gLSAxOwogICAgICAgIGNvdW50ICs9IDE7CiAgICB9CiAgICBjb3VudAp9CgpmbiBtYWluKCkgewogICAgcHJpbnRsbiEoIuaxieaYjui3neemuygxLDQpOiB7fSIsIGhhbW1pbmdfZGlzdGFuY2UoMSwgNCkpOyAvLyAyCiAgICAvLyAxID0gMDAwMSwgNCA9IDAxMDAsIHhvciA9IDAxMDEsIOaciTLkuKoxCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">pub fn hamming_distance(x: i32, y: i32) -&gt; i32 {
     let xor = x ^ y; // 不同位为1
     let mut count = 0;

@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -244,6 +281,8 @@ $$</p>
 <li>大部分常用汉字（U+0800 ~ U+FFFF）：3 字节</li>
 <li>Emoji 等罕见字符（U+10000 ~ U+10FFFF）：4 字节</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOaVtOaVsOWcqOWGheWtmOS4reeahOihqOekugogICAgbGV0IGE6IGkzMiA9IC0xOwogICAgcHJpbnRsbiEoImkzMiAtMSDnmoTlhoXlrZjooajnpLo6IHs6MDMyYn0iLCBhIGFzIHUzMik7IC8vIOihpeegge+8muWFqDEKCiAgICAvLyDmta7ngrnmlbDnmoTnsr7luqYKICAgIGxldCBwaTogZjY0ID0gc3RkOjpmNjQ6OmNvbnN0czo6UEk7CiAgICBwcmludGxuISgiUEkgPSB7Oi4xNX0iLCBwaSk7CgogICAgLy8g5a2X56ym5LiO5a2X56ym5Liy55qEVVRGLTjnvJbnoIEKICAgIGxldCBjaCA9ICfkuK0nOwogICAgcHJpbnRsbiEoIuWtl+espiAne30nIOeahFVuaWNvZGXnoIHngrk6IFUrezowNFh9IiwgY2gsIGNoIGFzIHUzMik7CiAgICBwcmludGxuISgi5a2X56ymICd7fScg55qEVVRGLTjlrZfoioI6IHs6P30iLCBjaCwgY2gubGVuX3V0ZjgoKSk7IC8vIDPlrZfoioIKCiAgICBsZXQgcyA9IFN0cmluZzo6ZnJvbSgiSGVsbG8g5LiW55WMIik7CiAgICBwcmludGxuISgi5a2X56ym5LiyICd7fScg55qE5a2X6IqC5pWwOiB7fSIsIHMsIHMubGVuKCkpOyAgICAgICAvLyAxMuWtl+iKggogICAgcHJpbnRsbiEoIuWtl+espuS4siAne30nIOeahOWtl+espuaVsDoge30iLCBzLCBzLmNoYXJzKCkuY291bnQoKSk7IC8vIDfkuKrlrZfnrKYKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 整数在内存中的表示
     let a: i32 = -1;
@@ -284,6 +323,8 @@ $$</p>
 <p>OID 采用点分十进制表示，例如 <code>1.3.6.1.5.5.7.1.1</code> 表示“权威信息访问“（Authority Information Access）证书扩展。</p>
 <h3 id="rust-中的面向对象"><a class="header" href="#rust-中的面向对象">Rust 中的面向对象</a></h3>
 <p>Rust 并非传统的面向对象语言，但通过 <code>struct</code>、<code>enum</code> 和 <code>trait</code> 可以优雅地实现面向对象的核心思想：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6Zm10OwoKLy8gc3RydWN0IOabv+S7oyLnsbsi4oCU4oCU5bCB6KOF5pWw5o2uCnN0cnVjdCBQZXJzb24gewogICAgbmFtZTogU3RyaW5nLAogICAgYWdlOiB1MzIsCn0KCi8vIGltcGwg5Z2X4oCU4oCU5bCB6KOF6KGM5Li677yI5pa55rOV77yJCmltcGwgUGVyc29uIHsKICAgIGZuIG5ldyhuYW1lOiAmc3RyLCBhZ2U6IHUzMikgLT4gU2VsZiB7CiAgICAgICAgUGVyc29uIHsKICAgICAgICAgICAgbmFtZTogbmFtZS50b19zdHJpbmcoKSwKICAgICAgICAgICAgYWdlLAogICAgICAgIH0KICAgIH0KCiAgICBmbiBncmVldCgmc2VsZikgewogICAgICAgIHByaW50bG4hKCLkvaDlpb3vvIzmiJHmmK97fe+8jOS7iuW5tHt95bKB44CCIiwgc2VsZi5uYW1lLCBzZWxmLmFnZSk7CiAgICB9Cn0KCi8vIHRyYWl0IOabv+S7oyLmjqXlj6Mi4oCU4oCU5a6e546w5aSa5oCBCnRyYWl0IERlc2NyaWJhYmxlIHsKICAgIGZuIGRlc2NyaWJlKCZzZWxmKSAtPiBTdHJpbmc7Cn0KCmltcGwgRGVzY3JpYmFibGUgZm9yIFBlcnNvbiB7CiAgICBmbiBkZXNjcmliZSgmc2VsZikgLT4gU3RyaW5nIHsKICAgICAgICBmb3JtYXQhKCJQZXJzb24obmFtZT17fSwgYWdlPXt9KSIsIHNlbGYubmFtZSwgc2VsZi5hZ2UpCiAgICB9Cn0KCi8vIGVudW0g5a6e546w5Luj5pWw5pWw5o2u57G75Z6LCmVudW0gU2hhcGUgewogICAgQ2lyY2xlIHsgcmFkaXVzOiBmNjQgfSwKICAgIFJlY3RhbmdsZSB7IHdpZHRoOiBmNjQsIGhlaWdodDogZjY0IH0sCiAgICBUcmlhbmdsZSB7IGJhc2U6IGY2NCwgaGVpZ2h0OiBmNjQgfSwKfQoKaW1wbCBTaGFwZSB7CiAgICBmbiBhcmVhKCZzZWxmKSAtPiBmNjQgewogICAgICAgIG1hdGNoIHNlbGYgewogICAgICAgICAgICBTaGFwZTo6Q2lyY2xlIHsgcmFkaXVzIH0gPT4gc3RkOjpmNjQ6OmNvbnN0czo6UEkgKiByYWRpdXMgKiByYWRpdXMsCiAgICAgICAgICAgIFNoYXBlOjpSZWN0YW5nbGUgeyB3aWR0aCwgaGVpZ2h0IH0gPT4gd2lkdGggKiBoZWlnaHQsCiAgICAgICAgICAgIFNoYXBlOjpUcmlhbmdsZSB7IGJhc2UsIGhlaWdodCB9ID0+IDAuNSAqIGJhc2UgKiBoZWlnaHQsCiAgICAgICAgfQogICAgfQp9CgppbXBsIGZtdDo6RGlzcGxheSBmb3IgU2hhcGUgewogICAgZm4gZm10KCZzZWxmLCBmOiAmbXV0IGZtdDo6Rm9ybWF0dGVyKSAtPiBmbXQ6OlJlc3VsdCB7CiAgICAgICAgbWF0Y2ggc2VsZiB7CiAgICAgICAgICAgIFNoYXBlOjpDaXJjbGUgeyByYWRpdXMgfSA9PiB3cml0ZSEoZiwgIkNpcmNsZShyPXt9KSIsIHJhZGl1cyksCiAgICAgICAgICAgIFNoYXBlOjpSZWN0YW5nbGUgeyB3aWR0aCwgaGVpZ2h0IH0gPT4gd3JpdGUhKGYsICJSZWN0KHc9e30sIGg9e30pIiwgd2lkdGgsIGhlaWdodCksCiAgICAgICAgICAgIFNoYXBlOjpUcmlhbmdsZSB7IGJhc2UsIGhlaWdodCB9ID0+IHdyaXRlIShmLCAiVHJpKGI9e30sIGg9e30pIiwgYmFzZSwgaGVpZ2h0KSwKICAgICAgICB9CiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgcCA9IFBlcnNvbjo6bmV3KCLlvKDkuIkiLCAzMCk7CiAgICBwLmdyZWV0KCk7CiAgICBwcmludGxuISgie30iLCBwLmRlc2NyaWJlKCkpOwoKICAgIGxldCBzaGFwZXMgPSB2ZWMhWwogICAgICAgIFNoYXBlOjpDaXJjbGUgeyByYWRpdXM6IDUuMCB9LAogICAgICAgIFNoYXBlOjpSZWN0YW5nbGUgeyB3aWR0aDogNC4wLCBoZWlnaHQ6IDYuMCB9LAogICAgICAgIFNoYXBlOjpUcmlhbmdsZSB7IGJhc2U6IDMuMCwgaGVpZ2h0OiA4LjAgfSwKICAgIF07CgogICAgZm9yIHMgaW4gJnNoYXBlcyB7CiAgICAgICAgcHJpbnRsbiEoInt9IOeahOmdouenryA9IHs6LjJ9Iiwgcywgcy5hcmVhKCkpOwogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::fmt;
 
 // struct 替代"类"——封装数据
@@ -474,6 +515,8 @@ if is_18_id_card(id_card_no) {
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHV1aWQ6OntVdWlkLCBWZXJzaW9uLCBWYXJpYW50fTsKCmZuIG1haW4oKSB7CiAgICAvLyDnlJ/miJAgdjQgVVVJRO+8iOmaj+acuu+8iQogICAgbGV0IHV1aWRfdjQgPSBVdWlkOjpuZXdfdjQoKTsKICAgIHByaW50bG4hKCJVVUlEIHY0OiB7fSIsIHV1aWRfdjQpOwogICAgcHJpbnRsbiEoIueJiOacrDogezo/fSIsIHV1aWRfdjQuZ2V0X3ZlcnNpb24oKSk7IC8vIFNvbWUoVmVyc2lvbjo6UmFuZG9tKQogICAgcHJpbnRsbiEoIuWPmOS9kzogezo/fSIsIHV1aWRfdjQuZ2V0X3ZhcmlhbnQoKSk7IC8vIFNvbWUoVmFyaWFudDo6UkZDNDEyMikKCiAgICAvLyDnlJ/miJAgdjEgVVVJRO+8iOWfuuS6juaXtumXtOaIs++8iQogICAgbGV0IHV1aWRfdjEgPSBVdWlkOjpuZXdfdjEoJlsxLCAyLCAzLCA0LCA1LCA2XSk7CiAgICBwcmludGxuISgiVVVJRCB2MToge30iLCB1dWlkX3YxKTsKCiAgICAvLyDku47lrZfnrKbkuLLop6PmnpAgVVVJRAogICAgbGV0IHBhcnNlZCA9IFV1aWQ6OnBhcnNlX3N0cigiNTUwZTg0MDAtZTI5Yi00MWQ0LWE3MTYtNDQ2NjU1NDQwMDAwIik7CiAgICBtYXRjaCBwYXJzZWQgewogICAgICAgIE9rKHUpID0+IHByaW50bG4hKCLop6PmnpDmiJDlip86IHt9LCDniYjmnKw6IHs6P30iLCB1LCB1LmdldF92ZXJzaW9uKCkpLAogICAgICAgIEVycihlKSA9PiBwcmludGxuISgi6Kej5p6Q5aSx6LSlOiB7fSIsIGUpLAogICAgfQoKICAgIC8vIOeUn+aIkCB2NSBVVUlE77yI5Z+65LqO5ZG95ZCN56m66Ze05ZKM5ZCN56ew55qE56Gu5a6a5oCnVVVJRO+8iQogICAgbGV0IG5hbWVzcGFjZSA9IFV1aWQ6Ok5BTUVTUEFDRV9ETlM7CiAgICBsZXQgdXVpZF92NSA9IFV1aWQ6Om5ld192NShuYW1lc3BhY2UsIGIiZXhhbXBsZS5jb20iKTsKICAgIHByaW50bG4hKCJVVUlEIHY1IChleGFtcGxlLmNvbSk6IHt9IiwgdXVpZF92NSk7CiAgICAvLyDnm7jlkIzovpPlhaXlp4vnu4jkuqfnlJ/nm7jlkIznu5PmnpwKICAgIGxldCB1dWlkX3Y1X2FnYWluID0gVXVpZDo6bmV3X3Y1KG5hbWVzcGFjZSwgYiJleGFtcGxlLmNvbSIpOwogICAgYXNzZXJ0X2VxISh1dWlkX3Y1LCB1dWlkX3Y1X2FnYWluKTsKICAgIHByaW50bG4hKCLnoa7lrprmgKfpqozor4E6IHY1IFVVSUQg55u45ZCM6L6T5YWl5Lqn55Sf55u45ZCM57uT5p6cIOKckyIpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use uuid::{Uuid, Version, Variant};
 
 fn main() {
@@ -529,6 +572,8 @@ $$</p>
 <p>$$
 2^{41} - 1 = 2199023255551 \text{ 毫秒} \approx 69.73 \text{ 年}
 $$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6c3luYzo6YXRvbWljOjp7QXRvbWljVTE2LCBPcmRlcmluZ307CnVzZSBzdGQ6OnRpbWU6OntTeXN0ZW1UaW1lLCBVTklYX0VQT0NIfTsKCi8vLyDpm6roirHnrpfms5VJROeUn+aIkOWZqApzdHJ1Y3QgU25vd2ZsYWtlIHsKICAgIG1hY2hpbmVfaWQ6IHUxNiwgICAgICAgICAgLy8g5py65ZmoSUQgKDAgfiAxMDIzKQogICAgc2VxdWVuY2U6IEF0b21pY1UxNiwgICAgICAvLyDluo/liJflj7cgKDAgfiA0MDk1KQogICAgbGFzdF90aW1lc3RhbXA6IEF0b21pY1U2NCwgLy8g5LiK5qyh55Sf5oiQSUTnmoTml7bpl7TmiLMKICAgIGVwb2NoOiB1NjQsICAgICAgICAgICAgICAgLy8g6LW35aeL5pe26Ze05oiz77yI5q+r56eS77yJCn0KCmltcGwgU25vd2ZsYWtlIHsKICAgIGZuIG5ldyhtYWNoaW5lX2lkOiB1MTYpIC0+IFNlbGYgewogICAgICAgIC8vIOiHquWumuS5iee6quWFg++8mjIwMjQtMDEtMDEgMDA6MDA6MDAgVVRDCiAgICAgICAgbGV0IGVwb2NoID0gU3lzdGVtVGltZTo6bm93KCkKICAgICAgICAgICAgLmR1cmF0aW9uX3NpbmNlKFVOSVhfRVBPQ0gpCiAgICAgICAgICAgIC51bndyYXAoKQogICAgICAgICAgICAuYXNfbWlsbGlzKCkgYXMgdTY0OwoKICAgICAgICBTbm93Zmxha2UgewogICAgICAgICAgICBtYWNoaW5lX2lkOiBtYWNoaW5lX2lkICYgMHgzRkYsIC8vIOehruS/neS4jei2hei/hzEw5L2NCiAgICAgICAgICAgIHNlcXVlbmNlOiBBdG9taWNVMTY6Om5ldygwKSwKICAgICAgICAgICAgbGFzdF90aW1lc3RhbXA6IEF0b21pY1U2NDo6bmV3KDApLAogICAgICAgICAgICBlcG9jaCwKICAgICAgICB9CiAgICB9CgogICAgZm4gbmV4dF9pZCgmc2VsZikgLT4gaTY0IHsKICAgICAgICBsZXQgY3VycmVudF90aW1lc3RhbXAgPSBTeXN0ZW1UaW1lOjpub3coKQogICAgICAgICAgICAuZHVyYXRpb25fc2luY2UoVU5JWF9FUE9DSCkKICAgICAgICAgICAgLnVud3JhcCgpCiAgICAgICAgICAgIC5hc19taWxsaXMoKSBhcyB1NjQ7CgogICAgICAgIGxldCBsYXN0ID0gc2VsZi5sYXN0X3RpbWVzdGFtcC5sb2FkKE9yZGVyaW5nOjpTZXFDc3QpOwoKICAgICAgICBpZiBjdXJyZW50X3RpbWVzdGFtcCA9PSBsYXN0IHsKICAgICAgICAgICAgLy8g5ZCM5LiA5q+r56eS5YaF77yM6YCS5aKe5bqP5YiX5Y+3CiAgICAgICAgICAgIGxldCBzZXEgPSBzZWxmLnNlcXVlbmNlLmZldGNoX2FkZCgxLCBPcmRlcmluZzo6U2VxQ3N0KTsKICAgICAgICAgICAgaWYgc2VxID49IDQwOTUgewogICAgICAgICAgICAgICAgLy8g5bqP5YiX5Y+35rqi5Ye677yM562J5b6F5LiL5LiA5q+r56eSCiAgICAgICAgICAgICAgICBwYW5pYyEoIlNlcXVlbmNlIG92ZXJmbG93OiB0b28gbWFueSBJRHMgaW4gb25lIG1pbGxpc2Vjb25kIik7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgc2VsZi5tYWtlX2lkKGxhc3QsIHNlcSkKICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAvLyDmlrDnmoTmr6vnp5LvvIzph43nva7luo/liJflj7cKICAgICAgICAgICAgc2VsZi5zZXF1ZW5jZS5zdG9yZSgwLCBPcmRlcmluZzo6U2VxQ3N0KTsKICAgICAgICAgICAgc2VsZi5sYXN0X3RpbWVzdGFtcC5zdG9yZShjdXJyZW50X3RpbWVzdGFtcCwgT3JkZXJpbmc6OlNlcUNzdCk7CiAgICAgICAgICAgIHNlbGYubWFrZV9pZChjdXJyZW50X3RpbWVzdGFtcCwgMCkKICAgICAgICB9CiAgICB9CgogICAgZm4gbWFrZV9pZCgmc2VsZiwgdGltZXN0YW1wOiB1NjQsIHNlcXVlbmNlOiB1MTYpIC0+IGk2NCB7CiAgICAgICAgLy8g5pe26Ze05oiz5bem56e7MjLkvY3vvIgxMOS9jeacuuWZqElEICsgMTLkvY3luo/liJflj7fvvIkKICAgICAgICBsZXQgdHNfcGFydCA9ICh0aW1lc3RhbXAgLSBzZWxmLmVwb2NoKSA8PCAyMjsKICAgICAgICAvLyDmnLrlmahJROW3puenuzEy5L2N77yIMTLkvY3luo/liJflj7fvvIkKICAgICAgICBsZXQgbWFjaGluZV9wYXJ0ID0gKHNlbGYubWFjaGluZV9pZCBhcyBpNjQpIDw8IDEyOwogICAgICAgIC8vIOW6j+WIl+WPtwogICAgICAgIGxldCBzZXFfcGFydCA9IHNlcXVlbmNlIGFzIGk2NDsKCiAgICAgICAgdHNfcGFydCB8IG1hY2hpbmVfcGFydCB8IHNlcV9wYXJ0CiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgc25vd2ZsYWtlID0gU25vd2ZsYWtlOjpuZXcoMSk7IC8vIOacuuWZqElE5Li6MQoKICAgIC8vIOi/nue7reeUn+aIkDEw5LiqSUQKICAgIGZvciBfIGluIDAuLjEwIHsKICAgICAgICBsZXQgaWQgPSBzbm93Zmxha2UubmV4dF9pZCgpOwogICAgICAgIHByaW50bG4hKCJTbm93Zmxha2UgSUQ6IHt9IiwgaWQpOwogICAgfQoKICAgIC8vIOino+aekElECiAgICBsZXQgaWQgPSBzbm93Zmxha2UubmV4dF9pZCgpOwogICAgbGV0IHRpbWVzdGFtcF9wYXJ0ID0gKGlkID4+IDIyKSArIHNub3dmbGFrZS5lcG9jaCBhcyBpNjQ7CiAgICBsZXQgbWFjaGluZV9wYXJ0ID0gKChpZCA+PiAxMikgJiAweDNGRikgYXMgdTE2OwogICAgbGV0IHNlcXVlbmNlX3BhcnQgPSAoaWQgJiAweEZGRikgYXMgdTE2OwogICAgcHJpbnRsbiEoIlxu6Kej5p6QIElEID0ge30iLCBpZCk7CiAgICBwcmludGxuISgiICDml7bpl7TmiLPpg6jliIY6IHt9IiwgdGltZXN0YW1wX3BhcnQpOwogICAgcHJpbnRsbiEoIiAg5py65ZmoSUQ6IHt9IiwgbWFjaGluZV9wYXJ0KTsKICAgIHByaW50bG4hKCIgIOW6j+WIl+WPtzoge30iLCBzZXF1ZW5jZV9wYXJ0KTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::sync::atomic::{AtomicU16, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -614,6 +659,8 @@ fn main() {
 <h3 id="1045-nanoid"><a class="header" href="#1045-nanoid">10.4.5 nanoid</a></h3>
 <p><a href="https://github.com/ai/nanoid">nanoid</a> 是一种轻量级、安全、URL友好的唯一ID生成器。与UUID相比，nanoid生成的ID更短（默认21个字符），且使用URL安全的字符集。</p>
 <p>nanoid 的核心思想是：使用密码学安全的随机数生成器，从一个自定义字符集中随机选取字符，组成指定长度的字符串。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIG5hbm9pZDo6bmFub2lkOwoKZm4gbWFpbigpIHsKICAgIC8vIOeUn+aIkOm7mOiupDIx5a2X56ym55qEIG5hbm9pZAogICAgbGV0IGlkMSA9IG5hbm9pZCEoKTsKICAgIHByaW50bG4hKCJuYW5vaWQgKOm7mOiupDIx5a2X56ymKToge30iLCBpZDEpOwoKICAgIC8vIOeUn+aIkOaMh+WumumVv+W6pueahCBuYW5vaWQKICAgIGxldCBpZDIgPSBuYW5vaWQhKDEwKTsKICAgIHByaW50bG4hKCJuYW5vaWQgKDEw5a2X56ymKToge30iLCBpZDIpOwoKICAgIC8vIOS9v+eUqOiHquWumuS5ieWtl+espumbhgogICAgbGV0IGlkMyA9IG5hbm9pZCEoMTYsICZbJ2EnLCAnYicsICdjJywgJ2QnLCAnZScsICdmJywgJzEnLCAnMicsICczJ10pOwogICAgcHJpbnRsbiEoIm5hbm9pZCAo6Ieq5a6a5LmJ5a2X56ym6ZuGKToge30iLCBpZDMpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use nanoid::nanoid;
 
 fn main() {
@@ -768,7 +815,14 @@ fn any_sheets_xlsx() {
 <span class="boring">}</span></code></pre>
 <h4 id="csv-读写"><a class="header" href="#csv-读写">CSV 读写</a></h4>
 <p>CSV（Comma-Separated Values）是最简单的结构化文本格式，用逗号分隔各列数据。</p>
-<pre class="playground"><code class="language-rust edition2024">use csv::{Reader, Writer, ReaderBuilder, WriterBuilder};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KY3N2ID0gIjEuNC4wIgpzZXJkZSA9IHsgdmVyc2lvbiA9ICIxIiwgZmVhdHVyZXMgPSBbImRlcml2ZSJdIH0KKi8KdXNlIGNzdjo6e1JlYWRlciwgV3JpdGVyLCBSZWFkZXJCdWlsZGVyLCBXcml0ZXJCdWlsZGVyfTsKdXNlIHNlcmRlOjp7RGVzZXJpYWxpemUsIFNlcmlhbGl6ZX07CgojW2Rlcml2ZShEZWJ1ZywgU2VyaWFsaXplLCBEZXNlcmlhbGl6ZSldCnN0cnVjdCBSb2NrZXRSZWNvcmQgewogICAgI1tzZXJkZShyZW5hbWUgPSAi5Y+R5bCE5bqP5Y+3IildCiAgICBzZXJpYWxfbm86IHUzMiwKICAgICNbc2VyZGUocmVuYW1lID0gIuWPkeWwhOaXpeacnyIpXQogICAgbGF1bmNoX2RhdGU6IFN0cmluZywKICAgICNbc2VyZGUocmVuYW1lID0gIuWPkeWwhOWcsOeCuSIpXQogICAgbGF1bmNoX3NpdGU6IFN0cmluZywKICAgICNbc2VyZGUocmVuYW1lID0gIui/kOi9veeBq+eurSIpXQogICAgcm9ja2V0OiBTdHJpbmcsCiAgICAjW3NlcmRlKHJlbmFtZSA9ICLljavmmJ8v6Iiq5aSp5ZmoIildCiAgICBzYXRlbGxpdGU6IFN0cmluZywKfQoKLy8vIOWGmeWFpUNTVuaWh+S7tgpmbiB3cml0ZV9jc3YoKSAtPiBSZXN1bHQ8KCksIEJveDxkeW4gc3RkOjplcnJvcjo6RXJyb3I+PiB7CiAgICBsZXQgbXV0IHd0ciA9IFdyaXRlckJ1aWxkZXI6Om5ldygpCiAgICAgICAgLmhhc19oZWFkZXJzKHRydWUpCiAgICAgICAgLmZyb21fcGF0aCgicm9ja2V0X3JlY29yZHMuY3N2Iik/OwoKICAgIGxldCByZWNvcmRzID0gdmVjIVsKICAgICAgICBSb2NrZXRSZWNvcmQgewogICAgICAgICAgICBzZXJpYWxfbm86IDEsCiAgICAgICAgICAgIGxhdW5jaF9kYXRlOiAiMjAyNC0wMS0xNyIudG9fc3RyaW5nKCksCiAgICAgICAgICAgIGxhdW5jaF9zaXRlOiAi6YWS5rOJ5Y2r5pif5Y+R5bCE5Lit5b+DIi50b19zdHJpbmcoKSwKICAgICAgICAgICAgcm9ja2V0OiAi6ZW/5b6B5LqM5Y+3RiIudG9fc3RyaW5nKCksCiAgICAgICAgICAgIHNhdGVsbGl0ZTogIuWkqeiIn+S4g+WPtyIudG9fc3RyaW5nKCksCiAgICAgICAgfSwKICAgICAgICBSb2NrZXRSZWNvcmQgewogICAgICAgICAgICBzZXJpYWxfbm86IDIsCiAgICAgICAgICAgIGxhdW5jaF9kYXRlOiAiMjAyNC0wMy0yMSIudG9fc3RyaW5nKCksCiAgICAgICAgICAgIGxhdW5jaF9zaXRlOiAi5paH5piM6Iiq5aSp5Y+R5bCE5Zy6Ii50b19zdHJpbmcoKSwKICAgICAgICAgICAgcm9ja2V0OiAi6ZW/5b6B5YWr5Y+3Ii50b19zdHJpbmcoKSwKICAgICAgICAgICAgc2F0ZWxsaXRlOiAi6bmK5qGl5LqM5Y+3Ii50b19zdHJpbmcoKSwKICAgICAgICB9LAogICAgXTsKCiAgICBmb3IgcmVjb3JkIGluICZyZWNvcmRzIHsKICAgICAgICB3dHIuc2VyaWFsaXplKHJlY29yZCk/OwogICAgfQogICAgd3RyLmZsdXNoKCk/OwogICAgcHJpbnRsbiEoIkNTViDmlofku7blhpnlhaXmiJDlip/vvIEiKTsKICAgIE9rKCgpKQp9CgovLy8g6K+75Y+WQ1NW5paH5Lu2CmZuIHJlYWRfY3N2KCkgLT4gUmVzdWx0PCgpLCBCb3g8ZHluIHN0ZDo6ZXJyb3I6OkVycm9yPj4gewogICAgbGV0IG11dCByZHIgPSBSZWFkZXJCdWlsZGVyOjpuZXcoKQogICAgICAgIC5mbGV4aWJsZSh0cnVlKQogICAgICAgIC5mcm9tX3BhdGgoInJvY2tldF9yZWNvcmRzLmNzdiIpPzsKCiAgICBmb3IgcmVzdWx0IGluIHJkci5kZXNlcmlhbGl6ZSgpIHsKICAgICAgICBsZXQgcmVjb3JkOiBSb2NrZXRSZWNvcmQgPSByZXN1bHQ/OwogICAgICAgIHByaW50bG4hKCJ7Oj99IiwgcmVjb3JkKTsKICAgIH0KICAgIE9rKCgpKQp9CgpmbiBtYWluKCkgLT4gUmVzdWx0PCgpLCBCb3g8ZHluIHN0ZDo6ZXJyb3I6OkVycm9yPj4gewogICAgd3JpdGVfY3N2KCk/OwogICAgcHJpbnRsbiEoIi0tLSDor7vlj5ZDU1YgLS0tIik7CiAgICByZWFkX2NzdigpPzsKICAgIE9rKCgpKQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+csv = "1.4.0"
+serde = { version = "1", features = ["derive"] }
+*/
+use csv::{Reader, Writer, ReaderBuilder, WriterBuilder};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -835,14 +889,16 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
     read_csv()?;
     Ok(())
 }</code></pre>
-<p><code>Cargo.toml</code> 依赖：</p>
-<pre><code class="language-toml">[dependencies]
-csv = "1.3"
-serde = { version = "1", features = ["derive"] }
-</code></pre>
 <h4 id="json-序列化与反序列化"><a class="header" href="#json-序列化与反序列化">JSON 序列化与反序列化</a></h4>
 <p>JSON（JavaScript Object Notation）是当今最流行的数据交换格式。在 Rust 生态中，<code>serde_json</code> 是处理 JSON 的事实标准。</p>
-<pre class="playground"><code class="language-rust edition2024">use serde::{Deserialize, Serialize};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2VyZGUgPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJkZXJpdmUiXSB9CnNlcmRlX2pzb24gPSAiMSIKKi8KdXNlIHNlcmRlOjp7RGVzZXJpYWxpemUsIFNlcmlhbGl6ZX07CnVzZSBzZXJkZV9qc29uOjp7anNvbiwgVmFsdWUsIGZyb21fc3RyLCB0b19zdHJpbmdfcHJldHR5fTsKCiNbZGVyaXZlKERlYnVnLCBTZXJpYWxpemUsIERlc2VyaWFsaXplKV0Kc3RydWN0IFByb3ZpbmNlIHsKICAgIGNvZGU6IFN0cmluZywKICAgIG5hbWU6IFN0cmluZywKICAgIGxldmVsOiB1OCwKICAgICNbc2VyZGUoc2tpcF9zZXJpYWxpemluZ19pZiA9ICJPcHRpb246OmlzX25vbmUiKV0KICAgIHBhcmVudF9jb2RlOiBPcHRpb248U3RyaW5nPiwKfQoKLy8vIOW6j+WIl+WMlu+8mlJ1c3Qg57uT5p6E5L2TIOKGkiBKU09OIOWtl+espuS4sgpmbiBzZXJpYWxpemVfZXhhbXBsZSgpIC0+IFJlc3VsdDwoKSwgQm94PGR5biBzdGQ6OmVycm9yOjpFcnJvcj4+IHsKICAgIGxldCBwcm92aW5jZXMgPSB2ZWMhWwogICAgICAgIFByb3ZpbmNlIHsKICAgICAgICAgICAgY29kZTogIjExMDAwMCIudG9fc3RyaW5nKCksCiAgICAgICAgICAgIG5hbWU6ICLljJfkuqzluIIiLnRvX3N0cmluZygpLAogICAgICAgICAgICBsZXZlbDogMSwKICAgICAgICAgICAgcGFyZW50X2NvZGU6IE5vbmUsCiAgICAgICAgfSwKICAgICAgICBQcm92aW5jZSB7CiAgICAgICAgICAgIGNvZGU6ICIxMTAxMDEiLnRvX3N0cmluZygpLAogICAgICAgICAgICBuYW1lOiAi5Lic5Z+O5Yy6Ii50b19zdHJpbmcoKSwKICAgICAgICAgICAgbGV2ZWw6IDIsCiAgICAgICAgICAgIHBhcmVudF9jb2RlOiBTb21lKCIxMTAwMDAiLnRvX3N0cmluZygpKSwKICAgICAgICB9LAogICAgXTsKCiAgICAvLyDluo/liJfljJbkuLrntKflh5FKU09OCiAgICBsZXQganNvbl9zdHIgPSBzZXJkZV9qc29uOjp0b19zdHJpbmcoJnByb3ZpbmNlcyk/OwogICAgcHJpbnRsbiEoIue0p+WHkUpTT046IHt9IiwganNvbl9zdHIpOwoKICAgIC8vIOW6j+WIl+WMluS4uue+juWMlkpTT04KICAgIGxldCBqc29uX3ByZXR0eSA9IHNlcmRlX2pzb246OnRvX3N0cmluZ19wcmV0dHkoJnByb3ZpbmNlcyk/OwogICAgcHJpbnRsbiEoIue+juWMlkpTT046XG57fSIsIGpzb25fcHJldHR5KTsKCiAgICAvLyDliqjmgIHmnoTlu7pKU09OCiAgICBsZXQgZGF0YSA9IGpzb24hKHsKICAgICAgICAidHlwZSI6ICJGZWF0dXJlQ29sbGVjdGlvbiIsCiAgICAgICAgImZlYXR1cmVzIjogWwogICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAidHlwZSI6ICJGZWF0dXJlIiwKICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogeyAibmFtZSI6ICLljJfkuqzluIIiLCAiY29kZSI6ICIxMTAwMDAiIH0sCiAgICAgICAgICAgICAgICAiZ2VvbWV0cnkiOiB7ICJ0eXBlIjogIlBvaW50IiwgImNvb3JkaW5hdGVzIjogWzExNi40LCAzOS45XSB9CiAgICAgICAgICAgIH0KICAgICAgICBdCiAgICB9KTsKICAgIHByaW50bG4hKCLliqjmgIFKU09OOiB7fSIsIGRhdGEpOwogICAgT2soKCkpCn0KCi8vLyDlj43luo/liJfljJbvvJpKU09OIOWtl+espuS4siDihpIgUnVzdCDnu5PmnoTkvZMKZm4gZGVzZXJpYWxpemVfZXhhbXBsZSgpIC0+IFJlc3VsdDwoKSwgQm94PGR5biBzdGQ6OmVycm9yOjpFcnJvcj4+IHsKICAgIGxldCBqc29uX2RhdGEgPSByIyIKICAgIFsKICAgICAgICB7ImNvZGUiOiAiNDQwMDAwIiwgIm5hbWUiOiAi5bm/5Lic55yBIiwgImxldmVsIjogMX0sCiAgICAgICAgeyJjb2RlIjogIjQ0MDEwMCIsICJuYW1lIjogIuW5v+W3nuW4giIsICJsZXZlbCI6IDIsICJwYXJlbnRfY29kZSI6ICI0NDAwMDAifQogICAgXQogICAgIiM7CgogICAgbGV0IHByb3ZpbmNlczogVmVjPFByb3ZpbmNlPiA9IGZyb21fc3RyKGpzb25fZGF0YSk/OwogICAgZm9yIHAgaW4gJnByb3ZpbmNlcyB7CiAgICAgICAgcHJpbnRsbiEoInt9IC0ge30gKGxldmVsOiB7fSkiLCBwLmNvZGUsIHAubmFtZSwgcC5sZXZlbCk7CiAgICB9CgogICAgLy8g5Y+N5bqP5YiX5YyW5Li65Yqo5oCBIFZhbHVlCiAgICBsZXQgdjogVmFsdWUgPSBmcm9tX3N0cihqc29uX2RhdGEpPzsKICAgIGlmIGxldCBTb21lKGFycikgPSB2LmFzX2FycmF5KCkgewogICAgICAgIGZvciBpdGVtIGluIGFyciB7CiAgICAgICAgICAgIHByaW50bG4hKCLlkI3np7A6IHt9IiwgaXRlbVsibmFtZSJdKTsKICAgICAgICB9CiAgICB9CiAgICBPaygoKSkKfQoKZm4gbWFpbigpIC0+IFJlc3VsdDwoKSwgQm94PGR5biBzdGQ6OmVycm9yOjpFcnJvcj4+IHsKICAgIHByaW50bG4hKCI9PT0g5bqP5YiX5YyWID09PSIpOwogICAgc2VyaWFsaXplX2V4YW1wbGUoKT87CiAgICBwcmludGxuISgiXG49PT0g5Y+N5bqP5YiX5YyWID09PSIpOwogICAgZGVzZXJpYWxpemVfZXhhbXBsZSgpPzsKICAgIE9rKCgpKQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+*/
+use serde::{Deserialize, Serialize};
 use serde_json::{json, Value, from_str, to_string_pretty};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -925,11 +981,6 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
     deserialize_example()?;
     Ok(())
 }</code></pre>
-<p><code>Cargo.toml</code> 依赖：</p>
-<pre><code class="language-toml">[dependencies]
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-</code></pre>
 <h3 id="pdf--ofd-格式简介"><a class="header" href="#pdf--ofd-格式简介">PDF / OFD 格式简介</a></h3>
 <ul>
 <li><a href="https://baike.baidu.com/item/%E5%8F%AF%E6%90%BA%E5%B8%A6%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/54242682">PDF (Portable Document Format)</a> 可携带文件格式，由 Adobe 公司于1992年发布，已成为全球通用的文档交换标准。</li>

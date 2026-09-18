@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -322,6 +359,8 @@
 ffmpeg-next = "6.1"
 </code></pre>
 <h3 id="942-使用-ffmpeg-next-读取视频信息"><a class="header" href="#942-使用-ffmpeg-next-读取视频信息">9.4.2 使用 ffmpeg-next 读取视频信息</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIGZmbXBlZ19uZXh0IGFzIGZmbXBlZzsKCmZuIG1haW4oKSB7CiAgICAvLyDliJ3lp4vljJYgRkZtcGVnCiAgICBmZm1wZWc6OmluaXQoKS51bndyYXAoKTsKCiAgICAvLyDmiZPlvIDop4bpopHmlofku7YKICAgIGxldCBtdXQgaWN0eCA9IGZmbXBlZzo6Zm9ybWF0OjppbnB1dCgmInZpZGVvLm1wNCIpLnVud3JhcCgpOwoKICAgIC8vIOmBjeWOhuaJgOaciea1ge+8jOaJvuWIsOinhumikea1gQogICAgZm9yIChzdHJlYW1faW5kZXgsIHN0cmVhbSkgaW4gaWN0eC5zdHJlYW1zKCkuZW51bWVyYXRlKCkgewogICAgICAgIGxldCBjb2RlYyA9IHN0cmVhbS5jb2RlYygpOwogICAgICAgIG1hdGNoIGNvZGVjLm1lZGl1bSgpIHsKICAgICAgICAgICAgZmZtcGVnOjptZWRpYTo6VHlwZTo6VmlkZW8gPT4gewogICAgICAgICAgICAgICAgbGV0IHZpZGVvID0gY29kZWMuZGVjb2RlcigpLnZpZGVvKCkudW53cmFwKCk7CiAgICAgICAgICAgICAgICBwcmludGxuISgi6KeG6aKR5rWBICN7fToiLCBzdHJlYW1faW5kZXgpOwogICAgICAgICAgICAgICAgcHJpbnRsbiEoIiAg57yW56CB5qC85byPOiB7Oj99IiwgdmlkZW8uaWQoKSk7CiAgICAgICAgICAgICAgICBwcmludGxuISgiICDliIbovqjnjoc6IHt9eHt9IiwgdmlkZW8ud2lkdGgoKSwgdmlkZW8uaGVpZ2h0KCkpOwogICAgICAgICAgICAgICAgcHJpbnRsbiEoIiAg5bin546HOiB7fS97fSIsCiAgICAgICAgICAgICAgICAgICAgc3RyZWFtLnJhdGUoKS4wLCBzdHJlYW0ucmF0ZSgpLjEpOwogICAgICAgICAgICAgICAgcHJpbnRsbiEoIiAg5oC75bin5pWwOiB7fSIsIHN0cmVhbS5mcmFtZXMoKSk7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgZmZtcGVnOjptZWRpYTo6VHlwZTo6QXVkaW8gPT4gewogICAgICAgICAgICAgICAgbGV0IGF1ZGlvID0gY29kZWMuZGVjb2RlcigpLmF1ZGlvKCkudW53cmFwKCk7CiAgICAgICAgICAgICAgICBwcmludGxuISgi6Z+z6aKR5rWBICN7fToiLCBzdHJlYW1faW5kZXgpOwogICAgICAgICAgICAgICAgcHJpbnRsbiEoIiAg6YeH5qC3546HOiB7fSIsIGF1ZGlvLnJhdGUoKSk7CiAgICAgICAgICAgICAgICBwcmludGxuISgiICDlo7DpgZPmlbA6IHt9IiwgYXVkaW8uY2hhbm5lbHMoKSk7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgXyA9PiB7fQogICAgICAgIH0KICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use ffmpeg_next as ffmpeg;
 
 fn main() {
@@ -355,6 +394,8 @@ fn main() {
     }
 }</code></pre>
 <h3 id="943-使用-ffmpeg-next-解码视频帧"><a class="header" href="#943-使用-ffmpeg-next-解码视频帧">9.4.3 使用 ffmpeg-next 解码视频帧</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIGZmbXBlZ19uZXh0IGFzIGZmbXBlZzsKdXNlIGZmbXBlZzo6c29mdHdhcmU6OnNjYWxpbmc6Ontjb250ZXh0OjpDb250ZXh0LCBmbGFnOjpGbGFnc307CnVzZSBmZm1wZWc6OnV0aWw6OmZyYW1lOjp2aWRlbzo6VmlkZW87CgpmbiBtYWluKCkgewogICAgZmZtcGVnOjppbml0KCkudW53cmFwKCk7CgogICAgbGV0IG11dCBpY3R4ID0gZmZtcGVnOjpmb3JtYXQ6OmlucHV0KCYidmlkZW8ubXA0IikudW53cmFwKCk7CgogICAgLy8g5om+5Yiw56ys5LiA5Liq6KeG6aKR5rWBCiAgICBsZXQgaW5wdXRfc3RyZWFtID0gaWN0eC5zdHJlYW1zKCkKICAgICAgICAuYmVzdChmZm1wZWc6Om1lZGlhOjpUeXBlOjpWaWRlbykKICAgICAgICAuZXhwZWN0KCLmnKrmib7liLDop4bpopHmtYEiKTsKICAgIGxldCBzdHJlYW1faW5kZXggPSBpbnB1dF9zdHJlYW0uaW5kZXgoKTsKCiAgICAvLyDliJvlu7rop6PnoIHlmagKICAgIGxldCBjb250ZXh0X2RlY29kZXIgPSBmZm1wZWc6OmNvZGVjOjpjb250ZXh0OjpDb250ZXh0Ojpmcm9tX3BhcmFtZXRlcnMoaW5wdXRfc3RyZWFtLnBhcmFtZXRlcnMoKSkudW53cmFwKCk7CiAgICBsZXQgbXV0IGRlY29kZXIgPSBjb250ZXh0X2RlY29kZXIuZGVjb2RlcigpLnZpZGVvKCkudW53cmFwKCk7CgogICAgLy8g5Yib5bu657yp5pS+5Zmo77yM5bCG5bin6L2s5o2i5Li6IFJHQjI0IOagvOW8jwogICAgbGV0IG11dCBzY2FsZXIgPSBDb250ZXh0OjpnZXQoCiAgICAgICAgZGVjb2Rlci5mb3JtYXQoKSwKICAgICAgICBkZWNvZGVyLndpZHRoKCksCiAgICAgICAgZGVjb2Rlci5oZWlnaHQoKSwKICAgICAgICBmZm1wZWc6OmZvcm1hdDo6UGl4ZWw6OlJHQjI0LAogICAgICAgIGRlY29kZXIud2lkdGgoKSwKICAgICAgICBkZWNvZGVyLmhlaWdodCgpLAogICAgICAgIEZsYWdzOjpCSUxJTkVBUiwKICAgICkudW53cmFwKCk7CgogICAgLy8g6K+75Y+W5pWw5o2u5YyF5bm26Kej56CBCiAgICBmb3IgKHN0cmVhbSwgcGFja2V0KSBpbiBpY3R4LnBhY2tldHMoKSB7CiAgICAgICAgaWYgc3RyZWFtLmluZGV4KCkgPT0gc3RyZWFtX2luZGV4IHsKICAgICAgICAgICAgZGVjb2Rlci5zZW5kX3BhY2tldCgmcGFja2V0KS51bndyYXAoKTsKCiAgICAgICAgICAgIGxldCBtdXQgZGVjb2RlZCA9IFZpZGVvOjplbXB0eSgpOwogICAgICAgICAgICB3aGlsZSBkZWNvZGVyLnJlY2VpdmVfZnJhbWUoJm11dCBkZWNvZGVkKS5pc19vaygpIHsKICAgICAgICAgICAgICAgIGxldCBtdXQgcmdiX2ZyYW1lID0gVmlkZW86OmVtcHR5KCk7CiAgICAgICAgICAgICAgICBzY2FsZXIucnVuKCZkZWNvZGVkLCAmbXV0IHJnYl9mcmFtZSkudW53cmFwKCk7CgogICAgICAgICAgICAgICAgcHJpbnRsbiEoIuino+eggeS4gOW4pzoge314e30iLCByZ2JfZnJhbWUud2lkdGgoKSwgcmdiX2ZyYW1lLmhlaWdodCgpKTsKCiAgICAgICAgICAgICAgICAvLyDmraTlpITlj6/ku6Xlr7kgcmdiX2ZyYW1lLmRhdGEoMCkg5Lit55qEIFJHQiDlg4/ntKDmlbDmja7ov5vooYzlpITnkIYKICAgICAgICAgICAgICAgIC8vIOS+i+WmguS/neWtmOS4uuWbvueJh+OAgei/m+ihjOWbvuWDj+ivhuWIq+etiQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQoKICAgIC8vIOWIt+aWsOino+eggeWZqAogICAgZGVjb2Rlci5zZW5kX2VvZigpLnVud3JhcCgpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use ffmpeg_next as ffmpeg;
 use ffmpeg::software::scaling::{context::Context, flag::Flags};
 use ffmpeg::util::frame::video::Video;
@@ -407,6 +448,8 @@ fn main() {
     decoder.send_eof().unwrap();
 }</code></pre>
 <h3 id="944-使用-ffmpeg-next-进行视频转码"><a class="header" href="#944-使用-ffmpeg-next-进行视频转码">9.4.4 使用 ffmpeg-next 进行视频转码</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIGZmbXBlZ19uZXh0IGFzIGZmbXBlZzsKCmZuIG1haW4oKSB7CiAgICBmZm1wZWc6OmluaXQoKS51bndyYXAoKTsKCiAgICAvLyDmiZPlvIDovpPlhaXmlofku7YKICAgIGxldCBtdXQgaWN0eCA9IGZmbXBlZzo6Zm9ybWF0OjppbnB1dCgmImlucHV0Lm1wNCIpLnVud3JhcCgpOwoKICAgIC8vIOWIm+W7uui+k+WHuuS4iuS4i+aWhwogICAgbGV0IG11dCBvY3R4ID0gZmZtcGVnOjpmb3JtYXQ6Om91dHB1dCgmIm91dHB1dC5ta3YiKS51bndyYXAoKTsKCiAgICAvLyDpgY3ljobovpPlhaXmtYHvvIzlnKjovpPlh7rkuK3mt7vliqDlr7nlupTmtYEKICAgIGZvciAoc3RyZWFtX2luZGV4LCBpc3RyZWFtKSBpbiBpY3R4LnN0cmVhbXMoKS5lbnVtZXJhdGUoKSB7CiAgICAgICAgbGV0IGNvZGVjX2lkID0gaXN0cmVhbS5jb2RlYygpLmlkKCk7CiAgICAgICAgbGV0IG11dCBvc3RyZWFtID0gb2N0eC5hZGRfc3RyZWFtKGNvZGVjX2lkKS51bndyYXAoKTsKICAgICAgICBvc3RyZWFtLnNldF9wYXJhbWV0ZXJzKGlzdHJlYW0ucGFyYW1ldGVycygpKS51bndyYXAoKTsKICAgIH0KCiAgICBvY3R4LndyaXRlX2hlYWRlcigpLnVud3JhcCgpOwoKICAgIC8vIOWkjeWItuaVsOaNruWMhQogICAgZm9yIChzdHJlYW0sIG11dCBwYWNrZXQpIGluIGljdHgucGFja2V0cygpIHsKICAgICAgICBsZXQgaXN0cmVhbV9pbmRleCA9IHN0cmVhbS5pbmRleCgpOwogICAgICAgIGxldCBvc3RyZWFtID0gb2N0eC5zdHJlYW0oaXN0cmVhbV9pbmRleCkudW53cmFwKCk7CgogICAgICAgIHBhY2tldC5zZXRfc3RyZWFtKG9zdHJlYW0uaW5kZXgoKSk7CiAgICAgICAgcGFja2V0LnJlc2NhbGVfdHMoc3RyZWFtLnRpbWVfYmFzZSgpLCBvc3RyZWFtLnRpbWVfYmFzZSgpKTsKICAgICAgICBwYWNrZXQud3JpdGVfaW50ZXJsZWF2ZWQoJm11dCBvY3R4KS51bndyYXAoKTsKICAgIH0KCiAgICBvY3R4LndyaXRlX3RyYWlsZXIoKS51bndyYXAoKTsKICAgIHByaW50bG4hKCLovaznoIHlrozmiJA6IGlucHV0Lm1wNCAtPiBvdXRwdXQubWt2Iik7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use ffmpeg_next as ffmpeg;
 
 fn main() {
@@ -442,6 +485,8 @@ fn main() {
 }</code></pre>
 <h3 id="945-rav1erust-原生的-av1-编码器"><a class="header" href="#945-rav1erust-原生的-av1-编码器">9.4.5 rav1e：Rust 原生的 AV1 编码器</a></h3>
 <p><a href="https://github.com/xiph/rav1e">rav1e</a> 是由 Xiph.Org 基金会开发的 AV1 编码器，使用 Rust 和 Assembly 编写，是 Rust 视频编码领域的重要项目。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8gcmF2MWUg5Z+65pys5L2/55So56S65L6L77yIQVBJIOWPr+iDvemaj+eJiOacrOWPmOWMlu+8iQp1c2UgcmF2MWU6OmNvbmZpZzo6Q29uZmlnOwp1c2UgcmF2MWU6OmVuY29kZXI6OkVuY29kZXJTdGF0dXM7CgpmbiBtYWluKCkgewogICAgLy8g5Yib5bu657yW56CB6YWN572uCiAgICBsZXQgbXV0IGNmZyA9IENvbmZpZzo6ZGVmYXVsdCgpOwogICAgY2ZnLmVuYy53aWR0aCA9IDE5MjA7CiAgICBjZmcuZW5jLmhlaWdodCA9IDEwODA7CiAgICBjZmcuZW5jLmJpdF9kZXB0aCA9IDg7CiAgICBjZmcuZW5jLnRpbWVfYmFzZSA9IHJhdjFlOjpkYXRhOjpSYXRpb25hbCB7IG51bTogMSwgZGVuOiAzMCB9OyAvLyAzMCBGUFMKCiAgICAvLyDliJvlu7rnvJbnoIHlmagKICAgIGxldCBtdXQgY3R4ID0gY2ZnLm5ld19jb250ZXh0KCkudW53cmFwKCk7CgogICAgLy8g5Y+R6YCB5bin6L+b6KGM57yW56CBCiAgICAvLyBjdHguc2VuZF9mcmFtZShmcmFtZSkudW53cmFwKCk7CgogICAgLy8g5Yi35paw57yW56CB5ZmoCiAgICBjdHguZmx1c2goKTsKCiAgICAvLyDmjqXmlLbnvJbnoIHlkI7nmoTmlbDmja7ljIUKICAgIGxvb3AgewogICAgICAgIG1hdGNoIGN0eC5yZWNlaXZlX3BhY2tldCgpIHsKICAgICAgICAgICAgT2socGFja2V0KSA9PiB7CiAgICAgICAgICAgICAgICBwcmludGxuISgi5pS25Yiw57yW56CB5YyF77yM5aSn5bCPOiB7fSDlrZfoioIiLCBwYWNrZXQuZGF0YS5sZW4oKSk7CiAgICAgICAgICAgICAgICAvLyDlsIYgcGFja2V0LmRhdGEg5YaZ5YWl5paH5Lu25oiW5Lyg6L6TCiAgICAgICAgICAgIH0KICAgICAgICAgICAgRXJyKEVuY29kZXJTdGF0dXM6OkxpbWl0UmVhY2hlZCkgPT4gYnJlYWssCiAgICAgICAgICAgIEVycihFbmNvZGVyU3RhdHVzOjpFbmNvZGVkKSA9PiBjb250aW51ZSwKICAgICAgICAgICAgRXJyKGUpID0+IHsKICAgICAgICAgICAgICAgIHByaW50bG4hKCLnvJbnoIHplJnor686IHs6P30iLCBlKTsKICAgICAgICAgICAgICAgIGJyZWFrOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// rav1e 基本使用示例（API 可能随版本变化）
 use rav1e::config::Config;
 use rav1e::encoder::EncoderStatus;

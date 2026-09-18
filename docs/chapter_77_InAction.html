@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -219,6 +256,8 @@ corr, p_value = pointbiserialr(x, y)
 print(f"corr: {corr}, p_value: {p_value}")
 </code></pre>
 <h3 id="rust-实现皮尔逊相关系数"><a class="header" href="#rust-实现皮尔逊相关系数">Rust 实现皮尔逊相关系数</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gcGVhcnNvbih4OiAmW2Y2NF0sIHk6ICZbZjY0XSkgLT4gZjY0IHsKICAgIGxldCBuID0geC5sZW4oKSBhcyBmNjQ7CiAgICBsZXQgbWVhbl94ID0geC5pdGVyKCkuc3VtOjo8ZjY0PigpIC8gbjsKICAgIGxldCBtZWFuX3kgPSB5Lml0ZXIoKS5zdW06OjxmNjQ+KCkgLyBuOwoKICAgIGxldCAobXV0IGNvdiwgbXV0IHZhcl94LCBtdXQgdmFyX3kpID0gKDAuMCwgMC4wLCAwLjApOwogICAgZm9yIGkgaW4gMC4ueC5sZW4oKSB7CiAgICAgICAgbGV0IGR4ID0geFtpXSAtIG1lYW5feDsKICAgICAgICBsZXQgZHkgPSB5W2ldIC0gbWVhbl95OwogICAgICAgIGNvdiArPSBkeCAqIGR5OwogICAgICAgIHZhcl94ICs9IGR4ICogZHg7CiAgICAgICAgdmFyX3kgKz0gZHkgKiBkeTsKICAgIH0KICAgIGNvdiAvICh2YXJfeC5zcXJ0KCkgKiB2YXJfeS5zcXJ0KCkpCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgeCA9IFsxLjAsIDIuMCwgMy4wLCA0LjAsIDUuMF07CiAgICBsZXQgeSA9IFsyLjAsIDQuMCwgNi4wLCA4LjAsIDEwLjBdOyAvLyDlrozlhajmraPnm7jlhbMKICAgIHByaW50bG4hKCJQZWFyc29uIHIgPSB7Oi40fSIsIHBlYXJzb24oJngsICZ5KSk7IC8vIDEuMDAwMAp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn pearson(x: &amp;[f64], y: &amp;[f64]) -&gt; f64 {
     let n = x.len() as f64;
     let mean_x = x.iter().sum::&lt;f64&gt;() / n;
@@ -266,6 +305,8 @@ $$</p>
 </ol>
 <h3 id="扩展欧几里得算法"><a class="header" href="#扩展欧几里得算法">扩展欧几里得算法</a></h3>
 <p>$$ ax + by = \gcd(a, b) $$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZXh0ZW5kZWRfZ2NkKGE6IGk2NCwgYjogaTY0KSAtPiAoaTY0LCBpNjQsIGk2NCkgewogICAgaWYgYiA9PSAwIHsKICAgICAgICAoYSwgMSwgMCkKICAgIH0gZWxzZSB7CiAgICAgICAgbGV0IChnY2QsIHgxLCB5MSkgPSBleHRlbmRlZF9nY2QoYiwgYSAlIGIpOwogICAgICAgIGxldCB4ID0geTE7CiAgICAgICAgbGV0IHkgPSB4MSAtIChhIC8gYikgKiB5MTsKICAgICAgICAoZ2NkLCB4LCB5KQogICAgfQp9CgpmbiBtYWluKCkgewogICAgbGV0IGEgPSA3OwogICAgbGV0IGIgPSA5OwogICAgcHJpbnRsbiEoImV4dGVuZGVkX2djZCh7fSwge30pID0gezo/fSIsIGEsIGIsIGV4dGVuZGVkX2djZChhLCBiKSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn extended_gcd(a: i64, b: i64) -&gt; (i64, i64, i64) {
     if b == 0 {
         (a, 1, 0)
@@ -284,6 +325,8 @@ fn main() {
 }</code></pre>
 <h3 id="中国剩余定理求解"><a class="header" href="#中国剩余定理求解">中国剩余定理求解</a></h3>
 <p>利用扩展欧几里得求逆元，可以直接求解《孙子算经》的“物不知数”问题：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g5omp5bGV5qyn5Yeg6YeM5b6X77yM6L+U5ZueIChnY2QsIHgsIHkpIOS9vyBhKnggKyBiKnkgPSBnY2QKZm4gZXh0X2djZChhOiBpNjQsIGI6IGk2NCkgLT4gKGk2NCwgaTY0LCBpNjQpIHsKICAgIGlmIGIgPT0gMCB7CiAgICAgICAgKGEsIDEsIDApCiAgICB9IGVsc2UgewogICAgICAgIGxldCAoZywgeCwgeSkgPSBleHRfZ2NkKGIsIGEgJSBiKTsKICAgICAgICAoZywgeSwgeCAtIChhIC8gYikgKiB5KQogICAgfQp9CgovLyDkuK3lm73liankvZnlrprnkIbvvJrmsYLop6MgeCDiiaEgYV9pIChtb2QgbV9pKe+8jOimgeaxgiBtX2kg5Lik5Lik5LqS6LSoCmZuIGNydChyZW1haW5kZXJzOiAmW2k2NF0sIG1vZHVsaTogJltpNjRdKSAtPiBpNjQgewogICAgbGV0IHByb2Q6IGk2NCA9IG1vZHVsaS5pdGVyKCkucHJvZHVjdCgpOwogICAgbGV0IG11dCByZXN1bHQgPSAwaTY0OwogICAgZm9yICgmYSwgJm0pIGluIHJlbWFpbmRlcnMuaXRlcigpLnppcChtb2R1bGkpIHsKICAgICAgICBsZXQgbWkgPSBwcm9kIC8gbTsKICAgICAgICBsZXQgKF8sIGludiwgXykgPSBleHRfZ2NkKG1pLCBtKTsKICAgICAgICByZXN1bHQgKz0gYSAqIG1pICogaW52OwogICAgfQogICAgcmVzdWx0LnJlbV9ldWNsaWQocHJvZCkKfQoKZm4gbWFpbigpIHsKICAgIC8vIOOAiuWtmeWtkOeul+e7j+OAi++8muS4ieS4ieWJqeS6jO+8jOS6lOS6lOWJqeS4ie+8jOS4g+S4g+WJqeS6jAogICAgbGV0IHJlbWFpbmRlcnMgPSBbMiwgMywgMl07CiAgICBsZXQgbW9kdWxpID0gWzMsIDUsIDddOwogICAgbGV0IHggPSBjcnQoJnJlbWFpbmRlcnMsICZtb2R1bGkpOwogICAgcHJpbnRsbiEoIueJqeS4jeefpeaVsCB4ID0ge30iLCB4KTsgLy8gMjMKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// 扩展欧几里得，返回 (gcd, x, y) 使 a*x + b*y = gcd
 fn ext_gcd(a: i64, b: i64) -&gt; (i64, i64, i64) {
     if b == 0 {
@@ -316,6 +359,8 @@ fn main() {
 <hr>
 <h2 id="四素数筛法"><a class="header" href="#四素数筛法">四、素数筛法</a></h2>
 <h3 id="厄拉多塞筛法埃氏筛"><a class="header" href="#厄拉多塞筛法埃氏筛">厄拉多塞筛法（埃氏筛）</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gY291bnRfcHJpbWVzKG46IGkzMikgLT4gaTMyIHsKICAgIGlmIG4gPCAyIHsKICAgICAgICByZXR1cm4gMDsKICAgIH0KICAgIGxldCBuX3VzaXplID0gbiBhcyB1c2l6ZTsKICAgIGxldCBtdXQgcHJpbWVzID0gdmVjIVt0cnVlOyBuX3VzaXplXTsKICAgIHByaW1lc1swXSA9IGZhbHNlOwogICAgcHJpbWVzWzFdID0gZmFsc2U7CgogICAgbGV0IG11dCBjb3VudCA9IDA7CiAgICBsZXQgbGltaXQgPSAobl91c2l6ZSBhcyBmNjQpLnNxcnQoKSBhcyB1c2l6ZTsKCiAgICBmb3IgaSBpbiAyLi5uX3VzaXplIHsKICAgICAgICBpZiBwcmltZXNbaV0gewogICAgICAgICAgICBjb3VudCArPSAxOwogICAgICAgICAgICBpZiBpIDw9IGxpbWl0IHsKICAgICAgICAgICAgICAgIGxldCBtdXQgaiA9IGkgKiBpOwogICAgICAgICAgICAgICAgd2hpbGUgaiA8IG5fdXNpemUgewogICAgICAgICAgICAgICAgICAgIHByaW1lc1tqXSA9IGZhbHNlOwogICAgICAgICAgICAgICAgICAgIGogKz0gaTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KICAgIGNvdW50Cn0KCmZuIG1haW4oKSB7CiAgICBwcmludGxuISgie30iLCBjb3VudF9wcmltZXMoNDk5OTc5KSk7ICAvLyA0MTUzOAp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn count_primes(n: i32) -&gt; i32 {
     if n &lt; 2 {
         return 0;
@@ -353,6 +398,8 @@ fn main() {
 <h3 id="辗转相除法欧几里得算法"><a class="header" href="#辗转相除法欧几里得算法">辗转相除法（欧几里得算法）</a></h3>
 <p>核心公式：</p>
 <p>$$ \gcd(a, b) = \gcd(b, a \bmod b) $$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZ2NkKG11dCBhOiB1NjQsIG11dCBiOiB1NjQpIC0+IHU2NCB7CiAgICB3aGlsZSBiICE9IDAgewogICAgICAgIGxldCB0ZW1wID0gYjsKICAgICAgICBiID0gYSAlIGI7CiAgICAgICAgYSA9IHRlbXA7CiAgICB9CiAgICBhCn0KCmZuIGxjbShhOiB1NjQsIGI6IHU2NCkgLT4gdTY0IHsKICAgIGEgLyBnY2QoYSwgYikgKiBiICAvLyDlhYjpmaTlkI7kuZjvvIzpgb/lhY3muqLlh7oKfQoKZm4gbWFpbigpIHsKICAgIHByaW50bG4hKCJnY2QoNDgsIDE4KSA9IHt9IiwgZ2NkKDQ4LCAxOCkpOyAgLy8gNgogICAgcHJpbnRsbiEoImxjbSg0OCwgMTgpID0ge30iLCBsY20oNDgsIDE4KSk7ICAvLyAxNDQKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn gcd(mut a: u64, mut b: u64) -&gt; u64 {
     while b != 0 {
         let temp = b;

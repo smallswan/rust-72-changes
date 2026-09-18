@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -241,6 +278,8 @@
 <p><strong>玩法：</strong> 玩家身处一个由多个方形密室组成的迷宫。每个密室四面墙各有一道门，其中一道门通往相邻密室，其余 3 道是假出口。玩家通过回答比较大小问题打开谜题的门。</p>
 <p><strong>规则：</strong> 回答正确即可开门，答错密室空间自动缩小。</p>
 <p>下面用 Rust 模拟“比较大小”关卡的核心判题逻辑：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOmimOebru+8muavlOi+gyBhID0gMl4wLjUsIGIgPSAwLjVeMiwgYyA9IGxvZzIoMykg55qE5aSn5bCPCiAgICBsZXQgYSA9IDIuMF9mNjQucG93ZigwLjUpOyAvLyDiiYggMS40MTQKICAgIGxldCBiID0gMC41X2Y2NC5wb3dpKDIpOyAgIC8vID0gMC4yNQogICAgbGV0IGMgPSAzLjBfZjY0LmxvZzIoKTsgICAgLy8g4omIIDEuNTg1CgogICAgbGV0IG11dCBpdGVtcyA9IFsoImE9Ml4wLjUiLCBhKSwgKCJiPTAuNV4yIiwgYiksICgiYz1sb2cyKDMpIiwgYyldOwogICAgaXRlbXMuc29ydF9ieSh8eCwgeXwgeC4xLnBhcnRpYWxfY21wKCZ5LjEpLnVud3JhcCgpKTsKCiAgICBwcmludCEoIuS7juWwj+WIsOWkp++8miIpOwogICAgZm9yIChpLCAobmFtZSwgdmFsKSkgaW4gaXRlbXMuaXRlcigpLmVudW1lcmF0ZSgpIHsKICAgICAgICBpZiBpID4gMCB7CiAgICAgICAgICAgIHByaW50ISgiIDwgIik7CiAgICAgICAgfQogICAgICAgIHByaW50ISgie30oezouM30pIiwgbmFtZSwgdmFsKTsKICAgIH0KICAgIHByaW50bG4hKCk7CiAgICAvLyDmraPnoa7nrZTmoYjvvJpiIDwgYSA8IGMKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 题目：比较 a = 2^0.5, b = 0.5^2, c = log2(3) 的大小
     let a = 2.0_f64.powf(0.5); // ≈ 1.414
@@ -301,6 +340,8 @@ bevy = "0.14"
 <hr>
 <h2 id="六猜想"><a class="header" href="#六猜想">六、猜想</a></h2>
 <p><strong>克拉茨猜想（3n+1 猜想）：</strong> 任取一正整数，若为偶数则除以 2，若为奇数则乘以 3 再加 1，重复操作，最终总会落入 4→2→1 的循环。至今未被证明。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gY29sbGF0eihtdXQgbjogdTY0KSAtPiAodTY0LCBWZWM8dTY0PikgewogICAgbGV0IG11dCBwYXRoID0gdmVjIVtuXTsKICAgIGxldCBtdXQgc3RlcHMgPSAwOwogICAgd2hpbGUgbiAhPSAxIHsKICAgICAgICBuID0gaWYgbiAlIDIgPT0gMCB7IG4gLyAyIH0gZWxzZSB7IDMgKiBuICsgMSB9OwogICAgICAgIHBhdGgucHVzaChuKTsKICAgICAgICBzdGVwcyArPSAxOwogICAgfQogICAgKHN0ZXBzLCBwYXRoKQp9CgpmbiBtYWluKCkgewogICAgbGV0IHN0YXJ0ID0gMjc7CiAgICBsZXQgKHN0ZXBzLCBwYXRoKSA9IGNvbGxhdHooc3RhcnQpOwogICAgcHJpbnRsbiEoIuS7jiB7fSDlh7rlj5HvvIznu4/ov4cge30g5q2l6JC95YWlIDEiLCBzdGFydCwgc3RlcHMpOyAvLyAxMTEg5q2lCiAgICBsZXQgcHJldmlldyA9ICZwYXRoWy4uMTIubWluKHBhdGgubGVuKCkpXTsKICAgIHByaW50bG4hKCLluo/liJfliY0gMTIg6aG577yaezo/fSAuLi4iLCBwcmV2aWV3KTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn collatz(mut n: u64) -&gt; (u64, Vec&lt;u64&gt;) {
     let mut path = vec![n];
     let mut steps = 0;

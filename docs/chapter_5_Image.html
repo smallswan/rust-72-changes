@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -469,7 +506,13 @@ image = "0.25"
 </code></pre>
 <p><code>image</code> crate 是 Rust 生态中最流行的图像处理库，支持 BMP、JPEG、PNG、GIF、WebP、TIFF、AVIF 等多种格式的编解码。</p>
 <h3 id="552-读取与写入各种格式"><a class="header" href="#552-读取与写入各种格式">5.5.2 读取与写入各种格式</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use image::{DynamicImage, ImageFormat, io::Reader as ImageReader};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaW1hZ2UgPSAiMC4yNSIKKi8KdXNlIGltYWdlOjp7RHluYW1pY0ltYWdlLCBJbWFnZUZvcm1hdCwgaW86OlJlYWRlciBhcyBJbWFnZVJlYWRlcn07CnVzZSBzdGQ6OmZzOjpGaWxlOwoKZm4gbWFpbigpIC0+IFJlc3VsdDwoKSwgQm94PGR5biBzdGQ6OmVycm9yOjpFcnJvcj4+IHsKICAgIC8vIOivu+WPluWbvueJh++8iOiHquWKqOivhuWIq+agvOW8j++8iQogICAgbGV0IGltZyA9IEltYWdlUmVhZGVyOjpvcGVuKCJpbnB1dC5qcGciKT8KICAgICAgICAud2l0aF9ndWVzc2VkX2Zvcm1hdCgpPwogICAgICAgIC5kZWNvZGUoKT87CgogICAgcHJpbnRsbiEoIuWbvueJh+WwuuWvuDoge314e30iLCBpbWcud2lkdGgoKSwgaW1nLmhlaWdodCgpKTsKICAgIHByaW50bG4hKCLlm77niYfpopzoibLnsbvlnos6IHs6P30iLCBpbWcuY29sb3IoKSk7CgogICAgLy8g5L+d5a2Y5Li65LiN5ZCM5qC85byPCiAgICBpbWcuc2F2ZSgib3V0cHV0LnBuZyIpPzsgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIOagueaNruaJqeWxleWQjeiHquWKqOmAieaLqeagvOW8jwogICAgaW1nLnNhdmVfd2l0aF9mb3JtYXQoIm91dHB1dC5ibXAiLCBJbWFnZUZvcm1hdDo6Qm1wKT87CiAgICBpbWcuc2F2ZV93aXRoX2Zvcm1hdCgib3V0cHV0LndlYnAiLCBJbWFnZUZvcm1hdDo6V2ViUCk/OwoKICAgIC8vIOaJi+WKqOaMh+WumuagvOW8j+WGmeWFpQogICAgbGV0IG11dCBvdXRwdXQgPSBGaWxlOjpjcmVhdGUoIm91dHB1dC5qcGciKT87CiAgICBpbWcud3JpdGVfdG8oJm11dCBvdXRwdXQsIEltYWdlRm9ybWF0OjpKcGVnKT87CgogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+image = "0.25"
+*/
+use image::{DynamicImage, ImageFormat, io::Reader as ImageReader};
 use std::fs::File;
 
 fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
@@ -659,7 +702,13 @@ fn adjust_brightness_contrast(
 }
 <span class="boring">}</span></code></pre>
 <h3 id="556-格式转换"><a class="header" href="#556-格式转换">5.5.6 格式转换</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use image::{io::Reader as ImageReader, ImageFormat};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaW1hZ2UgPSAiMC4yNSIKKi8KdXNlIGltYWdlOjp7aW86OlJlYWRlciBhcyBJbWFnZVJlYWRlciwgSW1hZ2VGb3JtYXR9Owp1c2Ugc3RkOjpwYXRoOjpQYXRoOwoKLy8vIOaJuemHj+i9rOaNouWbvueJh+agvOW8jwpmbiBjb252ZXJ0X2Zvcm1hdChpbnB1dDogJlBhdGgsIG91dHB1dDogJlBhdGgsIGZvcm1hdDogSW1hZ2VGb3JtYXQpIC0+IFJlc3VsdDwoKSwgQm94PGR5biBzdGQ6OmVycm9yOjpFcnJvcj4+IHsKICAgIGxldCBpbWcgPSBJbWFnZVJlYWRlcjo6b3BlbihpbnB1dCk/CiAgICAgICAgLndpdGhfZ3Vlc3NlZF9mb3JtYXQoKT8KICAgICAgICAuZGVjb2RlKCk/OwoKICAgIGxldCBtdXQgZmlsZSA9IHN0ZDo6ZnM6OkZpbGU6OmNyZWF0ZShvdXRwdXQpPzsKICAgIGltZy53cml0ZV90bygmbXV0IGZpbGUsIGZvcm1hdCk/OwogICAgcHJpbnRsbiEoIuW3sui9rOaNojoge30gLT4ge30iLCBpbnB1dC5kaXNwbGF5KCksIG91dHB1dC5kaXNwbGF5KCkpOwogICAgT2soKCkpCn0KCmZuIG1haW4oKSAtPiBSZXN1bHQ8KCksIEJveDxkeW4gc3RkOjplcnJvcjo6RXJyb3I+PiB7CiAgICAvLyBKUEVHIOi9rCBQTkcKICAgIGNvbnZlcnRfZm9ybWF0KAogICAgICAgIHN0ZDo6cGF0aDo6UGF0aDo6bmV3KCJwaG90by5qcGciKSwKICAgICAgICBzdGQ6OnBhdGg6OlBhdGg6Om5ldygicGhvdG8ucG5nIiksCiAgICAgICAgSW1hZ2VGb3JtYXQ6OlBuZywKICAgICk/OwoKICAgIC8vIFBORyDovawgV2ViUAogICAgY29udmVydF9mb3JtYXQoCiAgICAgICAgc3RkOjpwYXRoOjpQYXRoOjpuZXcoInBob3RvLnBuZyIpLAogICAgICAgIHN0ZDo6cGF0aDo6UGF0aDo6bmV3KCJwaG90by53ZWJwIiksCiAgICAgICAgSW1hZ2VGb3JtYXQ6OldlYlAsCiAgICApPzsKCiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+image = "0.25"
+*/
+use image::{io::Reader as ImageReader, ImageFormat};
 use std::path::Path;
 
 /// 批量转换图片格式

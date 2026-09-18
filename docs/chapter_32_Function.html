@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -199,6 +236,8 @@
 <h3 id="12-有界函数与无界函数"><a class="header" href="#12-有界函数与无界函数">1.2 有界函数与无界函数</a></h3>
 <p><strong>有界函数</strong>：如果存在正数 $M$，使得对于定义域内的所有 $x$，都有 $|f(x)| \le M$，则称 $f(x)$ 为有界函数。</p>
 <p><strong>无界函数</strong>：不存在这样的 $M$，则称 $f(x)$ 为无界函数。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gaXNfYm91bmRlZChmOiBpbXBsIEZuKGY2NCkgLT4gZjY0LCBhOiBmNjQsIGI6IGY2NCwgc2FtcGxlczogdXNpemUpIC0+IE9wdGlvbjxmNjQ+IHsKICAgIGxldCBtdXQgbWF4X2FicyA9IDAuMF9mNjQ7CiAgICBmb3IgaSBpbiAwLi49c2FtcGxlcyB7CiAgICAgICAgbGV0IHggPSBhICsgKGIgLSBhKSAqIChpIGFzIGY2NCAvIHNhbXBsZXMgYXMgZjY0KTsKICAgICAgICBsZXQgeSA9IGYoeCkuYWJzKCk7CiAgICAgICAgaWYgeS5pc19pbmZpbml0ZSgpIHsKICAgICAgICAgICAgcmV0dXJuIE5vbmU7IC8vIOaXoOeVjAogICAgICAgIH0KICAgICAgICBtYXhfYWJzID0gbWF4X2Ficy5tYXgoeSk7CiAgICB9CiAgICBTb21lKG1heF9hYnMpCn0KCmZuIG1haW4oKSB7CiAgICAvLyBzaW4oeCkg5ZyoIFswLCAyz4BdIOS4iuacieeVjAogICAgbGV0IHNpbl9ib3VuZCA9IGlzX2JvdW5kZWQofHh8IHguc2luKCksIDAuMCwgMi4wICogc3RkOjpmNjQ6OmNvbnN0czo6UEksIDEwMCk7CiAgICBwcmludGxuISgic2luKHgpIOeahOacgOWkp+e7neWvueWAvDogezo/fSIsIHNpbl9ib3VuZCk7ICAvLyBTb21lKDEuMCkKCiAgICAvLyAxL3gg5ZyoIFstMSwgMV0g5LiK5peg55WMCiAgICBsZXQgaW52X2JvdW5kID0gaXNfYm91bmRlZCh8eHwgMS4wIC8geCwgLTEuMCwgMS4wLCAxMDApOwogICAgcHJpbnRsbiEoIjEveCDmnInnlYzlkJc6IHs6P30iLCBpbnZfYm91bmQpOyAgLy8gTm9uZQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn is_bounded(f: impl Fn(f64) -&gt; f64, a: f64, b: f64, samples: usize) -&gt; Option&lt;f64&gt; {
     let mut max_abs = 0.0_f64;
     for i in 0..=samples {
@@ -240,6 +279,8 @@ fn main() {
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gaXNfb2RkKGY6IGltcGwgRm4oZjY0KSAtPiBmNjQsIHg6IGY2NCkgLT4gYm9vbCB7CiAgICAoZigteCkgKyBmKHgpKS5hYnMoKSA8IDFlLTEwCn0KCmZuIGlzX2V2ZW4oZjogaW1wbCBGbihmNjQpIC0+IGY2NCwgeDogZjY0KSAtPiBib29sIHsKICAgIChmKC14KSAtIGYoeCkpLmFicygpIDwgMWUtMTAKfQoKZm4gbWFpbigpIHsKICAgIGxldCB4ID0gMi4wOwogICAgcHJpbnRsbiEoInjCsyDmmK/lpYflh73mlbA6IHt9IiwgaXNfb2RkKHx4fCB4LnBvd2koMyksIHgpKTsgICAvLyB0cnVlCiAgICBwcmludGxuISgieMKyIOaYr+WBtuWHveaVsDoge30iLCBpc19ldmVuKHx4fCB4LnBvd2koMiksIHgpKTsgIC8vIHRydWUKICAgIHByaW50bG4hKCJzaW4oeCkg5piv5aWH5Ye95pWwOiB7fSIsIGlzX29kZCh8eHwgeC5zaW4oKSwgeCkpOyAvLyB0cnVlCiAgICBwcmludGxuISgiY29zKHgpIOaYr+WBtuWHveaVsDoge30iLCBpc19ldmVuKHx4fCB4LmNvcygpLCB4KSk7IC8vIHRydWUKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn is_odd(f: impl Fn(f64) -&gt; f64, x: f64) -&gt; bool {
     (f(-x) + f(x)).abs() &lt; 1e-10
 }
@@ -307,6 +348,8 @@ fn main() {
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gaXNfY29udGludW91c19hdChmOiBpbXBsIEZuKGY2NCkgLT4gZjY0LCB4MDogZjY0LCBlcHNpbG9uOiBmNjQpIC0+IGJvb2wgewogICAgbGV0IGggPSAxZS02OwogICAgbGV0IGxlZnRfbGltaXQgPSBmKHgwIC0gaCk7CiAgICBsZXQgcmlnaHRfbGltaXQgPSBmKHgwICsgaCk7CiAgICBsZXQgZl94MCA9IGYoeDApOwoKICAgIChsZWZ0X2xpbWl0IC0gZl94MCkuYWJzKCkgPCBlcHNpbG9uICYmIChyaWdodF9saW1pdCAtIGZfeDApLmFicygpIDwgZXBzaWxvbgp9CgpmbiBtYWluKCkgewogICAgLy8gc2luKHgpL3gg5ZyoIHg9MCDlpITmnInlj6/ljrvpl7Tmlq3ngrkKICAgIGxldCBmID0gfHg6IGY2NHwgaWYgeCA9PSAwLjAgeyAxLjAgfSBlbHNlIHsgeC5zaW4oKSAvIHggfTsKICAgIHByaW50bG4hKCJzaW4oeCkveCDlnKggeD0wIOi/nue7rToge30iLCBpc19jb250aW51b3VzX2F0KGYsIDAuMCwgMWUtNSkpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn is_continuous_at(f: impl Fn(f64) -&gt; f64, x0: f64, epsilon: f64) -&gt; bool {
     let h = 1e-6;
     let left_limit = f(x0 - h);
@@ -330,6 +373,8 @@ fn main() {
 $$\frac{a^m}{a^n} = a^{m-n}$$
 $$(a^m)^n = a^{mn}$$
 $$a^{-n} = \frac{1}{a^n}$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCB4OiBmNjQgPSAyLjA7CiAgICBwcmludGxuISgi5bmz5pa55qC5OiB7fSIsIHguc3FydCgpKTsgICAgICAvLyAxLjQxNDIKICAgIHByaW50bG4hKCLnq4vmlrk6IHt9IiwgeC5wb3dpKDMpKTsgICAgICAgLy8gOAogICAgcHJpbnRsbiEoInheMC41OiB7fSIsIHgucG93ZigwLjUpKTsgICAgLy8gMS40MTQyCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let x: f64 = 2.0;
     println!("平方根: {}", x.sqrt());      // 1.4142
@@ -347,6 +392,8 @@ $$a^{-n} = \frac{1}{a^n}$$</p>
 <li>过点 $(0, 1)$</li>
 <li>$a &gt; 1$ 时单调递增，$0 &lt; a &lt; 1$ 时单调递减</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCB4ID0gMi4wX2Y2NDsKICAgIHByaW50bG4hKCJlXjIgPSB7fSIsIHguZXhwKCkpOyAgLy8gNy4zODkxCiAgICBwcmludGxuISgiMl4zID0ge30iLCAyLjBfZjY0LnBvd2YoMy4wKSk7ICAvLyA4Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let x = 2.0_f64;
     println!("e^2 = {}", x.exp());  // 7.3891
@@ -364,6 +411,8 @@ $$a^{-n} = \frac{1}{a^n}$$</p>
 $$\log_a\left(\frac{M}{N}\right) = \log_a M - \log_a N$$
 $$\log_a(M^k) = k \cdot \log_a M$$
 $$\log_a b = \frac{\log_c b}{\log_c a} \quad \text{（换底公式）}$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCB4ID0gMTAwLjBfZjY0OwogICAgcHJpbnRsbiEoImxuKDEwMCkgPSB7fSIsIHgubG4oKSk7ICAgICAgLy8gNC42MDUyCiAgICBwcmludGxuISgibG9nMTAoMTAwKSA9IHt9IiwgeC5sb2cxMCgpKTsgLy8gMgogICAgcHJpbnRsbiEoImxvZzIoNjQpID0ge30iLCA2NC4wX2Y2NC5sb2cyKCkpOyAvLyA2Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let x = 100.0_f64;
     println!("ln(100) = {}", x.ln());      // 4.6052
@@ -403,6 +452,8 @@ $$\tan 2\theta = \frac{2\tan\theta}{1 - \tan^2\theta}$$</p>
 $$\cos^2\frac{\theta}{2} = \frac{1 + \cos\theta}{2}$$</p>
 <p><strong>辅助角公式：</strong></p>
 <p>$$a\sin\theta + b\cos\theta = \sqrt{a^2 + b^2} \sin(\theta + \varphi) \quad \left(\tan\varphi = \frac{b}{a}\right)$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6ZjY0Ojpjb25zdHM6OlBJOwoKZm4gbWFpbigpIHsKICAgIGxldCB0aGV0YSA9IFBJIC8gNi4wOyAvLyAzMMKwCgogICAgcHJpbnRsbiEoInNpbigzMMKwKSA9IHt9IiwgdGhldGEuc2luKCkpOyAgIC8vIDAuNQogICAgcHJpbnRsbiEoImNvcygzMMKwKSA9IHt9IiwgdGhldGEuY29zKCkpOyAgIC8vIDAuODY2MAogICAgcHJpbnRsbiEoInRhbigzMMKwKSA9IHt9IiwgdGhldGEudGFuKCkpOyAgIC8vIDAuNTc3NAoKICAgIC8vIOmqjOivgSBzaW7Css64ICsgY29zwrLOuCA9IDEKICAgIGxldCBpZGVudGl0eSA9IHRoZXRhLnNpbigpLnBvd2koMikgKyB0aGV0YS5jb3MoKS5wb3dpKDIpOwogICAgcHJpbnRsbiEoInNpbsKyzrggKyBjb3PCss64ID0ge30iLCBpZGVudGl0eSk7ICAvLyAxLjAKCiAgICAvLyDli77kuInogqHlm5vlvKbkupTvvIzmsYLli77miYDlr7nlupTnmoTop5LluqYKICAgIGxldCBvcHBvc2l0ZSA9IDMuMDsKICAgIGxldCBoeXBvdGVudXNlID0gNS4wOwogICAgbGV0IGFuZ2xlX3JhZCA9IChvcHBvc2l0ZSAvIGh5cG90ZW51c2UpLmFzaW4oKTsKICAgIGxldCBhbmdsZV9kZWcgPSBhbmdsZV9yYWQgKiAxODAuMCAvIFBJOwogICAgcHJpbnRsbiEoIuinkuW6piA9IHs6LjJ9wrAiLCBhbmdsZV9kZWcpOyAgLy8gMzYuODfCsAp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::f64::consts::PI;
 
 fn main() {
@@ -436,6 +487,8 @@ fn main() {
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCB4ID0gMC41X2Y2NDsKICAgIHByaW50bG4hKCJhcmNzaW4oMC41KSA9IHs6LjR9IHJhZCA9IHs6LjJ9wrAiLCB4LmFzaW4oKSwgeC5hc2luKCkudG9fZGVncmVlcygpKTsKICAgIHByaW50bG4hKCJhcmNjb3MoMC41KSA9IHs6LjR9IHJhZCA9IHs6LjJ9wrAiLCB4LmFjb3MoKSwgeC5hY29zKCkudG9fZGVncmVlcygpKTsKICAgIHByaW50bG4hKCJhcmN0YW4oMS4wKSA9IHs6LjR9IHJhZCA9IHs6LjJ9wrAiLCAxLjBfZjY0LmF0YW4oKSwgMS4wX2Y2NC5hdGFuKCkudG9fZGVncmVlcygpKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let x = 0.5_f64;
     println!("arcsin(0.5) = {:.4} rad = {:.2}°", x.asin(), x.asin().to_degrees());
@@ -484,6 +537,8 @@ fn main() {
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCB4ID0gMi4wX2Y2NDsKCiAgICBwcmludGxuISgic2luaCgyKSA9IHt9IiwgeC5zaW5oKCkpOyAgICAvLyAzLjYyNjkKICAgIHByaW50bG4hKCJjb3NoKDIpID0ge30iLCB4LmNvc2goKSk7ICAgIC8vIDMuNzYyMgogICAgcHJpbnRsbiEoInRhbmgoMikgPSB7fSIsIHgudGFuaCgpKTsgICAgLy8gMC45NjQwCgogICAgLy8g6aqM6K+B5oGS562J5byPOiBjb3NowrIoeCkgLSBzaW5owrIoeCkgPSAxCiAgICBsZXQgaWRlbnRpdHkgPSB4LmNvc2goKS5wb3dpKDIpIC0geC5zaW5oKCkucG93aSgyKTsKICAgIHByaW50bG4hKCLmgZLnrYnlvI/pqozor4E6IHt9IiwgaWRlbnRpdHkpOyAgLy8gMS4wCgogICAgLy8g5Y+N5Y+M5puy5Ye95pWwCiAgICBwcmludGxuISgiYXJzaW5oKDIpID0ge30iLCB4LmFzaW5oKCkpOyAgLy8gMS40NDM2CiAgICBwcmludGxuISgiYXJjb3NoKDIpID0ge30iLCB4LmFjb3NoKCkpOyAgLy8gMS4zMTcwCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let x = 2.0_f64;
 
@@ -509,6 +564,8 @@ fn main() {
 <p>$$a^2 = b^2 + c^2 - 2bc\cos A$$
 $$b^2 = a^2 + c^2 - 2ac\cos B$$
 $$c^2 = a^2 + b^2 - 2ab\cos C$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6ZjY0Ojpjb25zdHM6OlBJOwoKZm4gc29sdmVfdHJpYW5nbGVfc2FzKGI6IGY2NCwgYzogZjY0LCBhbmdsZV9hOiBmNjQpIC0+IChmNjQsIGY2NCwgZjY0KSB7CiAgICAvLyDlt7Lnn6XkuKTovrnlj4rlhbblpLnop5LvvIzmsYLnrKzkuInovrnlkozlj6blpJbkuKTkuKrop5IKICAgIGxldCBhID0gKGIgKiBiICsgYyAqIGMgLSAyLjAgKiBiICogYyAqIGFuZ2xlX2EuY29zKCkpLnNxcnQoKTsKICAgIGxldCBhbmdsZV9iID0gKChiICogYiArIGEgKiBhIC0gYyAqIGMpIC8gKDIuMCAqIGIgKiBhKSkuYWNvcygpOwogICAgbGV0IGFuZ2xlX2MgPSBQSSAtIGFuZ2xlX2EgLSBhbmdsZV9iOwogICAgKGEsIGFuZ2xlX2IsIGFuZ2xlX2MpCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgKGEsIGIsIGMpID0gc29sdmVfdHJpYW5nbGVfc2FzKDMuMCwgNC4wLCBQSSAvIDIuMCk7CiAgICBwcmludGxuISgi56ys5LiJ6L65IGEgPSB7Oi40fSIsIGEpOyAgICAgICAgICAgLy8gNS4wCiAgICBwcmludGxuISgi6KeSIEIgPSB7Oi4yfcKwIiwgYi50b19kZWdyZWVzKCkpOyAgLy8gNTMuMTPCsAogICAgcHJpbnRsbiEoIuinkiBDID0gezouMn3CsCIsIGMudG9fZGVncmVlcygpKTsgIC8vIDM2Ljg3wrAKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::f64::consts::PI;
 
 fn solve_triangle_sas(b: f64, c: f64, angle_a: f64) -&gt; (f64, f64, f64) {
@@ -536,6 +593,8 @@ fn main() {
 <h2 id="八函数在-rust-中的表示"><a class="header" href="#八函数在-rust-中的表示">八、函数在 Rust 中的表示</a></h2>
 <h3 id="81-闭包"><a class="header" href="#81-闭包">8.1 闭包</a></h3>
 <p>Rust 中的闭包（Closure）可以捕获环境中的变量，类似于数学中的函数：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBhID0gMi4wOwogICAgbGV0IGIgPSAzLjA7CgogICAgLy8g57q/5oCn5Ye95pWwIGYoeCkgPSBheCArIGIKICAgIGxldCBsaW5lYXIgPSB8eDogZjY0fCBhICogeCArIGI7CgogICAgcHJpbnRsbiEoImYoMSkgPSB7fSIsIGxpbmVhcigxLjApKTsgIC8vIDUuMAogICAgcHJpbnRsbiEoImYoMikgPSB7fSIsIGxpbmVhcigyLjApKTsgIC8vIDcuMAoKICAgIC8vIOS6jOasoeWHveaVsCBmKHgpID0geMKyICsgMnggKyAxCiAgICBsZXQgcXVhZHJhdGljID0gfHg6IGY2NHwgeCAqIHggKyAyLjAgKiB4ICsgMS4wOwogICAgcHJpbnRsbiEoImcoMykgPSB7fSIsIHF1YWRyYXRpYygzLjApKTsgIC8vIDE2LjAKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let a = 2.0;
     let b = 3.0;
@@ -552,6 +611,8 @@ fn main() {
 }</code></pre>
 <h3 id="82-高阶函数"><a class="header" href="#82-高阶函数">8.2 高阶函数</a></h3>
 <p>接受函数作为参数或返回函数的函数：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gY29tcG9zZTxGLCBHPihmOiBGLCBnOiBHKSAtPiBpbXBsIEZuKGY2NCkgLT4gZjY0CndoZXJlCiAgICBGOiBGbihmNjQpIC0+IGY2NCwKICAgIEc6IEZuKGY2NCkgLT4gZjY0LAp7CiAgICBtb3ZlIHx4fCBmKGcoeCkpCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgZiA9IHx4OiBmNjR8IHggKyAxLjA7CiAgICBsZXQgZyA9IHx4OiBmNjR8IHggKiAyLjA7CgogICAgbGV0IGggPSBjb21wb3NlKGYsIGcpOyAgLy8gaCh4KSA9IGYoZyh4KSkgPSAyeCArIDEKICAgIHByaW50bG4hKCJoKDMpID0ge30iLCBoKDMuMCkpOyAgLy8gNy4wCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn compose&lt;F, G&gt;(f: F, g: G) -&gt; impl Fn(f64) -&gt; f64
 where
     F: Fn(f64) -&gt; f64,
@@ -574,6 +635,8 @@ fn main() {
 <h3 id="92-复合辛普森法则"><a class="header" href="#92-复合辛普森法则">9.2 复合辛普森法则</a></h3>
 <p>$$\int_a^b f(x) dx \approx \frac{h}{3}[f(x_0) + 4f(x_1) + 2f(x_2) + 4f(x_3) + \cdots + 2f(x_{n-2}) + 4f(x_{n-1}) + f(x_n)]$$</p>
 <p>其中 $h = \frac{b-a}{n}$，$n$ 为偶数。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gc2ltcHNvbl9pbnRlZ3JhbChmOiBpbXBsIEZuKGY2NCkgLT4gZjY0LCBhOiBmNjQsIGI6IGY2NCwgbjogdXNpemUpIC0+IGY2NCB7CiAgICBhc3NlcnQhKG4gJSAyID09IDAsICJuIOW/hemhu+aYr+WBtuaVsCIpOwogICAgbGV0IGggPSAoYiAtIGEpIC8gbiBhcyBmNjQ7CiAgICBsZXQgbXV0IHN1bSA9IGYoYSkgKyBmKGIpOwoKICAgIGZvciBpIGluIDEuLm4gewogICAgICAgIGxldCB4ID0gYSArIGkgYXMgZjY0ICogaDsKICAgICAgICBpZiBpICUgMiA9PSAwIHsKICAgICAgICAgICAgc3VtICs9IDIuMCAqIGYoeCk7CiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgc3VtICs9IDQuMCAqIGYoeCk7CiAgICAgICAgfQogICAgfQoKICAgIHN1bSAqIGggLyAzLjAKfQoKZm4gbWFpbigpIHsKICAgIC8vIOiuoeeulyDiiKvigoDCuSB4wrIgZHggPSAxLzMKICAgIGxldCByZXN1bHQgPSBzaW1wc29uX2ludGVncmFsKHx4fCB4ICogeCwgMC4wLCAxLjAsIDEwMCk7CiAgICBwcmludGxuISgi4oir4oKAwrkgeMKyIGR4IOKJiCB7fSIsIHJlc3VsdCk7ICAvLyAwLjMzMzMKCiAgICAvLyDorqHnrpcg4oir4oKAXs+AIHNpbih4KSBkeCA9IDIKICAgIGxldCByZXN1bHQyID0gc2ltcHNvbl9pbnRlZ3JhbCh8eHwgeC5zaW4oKSwgMC4wLCBzdGQ6OmY2NDo6Y29uc3RzOjpQSSwgMTAwKTsKICAgIHByaW50bG4hKCLiiKvigoBez4Agc2luKHgpIGR4IOKJiCB7fSIsIHJlc3VsdDIpOyAgLy8gMi4wCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn simpson_integral(f: impl Fn(f64) -&gt; f64, a: f64, b: f64, n: usize) -&gt; f64 {
     assert!(n % 2 == 0, "n 必须是偶数");
     let h = (b - a) / n as f64;
@@ -605,6 +668,8 @@ fn main() {
 <h3 id="101-sigmoid-函数"><a class="header" href="#101-sigmoid-函数">10.1 Sigmoid 函数</a></h3>
 <p>$$\sigma(x) = \frac{1}{1 + e^{-x}}$$</p>
 <p>Sigmoid 函数的核心作用是将任意实数输入压缩到 $(0, 1)$ 区间，形成一个光滑的 S 形曲线。在神经网络中，它常被用作激活函数，将线性输出转换为概率。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gc2lnbW9pZCh4OiBmNjQpIC0+IGY2NCB7CiAgICAxLjAgLyAoMS4wICsgKC14KS5leHAoKSkKfQoKZm4gbWFpbigpIHsKICAgIHByaW50bG4hKCJzaWdtb2lkKDApID0ge30iLCBzaWdtb2lkKDAuMCkpOyAgICAgLy8gMC41CiAgICBwcmludGxuISgic2lnbW9pZCgyKSA9IHt9Iiwgc2lnbW9pZCgyLjApKTsgICAgIC8vIDAuODgwOAogICAgcHJpbnRsbiEoInNpZ21vaWQoLTIpID0ge30iLCBzaWdtb2lkKC0yLjApKTsgICAvLyAwLjExOTIKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn sigmoid(x: f64) -&gt; f64 {
     1.0 / (1.0 + (-x).exp())
 }

@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -384,7 +421,13 @@ impl Circuit&lt;Scalar&gt; for MultiplicationCircuit {
 }
 <span class="boring">}</span></code></pre>
 <h3 id="生成和验证证明"><a class="header" href="#生成和验证证明">生成和验证证明</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use bellman::groth16::{generate_random_parameters, create_random_proof, verify_proof, PreparedVerifyingKey};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjguNSIKKi8KdXNlIGJlbGxtYW46Omdyb3RoMTY6OntnZW5lcmF0ZV9yYW5kb21fcGFyYW1ldGVycywgY3JlYXRlX3JhbmRvbV9wcm9vZiwgdmVyaWZ5X3Byb29mLCBQcmVwYXJlZFZlcmlmeWluZ0tleX07CnVzZSBibHMxMl8zODE6OntCbHMxMiwgU2NhbGFyfTsKdXNlIHJhbmQ6OnJuZ3M6Ok9zUm5nOwoKZm4gbWFpbigpIC0+IFJlc3VsdDwoKSwgQm94PGR5biBzdGQ6OmVycm9yOjpFcnJvcj4+IHsKICAgIGxldCBybmcgPSAmbXV0IE9zUm5nOwoKICAgIC8vIDEuIOWPr+S/oeiuvue9ru+8muS4uueUtei3r+eUn+aIkOWPguaVsAogICAgbGV0IHBhcmFtcyA9IHsKICAgICAgICBsZXQgYyA9IE11bHRpcGxpY2F0aW9uQ2lyY3VpdCB7IHg6IE5vbmUsIHk6IE5vbmUgfTsKICAgICAgICBnZW5lcmF0ZV9yYW5kb21fcGFyYW1ldGVyczo6PEJsczEyLCBfLCBfPihjLCBybmcpPwogICAgfTsKCiAgICAvLyDlh4blpIfpqozor4Hlr4bpkqXvvIjliqDpgJ/pqozor4HvvIkKICAgIGxldCBwdmsgPSBQcmVwYXJlZFZlcmlmeWluZ0tleTo6ZnJvbShwYXJhbXMudmsuY2xvbmUoKSk7CgogICAgLy8gMi4g5Yib5bu66K+B5piO77ya5oiR55+l6YGTIDMg5ZKMIDXvvIzlroPku6znmoTkuZjnp6/mmK8gMTUKICAgIGxldCBwdWJsaWNfaW5wdXQgPSBTY2FsYXI6OmZyb20oMTUpOwoKICAgIGxldCBwcm9vZiA9IHsKICAgICAgICBsZXQgYyA9IE11bHRpcGxpY2F0aW9uQ2lyY3VpdCB7CiAgICAgICAgICAgIHg6IFNvbWUoU2NhbGFyOjpmcm9tKDMpKSwKICAgICAgICAgICAgeTogU29tZShTY2FsYXI6OmZyb20oNSkpLAogICAgICAgIH07CiAgICAgICAgY3JlYXRlX3JhbmRvbV9wcm9vZihjLCAmcGFyYW1zLCBybmcpPwogICAgfTsKCiAgICAvLyAzLiDpqozor4Hor4HmmI4KICAgIGxldCBpc192YWxpZCA9IHZlcmlmeV9wcm9vZigmcHZrLCAmcHJvb2YsICZbcHVibGljX2lucHV0XSk/OwoKICAgIHByaW50bG4hKCLor4HmmI7mnInmlYg6IHt9IiwgaXNfdmFsaWQpOwoKICAgIC8vIOWwneivlemqjOivgemUmeivr+eahOi+k+WFpQogICAgbGV0IHdyb25nX2lucHV0ID0gU2NhbGFyOjpmcm9tKDEwMCk7CiAgICBsZXQgaXNfaW52YWxpZCA9IHZlcmlmeV9wcm9vZigmcHZrLCAmcHJvb2YsICZbd3JvbmdfaW5wdXRdKS5pc19vaygpOwogICAgcHJpbnRsbiEoIumUmeivr+i+k+WFpemqjOivgemAmui/hzoge30iLCBpc19pbnZhbGlkKTsKCiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.8.5"
+*/
+use bellman::groth16::{generate_random_parameters, create_random_proof, verify_proof, PreparedVerifyingKey};
 use bls12_381::{Bls12, Scalar};
 use rand::rngs::OsRng;
 
@@ -425,7 +468,14 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 }</code></pre>
 <h3 id="简化的零知识证明演示不依赖外部库"><a class="header" href="#简化的零知识证明演示不依赖外部库">简化的零知识证明演示（不依赖外部库）</a></h3>
 <p>为了理解零知识证明的核心原理，我们实现一个极简的“颜色证明“示例——基于图同态的零知识证明概念：</p>
-<pre class="playground"><code class="language-rust edition2024">use sha2::{Sha256, Digest};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjguNSIKc2hhMiA9ICIwLjExIgoqLwp1c2Ugc2hhMjo6e1NoYTI1NiwgRGlnZXN0fTsKdXNlIHJhbmQ6OlJuZzsKCi8vIOeugOWMlueahOaJv+ivuuaWueahiApmbiBjb21taXQoc2VjcmV0OiAmc3RyLCBub25jZTogJlt1OF0pIC0+IFN0cmluZyB7CiAgICBsZXQgbXV0IGhhc2hlciA9IFNoYTI1Njo6bmV3KCk7CiAgICBoYXNoZXIudXBkYXRlKHNlY3JldC5hc19ieXRlcygpKTsKICAgIGhhc2hlci51cGRhdGUobm9uY2UpOwogICAgZm9ybWF0ISgiezp4fSIsIGhhc2hlci5maW5hbGl6ZSgpKQp9CgovLyDor4HmmI7ogIXlo7Dnp7Ai5oiR55+l6YGT5LiA5Liq5ruh6Laz5p+Q56eN5oCn6LSo55qE5YC8IgovLyDov5nph4znroDljJbkuLrvvJrmiJHnn6XpgZPkuIDkuKrlgLzvvIzlhbblk4jluIznmoTliY0gNCDkvY3mmK8gMApzdHJ1Y3QgUHJvdmVyIHsKICAgIHNlY3JldDogU3RyaW5nLAp9CgppbXBsIFByb3ZlciB7CiAgICBmbiBuZXcoc2VjcmV0OiBTdHJpbmcpIC0+IFNlbGYgewogICAgICAgIFByb3ZlciB7IHNlY3JldCB9CiAgICB9CgogICAgLy8g55Sf5oiQ5om/6K+6CiAgICBmbiBjb21taXRfc2VjcmV0KCZzZWxmKSAtPiAoU3RyaW5nLCBWZWM8dTg+KSB7CiAgICAgICAgbGV0IG5vbmNlOiBWZWM8dTg+ID0gKDAuLjE2KS5tYXAofF98IHJhbmQ6OnRocmVhZF9ybmcoKS5nZW46Ojx1OD4oKSkuY29sbGVjdCgpOwogICAgICAgIGxldCBjb21taXRtZW50ID0gY29tbWl0KCZzZWxmLnNlY3JldCwgJm5vbmNlKTsKICAgICAgICAoY29tbWl0bWVudCwgbm9uY2UpCiAgICB9CgogICAgLy8g5ZON5bqU5oyR5oiYCiAgICBmbiByZXNwb25kKCZzZWxmLCBjaGFsbGVuZ2U6IHU4KSAtPiBTdHJpbmcgewogICAgICAgIGlmIGNoYWxsZW5nZSA9PSAwIHsKICAgICAgICAgICAgLy8g5o+t56S656eY5a+GCiAgICAgICAgICAgIHNlbGYuc2VjcmV0LmNsb25lKCkKICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAvLyDmj63npLrlhbbku5bkv6Hmga/vvIjnroDljJbnpLrkvovvvIkKICAgICAgICAgICAgZm9ybWF0ISgicmVzcG9uc2Vfe30iLCBjaGFsbGVuZ2UpCiAgICAgICAgfQogICAgfQp9CgpzdHJ1Y3QgVmVyaWZpZXIgewogICAgY29tbWl0bWVudDogU3RyaW5nLAp9CgppbXBsIFZlcmlmaWVyIHsKICAgIGZuIG5ldyhjb21taXRtZW50OiBTdHJpbmcpIC0+IFNlbGYgewogICAgICAgIFZlcmlmaWVyIHsgY29tbWl0bWVudCB9CiAgICB9CgogICAgLy8g55Sf5oiQ6ZqP5py65oyR5oiYCiAgICBmbiBjaGFsbGVuZ2UoJnNlbGYpIC0+IHU4IHsKICAgICAgICByYW5kOjp0aHJlYWRfcm5nKCkuZ2VuX3JhbmdlKDAuLjIpCiAgICB9CgogICAgLy8g6aqM6K+B5ZON5bqUCiAgICBmbiB2ZXJpZnkoJnNlbGYsIHJlc3BvbnNlOiAmc3RyLCBub25jZTogJlt1OF0sIGNoYWxsZW5nZTogdTgpIC0+IGJvb2wgewogICAgICAgIGlmIGNoYWxsZW5nZSA9PSAwIHsKICAgICAgICAgICAgLy8g6aqM6K+B5om/6K+65piv5ZCm5a+55bqU5o+t56S655qE56eY5a+GCiAgICAgICAgICAgIGxldCByZWNvbXB1dGVkID0gY29tbWl0KHJlc3BvbnNlLCBub25jZSk7CiAgICAgICAgICAgIHJlY29tcHV0ZWQgPT0gc2VsZi5jb21taXRtZW50CiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgLy8g5YW25LuW6aqM6K+B6YC76L6RCiAgICAgICAgICAgIHJlc3BvbnNlLnN0YXJ0c193aXRoKCJyZXNwb25zZV8iKQogICAgICAgIH0KICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIHByaW50bG4hKCI9PT0g566A5YyW55qE6Zu255+l6K+G6K+B5piO5ryU56S6ID09PVxuIik7CgogICAgLy8g5Zy65pmv77ya6K+B5piO6ICF55+l6YGT5LiA5LiqIueJueauiiLlrZfnrKbkuLLvvIjmr5TlpoIgU0hBLTI1NiDliY3lr7wgMO+8iQogICAgbGV0IHNlY3JldCA9ICJteV9zZWNyZXRfdmFsdWVfNDIiLnRvX3N0cmluZygpOwogICAgbGV0IHByb3ZlciA9IFByb3Zlcjo6bmV3KHNlY3JldCk7CgogICAgLy8g6K+B5piO6ICF55Sf5oiQ5om/6K+6CiAgICBsZXQgKGNvbW1pdG1lbnQsIG5vbmNlKSA9IHByb3Zlci5jb21taXRfc2VjcmV0KCk7CiAgICBwcmludGxuISgi5om/6K+6OiB7fSIsICZjb21taXRtZW50Wy4uMTZdKTsKCiAgICAvLyDpqozor4HogIXlrZjlgqjmib/or7rlubblj5HotbfmjJHmiJgKICAgIGxldCB2ZXJpZmllciA9IFZlcmlmaWVyOjpuZXcoY29tbWl0bWVudCk7CgogICAgLy8g5aSa6L2u5Lqk5LqSCiAgICBsZXQgbXV0IHN1Y2Nlc3NfY291bnQgPSAwOwogICAgbGV0IHJvdW5kcyA9IDEwOwoKICAgIGZvciByb3VuZCBpbiAxLi49cm91bmRzIHsKICAgICAgICBsZXQgY2hhbGxlbmdlID0gdmVyaWZpZXIuY2hhbGxlbmdlKCk7CiAgICAgICAgbGV0IHJlc3BvbnNlID0gcHJvdmVyLnJlc3BvbmQoY2hhbGxlbmdlKTsKICAgICAgICBsZXQgdmFsaWQgPSB2ZXJpZmllci52ZXJpZnkoJnJlc3BvbnNlLCAmbm9uY2UsIGNoYWxsZW5nZSk7CgogICAgICAgIHByaW50bG4hKAogICAgICAgICAgICAi6L2u5qyhIHt9OiDmjJHmiJg9e30sIOmqjOivgT17fSIsCiAgICAgICAgICAgIHJvdW5kLCBjaGFsbGVuZ2UsIHZhbGlkCiAgICAgICAgKTsKCiAgICAgICAgaWYgdmFsaWQgewogICAgICAgICAgICBzdWNjZXNzX2NvdW50ICs9IDE7CiAgICAgICAgfQogICAgfQoKICAgIHByaW50bG4hKCJcbuaIkOWKn+eOhzoge30ve30gPSB7Oi4wfSUiLCBzdWNjZXNzX2NvdW50LCByb3VuZHMsCiAgICAgICAgICAgICAoc3VjY2Vzc19jb3VudCBhcyBmNjQgLyByb3VuZHMgYXMgZjY0KSAqIDEwMC4wKTsKCiAgICBpZiBzdWNjZXNzX2NvdW50ID09IHJvdW5kcyB7CiAgICAgICAgcHJpbnRsbiEoIumqjOivgeiAheehruS/oe+8muivgeaYjuiAheefpemBk+enmOWvhu+8gSIpOwogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.8.5"
+sha2 = "0.11"
+*/
+use sha2::{Sha256, Digest};
 use rand::Rng;
 
 // 简化的承诺方案
@@ -535,7 +585,13 @@ fn main() {
 }</code></pre>
 <h3 id="范围证明概念bulletproofs-风格"><a class="header" href="#范围证明概念bulletproofs-风格">范围证明概念（Bulletproofs 风格）</a></h3>
 <p>范围证明是 ZKP 的重要应用：证明一个值在某个范围内，而不透露具体值。</p>
-<pre class="playground"><code class="language-rust edition2024">use sha2::{Sha256, Digest};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2hhMiA9ICIwLjExIgoqLwp1c2Ugc2hhMjo6e1NoYTI1NiwgRGlnZXN0fTsKCi8vIOamguW/tea8lOekuu+8muivgeaYjiB2YWx1ZSDlnKggWzAsIDJebikg6IyD5Zu05YaFCi8vIOWunumZheWunueOsOmcgOimgeS9v+eUqCBQZWRlcnNlbiDmib/or7rlkozlhoXpg6jkuZjnp6/orrror4EKCnN0cnVjdCBSYW5nZVByb29mQ29uY2VwdCB7CiAgICBuOiB1c2l6ZSwgIC8vIOS9jeaVsAp9CgppbXBsIFJhbmdlUHJvb2ZDb25jZXB0IHsKICAgIC8vIOWwhuWAvOWIhuino+S4uuS6jOi/m+WItuS9jQogICAgZm4gZGVjb21wb3NlKHZhbHVlOiB1NjQsIG46IHVzaXplKSAtPiBWZWM8Ym9vbD4gewogICAgICAgIGxldCBtdXQgYml0cyA9IFZlYzo6d2l0aF9jYXBhY2l0eShuKTsKICAgICAgICBmb3IgaSBpbiAwLi5uIHsKICAgICAgICAgICAgYml0cy5wdXNoKCgodmFsdWUgPj4gaSkgJiAxKSA9PSAxKTsKICAgICAgICB9CiAgICAgICAgYml0cwogICAgfQoKICAgIC8vIOmqjOivgeS6jOi/m+WItuWIhuino+eahOato+ehruaApwogICAgZm4gdmVyaWZ5X2RlY29tcG9zaXRpb24odmFsdWU6IHU2NCwgYml0czogJltib29sXSkgLT4gYm9vbCB7CiAgICAgICAgbGV0IHJlY29uc3RydWN0ZWQ6IHU2NCA9IGJpdHMuaXRlcigpCiAgICAgICAgICAgIC5lbnVtZXJhdGUoKQogICAgICAgICAgICAubWFwKHwoaSwgJmIpfCBpZiBiIHsgMXU2NCA8PCBpIH0gZWxzZSB7IDAgfSkKICAgICAgICAgICAgLnN1bSgpOwogICAgICAgIHJlY29uc3RydWN0ZWQgPT0gdmFsdWUKICAgIH0KCiAgICAvLyDmpoLlv7XvvJror4HmmI7mr4/kuKrkvY3mmK8gMCDmiJYgMQogICAgZm4gcHJvdmVfYml0X2lzX2JpbmFyeShiaXQ6IGJvb2wpIC0+ICYnc3RhdGljIHN0ciB7CiAgICAgICAgLy8g5Zyo5a6e6ZmFIFpLUCDkuK3vvIzov5novazljJbkuLrnuqbmnZ/vvJpiICogKDEgLSBiKSA9IDAKICAgICAgICAvLyDljbMgYiDlj6rog73mmK8gMCDmiJYgMQogICAgICAgIGlmIGJpdCB7CiAgICAgICAgICAgICJiaXQgPSAxOiAxICogKDEgLSAxKSA9IDAg4pyTIgogICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgICJiaXQgPSAwOiAwICogKDEgLSAwKSA9IDAg4pyTIgogICAgICAgIH0KICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIGxldCBwcm9vZiA9IFJhbmdlUHJvb2ZDb25jZXB0IHsgbjogMzIgfTsKCiAgICBsZXQgdmFsdWUgPSAxMjM0NXU2NDsKICAgIGxldCBiaXRzID0gUmFuZ2VQcm9vZkNvbmNlcHQ6OmRlY29tcG9zZSh2YWx1ZSwgMzIpOwoKICAgIHByaW50bG4hKCLlgLw6IHt9IiwgdmFsdWUpOwogICAgcHJpbnRsbiEoIuS6jOi/m+WItuWIhuinozogezo/fSIsIGJpdHMpOwogICAgcHJpbnRsbiEoIuWIhuino+mqjOivgToge30iLCBSYW5nZVByb29mQ29uY2VwdDo6dmVyaWZ5X2RlY29tcG9zaXRpb24odmFsdWUsICZiaXRzKSk7CgogICAgcHJpbnRsbiEoIlxu5q+P5L2N6aqM6K+BOiIpOwogICAgZm9yIChpLCAmYml0KSBpbiBiaXRzLml0ZXIoKS50YWtlKDgpLmVudW1lcmF0ZSgpIHsKICAgICAgICBwcmludGxuISgiICDkvY0ge306IHt9IiwgaSwgUmFuZ2VQcm9vZkNvbmNlcHQ6OnByb3ZlX2JpdF9pc19iaW5hcnkoYml0KSk7CiAgICB9CgogICAgLy8g6IyD5Zu06aqM6K+BCiAgICBsZXQgbWF4X3ZhbHVlID0gKDF1NjQgPDwgMzIpIC0gMTsKICAgIHByaW50bG4hKCJcbuiMg+WbtOmqjOivgTogMCA8PSB7fSA8PSB7fSDihpIge30iLCB2YWx1ZSwgbWF4X3ZhbHVlLAogICAgICAgICAgICAgdmFsdWUgPD0gbWF4X3ZhbHVlKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+sha2 = "0.11"
+*/
+use sha2::{Sha256, Digest};
 
 // 概念演示：证明 value 在 [0, 2^n) 范围内
 // 实际实现需要使用 Pedersen 承诺和内部乘积论证

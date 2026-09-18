@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -211,6 +248,8 @@
 <h2 id="隐式类型转换-vs-显式类型转换"><a class="header" href="#隐式类型转换-vs-显式类型转换">隐式类型转换 vs 显式类型转换</a></h2>
 <h3 id="隐式强制转换coercion"><a class="header" href="#隐式强制转换coercion">隐式强制转换（Coercion）</a></h3>
 <p>Rust 虽然不支持一般的隐式类型转换，但在少数特定场景下，编译器会自动进行<strong>强制转换（coercion）</strong>：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIDEuIOiHquWKqOino+W8leeUqOW8uuWItui9rOaNou+8iERlcmVmIGNvZXJjaW9u77yJCiAgICBsZXQgczogU3RyaW5nID0gU3RyaW5nOjpmcm9tKCJoZWxsbyIpOwogICAgbGV0IHNsaWNlOiAmc3RyID0gJnM7IC8vIFN0cmluZyDoh6rliqjop6PlvJXnlKjkuLogJnN0cgoKICAgIGxldCB2OiBWZWM8aTMyPiA9IHZlYyFbMSwgMiwgM107CiAgICBsZXQgc2xpY2U6ICZbaTMyXSA9ICZ2OyAvLyBWZWM8VD4g6Ieq5Yqo6Kej5byV55So5Li6ICZbVF0KCiAgICAvLyAyLiAmbXV0IFQg6Ieq5Yqo6L2s5o2i5Li6ICZUCiAgICBsZXQgbXV0IHggPSA0MjsKICAgIGxldCByOiAmaTMyID0gJng7IC8vIOWPr+WPmOW8leeUqOiHquWKqOi9rOS4uuS4jeWPr+WPmOW8leeUqAoKICAgIC8vIDMuIOaVsOWAvOWtl+mdoumHj+eahOexu+Wei+aOqOaWrQogICAgbGV0IHg6IGkzMiA9IDQyOyAgICAgICAvLyA0MiDooqvmjqjmlq3kuLogaTMyCiAgICBsZXQgeTogZjY0ID0gMy4xNDsgICAgIC8vIDMuMTQg6KKr5o6o5pat5Li6IGY2NAogICAgbGV0IHo6IHU4ID0gMjU1OyAgICAgICAvLyAyNTUg6KKr5o6o5pat5Li6IHU4CgogICAgLy8gNC4g6Ieq5Yqo5o+Q5Y2H77ya5pW05pWw5Y+v5Lul6Ieq5Yqo6L2s5o2i5Li65pu05aSn55qE5ZCM56ym5Y+357G75Z6L77yI5Zyo54m55a6a5LiK5LiL5paH5Lit77yJCiAgICAvLyDms6jmhI/vvJpSdXN0IOeahOiHquWKqOaPkOWNh+mdnuW4uOaciemZkO+8jOS4jeWDjyBDIOivreiogOmCo+agt+iHqueUsQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 1. 自动解引用强制转换（Deref coercion）
     let s: String = String::from("hello");
@@ -233,6 +272,8 @@
 }</code></pre>
 <h3 id="显式类型转换"><a class="header" href="#显式类型转换">显式类型转换</a></h3>
 <p>Rust 要求绝大多数类型转换必须显式进行，这是 Rust 类型安全的重要保障：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOmUmeivr++8geS4jeaPkOS+m+makOW8j+i9rOaNogogICAgLy8gbGV0IGludGVnZXI6IGkzMiA9IDMuMTRfZjY0OyAvLyDnvJbor5HplJnor68gRTAzMDgKCiAgICAvLyDmraPnoa7vvJrkvb/nlKggYXMg5YWz6ZSu5a2X5pi+5byP6L2s5o2iCiAgICBsZXQgaW50ZWdlcjogaTMyID0gMy4xNF9mNjQgYXMgaTMyOwogICAgcHJpbnRsbiEoInt9IiwgaW50ZWdlcik7IC8vIDMKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 错误！不提供隐式转换
     // let integer: i32 = 3.14_f64; // 编译错误 E0308
@@ -261,6 +302,8 @@ where
 <p>这意味着：<strong>你只需要实现 <code>From</code>，就自动获得了 <code>Into</code></strong>。反之，如果需要将类型 A 转为类型 B，只需为 B 实现 <code>From&lt;A&gt;</code> 即可。</p>
 <h3 id="标准库中的实现"><a class="header" href="#标准库中的实现">标准库中的实现</a></h3>
 <p>Rust 标准库已经为许多基本类型实现了 <code>From</code>/<code>Into</code>：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOaVsOWAvOexu+Wei+S5i+mXtOeahOi9rOaNogogICAgbGV0IHg6IGkzMiA9IGk2NDo6ZnJvbSg0Mik7ICAgICAvLyBpNjQgLT4gaTMyCiAgICBsZXQgeTogZjY0ID0gZjMyOjpmcm9tKDMuMTQpOyAgIC8vIGYzMiAtPiBmNjQKICAgIGxldCB6OiB1MzIgPSB1MTY6OmZyb20oMTAwKTsgICAgLy8gdTE2IC0+IHUzMgoKICAgIC8vIOS9v+eUqCBJbnRv77yI5pu05bi46KeB77yM5Zug5Li66Ieq5Yqo5a6e546w77yJCiAgICBsZXQgYTogU3RyaW5nID0gImhlbGxvIi5pbnRvKCk7ICAvLyAmc3RyIC0+IFN0cmluZwogICAgbGV0IGI6IFZlYzx1OD4gPSAiaGVsbG8iLmludG8oKTsgLy8gJnN0ciAtPiBWZWM8dTg+CiAgICBsZXQgYzogaTY0ID0gNDJpMzIuaW50bygpOyAgICAgICAvLyBpMzIgLT4gaTY0CgogICAgLy8gYm9vbCDovazmlbTmlbAKICAgIGxldCBkOiBpMzIgPSB0cnVlLmludG8oKTsgICAgICAgLy8gYm9vbCAtPiBpMzIgKOWAvOS4uiAxKQogICAgbGV0IGU6IGkzMiA9IGZhbHNlLmludG8oKTsgICAgICAvLyBib29sIC0+IGkzMiAo5YC85Li6IDApCgogICAgcHJpbnRsbiEoImEgPSB7fSwgYiA9IHs6P30sIGMgPSB7fSwgZCA9IHt9LCBlID0ge30iLCBhLCBiLCBjLCBkLCBlKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 数值类型之间的转换
     let x: i32 = i64::from(42);     // i64 -&gt; i32
@@ -279,6 +322,8 @@ where
     println!("a = {}, b = {:?}, c = {}, d = {}, e = {}", a, b, c, d, e);
 }</code></pre>
 <h3 id="自定义类型的-from-实现"><a class="header" href="#自定义类型的-from-实现">自定义类型的 From 实现</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#I1tkZXJpdmUoRGVidWcpXQpzdHJ1Y3QgQ2Vsc2l1cyhmNjQpOwoKI1tkZXJpdmUoRGVidWcpXQpzdHJ1Y3QgRmFocmVuaGVpdChmNjQpOwoKLy8gQ2Vsc2l1cyAtPiBGYWhyZW5oZWl0CmltcGwgRnJvbTxDZWxzaXVzPiBmb3IgRmFocmVuaGVpdCB7CiAgICBmbiBmcm9tKGM6IENlbHNpdXMpIC0+IFNlbGYgewogICAgICAgIEZhaHJlbmhlaXQoYy4wICogOS4wIC8gNS4wICsgMzIuMCkKICAgIH0KfQoKLy8gRmFocmVuaGVpdCAtPiBDZWxzaXVzCmltcGwgRnJvbTxGYWhyZW5oZWl0PiBmb3IgQ2Vsc2l1cyB7CiAgICBmbiBmcm9tKGY6IEZhaHJlbmhlaXQpIC0+IFNlbGYgewogICAgICAgIENlbHNpdXMoKGYuMCAtIDMyLjApICogNS4wIC8gOS4wKQogICAgfQp9CgovLyDku44gZjY0IOebtOaOpeaehOmAoAppbXBsIEZyb208ZjY0PiBmb3IgQ2Vsc2l1cyB7CiAgICBmbiBmcm9tKHZhbHVlOiBmNjQpIC0+IFNlbGYgewogICAgICAgIENlbHNpdXModmFsdWUpCiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgYm9pbGluZyA9IENlbHNpdXMoMTAwLjApOwogICAgbGV0IGY6IEZhaHJlbmhlaXQgPSBib2lsaW5nLmludG8oKTsgLy8g6Ieq5Yqo6LCD55SoIEZyb208Q2Vsc2l1cz4KICAgIHByaW50bG4hKCIxMDDCsEMgPSB7Oi4xfcKwRiIsIGYuMCk7IC8vIDIxMi4wwrBGCgogICAgLy8g5L2/55SoIEludG8gdHJhaXQg57qm5p2f5L2c5Li65Ye95pWw5Y+C5pWwCiAgICBmbiBwcmludF90ZW1wZXJhdHVyZTxUOiBJbnRvPENlbHNpdXM+Pih0ZW1wOiBUKSB7CiAgICAgICAgbGV0IGM6IENlbHNpdXMgPSB0ZW1wLmludG8oKTsKICAgICAgICBwcmludGxuISgi5rip5bqmOiB7Oi4xfcKwQyIsIGMuMCk7CiAgICB9CgogICAgcHJpbnRfdGVtcGVyYXR1cmUoMzYuNV9mNjQpOyAgICAgIC8vIGY2NCAtPiBDZWxzaXVzCiAgICBwcmludF90ZW1wZXJhdHVyZShDZWxzaXVzKDAuMCkpOyAgIC8vIENlbHNpdXMgLT4gQ2Vsc2l1cwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">#[derive(Debug)]
 struct Celsius(f64);
 
@@ -322,12 +367,14 @@ fn main() {
 }</code></pre>
 <h3 id="tryfromtryinto可能失败的转换"><a class="header" href="#tryfromtryinto可能失败的转换">TryFrom/TryInto：可能失败的转换</a></h3>
 <p>当转换可能失败时（例如数值溢出、字符串解析错误），应使用 <code>TryFrom</code>/<code>TryInto</code>，它们返回 <code>Result</code> 类型：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6Y29udmVydDo6VHJ5RnJvbTsKdXNlIHN0ZDo6Y29udmVydDo6VHJ5SW50bzsKCmZuIG1haW4oKSB7CiAgICAvLyBUcnlGcm9t77ya5qOA5p+l5pWw5YC86IyD5Zu0CiAgICBsZXQgc21hbGwgPSB1ODo6dHJ5X2Zyb20oMzAwX2kzMik7CiAgICBtYXRjaCBzbWFsbCB7CiAgICAgICAgT2sodikgPT4gcHJpbnRsbiEoIui9rOaNouaIkOWKnzoge30iLCB2KSwKICAgICAgICBFcnIoZSkgPT4gcHJpbnRsbiEoIui9rOaNouWksei0pToge30iLCBlKSwgLy8g5pWw5YC86LaF5Ye66IyD5Zu0CiAgICB9CgogICAgbGV0IG9rOiB1OCA9IHU4Ojp0cnlfZnJvbSg0Ml9pMzIpLnVud3JhcCgpOwogICAgcHJpbnRsbiEoIjQyIC0+IHU4OiB7fSIsIG9rKTsgLy8gNDIKCiAgICAvLyBUcnlJbnRv77ya562J5Lu355qE5Y+N5ZCR5pON5L2cCiAgICBsZXQgcmVzdWx0OiBSZXN1bHQ8aTgsIF8+ID0gMzAwX2kzMi50cnlfaW50bygpOwogICAgYXNzZXJ0IShyZXN1bHQuaXNfZXJyKCkpOwoKICAgIGxldCByZXN1bHQ6IFJlc3VsdDxpOCwgXz4gPSAxMDBfaTMyLnRyeV9pbnRvKCk7CiAgICBhc3NlcnRfZXEhKHJlc3VsdC51bndyYXAoKSwgMTAwKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::convert::TryFrom;
 use std::convert::TryInto;
 
 fn main() {
     // TryFrom：检查数值范围
-    let small: u8 = u8::try_from(300_i32);
+    let small = u8::try_from(300_i32);
     match small {
         Ok(v) =&gt; println!("转换成功: {}", v),
         Err(e) =&gt; println!("转换失败: {}", e), // 数值超出范围
@@ -362,6 +409,8 @@ pub trait AsMut&lt;T: ?Sized&gt; {
 <span class="boring">}</span></code></pre>
 <h3 id="字符串泛型函数"><a class="header" href="#字符串泛型函数">字符串泛型函数</a></h3>
 <p><code>AsRef</code> 最常见的应用场景是编写能够接受多种字符串类型的泛型函数：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6ZnM7CnVzZSBzdGQ6OmlvOwp1c2Ugc3RkOjpwYXRoOjpQYXRoOwoKLy8vIOivu+WPluaWh+S7tuWGheWuue+8jOaOpeWPl+S7u+S9leWPr+S7pei9rOaNouS4uiAmc3RyIOeahOexu+WeiwpmbiBwcmludF9sZW5ndGg8UzogQXNSZWY8c3RyPj4odGV4dDogUykgewogICAgbGV0IHMgPSB0ZXh0LmFzX3JlZigpOwogICAgcHJpbnRsbiEoIuWtl+espuS4sumVv+W6pjoge30iLCBzLmxlbigpKTsKfQoKLy8vIOaJk+W8gOaWh+S7tu+8jOaOpeWPl+S7u+S9leWPr+S7pei9rOaNouS4uiBBc1JlZjxQYXRoPiDnmoTnsbvlnosKZm4gcmVhZF9maWxlPFA6IEFzUmVmPFBhdGg+PihwYXRoOiBQKSAtPiBpbzo6UmVzdWx0PFN0cmluZz4gewogICAgZnM6OnJlYWRfdG9fc3RyaW5nKHBhdGgpCn0KCmZuIG1haW4oKSB7CiAgICAvLyBBc1JlZjxzdHI+77ya5o6l5Y+XIFN0cmluZ+OAgSZzdHLjgIEmU3RyaW5nIOetiQogICAgcHJpbnRfbGVuZ3RoKCJoZWxsbyIpOyAgICAgICAgICAgICAgICAgICAgLy8gJnN0cgogICAgcHJpbnRfbGVuZ3RoKFN0cmluZzo6ZnJvbSgiaGVsbG8iKSk7ICAgICAgLy8gU3RyaW5nCiAgICBwcmludF9sZW5ndGgoJlN0cmluZzo6ZnJvbSgiaGVsbG8iKSk7ICAgICAvLyAmU3RyaW5nCgogICAgLy8gQXNSZWY8UGF0aD7vvJrmjqXlj5cgJnN0cuOAgVN0cmluZ+OAgSZQYXRo44CBUGF0aEJ1ZiDnrYkKICAgIGxldCBjb250ZW50ID0gcmVhZF9maWxlKCJDYXJnby50b21sIikudW53cmFwKCk7CiAgICBwcmludGxuISgiQ2FyZ28udG9tbCDliY0xMDDlrZfnrKY6IHt9IiwgJmNvbnRlbnRbLi4xMDAubWluKGNvbnRlbnQubGVuKCkpXSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::fs;
 use std::io;
 use std::path::Path;
@@ -388,6 +437,8 @@ fn main() {
     println!("Cargo.toml 前100字符: {}", &amp;content[..100.min(content.len())]);
 }</code></pre>
 <h3 id="标准库中的-asref-实现"><a class="header" href="#标准库中的-asref-实现">标准库中的 AsRef 实现</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIFN0cmluZyDlrp7njrDkuoYgQXNSZWY8c3RyPgogICAgbGV0IHMgPSBTdHJpbmc6OmZyb20oImhlbGxvIik7CiAgICBsZXQgcjogJnN0ciA9IHMuYXNfcmVmKCk7CgogICAgLy8gVmVjPFQ+IOWunueOsOS6hiBBc1JlZjxbVF0+CiAgICBsZXQgdiA9IHZlYyFbMSwgMiwgM107CiAgICBsZXQgc2xpY2U6ICZbaTMyXSA9IHYuYXNfcmVmKCk7CgogICAgLy8gU3RyaW5nIOWunueOsOS6hiBBc1JlZjxbdThdPgogICAgbGV0IGJ5dGVzOiAmW3U4XSA9IHMuYXNfcmVmKCk7CgogICAgcHJpbnRsbiEoInIgPSB7fSwgc2xpY2UgPSB7Oj99Iiwgciwgc2xpY2UpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // String 实现了 AsRef&lt;str&gt;
     let s = String::from("hello");
@@ -406,6 +457,8 @@ fn main() {
 <h2 id="as-关键字"><a class="header" href="#as-关键字">as 关键字</a></h2>
 <p><code>as</code> 关键字是 Rust 中最直接的显式类型转换方式，但也是最容易出问题的方式。</p>
 <h3 id="数值类型之间的转换"><a class="header" href="#数值类型之间的转换">数值类型之间的转换</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOaVtOaVsOS5i+mXtOeahOi9rOaNogogICAgbGV0IGE6IGkzMiA9IDQyOwogICAgbGV0IGI6IGk2NCA9IGEgYXMgaTY0OyAgICAgICAvLyDlsI/nsbvlnosgLT4g5aSn57G75Z6L77ya5a6J5YWoCiAgICBsZXQgYzogaTggPSBhIGFzIGk4OyAgICAgICAgIC8vIOWkp+exu+WeiyAtPiDlsI/nsbvlnovvvJrlj6/og73miKrmlq0KICAgIGxldCBkOiB1MzIgPSBhIGFzIHUzMjsgICAgICAgLy8g5pyJ56ym5Y+3IC0+IOaXoOespuWPt++8mumHjeaWsOino+mHiuS9jeaooeW8jwoKICAgIHByaW50bG4hKCJpMzIoe30pIC0+IGk2NCh7fSksIGk4KHt9KSwgdTMyKHt9KSIsIGEsIGIsIGMsIGQpOwoKICAgIC8vIOa1rueCueaVsOS5i+mXtOeahOi9rOaNogogICAgbGV0IGU6IGYzMiA9IDMuMTQxNTkyNjVfZjY0OyAgLy8gZjY0IC0+IGYzMu+8muS4ouWkseeyvuW6pgogICAgbGV0IGY6IGY2NCA9IGUgYXMgZjY0OyAgICAgICAvLyBmMzIgLT4gZjY077ya5a6J5YWo77yI5L2G5bey5Lii5aSx55qE57K+5bqm5peg5rOV5oGi5aSN77yJCgogICAgLy8g5pW05pWwIDwtPiDmta7ngrnmlbAKICAgIGxldCBnOiBmNjQgPSA0MiBhcyBmNjQ7ICAgICAgIC8vIGkzMiAtPiBmNjTvvJrlronlhagKICAgIGxldCBoOiBpMzIgPSAzLjdfZjY0IGFzIGkzMjsgLy8gZjY0IC0+IGkzMu+8muaIquaWreWwj+aVsOmDqOWIhu+8iOS4jeaYr+Wbm+iIjeS6lOWFpe+8iQogICAgbGV0IGk6IGkzMiA9IDMuOV9mNjQgYXMgaTMyOyAvLyDlkIzmoLfmiKrmlq3kuLogMwoKICAgIHByaW50bG4hKCJmNjQoMy43KSAtPiBpMzI6IHt9IiwgaCk7IC8vIDMKICAgIHByaW50bG4hKCJmNjQoMy45KSAtPiBpMzI6IHt9IiwgaSk7IC8vIDMKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 整数之间的转换
     let a: i32 = 42;
@@ -429,6 +482,8 @@ fn main() {
 }</code></pre>
 <h3 id="精度丢失和截断"><a class="header" href="#精度丢失和截断">精度丢失和截断</a></h3>
 <p>使用 <code>as</code> 进行数值转换时，需要特别注意以下情况：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIDEuIOa6ouWHuuaIquaWre+8muWkp+WAvOaUvuWFpeWwj+exu+WeiwogICAgbGV0IHg6IGkzMiA9IDMwMDsKICAgIGxldCB5OiBpOCA9IHggYXMgaTg7IC8vIDMwMCDotoXlh7ogaTgg6IyD5Zu0KC0xMjh+MTI3Ke+8jOe7k+aenOS4uiA0NO+8iOaIquaWremrmOS9je+8iQogICAgcHJpbnRsbiEoImkzMigzMDApIC0+IGk4OiB7fSIsIHkpOyAvLyA0NAoKICAgIC8vIDIuIOi0n+aVsOi9rOaXoOespuWPt+aVsO+8mumHjeaWsOino+mHiuS9jeaooeW8jwogICAgbGV0IG5lZzogaTMyID0gLTE7CiAgICBsZXQgcG9zOiB1MzIgPSBuZWcgYXMgdTMyOyAvLyAtMSDnmoTooaXnoIHlhajkuLox77yM6Kej6YeK5Li6IHUzMiDljbPkuLrmnIDlpKflgLwKICAgIHByaW50bG4hKCJpMzIoLTEpIC0+IHUzMjoge30iLCBwb3MpOyAvLyA0Mjk0OTY3Mjk1CgogICAgLy8gMy4g5rWu54K55pWwIE5hTiDlkozml6DnqbflpKfovazmlbTmlbAKICAgIGxldCBuYW46IGY2NCA9IGY2NDo6TkFOOwogICAgbGV0IGluZjogZjY0ID0gZjY0OjpJTkZJTklUWTsKICAgIGxldCBuYW5faW50ID0gbmFuIGFzIGkzMjsKICAgIGxldCBpbmZfaW50ID0gaW5mIGFzIGkzMjsKICAgIHByaW50bG4hKCJOYU4gLT4gaTMyOiB7fSIsIG5hbl9pbnQpOyAvLyAw77yI5pyq5a6a5LmJ6KGM5Li677yM5b2T5YmN5a6e546w6L+U5ZueMO+8iQogICAgcHJpbnRsbiEoIkluZiAtPiBpMzI6IHt9IiwgaW5mX2ludCk7IC8vIOacquWumuS5ieihjOS4ugoKICAgIC8vIDQuIOWuieWFqOeahOabv+S7o+aWueahiAogICAgbGV0IHNhZmU6IE9wdGlvbjxpOD4gPSBpODo6dHJ5X2Zyb20oMzAwX2kzMikub2soKTsgLy8gTm9uZQogICAgcHJpbnRsbiEoImk4Ojp0cnlfZnJvbSgzMDApID0gezo/fSIsIHNhZmUpOyAvLyBOb25lCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 1. 溢出截断：大值放入小类型
     let x: i32 = 300;
@@ -457,6 +512,8 @@ fn main() {
 </blockquote>
 <h3 id="指针转换"><a class="header" href="#指针转换">指针转换</a></h3>
 <p><code>as</code> 还可以用于指针类型之间的转换，但这属于 unsafe 操作：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCB4OiBpMzIgPSA0MjsKCiAgICAvLyDlsIYgJmkzMiDovazkuLroo7jmjIfpkogKICAgIGxldCByYXc6ICpjb25zdCBpMzIgPSAmeCBhcyAqY29uc3QgaTMyOwoKICAgIC8vIOWwhuijuOaMh+mSiOi9rOS4uuaVtOaVsOWcsOWdgAogICAgbGV0IGFkZHIgPSByYXcgYXMgdXNpemU7CiAgICBwcmludGxuISgi5Y+Y6YePIHgg55qE5Zyw5Z2AOiB7OnB9ICjmlbDlgLw6IHt9KSIsIHJhdywgYWRkcik7CgogICAgLy8g5bCGIHVzaXplIOi9rOWbnuijuOaMh+mSiO+8iHVuc2FmZe+8iQogICAgdW5zYWZlIHsKICAgICAgICBsZXQgcmVjb25zdHJ1Y3RlZDogKmNvbnN0IGkzMiA9IGFkZHIgYXMgKmNvbnN0IGkzMjsKICAgICAgICBwcmludGxuISgi6YCa6L+H5Zyw5Z2A6K6/6Zeu55qE5YC8OiB7fSIsICpyZWNvbnN0cnVjdGVkKTsgLy8gNDIKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let x: i32 = 42;
 
@@ -493,6 +550,8 @@ pub fn parse&lt;F: FromStr&gt;(&amp;self) -&gt; Result&lt;F, F::Err&gt; {
     FromStr::from_str(self)
 }
 <span class="boring">}</span></code></pre>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6c3RyOjpGcm9tU3RyOwoKZm4gbWFpbigpIHsKICAgIC8vIOS9v+eUqCBwYXJzZSDmlrnms5UKICAgIGxldCBmb3VyOiB1MzIgPSAiNCIucGFyc2UoKS51bndyYXAoKTsKICAgIHByaW50bG4hKCJwYXJzZSB1MzI6IHt9IiwgZm91cik7IC8vIDQKCiAgICAvLyB0dXJib2Zpc2gg6K+t5rOV77ya5b2T57G75Z6L5peg5rOV5o6o5pat5pe25L2/55SoCiAgICBsZXQgZm91ciA9ICI0Ii5wYXJzZTo6PHUzMj4oKTsKICAgIHByaW50bG4hKCJwYXJzZTo6PHUzMj46IHs6P30iLCBmb3VyKTsgLy8gT2soNCkKCiAgICAvLyDkvb/nlKggRnJvbVN0ciB0cmFpdCDnm7TmjqXosIPnlKgKICAgIGxldCBzID0gIjUiOwogICAgbGV0IHggPSBpMzI6OmZyb21fc3RyKHMpLnVud3JhcCgpOwogICAgcHJpbnRsbiEoImZyb21fc3RyOiB7fSIsIHgpOyAvLyA1CgogICAgLy8g6Kej5p6Q5aSx6LSl55qE5oOF5Ya1CiAgICBsZXQgcmVzdWx0ID0gImFiYyIucGFyc2U6OjxpMzI+KCk7CiAgICBwcmludGxuISgicGFyc2UgJ2FiYyc6IHs6P30iLCByZXN1bHQpOyAvLyBFcnIoUGFyc2VJbnRFcnJvciB7IC4uLiB9KQoKICAgIC8vIOWkhOeQhuino+aekOmUmeivrwogICAgbWF0Y2ggIjQyYWJjIi5wYXJzZTo6PGkzMj4oKSB7CiAgICAgICAgT2sobikgPT4gcHJpbnRsbiEoIuino+aekOaIkOWKnzoge30iLCBuKSwKICAgICAgICBFcnIoZSkgPT4gcHJpbnRsbiEoIuino+aekOWksei0pToge30iLCBlKSwKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::str::FromStr;
 
 fn main() {
@@ -521,6 +580,8 @@ fn main() {
 }</code></pre>
 <h3 id="turbofish-语法"><a class="header" href="#turbofish-语法">turbofish 语法</a></h3>
 <p>当编译器无法从上下文推断 <code>parse</code> 的目标类型时，需要使用 <strong>turbofish 语法</strong> <code>::&lt;T&gt;</code> 显式指定：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOexu+Wei+WPr+aOqOaWre+8muS4jemcgOimgSB0dXJib2Zpc2gKICAgIGxldCB4OiBpMzIgPSAiNDIiLnBhcnNlKCkudW53cmFwKCk7CgogICAgLy8g57G75Z6L5LiN5Y+v5o6o5pat77ya6ZyA6KaBIHR1cmJvZmlzaAogICAgbGV0IHkgPSAiNDIiLnBhcnNlOjo8aTMyPigpLnVud3JhcCgpOwoKICAgIC8vIOWHveaVsOWPguaVsOS4rQogICAgZm4gZG91YmxlKHM6ICZzdHIpIC0+IFJlc3VsdDxpMzIsIHN0ZDo6bnVtOjpQYXJzZUludEVycm9yPiB7CiAgICAgICAgbGV0IG46IGkzMiA9IHMucGFyc2UoKT87CiAgICAgICAgT2sobiAqIDIpCiAgICB9CgogICAgcHJpbnRsbiEoImRvdWJsZSgnMjEnKSA9IHs6P30iLCBkb3VibGUoIjIxIikpOyAvLyBPayg0MikKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 类型可推断：不需要 turbofish
     let x: i32 = "42".parse().unwrap();
@@ -538,6 +599,8 @@ fn main() {
 }</code></pre>
 <h3 id="tostring-trait"><a class="header" href="#tostring-trait">ToString trait</a></h3>
 <p><code>ToString</code> trait 是 <code>FromStr</code> 的反向操作，将类型转换为字符串：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6Zm10OjpEaXNwbGF5OwoKZm4gbWFpbigpIHsKICAgIC8vIOaVsOWAvOi9rOWtl+espuS4sgogICAgbGV0IHMgPSA0Mi50b19zdHJpbmcoKTsKICAgIHByaW50bG4hKCI0Mi50b19zdHJpbmcoKSA9ICd7fSciLCBzKTsgLy8gIjQyIgoKICAgIGxldCBmID0gMy4xNC50b19zdHJpbmcoKTsKICAgIHByaW50bG4hKCIzLjE0LnRvX3N0cmluZygpID0gJ3t9JyIsIGYpOyAvLyAiMy4xNCIKCiAgICBsZXQgYiA9IHRydWUudG9fc3RyaW5nKCk7CiAgICBwcmludGxuISgidHJ1ZS50b19zdHJpbmcoKSA9ICd7fSciLCBiKTsgLy8gInRydWUiCgogICAgLy8g5L2/55SoIGZvcm1hdCEg5a6P77yI5pu054G15rS777yJCiAgICBsZXQgZm9ybWF0dGVkID0gZm9ybWF0ISgie30iLCA0Mik7CiAgICBwcmludGxuISgiZm9ybWF0ISgne30nKSA9ICd7fSciLCA0MiwgZm9ybWF0dGVkKTsgLy8gIjQyIgoKICAgIGxldCBoZXggPSBmb3JtYXQhKCJ7Onh9IiwgMjU1KTsKICAgIHByaW50bG4hKCIyNTUg55qE5Y2B5YWt6L+b5Yi2OiAne30nIiwgaGV4KTsgLy8gImZmIgoKICAgIGxldCBiaW5hcnkgPSBmb3JtYXQhKCJ7OmJ9IiwgMTApOwogICAgcHJpbnRsbiEoIjEwIOeahOS6jOi/m+WItjogJ3t9JyIsIGJpbmFyeSk7IC8vICIxMDEwIgp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::fmt::Display;
 
 fn main() {
@@ -591,6 +654,8 @@ fn main() {
 </table>
 </div>
 <h3 id="代码示例"><a class="header" href="#代码示例">代码示例</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6c3RyOwoKZm4gbWFpbigpIHsKICAgIC8vICZzdHIgLT4gU3RyaW5nCiAgICBsZXQgczogJnN0ciA9ICJoZWxsbyI7CiAgICBsZXQgb3duZWQ6IFN0cmluZyA9IFN0cmluZzo6ZnJvbShzKTsKICAgIGxldCBvd25lZDI6IFN0cmluZyA9IHMudG9fc3RyaW5nKCk7CiAgICBsZXQgb3duZWQzOiBTdHJpbmcgPSBzLnRvX293bmVkKCk7CiAgICBhc3NlcnRfZXEhKG93bmVkLCBvd25lZDIpOwogICAgYXNzZXJ0X2VxIShvd25lZDIsIG93bmVkMyk7CgogICAgLy8gJnN0ciAtPiAmW3U4XQogICAgbGV0IGJ5dGVzOiAmW3U4XSA9IHMuYXNfYnl0ZXMoKTsKICAgIHByaW50bG4hKCJieXRlczogezo/fSIsIGJ5dGVzKTsgLy8gWzEwNCwgMTAxLCAxMDgsIDEwOCwgMTExXQoKICAgIC8vIFN0cmluZyAtPiAmc3RyCiAgICBsZXQgaGVsbG8gPSBTdHJpbmc6OmZyb20oImhlbGxvIik7CiAgICBsZXQgc2xpY2U6ICZzdHIgPSAmaGVsbG87ICAgICAgLy8gRGVyZWYgY29lcmNpb24KICAgIGxldCBzbGljZTI6ICZzdHIgPSBoZWxsby5hc19zdHIoKTsKICAgIGFzc2VydF9lcSEoc2xpY2UsIHNsaWNlMik7CgogICAgLy8gU3RyaW5nIC0+IFZlYzx1OD4KICAgIGxldCBoZWxsbyA9IFN0cmluZzo6ZnJvbSgiaGVsbG8iKTsKICAgIGxldCBieXRlc192ZWM6IFZlYzx1OD4gPSBoZWxsby5pbnRvX2J5dGVzKCk7CiAgICBwcmludGxuISgiaW50b19ieXRlczogezo/fSIsIGJ5dGVzX3ZlYyk7CgogICAgLy8gJlt1OF0gLT4gJnN0cu+8iOWPr+iDveWksei0pe+8iQogICAgbGV0IHZhbGlkOiAmW3U4XSA9IGIiaGVsbG8iOwogICAgbGV0IHM6ICZzdHIgPSBzdHI6OmZyb21fdXRmOCh2YWxpZCkudW53cmFwKCk7CiAgICBwcmludGxuISgiZnJvbV91dGY4OiB7fSIsIHMpOwoKICAgIGxldCBpbnZhbGlkOiAmW3U4XSA9ICZbMHhmZiwgMHhmZV07IC8vIOmdniBVVEYtOAogICAgbGV0IHJlc3VsdCA9IHN0cjo6ZnJvbV91dGY4KGludmFsaWQpOwogICAgcHJpbnRsbiEoImludmFsaWQgdXRmODogezo/fSIsIHJlc3VsdCk7IC8vIEVycihVdGY4RXJyb3IpCgogICAgLy8gVmVjPHU4PiAtPiBTdHJpbmfvvIjlj6/og73lpLHotKXvvIkKICAgIGxldCBieXRlcyA9IHZlYyFbMTA0LCAxMDEsIDEwOCwgMTA4LCAxMTFdOyAvLyAiaGVsbG8iIOeahCBBU0NJSQogICAgbGV0IHMgPSBTdHJpbmc6OmZyb21fdXRmOChieXRlcykudW53cmFwKCk7CiAgICBwcmludGxuISgiZnJvbV91dGY4KFZlYyk6IHt9Iiwgcyk7CgogICAgLy8gJnN0ciAtPiBWZWM8Y2hhcj4KICAgIGxldCBjaGFyczogVmVjPGNoYXI+ID0gImhlbGxvIi5jaGFycygpLmNvbGxlY3QoKTsKICAgIHByaW50bG4hKCJjaGFyczogezo/fSIsIGNoYXJzKTsgLy8gWydoJywgJ2UnLCAnbCcsICdsJywgJ28nXQoKICAgIC8vIFZlYzxjaGFyPiAtPiBTdHJpbmcKICAgIGxldCBhcnI6IFZlYzxjaGFyPiA9IHZlYyFbJ2gnLCAnZScsICdsJywgJ2wnLCAnbyddOwogICAgbGV0IGdyZWV0aW5nOiBTdHJpbmcgPSBhcnIuaXRlcigpLmNvbGxlY3QoKTsKICAgIHByaW50bG4hKCJjb2xsZWN0OiB7fSIsIGdyZWV0aW5nKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::str;
 
 fn main() {
@@ -643,6 +708,8 @@ fn main() {
 <hr>
 <h2 id="常见转换场景"><a class="header" href="#常见转换场景">常见转换场景</a></h2>
 <h3 id="集合类型转换"><a class="header" href="#集合类型转换">集合类型转换</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIFZlYyA8LT4gQXJyYXkKICAgIGxldCB2ZWMgPSB2ZWMhWzEsIDIsIDNdOwogICAgbGV0IGFycjogW2kzMjsgM10gPSB2ZWMudHJ5X2ludG8oKS51bndyYXAoKTsgLy8gVmVjIC0+IEFycmF577yI6ZW/5bqm5b+F6aG75Yy56YWN77yJCiAgICBwcmludGxuISgiVmVjIC0+IEFycmF5OiB7Oj99IiwgYXJyKTsKCiAgICBsZXQgYXJyID0gWzEsIDIsIDNdOwogICAgbGV0IHZlYzogVmVjPGkzMj4gPSBhcnIudG9fdmVjKCk7IC8vIEFycmF5IC0+IFZlYwogICAgcHJpbnRsbiEoIkFycmF5IC0+IFZlYzogezo/fSIsIHZlYyk7CgogICAgLy8gVmVjIDwtPiBIYXNoU2V0CiAgICB1c2Ugc3RkOjpjb2xsZWN0aW9uczo6SGFzaFNldDsKICAgIGxldCB2ZWMgPSB2ZWMhWzEsIDIsIDMsIDIsIDFdOwogICAgbGV0IHNldDogSGFzaFNldDxpMzI+ID0gdmVjLmludG9faXRlcigpLmNvbGxlY3QoKTsgLy8g5Y676YeNCiAgICBwcmludGxuISgiVmVjIC0+IEhhc2hTZXQ6IHs6P30iLCBzZXQpOwoKICAgIGxldCBzZXQ6IEhhc2hTZXQ8JnN0cj4gPSBbImFwcGxlIiwgImJhbmFuYSIsICJjaGVycnkiXS5pbnRvX2l0ZXIoKS5jb2xsZWN0KCk7CiAgICBsZXQgdmVjOiBWZWM8JnN0cj4gPSBzZXQuaW50b19pdGVyKCkuY29sbGVjdCgpOwogICAgcHJpbnRsbiEoIkhhc2hTZXQgLT4gVmVjOiB7Oj99IiwgdmVjKTsKCiAgICAvLyBTdHJpbmcgPC0+IFZlYzwmc3RyPgogICAgbGV0IHMgPSAiaGVsbG8gd29ybGQgcnVzdCI7CiAgICBsZXQgd29yZHM6IFZlYzwmc3RyPiA9IHMuc3BsaXQoJyAnKS5jb2xsZWN0KCk7CiAgICBwcmludGxuISgic3BsaXQ6IHs6P30iLCB3b3Jkcyk7IC8vIFsiaGVsbG8iLCAid29ybGQiLCAicnVzdCJdCgogICAgbGV0IGpvaW5lZCA9IHdvcmRzLmpvaW4oIi0iKTsKICAgIHByaW50bG4hKCJqb2luOiB7fSIsIGpvaW5lZCk7IC8vICJoZWxsby13b3JsZC1ydXN0Igp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // Vec &lt;-&gt; Array
     let vec = vec![1, 2, 3];
@@ -672,7 +739,13 @@ fn main() {
     println!("join: {}", joined); // "hello-world-rust"
 }</code></pre>
 <h3 id="日期时间解析"><a class="header" href="#日期时间解析">日期时间解析</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use chrono::NaiveDateTime;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KY2hyb25vID0gIjAuNCIKKi8KdXNlIGNocm9ubzo6TmFpdmVEYXRlVGltZTsKCmZuIG1haW4oKSB7CiAgICAvLyAyLiAmc3RyIC0+IERhdGVUaW1lCiAgICBsZXQgbm9fdGltZXpvbmUgPSBOYWl2ZURhdGVUaW1lOjpwYXJzZV9mcm9tX3N0cigKICAgICAgICAiMjAxNS0wOS0wNSAyMzo1NjowNCIsCiAgICAgICAgIiVZLSVtLSVkICVIOiVNOiVTIgogICAgKTsKICAgIHByaW50bG4hKCJ7Oj99Iiwgbm9fdGltZXpvbmUpOyAvLyBPaygyMDE1LTA5LTA1VDIzOjU2OjA0KQoKICAgIC8vIERhdGVUaW1lIC0+IFN0cmluZwogICAgaWYgbGV0IE9rKGR0KSA9IG5vX3RpbWV6b25lIHsKICAgICAgICBsZXQgZm9ybWF0dGVkID0gZHQuZm9ybWF0KCIlWeW5tCVt5pyIJWTml6UgJUg6JU0iKS50b19zdHJpbmcoKTsKICAgICAgICBwcmludGxuISgi5qC85byP5YyWOiB7fSIsIGZvcm1hdHRlZCk7IC8vICIyMDE15bm0MDnmnIgwNeaXpSAyMzo1NiIKICAgIH0KCiAgICAvLyDlvZPliY3ml7bpl7QKICAgIGxldCBub3cgPSBjaHJvbm86OkxvY2FsOjpub3coKTsKICAgIHByaW50bG4hKCLlvZPliY3ml7bpl7Q6IHt9Iiwgbm93LmZvcm1hdCgiJVktJW0tJWQgJUg6JU06JVMiKSk7CgogICAgLy8g5pe26Ze05oiz6L2s5o2iCiAgICBsZXQgdGltZXN0YW1wID0gMTYwOTQ1OTIwMDsgLy8gMjAyMS0wMS0wMSAwMDowMDowMCBVVEMKICAgIGxldCBkdCA9IGNocm9ubzo6TmFpdmVEYXRlVGltZTo6ZnJvbV90aW1lc3RhbXBfb3B0KHRpbWVzdGFtcCwgMCkudW53cmFwKCk7CiAgICBwcmludGxuISgi5pe26Ze05oizIC0+IERhdGVUaW1lOiB7fSIsIGR0LmZvcm1hdCgiJVktJW0tJWQgJUg6JU06JVMiKSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+chrono = "0.4"
+*/
+use chrono::NaiveDateTime;
 
 fn main() {
     // 2. &amp;str -&gt; DateTime
@@ -698,6 +771,8 @@ fn main() {
     println!("时间戳 -&gt; DateTime: {}", dt.format("%Y-%m-%d %H:%M:%S"));
 }</code></pre>
 <h3 id="optionresult-转换"><a class="header" href="#optionresult-转换">Option/Result 转换</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIE9wdGlvbiAtPiBSZXN1bHQKICAgIGxldCBzb21lX3ZhbDogT3B0aW9uPGkzMj4gPSBTb21lKDQyKTsKICAgIGxldCByZXN1bHQ6IFJlc3VsdDxpMzIsICZzdHI+ID0gc29tZV92YWwub2tfb3IoIuWAvOS4uiBOb25lIik7CiAgICBwcmludGxuISgib2tfb3I6IHs6P30iLCByZXN1bHQpOyAvLyBPayg0MikKCiAgICBsZXQgbm9uZV92YWw6IE9wdGlvbjxpMzI+ID0gTm9uZTsKICAgIGxldCByZXN1bHQ6IFJlc3VsdDxpMzIsICZzdHI+ID0gbm9uZV92YWwub2tfb3IoIuWAvOS4uiBOb25lIik7CiAgICBwcmludGxuISgib2tfb3I6IHs6P30iLCByZXN1bHQpOyAvLyBFcnIoIuWAvOS4uiBOb25lIikKCiAgICAvLyBSZXN1bHQgLT4gT3B0aW9uCiAgICBsZXQgb2tfcmVzdWx0OiBSZXN1bHQ8aTMyLCAmc3RyPiA9IE9rKDQyKTsKICAgIGxldCBvcHQ6IE9wdGlvbjxpMzI+ID0gb2tfcmVzdWx0Lm9rKCk7CiAgICBwcmludGxuISgib2soKTogezo/fSIsIG9wdCk7IC8vIFNvbWUoNDIpCgogICAgbGV0IGVycl9yZXN1bHQ6IFJlc3VsdDxpMzIsICZzdHI+ID0gRXJyKCLplJnor68iKTsKICAgIGxldCBvcHQ6IE9wdGlvbjxpMzI+ID0gZXJyX3Jlc3VsdC5vaygpOwogICAgcHJpbnRsbiEoIm9rKCk6IHs6P30iLCBvcHQpOyAvLyBOb25lCgogICAgLy8gT3B0aW9uIOS5i+mXtOeahOi9rOaNogogICAgbGV0IG9wdF9zdHI6IE9wdGlvbjwmc3RyPiA9IFNvbWUoIjQyIik7CiAgICBsZXQgb3B0X251bTogT3B0aW9uPGkzMj4gPSBvcHRfc3RyLmFuZF90aGVuKHxzfCBzLnBhcnNlKCkub2soKSk7CiAgICBwcmludGxuISgiYW5kX3RoZW46IHs6P30iLCBvcHRfbnVtKTsgLy8gU29tZSg0MikKCiAgICAvLyBSZXN1bHQg5LmL6Ze055qE6L2s5o2i77yIbWFwX2Vycu+8iQogICAgbGV0IHJlc3VsdDogUmVzdWx0PGkzMiwgJnN0cj4gPSAiYWJjIi5wYXJzZTo6PGkzMj4oKS5tYXBfZXJyKHxffCAi6Kej5p6Q5aSx6LSlIik7CiAgICBwcmludGxuISgibWFwX2Vycjogezo/fSIsIHJlc3VsdCk7IC8vIEVycigi6Kej5p6Q5aSx6LSlIikKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // Option -&gt; Result
     let some_val: Option&lt;i32&gt; = Some(42);
@@ -727,6 +802,8 @@ fn main() {
     println!("map_err: {:?}", result); // Err("解析失败")
 }</code></pre>
 <h3 id="boxrcarc-转换"><a class="header" href="#boxrcarc-转换">Box/Rc/Arc 转换</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6cmM6OlJjOwp1c2Ugc3RkOjpzeW5jOjpBcmM7CgpmbiBtYWluKCkgewogICAgLy8gQm94PFQ+IC0+IFJjPFQ+CiAgICBsZXQgYm94ZWQ6IEJveDxpMzI+ID0gQm94OjpuZXcoNDIpOwogICAgbGV0IHJjOiBSYzxpMzI+ID0gUmM6OmZyb20oYm94ZWQpOyAvLyDmtojotLkgQm9477yM5Yib5bu6IFJjCiAgICBwcmludGxuISgiQm94IC0+IFJjOiB7fSIsIHJjKTsKCiAgICAvLyBCb3g8VD4gLT4gQXJjPFQ+CiAgICBsZXQgYm94ZWQ6IEJveDxTdHJpbmc+ID0gQm94OjpuZXcoU3RyaW5nOjpmcm9tKCJoZWxsbyIpKTsKICAgIGxldCBhcmM6IEFyYzxTdHJpbmc+ID0gQXJjOjpmcm9tKGJveGVkKTsKICAgIHByaW50bG4hKCJCb3ggLT4gQXJjOiB7fSIsIGFyYyk7CgogICAgLy8gUmM8VD4gLT4gQXJjPFQ+77yI6ZyA6KaB5YWI6Kej5YyF5YaN5YyF6KOF77yJCiAgICBsZXQgcmM6IFJjPFZlYzxpMzI+PiA9IFJjOjpuZXcodmVjIVsxLCAyLCAzXSk7CiAgICBsZXQgYXJjOiBBcmM8VmVjPGkzMj4+ID0gQXJjOjpmcm9tKCgqcmMpLmNsb25lKCkpOwogICAgcHJpbnRsbiEoIlJjIC0+IEFyYzogezo/fSIsIGFyYyk7CgogICAgLy8gJlQgLT4gQm94PFQ+CiAgICBsZXQgeCA9IDQyOwogICAgbGV0IGJveGVkOiBCb3g8aTMyPiA9IEJveDo6bmV3KHgpOyAvLyDmi7fotJ3lgLzliLDloIbkuIoKCiAgICAvLyAmc3RyIC0+IEJveDxzdHI+CiAgICBsZXQgYm94ZWRfc3RyOiBCb3g8c3RyPiA9ICJoZWxsbyIuaW50bygpOwogICAgcHJpbnRsbiEoIiZzdHIgLT4gQm94PHN0cj46IHt9IiwgYm94ZWRfc3RyKTsKCiAgICAvLyBTdHJpbmcgLT4gQm94PHN0cj4KICAgIGxldCBzID0gU3RyaW5nOjpmcm9tKCJoZWxsbyIpOwogICAgbGV0IGJveGVkOiBCb3g8c3RyPiA9IHMuaW50b19ib3hlZF9zdHIoKTsKICAgIHByaW50bG4hKCJTdHJpbmcgLT4gQm94PHN0cj46IHt9IiwgYm94ZWQpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::rc::Rc;
 use std::sync::Arc;
 
@@ -778,6 +855,8 @@ fn main() {
 </table>
 </div>
 <h3 id="选择建议"><a class="header" href="#选择建议">选择建议</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCB2YWx1ZTogaTY0ID0gMzAwOwoKICAgIC8vIOaOqOiNkO+8muS9v+eUqCBUcnlGcm9t77yM5piO56Gu5aSE55CG5Y+v6IO955qE5aSx6LSlCiAgICBtYXRjaCBpODo6dHJ5X2Zyb20odmFsdWUpIHsKICAgICAgICBPayh2KSA9PiBwcmludGxuISgi6L2s5o2i5oiQ5YqfOiB7fSIsIHYpLAogICAgICAgIEVycihfKSA9PiBwcmludGxuISgi5YC8IHt9IOi2heWHuiBpOCDojIPlm7QiLCB2YWx1ZSksCiAgICB9CgogICAgLy8g5LiN5o6o6I2Q77ya5L2/55SoIGFz77yM6Z2Z6buY5oiq5patCiAgICBsZXQgdHJ1bmNhdGVkID0gdmFsdWUgYXMgaTg7CiAgICBwcmludGxuISgi5oiq5pat57uT5p6cOiB7fSIsIHRydW5jYXRlZCk7IC8vIDQ077yM5Y+v6IO95LiN5piv5pyf5pyb55qE6KGM5Li6CgogICAgLy8g5a+55LqO56Gu5a6a5a6J5YWo55qE6L2s5o2i77yM5Y+v5Lul5L2/55SoIEZyb20vSW50bwogICAgbGV0IHdpZGVuZWQ6IGk2NCA9IDQyaTMyLmludG8oKTsgLy8gaTMyIC0+IGk2NO+8jOaAu+aYr+WuieWFqAogICAgcHJpbnRsbiEoIuWuieWFqOi9rOaNojoge30iLCB3aWRlbmVkKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let value: i64 = 300;
 

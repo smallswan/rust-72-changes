@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -373,6 +410,8 @@ p ∨ (p ∧ q) = p
 ||    // 逻辑或（conditional OR）
 !     // 逻辑非（NOT）
 <span class="boring">}</span></code></pre>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBhID0gdHJ1ZTsKICAgIGxldCBiID0gZmFsc2U7CgogICAgcHJpbnRsbiEoImEgJiYgYiA9IHt9IiwgYSAmJiBiKTsgIC8vIGZhbHNlCiAgICBwcmludGxuISgiYSB8fCBiID0ge30iLCBhIHx8IGIpOyAgLy8gdHJ1ZQogICAgcHJpbnRsbiEoIiFhID0ge30iLCAhYSk7ICAgICAgICAgIC8vIGZhbHNlCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let a = true;
     let b = false;
@@ -383,6 +422,8 @@ p ∨ (p ∧ q) = p
 }</code></pre>
 <h3 id="22-逻辑与"><a class="header" href="#22-逻辑与">2.2 逻辑与（&amp;&amp;）</a></h3>
 <p>逻辑与运算符 <code>&amp;&amp;</code> 要求两边的操作数都为 <code>true</code>，结果才为 <code>true</code>。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCB4ID0gNTsKICAgIGxldCB5ID0gMTA7CgogICAgLy8g5Lik5Liq5p2h5Lu26YO95ruh6LazCiAgICBpZiB4ID4gMCAmJiB5ID4gMCB7CiAgICAgICAgcHJpbnRsbiEoIngg5ZKMIHkg6YO95piv5q2j5pWwIik7CiAgICB9CgogICAgLy8g5LiA5Liq5p2h5Lu25LiN5ruh6LazCiAgICBpZiB4ID4gMCAmJiB5IDwgMCB7CiAgICAgICAgcHJpbnRsbiEoIui/meS4jeS8muiiq+aJp+ihjCIpOwogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let x = 5;
     let y = 10;
@@ -413,6 +454,8 @@ p ∨ (p ∧ q) = p
 </div>
 <h3 id="23-逻辑或"><a class="header" href="#23-逻辑或">2.3 逻辑或（||）</a></h3>
 <p>逻辑或运算符 <code>||</code> 要求两边的操作数至少有一个为 <code>true</code>，结果就为 <code>true</code>。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBzY29yZSA9IDg1OwoKICAgIC8vIOa7oei2s+S7u+S4gOadoeS7tuWNs+WPrwogICAgaWYgc2NvcmUgPj0gOTAgfHwgc2NvcmUgPj0gNjAgJiYgc2NvcmUgPCA5MCB7CiAgICAgICAgcHJpbnRsbiEoIuaIkOe7qeWQiOagvCIpOwogICAgfQoKICAgIC8vIOabtOa4heaZsOeahOWGmeazlQogICAgaWYgc2NvcmUgPj0gNjAgewogICAgICAgIHByaW50bG4hKCLmiJDnu6nlkIjmoLwiKTsKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let score = 85;
 
@@ -442,6 +485,8 @@ p ∨ (p ∧ q) = p
 </div>
 <h3 id="24-逻辑非"><a class="header" href="#24-逻辑非">2.4 逻辑非（!）</a></h3>
 <p>逻辑非运算符 <code>!</code> 对布尔值取反。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBpc19yYWluaW5nID0gZmFsc2U7CgogICAgaWYgIWlzX3JhaW5pbmcgewogICAgICAgIHByaW50bG4hKCLku4rlpKnkuI3kuIvpm6jvvIzlj6/ku6Xlh7rpl6giKTsKICAgIH0KCiAgICAvLyDlj4zph43lkKblrprnrYnkuo7ogq/lrpoKICAgIGFzc2VydF9lcSEoISFpc19yYWluaW5nLCBpc19yYWluaW5nKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let is_raining = false;
 
@@ -482,6 +527,8 @@ p ∨ (p ∧ q) = p
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOmAu+i+kei/kOeul++8muaTjeS9nOaVsOWSjOe7k+aenOmDveaYryBib29sCiAgICBsZXQgbG9naWNhbCA9IHRydWUgJiYgZmFsc2U7CiAgICBwcmludGxuISgi6YC76L6R5LiOOiB7fSIsIGxvZ2ljYWwpOyAgLy8gZmFsc2UKCiAgICAvLyDkvY3ov5DnrpfvvJrmk43kvZzmlbDlkoznu5Pmnpzpg73mmK/mlbTmlbAKICAgIGxldCBiaXR3aXNlID0gMGIxMDEwICYgMGIxMTAwOwogICAgcHJpbnRsbiEoIuS9jeS4jjogezowNGJ9IiwgYml0d2lzZSk7ICAvLyAxMDAwCgogICAgLy8g5rOo5oSP77yaJiDlkowgfCDkuZ/lj6/ku6XnlKjkuo4gYm9vbO+8jOS9huS4jeS8muefrei3rwogICAgbGV0IGEgPSB0cnVlICYgZmFsc2U7ICAvLyBmYWxzZe+8jOS9huS4pOi+uemDveS8muaxguWAvAogICAgbGV0IGIgPSB0cnVlIHwgZmFsc2U7ICAvLyB0cnVl77yM5L2G5Lik6L656YO95Lya5rGC5YC8Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 逻辑运算：操作数和结果都是 bool
     let logical = true &amp;&amp; false;
@@ -510,6 +557,8 @@ p ∨ (p ∧ q) = p
 <li>对于 <code>&amp;&amp;</code>（逻辑与）：如果左边的表达式为 <code>false</code>，右边的表达式<strong>不会执行</strong>，因为无论右边是什么，结果都一定是 <code>false</code>。</li>
 <li>对于 <code>||</code>（逻辑或）：如果左边的表达式为 <code>true</code>，右边的表达式<strong>不会执行</strong>，因为无论右边是什么，结果都一定是 <code>true</code>。</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBhID0gZmFsc2U7CgogICAgLy8g55Sx5LqOIGEg5pivIGZhbHNl77yMZXhwZW5zaXZlX2Z1bmN0aW9uKCkg5LiN5Lya6KKr5omn6KGMCiAgICBpZiBhICYmIGV4cGVuc2l2ZV9mdW5jdGlvbigpIHsKICAgICAgICBwcmludGxuISgi5LiN5Lya5omn6KGM5Yiw6L+Z6YeMIik7CiAgICB9CgogICAgbGV0IGIgPSB0cnVlOwoKICAgIC8vIOeUseS6jiBiIOaYryB0cnVl77yMZXhwZW5zaXZlX2Z1bmN0aW9uKCkg5LiN5Lya6KKr5omn6KGMCiAgICBpZiBiIHx8IGV4cGVuc2l2ZV9mdW5jdGlvbigpIHsKICAgICAgICBwcmludGxuISgi5Lya5omn6KGM5Yiw6L+Z6YeMIik7CiAgICB9Cn0KCmZuIGV4cGVuc2l2ZV9mdW5jdGlvbigpIC0+IGJvb2wgewogICAgcHJpbnRsbiEoIuaJp+ihjOS6huiAl+aXtuaTjeS9nC4uLiIpOwogICAgdHJ1ZQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let a = false;
 
@@ -532,6 +581,8 @@ fn expensive_function() -&gt; bool {
 }</code></pre>
 <h3 id="32-短路求值的实际应用"><a class="header" href="#32-短路求值的实际应用">3.2 短路求值的实际应用</a></h3>
 <p><strong>应用一：避免不必要的计算</strong></p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBkYXRhOiBWZWM8aTMyPiA9IHZlYyFbXTsKCiAgICAvLyDlhYjmo4Dmn6XmmK/lkKbkuLrnqbrvvIzpgb/lhY3lr7nnqbrmlbDnu4Tov5vooYzntKLlvJXmk43kvZwKICAgIGlmICFkYXRhLmlzX2VtcHR5KCkgJiYgZGF0YVswXSA+IDAgewogICAgICAgIHByaW50bG4hKCLnrKzkuIDkuKrlhYPntKDmmK/mraPmlbAiKTsKICAgIH0KCiAgICAvLyDlpoLmnpwgZGF0YSDkuLrnqbrvvIxkYXRhWzBdIOS4jeS8muiiq+aJp+ihjO+8jOmBv+WFjeS6hiBwYW5pYwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let data: Vec&lt;i32&gt; = vec![];
 
@@ -543,6 +594,8 @@ fn expensive_function() -&gt; bool {
     // 如果 data 为空，data[0] 不会被执行，避免了 panic
 }</code></pre>
 <p><strong>应用二：安全地进行空值检查</strong></p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBtYXliZV92YWx1ZTogT3B0aW9uPGkzMj4gPSBOb25lOwoKICAgIC8vIOWFiOajgOafpSBTb21l77yM5YaN6Kej5YyFCiAgICBpZiBtYXliZV92YWx1ZS5pc19zb21lKCkgJiYgbWF5YmVfdmFsdWUudW53cmFwKCkgPiAwIHsKICAgICAgICBwcmludGxuISgi5YC85piv5q2j5pWwIik7CiAgICB9CgogICAgLy8g5pu05Zyw6YGT55qEIFJ1c3Qg5YaZ5rOVCiAgICBpZiBsZXQgU29tZSh2YWx1ZSkgPSBtYXliZV92YWx1ZSB7CiAgICAgICAgaWYgdmFsdWUgPiAwIHsKICAgICAgICAgICAgcHJpbnRsbiEoIuWAvOaYr+ato+aVsDoge30iLCB2YWx1ZSk7CiAgICAgICAgfQogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let maybe_value: Option&lt;i32&gt; = None;
 
@@ -577,6 +630,8 @@ fn get_config_value_alt(user_value: Option&lt;i32&gt;) -&gt; i32 {
 <span class="boring">}</span></code></pre>
 <h3 id="33-短路求值的注意事项"><a class="header" href="#33-短路求值的注意事项">3.3 短路求值的注意事项</a></h3>
 <p>虽然短路求值通常是有益的，但在某些情况下需要注意：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgY291bnRlciA9IDA7CgogICAgLy8g55Sx5LqO55+t6Lev77yMY291bnRlciDlj6rlop7liqDkuIDmrKEKICAgIGxldCByZXN1bHQgPSBpbmNyZW1lbnQoJm11dCBjb3VudGVyKSB8fCBpbmNyZW1lbnQoJm11dCBjb3VudGVyKTsKICAgIHByaW50bG4hKCJjb3VudGVyID0ge30iLCBjb3VudGVyKTsgIC8vIOi+k+WHuiAx77yM5LiN5pivIDIKCiAgICAvLyDlpoLmnpzpnIDopoHkuKTovrnpg73miafooYzvvIzkvb/nlKjpnZ7nn63ot6/ov5DnrpfnrKYgfAogICAgY291bnRlciA9IDA7CiAgICBsZXQgcmVzdWx0MiA9IGluY3JlbWVudCgmbXV0IGNvdW50ZXIpIHwgaW5jcmVtZW50KCZtdXQgY291bnRlcik7CiAgICBwcmludGxuISgiY291bnRlciA9IHt9IiwgY291bnRlcik7ICAvLyDovpPlh7ogMgp9CgpmbiBpbmNyZW1lbnQoY291bnRlcjogJm11dCBpMzIpIC0+IGJvb2wgewogICAgKmNvdW50ZXIgKz0gMTsKICAgIHRydWUKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let mut counter = 0;
 
@@ -601,6 +656,8 @@ fn increment(counter: &amp;mut i32) -&gt; bool {
 <h2 id="四逻辑运算在-rust-中的高级应用"><a class="header" href="#四逻辑运算在-rust-中的高级应用">四、逻辑运算在 Rust 中的高级应用</a></h2>
 <h3 id="41-复杂的条件表达式"><a class="header" href="#41-复杂的条件表达式">4.1 复杂的条件表达式</a></h3>
 <p>在实际编程中，我们经常需要组合多个条件：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gY2FuX3ZvdGUoYWdlOiB1MzIsIGlzX2NpdGl6ZW46IGJvb2wsIGhhc19jcmltaW5hbF9yZWNvcmQ6IGJvb2wpIC0+IGJvb2wgewogICAgLy8g5b+F6aG75oiQ5bm044CB5piv5YWs5rCR44CB5rKh5pyJ54qv572q6K6w5b2VCiAgICBhZ2UgPj0gMTggJiYgaXNfY2l0aXplbiAmJiAhaGFzX2NyaW1pbmFsX3JlY29yZAp9CgpmbiBtYWluKCkgewogICAgcHJpbnRsbiEoIuWPr+S7peaKleelqDoge30iLCBjYW5fdm90ZSgyMCwgdHJ1ZSwgZmFsc2UpKTsgICAvLyB0cnVlCiAgICBwcmludGxuISgi5Y+v5Lul5oqV56WoOiB7fSIsIGNhbl92b3RlKDE2LCB0cnVlLCBmYWxzZSkpOyAgIC8vIGZhbHNlCiAgICBwcmludGxuISgi5Y+v5Lul5oqV56WoOiB7fSIsIGNhbl92b3RlKDIwLCBmYWxzZSwgZmFsc2UpKTsgIC8vIGZhbHNlCiAgICBwcmludGxuISgi5Y+v5Lul5oqV56WoOiB7fSIsIGNhbl92b3RlKDIwLCB0cnVlLCB0cnVlKSk7ICAgIC8vIGZhbHNlCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn can_vote(age: u32, is_citizen: bool, has_criminal_record: bool) -&gt; bool {
     // 必须成年、是公民、没有犯罪记录
     age &gt;= 18 &amp;&amp; is_citizen &amp;&amp; !has_criminal_record
@@ -614,6 +671,8 @@ fn main() {
 }</code></pre>
 <h3 id="42-利用德摩根定律简化条件"><a class="header" href="#42-利用德摩根定律简化条件">4.2 利用德摩根定律简化条件</a></h3>
 <p>德摩根定律可以帮助我们简化复杂的否定条件：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBhID0gdHJ1ZTsKICAgIGxldCBiID0gZmFsc2U7CgogICAgLy8g5Y6f5aeL5YaZ5rOV77ya5Yik5patIuS4jeaYr++8iGEg5ZKMIGIg6YO95Li655yf77yJIgogICAgbGV0IGNvbmRpdGlvbjEgPSAhKGEgJiYgYik7CgogICAgLy8g55So5b635pGp5qC55a6a5b6L566A5YyW77yaImEg5Li65YGHIOaIliBiIOS4uuWBhyIKICAgIGxldCBjb25kaXRpb24yID0gIWEgfHwgIWI7CgogICAgYXNzZXJ0X2VxIShjb25kaXRpb24xLCBjb25kaXRpb24yKTsKCiAgICAvLyDlrp7pmYXlupTnlKjvvJrmo4Dmn6XnlKjmiLfovpPlhaXmmK/lkKbmnInmlYgKICAgIGxldCBoYXNfdXNlcm5hbWUgPSB0cnVlOwogICAgbGV0IGhhc19wYXNzd29yZCA9IHRydWU7CgogICAgLy8g5Y6f5aeL5YaZ5rOVCiAgICBsZXQgaXNfaW52YWxpZDEgPSAhKGhhc191c2VybmFtZSAmJiBoYXNfcGFzc3dvcmQpOwoKICAgIC8vIOeugOWMluWGmeazle+8iOabtOaYk+ivu++8iQogICAgbGV0IGlzX2ludmFsaWQyID0gIWhhc191c2VybmFtZSB8fCAhaGFzX3Bhc3N3b3JkOwoKICAgIGFzc2VydF9lcSEoaXNfaW52YWxpZDEsIGlzX2ludmFsaWQyKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let a = true;
     let b = false;
@@ -640,6 +699,8 @@ fn main() {
 }</code></pre>
 <h3 id="43-逻辑运算与类型系统"><a class="header" href="#43-逻辑运算与类型系统">4.3 逻辑运算与类型系统</a></h3>
 <p>Rust 的类型系统与逻辑运算有深刻的联系：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8gUnVzdCDkuK3msqHmnInpmpDlvI/nsbvlnovovazmjaLvvIzpgLvovpHov5Dnrpflv4XpobvkvZznlKjkuo4gYm9vbApmbiBtYWluKCkgewogICAgbGV0IHggPSAxOwogICAgLy8gbGV0IHJlc3VsdCA9IHggJiYgdHJ1ZTsgIC8vIOmUmeivr++8gXgg5pivIGkzMu+8jOS4jeaYryBib29sCgogICAgLy8g5b+F6aG75pi+5byP6L2s5o2iCiAgICBsZXQgcmVzdWx0ID0gKHggIT0gMCkgJiYgdHJ1ZTsKICAgIHByaW50bG4hKCJ7fSIsIHJlc3VsdCk7ICAvLyB0cnVlCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// Rust 中没有隐式类型转换，逻辑运算必须作用于 bool
 fn main() {
     let x = 1;
@@ -651,6 +712,8 @@ fn main() {
 }</code></pre>
 <h3 id="44-逻辑运算与模式匹配"><a class="header" href="#44-逻辑运算与模式匹配">4.4 逻辑运算与模式匹配</a></h3>
 <p>在 Rust 中，模式匹配往往比复杂的逻辑运算更清晰：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZGVzY3JpYmVfbnVtYmVyKG46IGkzMikgLT4gJidzdGF0aWMgc3RyIHsKICAgIC8vIOS9v+eUqOmAu+i+kei/kOeulwogICAgaWYgbiA+IDAgJiYgbiAlIDIgPT0gMCB7CiAgICAgICAgIuato+WBtuaVsCIKICAgIH0gZWxzZSBpZiBuID4gMCAmJiBuICUgMiAhPSAwIHsKICAgICAgICAi5q2j5aWH5pWwIgogICAgfSBlbHNlIGlmIG4gPCAwIHsKICAgICAgICAi6LSf5pWwIgogICAgfSBlbHNlIHsKICAgICAgICAi6Zu2IgogICAgfQp9CgpmbiBkZXNjcmliZV9udW1iZXJfbWF0Y2gobjogaTMyKSAtPiAmJ3N0YXRpYyBzdHIgewogICAgLy8g5L2/55So5qih5byP5Yy56YWN77yI5pu05Zyw6YGT77yJCiAgICBtYXRjaCBuIHsKICAgICAgICAwID0+ICLpm7YiLAogICAgICAgIG4gaWYgbiA+IDAgJiYgbiAlIDIgPT0gMCA9PiAi5q2j5YG25pWwIiwKICAgICAgICBuIGlmIG4gPiAwID0+ICLmraPlpYfmlbAiLAogICAgICAgIF8gPT4gIui0n+aVsCIsCiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBwcmludGxuISgie30iLCBkZXNjcmliZV9udW1iZXIoNCkpOyAgICAgICAgIC8vIOato+WBtuaVsAogICAgcHJpbnRsbiEoInt9IiwgZGVzY3JpYmVfbnVtYmVyX21hdGNoKDQpKTsgICAvLyDmraPlgbbmlbAKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn describe_number(n: i32) -&gt; &amp;'static str {
     // 使用逻辑运算
     if n &gt; 0 &amp;&amp; n % 2 == 0 {
@@ -681,6 +744,8 @@ fn main() {
 <hr>
 <h2 id="五逻辑运算的实际案例"><a class="header" href="#五逻辑运算的实际案例">五、逻辑运算的实际案例</a></h2>
 <h3 id="51-用户权限校验"><a class="header" href="#51-用户权限校验">5.1 用户权限校验</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#c3RydWN0IFVzZXIgewogICAgbmFtZTogU3RyaW5nLAogICAgaXNfYWN0aXZlOiBib29sLAogICAgaXNfYWRtaW46IGJvb2wsCiAgICBhZ2U6IHUzMiwKfQoKaW1wbCBVc2VyIHsKICAgIGZuIGNhbl9hY2Nlc3NfYWRtaW5fcGFuZWwoJnNlbGYpIC0+IGJvb2wgewogICAgICAgIC8vIOW/hemhu+WQjOaXtua7oei2s++8mui0puWPt+a0u+i3g+OAgeaYr+euoeeQhuWRmOOAgeW3suaIkOW5tAogICAgICAgIHNlbGYuaXNfYWN0aXZlICYmIHNlbGYuaXNfYWRtaW4gJiYgc2VsZi5hZ2UgPj0gMTgKICAgIH0KCiAgICBmbiBjYW5fdmlld19jb250ZW50KCZzZWxmKSAtPiBib29sIHsKICAgICAgICAvLyDmu6HotrPku7vkuIDmnaHku7bljbPlj6/vvJrotKblj7fmtLvot4Mg5oiWIOaYr+euoeeQhuWRmAogICAgICAgIHNlbGYuaXNfYWN0aXZlIHx8IHNlbGYuaXNfYWRtaW4KICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIGxldCB1c2VyID0gVXNlciB7CiAgICAgICAgbmFtZTogU3RyaW5nOjpmcm9tKCLlvKDkuIkiKSwKICAgICAgICBpc19hY3RpdmU6IHRydWUsCiAgICAgICAgaXNfYWRtaW46IGZhbHNlLAogICAgICAgIGFnZTogMjUsCiAgICB9OwoKICAgIHByaW50bG4hKCLlj6/ku6Xorr/pl67nrqHnkIblkI7lj7A6IHt9IiwgdXNlci5jYW5fYWNjZXNzX2FkbWluX3BhbmVsKCkpOyAgLy8gZmFsc2UKICAgIHByaW50bG4hKCLlj6/ku6Xmn6XnnIvlhoXlrrk6IHt9IiwgdXNlci5jYW5fdmlld19jb250ZW50KCkpOyAgICAgICAgICAgIC8vIHRydWUKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">struct User {
     name: String,
     is_active: bool,
@@ -712,6 +777,8 @@ fn main() {
     println!("可以查看内容: {}", user.can_view_content());            // true
 }</code></pre>
 <h3 id="52-数据验证"><a class="header" href="#52-数据验证">5.2 数据验证</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gaXNfdmFsaWRfcGFzc3dvcmQocGFzc3dvcmQ6ICZzdHIpIC0+IGJvb2wgewogICAgLy8g5a+G56CB5b+F6aG75ZCM5pe25ruh6Laz77yaCiAgICAvLyAxLiDplb/luqboh7PlsJEgOCDkvY0KICAgIC8vIDIuIOWMheWQq+iHs+WwkeS4gOS4quWkp+WGmeWtl+avjQogICAgLy8gMy4g5YyF5ZCr6Iez5bCR5LiA5Liq5bCP5YaZ5a2X5q+NCiAgICAvLyA0LiDljIXlkKvoh7PlsJHkuIDkuKrmlbDlrZcKCiAgICBsZXQgaGFzX21pbl9sZW5ndGggPSBwYXNzd29yZC5sZW4oKSA+PSA4OwogICAgbGV0IGhhc191cHBlcmNhc2UgPSBwYXNzd29yZC5jaGFycygpLmFueSh8Y3wgYy5pc19hc2NpaV91cHBlcmNhc2UoKSk7CiAgICBsZXQgaGFzX2xvd2VyY2FzZSA9IHBhc3N3b3JkLmNoYXJzKCkuYW55KHxjfCBjLmlzX2FzY2lpX2xvd2VyY2FzZSgpKTsKICAgIGxldCBoYXNfZGlnaXQgPSBwYXNzd29yZC5jaGFycygpLmFueSh8Y3wgYy5pc19hc2NpaV9kaWdpdCgpKTsKCiAgICBoYXNfbWluX2xlbmd0aCAmJiBoYXNfdXBwZXJjYXNlICYmIGhhc19sb3dlcmNhc2UgJiYgaGFzX2RpZ2l0Cn0KCmZuIG1haW4oKSB7CiAgICBwcmludGxuISgiJ0hlbGxvMTIzJyDmnInmlYg6IHt9IiwgaXNfdmFsaWRfcGFzc3dvcmQoIkhlbGxvMTIzIikpOyAgICAgLy8gZmFsc2XvvIjplb/luqbkuI3lpJ/vvIkKICAgIHByaW50bG4hKCInSGVsbG9Xb3JsZDEnIOacieaViDoge30iLCBpc192YWxpZF9wYXNzd29yZCgiSGVsbG9Xb3JsZDEiKSk7IC8vIHRydWUKICAgIHByaW50bG4hKCInaGVsbG93b3JsZDEnIOacieaViDoge30iLCBpc192YWxpZF9wYXNzd29yZCgiaGVsbG93b3JsZDEiKSk7IC8vIGZhbHNl77yI5rKh5pyJ5aSn5YaZ77yJCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn is_valid_password(password: &amp;str) -&gt; bool {
     // 密码必须同时满足：
     // 1. 长度至少 8 位
@@ -733,6 +800,8 @@ fn main() {
     println!("'helloworld1' 有效: {}", is_valid_password("helloworld1")); // false（没有大写）
 }</code></pre>
 <h3 id="53-游戏状态判断"><a class="header" href="#53-游戏状态判断">5.3 游戏状态判断</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#c3RydWN0IEdhbWVTdGF0ZSB7CiAgICBwbGF5ZXJfYWxpdmU6IGJvb2wsCiAgICBoYXNfa2V5OiBib29sLAogICAgZG9vcl9vcGVuOiBib29sLAogICAgZW5lbWllc19kZWZlYXRlZDogYm9vbCwKfQoKaW1wbCBHYW1lU3RhdGUgewogICAgZm4gY2FuX2V4aXRfbGV2ZWwoJnNlbGYpIC0+IGJvb2wgewogICAgICAgIC8vIOWPr+S7pemAgOWHuuWFs+WNoeeahOadoeS7tu+8mueOqeWutuWtmOa0u++8jOS4lO+8iOmXqOW3suW8gCDmiJYg5omA5pyJ5pWM5Lq66KKr5Ye76LSl77yJCiAgICAgICAgc2VsZi5wbGF5ZXJfYWxpdmUgJiYgKHNlbGYuZG9vcl9vcGVuIHx8IHNlbGYuZW5lbWllc19kZWZlYXRlZCkKICAgIH0KCiAgICBmbiBnYW1lX292ZXIoJnNlbGYpIC0+IGJvb2wgewogICAgICAgIC8vIOa4uOaIj+e7k+adn+adoeS7tu+8mueOqeWutuatu+S6oQogICAgICAgICFzZWxmLnBsYXllcl9hbGl2ZQogICAgfQp9CgpmbiBtYWluKCkgewogICAgbGV0IHN0YXRlID0gR2FtZVN0YXRlIHsKICAgICAgICBwbGF5ZXJfYWxpdmU6IHRydWUsCiAgICAgICAgaGFzX2tleTogdHJ1ZSwKICAgICAgICBkb29yX29wZW46IGZhbHNlLAogICAgICAgIGVuZW1pZXNfZGVmZWF0ZWQ6IHRydWUsCiAgICB9OwoKICAgIHByaW50bG4hKCLlj6/ku6XpgIDlh7rlhbPljaE6IHt9Iiwgc3RhdGUuY2FuX2V4aXRfbGV2ZWwoKSk7ICAvLyB0cnVlCiAgICBwcmludGxuISgi5ri45oiP57uT5p2fOiB7fSIsIHN0YXRlLmdhbWVfb3ZlcigpKTsgICAgICAgICAgIC8vIGZhbHNlCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">struct GameState {
     player_alive: bool,
     has_key: bool,

@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -399,6 +436,8 @@ openssl req -in server.csr -text -noout
 [dependencies]
 rcgen = "0.12"
 </code></pre>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHJjZ2VuOjp7Q2VydGlmaWNhdGUsIENlcnRpZmljYXRlUGFyYW1zLCBLZXlQYWlyLCBTYW5UeXBlfTsKdXNlIHN0ZDo6ZnM7CgpmbiBtYWluKCkgLT4gUmVzdWx0PCgpLCBCb3g8ZHluIHN0ZDo6ZXJyb3I6OkVycm9yPj4gewogICAgLy8g5Yib5bu66K+B5Lmm5Y+C5pWwCiAgICBsZXQgbXV0IHBhcmFtcyA9IENlcnRpZmljYXRlUGFyYW1zOjpuZXcodmVjIVsKICAgICAgICAibG9jYWxob3N0Ii50b19zdHJpbmcoKSwKICAgICAgICAiMTI3LjAuMC4xIi50b19zdHJpbmcoKSwKICAgIF0pOwoKICAgIC8vIOa3u+WKoCBTdWJqZWN0IEFsdGVybmF0aXZlIE5hbWXvvIjlr7nkuo4gVExTIOW+iOmHjeimge+8iQogICAgcGFyYW1zLnN1YmplY3RfYWx0X25hbWVzID0gdmVjIVsKICAgICAgICBTYW5UeXBlOjpEbnNOYW1lKCJsb2NhbGhvc3QiLnRvX3N0cmluZygpKSwKICAgICAgICBTYW5UeXBlOjpJcEFkZHJlc3Moc3RkOjpuZXQ6OklwQWRkcjo6VjQoIjEyNy4wLjAuMSIucGFyc2UoKT8pKSwKICAgIF07CgogICAgLy8g55Sf5oiQ6Ieq562+5ZCN6K+B5LmmCiAgICBsZXQgY2VydCA9IENlcnRpZmljYXRlOjpmcm9tX3BhcmFtcyhwYXJhbXMpPzsKCiAgICAvLyDojrflj5YgUEVNIOagvOW8j+eahOivgeS5puWSjOengemSpQogICAgbGV0IGNlcnRfcGVtID0gY2VydC5zZXJpYWxpemVfcGVtKCk/OwogICAgbGV0IGtleV9wZW0gPSBjZXJ0LnNlcmlhbGl6ZV9wcml2YXRlX2tleV9wZW0oKTsKCiAgICAvLyDkv53lrZjliLDmlofku7YKICAgIGZzOjp3cml0ZSgic2VydmVyLmNydCIsIGNlcnRfcGVtKT87CiAgICBmczo6d3JpdGUoInNlcnZlci5rZXkiLCBrZXlfcGVtKT87CgogICAgcHJpbnRsbiEoIuiHquetvuWQjeivgeS5puW3sueUn+aIkO+8miIpOwogICAgcHJpbnRsbiEoIiAg6K+B5LmmOiBzZXJ2ZXIuY3J0Iik7CiAgICBwcmludGxuISgiICDnp4HpkqU6IHNlcnZlci5rZXkiKTsKCiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use rcgen::{Certificate, CertificateParams, KeyPair, SanType};
 use std::fs;
 
@@ -553,7 +592,13 @@ fn inspect_certificate(pem_data: &amp;[u8]) -&gt; Result&lt;(), Box&lt;dyn std::
 }
 <span class="boring">}</span></code></pre>
 <h3 id="完整的证书生成与验证示例"><a class="header" href="#完整的证书生成与验证示例">完整的证书生成与验证示例</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use rcgen::{Certificate, CertificateParams, SanType};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmluZyA9ICIwLjE3IgoqLwp1c2UgcmNnZW46OntDZXJ0aWZpY2F0ZSwgQ2VydGlmaWNhdGVQYXJhbXMsIFNhblR5cGV9Owp1c2UgcmluZzo6c2lnbmF0dXJlOwoKZm4gbWFpbigpIC0+IFJlc3VsdDwoKSwgQm94PGR5biBzdGQ6OmVycm9yOjpFcnJvcj4+IHsKICAgIC8vIDEuIOWIm+W7uiBDQQogICAgbGV0IG11dCBjYV9wYXJhbXMgPSBDZXJ0aWZpY2F0ZVBhcmFtczo6bmV3KHZlYyFbIlRlc3QgQ0EiLnRvX3N0cmluZygpXSk7CiAgICBjYV9wYXJhbXMuaXNfY2EgPSByY2dlbjo6SXNDYTo6Q2EocmNnZW46OkJhc2ljQ29uc3RyYWludHM6OlVuY29uc3RyYWluZWQpOwogICAgbGV0IGNhX2NlcnQgPSBDZXJ0aWZpY2F0ZTo6ZnJvbV9wYXJhbXMoY2FfcGFyYW1zKT87CgogICAgLy8gMi4g5Yib5bu65pyN5Yqh5Zmo6K+B5LmmCiAgICBsZXQgbXV0IHNlcnZlcl9wYXJhbXMgPSBDZXJ0aWZpY2F0ZVBhcmFtczo6bmV3KHZlYyFbIm15YXBwLmxvY2FsIi50b19zdHJpbmcoKV0pOwogICAgc2VydmVyX3BhcmFtcy5zdWJqZWN0X2FsdF9uYW1lcyA9IHZlYyFbCiAgICAgICAgU2FuVHlwZTo6RG5zTmFtZSgibXlhcHAubG9jYWwiLnRvX3N0cmluZygpKSwKICAgICAgICBTYW5UeXBlOjpJcEFkZHJlc3MoIjE5Mi4xNjguMS4xIi5wYXJzZSgpPyksCiAgICBdOwogICAgbGV0IHNlcnZlcl9jZXJ0ID0gQ2VydGlmaWNhdGU6OmZyb21fcGFyYW1zKHNlcnZlcl9wYXJhbXMpPzsKCiAgICAvLyAzLiDnlKggQ0Eg562+5ZCN5pyN5Yqh5Zmo6K+B5LmmCiAgICBsZXQgc2lnbmVkX2NlcnRfcGVtID0gc2VydmVyX2NlcnQuc2VyaWFsaXplX3BlbV93aXRoX3NpZ25lcigmY2FfY2VydCk/OwogICAgbGV0IGNhX2NlcnRfcGVtID0gY2FfY2VydC5zZXJpYWxpemVfcGVtKCk/OwoKICAgIHByaW50bG4hKCI9PT0gQ0Eg6K+B5LmmID09PSIpOwogICAgcHJpbnRsbiEoInt9IiwgY2FfY2VydF9wZW0pOwogICAgcHJpbnRsbiEoIj09PSDmnI3liqHlmajor4HkuaYgPT09Iik7CiAgICBwcmludGxuISgie30iLCBzaWduZWRfY2VydF9wZW0pOwoKICAgIC8vIDQuIOmqjOivgeivgeS5pumTvu+8iOamguW/tea8lOekuu+8iQogICAgLy8g5a6e6ZmF6aqM6K+B5bqU5L2/55SoIHJ1c3RscyDmiJYgd2VicGtpCiAgICBwcmludGxuISgiXG7or4Hkuabpk77pqozor4HvvJoiKTsKICAgIHByaW50bG4hKCIgIOacjeWKoeWZqOivgeS5pueUsSBDQSDnrb7lkI0g4pyTIik7CiAgICBwcmludGxuISgiICBDQSDor4Hkuaboh6rnrb7lkI0g4pyTIik7CiAgICBwcmludGxuISgiICDkv6Hku7vpk77lrozmlbQg4pyTIik7CgogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+ring = "0.17"
+*/
+use rcgen::{Certificate, CertificateParams, SanType};
 use ring::signature;
 
 fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {

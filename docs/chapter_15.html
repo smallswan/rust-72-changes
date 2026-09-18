@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -209,6 +246,8 @@
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBhID0gMTA7CiAgICBsZXQgYiA9IDIwOwoKICAgIHByaW50bG4hKCJhID09IGI6IHt9IiwgYSA9PSBiKTsgIC8vIGZhbHNlCiAgICBwcmludGxuISgiYSAhPSBiOiB7fSIsIGEgIT0gYik7ICAvLyB0cnVlCiAgICBwcmludGxuISgiYSA+IGI6ICB7fSIsIGEgPiBiKTsgICAvLyBmYWxzZQogICAgcHJpbnRsbiEoImEgPj0gYjoge30iLCBhID49IGIpOyAgLy8gZmFsc2UKICAgIHByaW50bG4hKCJhIDwgYjogIHt9IiwgYSA8IGIpOyAgIC8vIHRydWUKICAgIHByaW50bG4hKCJhIDw9IGI6IHt9IiwgYSA8PSBiKTsgIC8vIHRydWUKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let a = 10;
     let b = 20;
@@ -224,6 +263,8 @@
 <p>关系运算符的优先级低于算术运算符，高于逻辑运算符：</p>
 <pre><code>算术运算符（+ - * / %）&gt; 关系运算符（&gt; &gt;= &lt; &lt;= == !=）&gt; 逻辑运算符（&amp;&amp; ||）
 </code></pre>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCB4ID0gMyArIDU7ICAgICAgIC8vIOWFiOeul+acr++8mnggPSA4CiAgICBsZXQgcmVzdWx0ID0geCA+IDUgJiYgeCA8IDE1OyAgLy8g5YaN5YWz57O777yaOCA+IDUg5Li6IHRydWXvvIw4IDwgMTUg5Li6IHRydWUKICAgIHByaW50bG4hKCJ7fSIsIHJlc3VsdCk7ICAvLyB0cnVlCgogICAgLy8g562J5Lu35LqO77yaCiAgICBsZXQgcmVzdWx0MiA9ICgzICsgNSkgPiA1ICYmICgzICsgNSkgPCAxNTsKICAgIHByaW50bG4hKCJ7fSIsIHJlc3VsdDIpOyAgLy8gdHJ1ZQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let x = 3 + 5;       // 先算术：x = 8
     let result = x &gt; 5 &amp;&amp; x &lt; 15;  // 再关系：8 &gt; 5 为 true，8 &lt; 15 为 true
@@ -235,6 +276,8 @@
 }</code></pre>
 <h3 id="13-关系运算符的返回类型"><a class="header" href="#13-关系运算符的返回类型">1.3 关系运算符的返回类型</a></h3>
 <p>关系运算符的返回值始终是 <code>bool</code> 类型：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBpc19lcXVhbDogYm9vbCA9IDEwID09IDEwOwogICAgbGV0IGlzX2dyZWF0ZXI6IGJvb2wgPSAxMCA+IDU7CgogICAgcHJpbnRsbiEoImlzX2VxdWFsID0ge30iLCBpc19lcXVhbCk7ICAgIC8vIHRydWUKICAgIHByaW50bG4hKCJpc19ncmVhdGVyID0ge30iLCBpc19ncmVhdGVyKTsgLy8gdHJ1ZQoKICAgIC8vIGJvb2wg57G75Z6L5Y+v5Lul5Y+C5LiO6YC76L6R6L+Q566XCiAgICBsZXQgY29tYmluZWQgPSBpc19lcXVhbCAmJiBpc19ncmVhdGVyOwogICAgcHJpbnRsbiEoImNvbWJpbmVkID0ge30iLCBjb21iaW5lZCk7ICAgLy8gdHJ1ZQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let is_equal: bool = 10 == 10;
     let is_greater: bool = 10 &gt; 5;
@@ -263,6 +306,8 @@
 </div>
 <h3 id="22-partialord-trait"><a class="header" href="#22-partialord-trait">2.2 PartialOrd Trait</a></h3>
 <p><code>PartialOrd</code> 定义了 <code>partial_cmp</code> 方法，它返回 <code>Option&lt;Ordering&gt;</code>，而不是直接返回 <code>Ordering</code>：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6Y21wOjpPcmRlcmluZzsKCmZuIG1haW4oKSB7CiAgICBsZXQgYSA9IDMuMTQ7CiAgICBsZXQgYiA9IDIuNzE7CgogICAgLy8gcGFydGlhbF9jbXAg6L+U5ZueIE9wdGlvbjxPcmRlcmluZz4KICAgIG1hdGNoIGEucGFydGlhbF9jbXAoJmIpIHsKICAgICAgICBTb21lKE9yZGVyaW5nOjpMZXNzKSA9PiBwcmludGxuISgie30gPCB7fSIsIGEsIGIpLAogICAgICAgIFNvbWUoT3JkZXJpbmc6OkVxdWFsKSA9PiBwcmludGxuISgie30gPT0ge30iLCBhLCBiKSwKICAgICAgICBTb21lKE9yZGVyaW5nOjpHcmVhdGVyKSA9PiBwcmludGxuISgie30gPiB7fSIsIGEsIGIpLAogICAgICAgIE5vbmUgPT4gcHJpbnRsbiEoIuaXoOazleavlOi+gyIpLAogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::cmp::Ordering;
 
 fn main() {
@@ -292,6 +337,8 @@ fn main() {
 </div>
 <h3 id="23-nan-的比较问题"><a class="header" href="#23-nan-的比较问题">2.3 NaN 的比较问题</a></h3>
 <p><code>NaN</code> 是 <code>PartialOrd</code> 但不是 <code>Ord</code> 的典型例子：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6Y21wOjpPcmRlcmluZzsKCmZuIG1haW4oKSB7CiAgICBsZXQgbmFuID0gZjY0OjpOQU47CgogICAgLy8gTmFOIOS4juS7u+S9leWAvOeahOavlOi+g+mDvei/lOWbniBOb25lCiAgICBwcmludGxuISgiTmFOID4gMS4wOiB7Oj99IiwgbmFuLnBhcnRpYWxfY21wKCYxLjApKTsgICAvLyBOb25lCiAgICBwcmludGxuISgiTmFOIDwgMS4wOiB7Oj99IiwgbmFuLnBhcnRpYWxfY21wKCYxLjApKTsgICAvLyBOb25lCiAgICBwcmludGxuISgiTmFOID09IE5hTjogezo/fSIsIG5hbi5wYXJ0aWFsX2NtcCgmbmFuKSk7ICAvLyBOb25lCgogICAgLy8g5L2/55SoID09IOi/kOeul+espu+8jE5hTiAhPSBOYU4g5Lmf5pivIHRydWUKICAgIHByaW50bG4hKCJOYU4gPT0gTmFOOiB7fSIsIG5hbiA9PSBuYW4pOyAgLy8gZmFsc2UKICAgIHByaW50bG4hKCJOYU4gIT0gTmFOOiB7fSIsIG5hbiAhPSBuYW4pOyAgLy8gdHJ1ZQoKICAgIC8vIOi/meWwseaYr+S4uuS7gOS5iOa1rueCueaVsOWPquWunueOsOS6hiBQYXJ0aWFsT3Jk77yM5rKh5pyJ5a6e546wIE9yZAp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::cmp::Ordering;
 
 fn main() {
@@ -313,6 +360,8 @@ fn main() {
 </blockquote>
 <h3 id="24-ord-trait"><a class="header" href="#24-ord-trait">2.4 Ord Trait</a></h3>
 <p><code>Ord</code> trait 表示完全有序，任意两个值之间一定有确定的大小关系。它定义了 <code>cmp</code> 方法，返回 <code>Ordering</code>（不是 <code>Option&lt;Ordering&gt;</code>）：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6Y21wOjpPcmRlcmluZzsKCmZuIG1haW4oKSB7CiAgICBsZXQgYSA9IDQyOwogICAgbGV0IGIgPSAxNzsKCiAgICAvLyBjbXAg6L+U5ZueIE9yZGVyaW5n77yI5LiN5pivIE9wdGlvbu+8iQogICAgbWF0Y2ggYS5jbXAoJmIpIHsKICAgICAgICBPcmRlcmluZzo6TGVzcyA9PiBwcmludGxuISgie30gPCB7fSIsIGEsIGIpLAogICAgICAgIE9yZGVyaW5nOjpFcXVhbCA9PiBwcmludGxuISgie30gPT0ge30iLCBhLCBiKSwKICAgICAgICBPcmRlcmluZzo6R3JlYXRlciA9PiBwcmludGxuISgie30gPiB7fSIsIGEsIGIpLAogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::cmp::Ordering;
 
 fn main() {
@@ -343,6 +392,8 @@ fn main() {
 </table>
 </div>
 <h3 id="25-为自定义类型实现-ord"><a class="header" href="#25-为自定义类型实现-ord">2.5 为自定义类型实现 Ord</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6Y21wOjpPcmRlcmluZzsKCiNbZGVyaXZlKERlYnVnKV0Kc3RydWN0IFN0dWRlbnQgewogICAgbmFtZTogU3RyaW5nLAogICAgc2NvcmU6IHUzMiwKfQoKLy8g5a6e546wIFBhcnRpYWxPcmQKaW1wbCBQYXJ0aWFsT3JkIGZvciBTdHVkZW50IHsKICAgIGZuIHBhcnRpYWxfY21wKCZzZWxmLCBvdGhlcjogJlNlbGYpIC0+IE9wdGlvbjxPcmRlcmluZz4gewogICAgICAgIFNvbWUoc2VsZi5zY29yZS5jbXAoJm90aGVyLnNjb3JlKSkKICAgIH0KfQoKLy8g5a6e546wIFBhcnRpYWxFce+8iE9yZCDnmoTliY3mj5DvvIkKaW1wbCBQYXJ0aWFsRXEgZm9yIFN0dWRlbnQgewogICAgZm4gZXEoJnNlbGYsIG90aGVyOiAmU2VsZikgLT4gYm9vbCB7CiAgICAgICAgc2VsZi5zY29yZSA9PSBvdGhlci5zY29yZQogICAgfQp9CgovLyDlrp7njrAgT3JkCmltcGwgT3JkIGZvciBTdHVkZW50IHsKICAgIGZuIGNtcCgmc2VsZiwgb3RoZXI6ICZTZWxmKSAtPiBPcmRlcmluZyB7CiAgICAgICAgc2VsZi5zY29yZS5jbXAoJm90aGVyLnNjb3JlKQogICAgfQp9CgpmbiBtYWluKCkgewogICAgbGV0IGFsaWNlID0gU3R1ZGVudCB7IG5hbWU6ICJBbGljZSIuaW50bygpLCBzY29yZTogOTUgfTsKICAgIGxldCBib2IgPSBTdHVkZW50IHsgbmFtZTogIkJvYiIuaW50bygpLCBzY29yZTogODcgfTsKCiAgICBwcmludGxuISgiQWxpY2UgdnMgQm9iOiB7Oj99IiwgYWxpY2UuY21wKCZib2IpKTsgIC8vIEdyZWF0ZXIKCiAgICAvLyDlj6/ku6Xnm7TmjqXmjpLluo8KICAgIGxldCBtdXQgc3R1ZGVudHMgPSB2ZWMhWwogICAgICAgIFN0dWRlbnQgeyBuYW1lOiAiQ2hhcmxpZSIuaW50bygpLCBzY29yZTogNzIgfSwKICAgICAgICBTdHVkZW50IHsgbmFtZTogIkFsaWNlIi5pbnRvKCksIHNjb3JlOiA5NSB9LAogICAgICAgIFN0dWRlbnQgeyBuYW1lOiAiQm9iIi5pbnRvKCksIHNjb3JlOiA4NyB9LAogICAgXTsKICAgIHN0dWRlbnRzLnNvcnQoKTsKICAgIGZvciBzIGluICZzdHVkZW50cyB7CiAgICAgICAgcHJpbnRsbiEoInt9OiB7fSIsIHMubmFtZSwgcy5zY29yZSk7CiAgICB9CiAgICAvLyBDaGFybGllOiA3MgogICAgLy8gQm9iOiA4NwogICAgLy8gQWxpY2U6IDk1Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::cmp::Ordering;
 
 #[derive(Debug)]
@@ -399,6 +450,8 @@ fn main() {
 <h2 id="三浮点数比较的陷阱"><a class="header" href="#三浮点数比较的陷阱">三、浮点数比较的陷阱</a></h2>
 <h3 id="31-浮点数精度问题"><a class="header" href="#31-浮点数精度问题">3.1 浮点数精度问题</a></h3>
 <p>浮点数在计算机中采用 IEEE 754 标准存储，存在精度限制。许多看似简单的十进制小数无法精确表示为二进制浮点数：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIDAuMSArIDAuMiDlnKjmlbDlrabkuIrnrYnkuo4gMC4zCiAgICAvLyDkvYblnKjmta7ngrnmlbDkuK3lubbkuI3nm7jnrYnvvIEKICAgIGxldCBzdW0gPSAwLjFfZjY0ICsgMC4yX2Y2NDsKICAgIHByaW50bG4hKCIwLjEgKyAwLjIgPSB7Oi4yMH0iLCBzdW0pOyAgICAgICAvLyAwLjMwMDAwMDAwMDAwMDAwMDA0NDQxCiAgICBwcmludGxuISgic3VtID09IDAuMzoge30iLCBzdW0gPT0gMC4zX2Y2NCk7IC8vIGZhbHNlCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 0.1 + 0.2 在数学上等于 0.3
     // 但在浮点数中并不相等！
@@ -411,6 +464,8 @@ fn main() {
 </blockquote>
 <h3 id="32-正确的浮点数比较方法"><a class="header" href="#32-正确的浮点数比较方法">3.2 正确的浮点数比较方法</a></h3>
 <p><strong>方法一：使用误差范围（epsilon）</strong></p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gYXBwcm94X2VxdWFsKGE6IGY2NCwgYjogZjY0LCBlcHNpbG9uOiBmNjQpIC0+IGJvb2wgewogICAgKGEgLSBiKS5hYnMoKSA8IGVwc2lsb24KfQoKZm4gbWFpbigpIHsKICAgIGxldCBhID0gMC4xX2Y2NCArIDAuMl9mNjQ7CiAgICBsZXQgYiA9IDAuM19mNjQ7CgogICAgcHJpbnRsbiEoIuebtOaOpeavlOi+gzogYSA9PSBiIOKGkiB7fSIsIGEgPT0gYik7ICAgICAgICAgICAgICAgICAgICAgICAgICAvLyBmYWxzZQogICAgcHJpbnRsbiEoIuivr+W3ruavlOi+gzogYXBwcm94X2VxdWFsKGEsIGIsIDFlLTEwKSDihpIge30iLCBhcHByb3hfZXF1YWwoYSwgYiwgMWUtMTApKTsgLy8gdHJ1ZQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn approx_equal(a: f64, b: f64, epsilon: f64) -&gt; bool {
     (a - b).abs() &lt; epsilon
 }
@@ -424,6 +479,8 @@ fn main() {
 }</code></pre>
 <p><strong>方法二：使用相对误差</strong></p>
 <p>当数值很大时，固定误差范围可能不够用，此时应使用相对误差：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gYXBwcm94X2VxdWFsX3JlbGF0aXZlKGE6IGY2NCwgYjogZjY0LCBtYXhfcmVsYXRpdmVfZXJyb3I6IGY2NCkgLT4gYm9vbCB7CiAgICBsZXQgYWJzX2RpZmYgPSAoYSAtIGIpLmFicygpOwogICAgbGV0IGxhcmdlc3QgPSBhLmFicygpLm1heChiLmFicygpKTsKCiAgICAvLyDlpITnkIbkuKTkuKrlgLzpg73mjqXov5EgMCDnmoTmg4XlhrUKICAgIGlmIGxhcmdlc3QgPCAxZS0xMCB7CiAgICAgICAgYWJzX2RpZmYgPCAxZS0xMAogICAgfSBlbHNlIHsKICAgICAgICBhYnNfZGlmZiAvIGxhcmdlc3QgPCBtYXhfcmVsYXRpdmVfZXJyb3IKICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIGxldCBhID0gMTAwMDAwMC4wMDAwMV9mNjQ7CiAgICBsZXQgYiA9IDEwMDAwMDAuMDAwMDJfZjY0OwoKICAgIHByaW50bG4hKCLnm7jlr7nor6/lt67mr5TovoM6IHt9IiwgYXBwcm94X2VxdWFsX3JlbGF0aXZlKGEsIGIsIDFlLTEwKSk7IC8vIHRydWUKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn approx_equal_relative(a: f64, b: f64, max_relative_error: f64) -&gt; bool {
     let abs_diff = (a - b).abs();
     let largest = a.abs().max(b.abs());
@@ -443,6 +500,8 @@ fn main() {
     println!("相对误差比较: {}", approx_equal_relative(a, b, 1e-10)); // true
 }</code></pre>
 <p><strong>方法三：使用 <code>assert_approx_eq</code> 宏（测试中常用）</strong></p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g566A5Y2V55qE6L+R5Ly855u4562J5pat6KiA5a6PCm1hY3JvX3J1bGVzISBhc3NlcnRfYXBwcm94X2VxIHsKICAgICgkYTpleHByLCAkYjpleHByLCAkZXBzOmV4cHIpID0+IHsKICAgICAgICBsZXQgYSA9ICRhIGFzIGY2NDsKICAgICAgICBsZXQgYiA9ICRiIGFzIGY2NDsKICAgICAgICBsZXQgZGlmZiA9IChhIC0gYikuYWJzKCk7CiAgICAgICAgYXNzZXJ0ISgKICAgICAgICAgICAgZGlmZiA8ICRlcHMsCiAgICAgICAgICAgICLmlq3oqIDlpLHotKU6IHx7fSAtIHt9fCA9IHt9ID49IHt9IiwKICAgICAgICAgICAgYSwgYiwgZGlmZiwgJGVwcwogICAgICAgICk7CiAgICB9Owp9CgpmbiBtYWluKCkgewogICAgbGV0IHJlc3VsdCA9IDAuMV9mNjQgKyAwLjJfZjY0OwogICAgYXNzZXJ0X2FwcHJveF9lcSEocmVzdWx0LCAwLjMsIDFlLTEwKTsKICAgIHByaW50bG4hKCLmtYvor5XpgJrov4fvvIEiKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// 简单的近似相等断言宏
 macro_rules! assert_approx_eq {
     ($a:expr, $b:expr, $eps:expr) =&gt; {
@@ -464,6 +523,8 @@ fn main() {
 }</code></pre>
 <h3 id="33-浮点数排序中的-nan-处理"><a class="header" href="#33-浮点数排序中的-nan-处理">3.3 浮点数排序中的 NaN 处理</a></h3>
 <p>由于 <code>NaN</code> 无法参与正常比较，排序时需要特殊处理：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6Y21wOjpPcmRlcmluZzsKCmZuIG1haW4oKSB7CiAgICBsZXQgbXV0IGRhdGEgPSB2ZWMhWzMuNSwgZjY0OjpOQU4sIDEuMiwgZjY0OjpOQU4sIDIuOCwgMC41XTsKCiAgICAvLyDmlrnms5XkuIDvvJrliIbnprsgTmFOIOWQjuaOkuW6jwogICAgbGV0IG11dCBudW1iZXJzOiBWZWM8ZjY0PiA9IGRhdGEuaXRlcigpLmNsb25lZCgpLmZpbHRlcih8Jnh8ICF4LmlzX25hbigpKS5jb2xsZWN0KCk7CiAgICBsZXQgbmFuczogVmVjPGY2ND4gPSBkYXRhLml0ZXIoKS5jbG9uZWQoKS5maWx0ZXIofCZ4fCB4LmlzX25hbigpKS5jb2xsZWN0KCk7CgogICAgbnVtYmVycy5zb3J0X2J5KHxhLCBifCBhLnBhcnRpYWxfY21wKGIpLnVud3JhcF9vcihPcmRlcmluZzo6RXF1YWwpKTsKCiAgICBsZXQgc29ydGVkID0gW251bWJlcnMsIG5hbnNdLmNvbmNhdCgpOwogICAgcHJpbnRsbiEoIuaOkuW6j+e7k+aenDogezo/fSIsIHNvcnRlZCk7CiAgICAvLyBbMC41LCAxLjIsIDIuOCwgMy41LCBOYU4sIE5hTl0KCiAgICAvLyDmlrnms5XkuozvvJrkvb/nlKggdG90YWxfY21w77yIUnVzdCAxLjYyK++8jOWwhiBOYU4g5o6S5Zyo5pyA5ZCO77yJCiAgICBsZXQgbXV0IGRhdGEyID0gdmVjIVszLjUsIGY2NDo6TkFOLCAxLjIsIGY2NDo6TkFOLCAyLjgsIDAuNV07CiAgICBkYXRhMi5zb3J0X2J5KGY2NDo6dG90YWxfY21wKTsKICAgIHByaW50bG4hKCJ0b3RhbF9jbXAg5o6S5bqPOiB7Oj99IiwgZGF0YTIpOwogICAgLy8gWzAuNSwgMS4yLCAyLjgsIDMuNSwgTmFOLCBOYU5dCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::cmp::Ordering;
 
 fn main() {
@@ -489,6 +550,8 @@ fn main() {
 <p><strong>提示：</strong> Rust 1.62 引入了 <code>f64::total_cmp</code> 和 <code>f32::total_cmp</code>，提供了浮点数的完全有序比较，<code>NaN</code> 被视为大于所有非 <code>NaN</code> 值。</p>
 </blockquote>
 <h3 id="34-特殊浮点值的比较"><a class="header" href="#34-特殊浮点值的比较">3.4 特殊浮点值的比较</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBpbmYgPSBmNjQ6OklORklOSVRZOwogICAgbGV0IG5lZ19pbmYgPSBmNjQ6Ok5FR19JTkZJTklUWTsKICAgIGxldCBuYW4gPSBmNjQ6Ok5BTjsKCiAgICAvLyDmraPml6DnqbcKICAgIHByaW50bG4hKCJJTkZJTklUWSA+IDEwMDA6IHt9IiwgaW5mID4gMTAwMC4wKTsgICAgICAgIC8vIHRydWUKICAgIHByaW50bG4hKCJJTkZJTklUWSA9PSBJTkZJTklUWToge30iLCBpbmYgPT0gaW5mKTsgICAgICAvLyB0cnVlCgogICAgLy8g6LSf5peg56m3CiAgICBwcmludGxuISgiTkVHX0lORklOSVRZIDwgLTEwMDA6IHt9IiwgbmVnX2luZiA8IC0xMDAwLjApOyAvLyB0cnVlCgogICAgLy8gTmFOIOeahOeJueauiuaApwogICAgcHJpbnRsbiEoIk5hTiA+IDA6ICAge30iLCBuYW4gPiAwLjApOyAgICAvLyBmYWxzZQogICAgcHJpbnRsbiEoIk5hTiA8IDA6ICAge30iLCBuYW4gPCAwLjApOyAgICAvLyBmYWxzZQogICAgcHJpbnRsbiEoIk5hTiA9PSAwOiAge30iLCBuYW4gPT0gMC4wKTsgICAvLyBmYWxzZQogICAgcHJpbnRsbiEoIk5hTiAhPSBOYU46IHt9IiwgbmFuICE9IG5hbik7ICAgLy8gdHJ1Ze+8iOWUr+S4gOS4jeetieS6juiHqui6q+eahOWAvO+8iQoKICAgIC8vIOWIpOaWreaYr+WQpuS4uueJueauiuWAvAogICAgcHJpbnRsbiEoIk5hTi5pc19uYW4oKToge30iLCBuYW4uaXNfbmFuKCkpOyAgICAgICAgICAgICAvLyB0cnVlCiAgICBwcmludGxuISgiSU5GSU5JVFkuaXNfaW5maW5pdGUoKToge30iLCBpbmYuaXNfaW5maW5pdGUoKSk7IC8vIHRydWUKICAgIHByaW50bG4hKCIwLjAuaXNfZmluaXRlKCk6IHt9IiwgMC4wX2Y2NC5pc19maW5pdGUoKSk7ICAgLy8gdHJ1ZQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let inf = f64::INFINITY;
     let neg_inf = f64::NEG_INFINITY;
@@ -516,6 +579,8 @@ fn main() {
 <h2 id="四不同类型的比较"><a class="header" href="#四不同类型的比较">四、不同类型的比较</a></h2>
 <h3 id="41-整数比较"><a class="header" href="#41-整数比较">4.1 整数比较</a></h3>
 <p>整数比较是精确的，不存在精度问题：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBhOiBpMzIgPSA0MjsKICAgIGxldCBiOiBpMzIgPSAtMTc7CgogICAgcHJpbnRsbiEoImEgPiBiOiAge30iLCBhID4gYik7ICAgLy8gdHJ1ZQogICAgcHJpbnRsbiEoImEgPT0gYjoge30iLCBhID09IGIpOyAgLy8gZmFsc2UKCiAgICAvLyDkuI3lkIzlpKflsI/nmoTmlbTmlbDlj6/ku6Xmr5TovoPvvIhSdXN0IOS8muiHquWKqOi9rOaNou+8iQogICAgbGV0IHNtYWxsOiB1OCA9IDEwOwogICAgbGV0IGxhcmdlOiBpMzIgPSAxMDA7CiAgICAvLyBwcmludGxuISgie30iLCBzbWFsbCA+IGxhcmdlKTsgIC8vIOmUmeivr++8geexu+Wei+S4jeWQjOS4jeiDveebtOaOpeavlOi+gwoKICAgIC8vIOmcgOimgeaYvuW8j+i9rOaNogogICAgcHJpbnRsbiEoInt9IiwgKHNtYWxsIGFzIGkzMikgPiBsYXJnZSk7ICAvLyBmYWxzZQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let a: i32 = 42;
     let b: i32 = -17;
@@ -533,6 +598,8 @@ fn main() {
 }</code></pre>
 <h3 id="42-字符比较"><a class="header" href="#42-字符比较">4.2 字符比较</a></h3>
 <p>字符按 Unicode 码点进行比较：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBhID0gJ0EnOwogICAgbGV0IGIgPSAnYSc7CiAgICBsZXQgYyA9ICfkuK0nOwoKICAgIHByaW50bG4hKCInQScgPCAnYSc6IHt9IiwgYSA8IGIpOyAgLy8gdHJ1Ze+8iOWkp+WGmeWtl+avjeeahOeggeeCueWwj+S6juWwj+WGmeWtl+avje+8iQogICAgcHJpbnRsbiEoIidBJyDnoIHngrk6IHt9IiwgYSBhcyB1MzIpOyAgLy8gNjUKICAgIHByaW50bG4hKCInYScg56CB54K5OiB7fSIsIGIgYXMgdTMyKTsgIC8vIDk3CiAgICBwcmludGxuISgiJ+S4rScg56CB54K5OiB7fSIsIGMgYXMgdTMyKTsgIC8vIDIwMDEzCgogICAgLy8g5a2X56ym5Y+v5Lul5o6S5bqPCiAgICBsZXQgbXV0IGNoYXJzID0gdmVjIVsneicsICdBJywgJ+S4rScsICdhJywgJzAnXTsKICAgIGNoYXJzLnNvcnQoKTsKICAgIHByaW50bG4hKCLmjpLluo/nu5Pmnpw6IHs6P30iLCBjaGFycyk7CiAgICAvLyBbJzAnLCAnQScsICdhJywgJ3onLCAn5LitJ10KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let a = 'A';
     let b = 'a';
@@ -551,6 +618,8 @@ fn main() {
 }</code></pre>
 <h3 id="43-字符串比较"><a class="header" href="#43-字符串比较">4.3 字符串比较</a></h3>
 <p>字符串按字典序（lexicographical order）比较：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBhID0gImFwcGxlIjsKICAgIGxldCBiID0gImJhbmFuYSI7CiAgICBsZXQgYyA9ICJBcHBsZSI7CgogICAgcHJpbnRsbiEoIlwiYXBwbGVcIiA8IFwiYmFuYW5hXCI6IHt9IiwgYSA8IGIpOyAgIC8vIHRydWUKICAgIHByaW50bG4hKCJcIkFwcGxlXCIgPCBcImFwcGxlXCI6IHt9IiwgYyA8IGEpOyAgICAgLy8gdHJ1Ze+8iOWkp+WGmeWtl+avjeeggeeCueabtOWwj++8iQoKICAgIC8vIOS4reaWh+Wtl+espuS4suS5n+aMiSBVbmljb2RlIOeggeeCueavlOi+gwogICAgbGV0IGQgPSAi5YyX5LqsIjsKICAgIGxldCBlID0gIuS4iua1tyI7CiAgICBwcmludGxuISgiXCLljJfkuqxcIiA8IFwi5LiK5rW3XCI6IHt9IiwgZCA8IGUpOyAgLy8gdHJ1ZQoKICAgIC8vIOavlOi+g+WJjee8gAogICAgbGV0IHByZWZpeCA9ICJoZWxsbyB3b3JsZCI7CiAgICBwcmludGxuISgiXCJoZWxsb1wiIDwgXCJoZWxsbyB3b3JsZFwiOiB7fSIsICJoZWxsbyIgPCBwcmVmaXgpOyAgLy8gdHJ1Ze+8iOefreWtl+espuS4suabtOWwj++8iQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let a = "apple";
     let b = "banana";
@@ -570,6 +639,8 @@ fn main() {
 }</code></pre>
 <h3 id="44-元组和数组比较"><a class="header" href="#44-元组和数组比较">4.4 元组和数组比较</a></h3>
 <p>元组和数组支持字典序比较（前提是元素类型可比较）：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOWFg+e7hOavlOi+g++8muWFiOavlOi+g+esrOS4gOS4quWFg+e0oO+8jOebuOWQjOWImeavlOi+g+esrOS6jOS4qgogICAgbGV0IHQxID0gKDEsIDIpOwogICAgbGV0IHQyID0gKDEsIDMpOwogICAgbGV0IHQzID0gKDIsIDEpOwogICAgcHJpbnRsbiEoIigxLDIpIDwgKDEsMyk6IHt9IiwgdDEgPCB0Mik7ICAvLyB0cnVlCiAgICBwcmludGxuISgiKDEsMikgPCAoMiwxKToge30iLCB0MSA8IHQzKTsgIC8vIHRydWUKCiAgICAvLyDmlbDnu4Tmr5TovoPvvJrpgJDlhYPntKDmr5TovoMKICAgIGxldCBhcnIxID0gWzEsIDIsIDNdOwogICAgbGV0IGFycjIgPSBbMSwgMiwgNF07CiAgICBwcmludGxuISgiezo/fSA8IHs6P306IHt9IiwgYXJyMSwgYXJyMiwgYXJyMSA8IGFycjIpOyAgLy8gdHJ1ZQoKICAgIC8vIOS4jeWQjOmVv+W6pueahOaVsOe7hOS4jeiDveebtOaOpeavlOi+gwogICAgbGV0IGFycjMgPSBbMSwgMl07CiAgICAvLyBwcmludGxuISgie30iLCBhcnIzIDwgYXJyMSk7ICAvLyDplJnor6/vvIHplb/luqbkuI3lkIwKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 元组比较：先比较第一个元素，相同则比较第二个
     let t1 = (1, 2);
@@ -592,6 +663,8 @@ fn main() {
 <h3 id="51-比较大小"><a class="header" href="#51-比较大小">5.1 比较大小</a></h3>
 <p>数学中经常需要比较两个表达式的大小，Rust 可以帮助我们快速验证：</p>
 <p><strong>题目1：</strong> 比较 $85 \times 85$ 与 $84 \times 86$ 的大小</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBhID0gODUgKiA4NTsKICAgIGxldCBiID0gODQgKiA4NjsKICAgIHByaW50bG4hKCI4NcOXODUgPSB7fSIsIGEpOyAgLy8gNzIyNQogICAgcHJpbnRsbiEoIjg0w5c4NiA9IHt9IiwgYik7ICAvLyA3MjE2CiAgICBwcmludGxuISgiODXDlzg1IHt9IDg0w5c4NiIsIGlmIGEgPiBiIHsgIj4iIH0gZWxzZSBpZiBhIDwgYiB7ICI8IiB9IGVsc2UgeyAiPSIgfSk7CiAgICAvLyA4NcOXODUgPiA4NMOXODYKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let a = 85 * 85;
     let b = 84 * 86;
@@ -604,6 +677,8 @@ fn main() {
 <p><strong>数学原理：</strong> 设 $a = n \times n$，$b = (n-1)(n+1) = n^2 - 1$，所以 $a &gt; b$。</p>
 </blockquote>
 <p><strong>题目2：</strong> 比较 $0.1e^{0.1}$、$1/9$、$-\ln 0.9$ 的大小</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6ZjY0Ojpjb25zdHM6OkU7CgpmbiBtYWluKCkgewogICAgbGV0IGEgPSAwLjEgKiBFLnBvd2YoMC4xKTsKICAgIGxldCBiID0gMS4wX2Y2NCAvIDkuMF9mNjQ7CiAgICBsZXQgYyA9IC0oMC45X2Y2NCkubG4oKTsKCiAgICBwcmludGxuISgiMC4xwrdlXjAuMSAgPSB7Oi4xNX0iLCBhKTsKICAgIHByaW50bG4hKCIxLzkgICAgICAgID0gezouMTV9IiwgYik7CiAgICBwcmludGxuISgiLWxuKDAuOSkgICA9IHs6LjE1fSIsIGMpOwoKICAgIC8vIOS9v+eUqCB0b3RhbF9jbXAg6L+b6KGM5rWu54K55pWw5q+U6L6DCiAgICBsZXQgbXV0IHZhbHVlcyA9IFsoIjAuMcK3ZV4wLjEiLCBhKSwgKCIxLzkiLCBiKSwgKCItbG4oMC45KSIsIGMpXTsKICAgIHZhbHVlcy5zb3J0X2J5KHxhLCBifCBhLjEucGFydGlhbF9jbXAoJmIuMSkudW53cmFwKCkpOwoKICAgIGZvciAobmFtZSwgdmFsKSBpbiAmdmFsdWVzIHsKICAgICAgICBwcmludGxuISgie30gPSB7Oi4xNX0iLCBuYW1lLCB2YWwpOwogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::f64::consts::E;
 
 fn main() {
@@ -624,6 +699,8 @@ fn main() {
     }
 }</code></pre>
 <p><strong>题目3：</strong> 比较 $a = \frac{31}{32}$、$b = \cos(\frac{1}{4})$、$c = 4\sin(\frac{1}{4})$ 的大小</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBhID0gMzEuMF9mNjQgLyAzMi4wX2Y2NDsKICAgIGxldCBiID0gKDAuMjVfZjY0KS5jb3MoKTsKICAgIGxldCBjID0gNC4wICogKDAuMjVfZjY0KS5zaW4oKTsKCiAgICBwcmludGxuISgiMzEvMzIgICAgICA9IHs6LjE1fSIsIGEpOwogICAgcHJpbnRsbiEoImNvcygxLzQpICAgPSB7Oi4xNX0iLCBiKTsKICAgIHByaW50bG4hKCI0c2luKDEvNCkgID0gezouMTV9IiwgYyk7CgogICAgbGV0IG11dCB2YWx1ZXMgPSBbKCIzMS8zMiIsIGEpLCAoImNvcygxLzQpIiwgYiksICgiNHNpbigxLzQpIiwgYyldOwogICAgdmFsdWVzLnNvcnRfYnkofGEsIGJ8IGEuMS5wYXJ0aWFsX2NtcCgmYi4xKS51bndyYXAoKSk7CgogICAgZm9yIChuYW1lLCB2YWwpIGluICZ2YWx1ZXMgewogICAgICAgIHByaW50bG4hKCJ7fSA9IHs6LjE1fSIsIG5hbWUsIHZhbCk7CiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let a = 31.0_f64 / 32.0_f64;
     let b = (0.25_f64).cos();
@@ -641,6 +718,8 @@ fn main() {
     }
 }</code></pre>
 <p><strong>题目4：</strong> 比较 $a = \log_{3}{2}$、$b = \log_{5}{3}$、$c = \frac{2}{3}$ 的大小</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIGxvZ18zKDIpID0gbG4oMikgLyBsbigzKQogICAgbGV0IGEgPSAyLjBfZjY0LmxuKCkgLyAzLjBfZjY0LmxuKCk7CiAgICAvLyBsb2dfNSgzKSA9IGxuKDMpIC8gbG4oNSkKICAgIGxldCBiID0gMy4wX2Y2NC5sbigpIC8gNS4wX2Y2NC5sbigpOwogICAgbGV0IGMgPSAyLjBfZjY0IC8gMy4wX2Y2NDsKCiAgICBwcmludGxuISgibG9nXzMoMikgPSB7Oi4xNX0iLCBhKTsKICAgIHByaW50bG4hKCJsb2dfNSgzKSA9IHs6LjE1fSIsIGIpOwogICAgcHJpbnRsbiEoIjIvMyAgICAgID0gezouMTV9IiwgYyk7CgogICAgbGV0IG11dCB2YWx1ZXMgPSBbKCJsb2dfMygyKSIsIGEpLCAoImxvZ181KDMpIiwgYiksICgiMi8zIiwgYyldOwogICAgdmFsdWVzLnNvcnRfYnkofGEsIGJ8IGEuMS5wYXJ0aWFsX2NtcCgmYi4xKS51bndyYXAoKSk7CgogICAgZm9yIChuYW1lLCB2YWwpIGluICZ2YWx1ZXMgewogICAgICAgIHByaW50bG4hKCJ7fSA9IHs6LjE1fSIsIG5hbWUsIHZhbCk7CiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // log_3(2) = ln(2) / ln(3)
     let a = 2.0_f64.ln() / 3.0_f64.ln();
@@ -677,6 +756,8 @@ fn main() {
 <hr>
 <h2 id="六关系运算的实际应用"><a class="header" href="#六关系运算的实际应用">六、关系运算的实际应用</a></h2>
 <h3 id="61-区间判断"><a class="header" href="#61-区间判断">6.1 区间判断</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gY2xhc3NpZnlfc2NvcmUoc2NvcmU6IGkzMikgLT4gJidzdGF0aWMgc3RyIHsKICAgIGlmIHNjb3JlID49IDkwIHsKICAgICAgICAi5LyY56eAIgogICAgfSBlbHNlIGlmIHNjb3JlID49IDgwIHsKICAgICAgICAi6Imv5aW9IgogICAgfSBlbHNlIGlmIHNjb3JlID49IDcwIHsKICAgICAgICAi5Lit562JIgogICAgfSBlbHNlIGlmIHNjb3JlID49IDYwIHsKICAgICAgICAi5Y+K5qC8IgogICAgfSBlbHNlIHsKICAgICAgICAi5LiN5Y+K5qC8IgogICAgfQp9CgpmbiBtYWluKCkgewogICAgcHJpbnRsbiEoIjk1IOWIhjoge30iLCBjbGFzc2lmeV9zY29yZSg5NSkpOyAgIC8vIOS8mOengAogICAgcHJpbnRsbiEoIjc1IOWIhjoge30iLCBjbGFzc2lmeV9zY29yZSg3NSkpOyAgIC8vIOS4reetiQogICAgcHJpbnRsbiEoIjU1IOWIhjoge30iLCBjbGFzc2lmeV9zY29yZSg1NSkpOyAgIC8vIOS4jeWPiuagvAp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn classify_score(score: i32) -&gt; &amp;'static str {
     if score &gt;= 90 {
         "优秀"
@@ -697,6 +778,8 @@ fn main() {
     println!("55 分: {}", classify_score(55));   // 不及格
 }</code></pre>
 <h3 id="62-三数排序"><a class="header" href="#62-三数排序">6.2 三数排序</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gc29ydF90aHJlZShhOiBpMzIsIGI6IGkzMiwgYzogaTMyKSAtPiAoaTMyLCBpMzIsIGkzMikgewogICAgbGV0IG11dCBhcnIgPSBbYSwgYiwgY107CiAgICBhcnIuc29ydCgpOwogICAgKGFyclswXSwgYXJyWzFdLCBhcnJbMl0pCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgKG1pbiwgbWlkLCBtYXgpID0gc29ydF90aHJlZSg0MiwgMTcsIDg1KTsKICAgIHByaW50bG4hKCLmnIDlsI86IHt9LCDkuK3pl7Q6IHt9LCDmnIDlpKc6IHt9IiwgbWluLCBtaWQsIG1heCk7CiAgICAvLyDmnIDlsI86IDE3LCDkuK3pl7Q6IDQyLCDmnIDlpKc6IDg1Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn sort_three(a: i32, b: i32, c: i32) -&gt; (i32, i32, i32) {
     let mut arr = [a, b, c];
     arr.sort();
@@ -709,6 +792,8 @@ fn main() {
     // 最小: 17, 中间: 42, 最大: 85
 }</code></pre>
 <h3 id="63-版本号比较"><a class="header" href="#63-版本号比较">6.3 版本号比较</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gY29tcGFyZV92ZXJzaW9ucyh2MTogJnN0ciwgdjI6ICZzdHIpIC0+IHN0ZDo6Y21wOjpPcmRlcmluZyB7CiAgICBsZXQgcGFydHMxOiBWZWM8dTMyPiA9IHYxLnNwbGl0KCcuJykubWFwKHxzfCBzLnBhcnNlKCkudW53cmFwKCkpLmNvbGxlY3QoKTsKICAgIGxldCBwYXJ0czI6IFZlYzx1MzI+ID0gdjIuc3BsaXQoJy4nKS5tYXAofHN8IHMucGFyc2UoKS51bndyYXAoKSkuY29sbGVjdCgpOwoKICAgIGZvciAoYSwgYikgaW4gcGFydHMxLml0ZXIoKS56aXAocGFydHMyLml0ZXIoKSkgewogICAgICAgIG1hdGNoIGEuY21wKGIpIHsKICAgICAgICAgICAgc3RkOjpjbXA6Ok9yZGVyaW5nOjpFcXVhbCA9PiBjb250aW51ZSwKICAgICAgICAgICAgb3RoZXIgPT4gcmV0dXJuIG90aGVyLAogICAgICAgIH0KICAgIH0KCiAgICAvLyDliY3nvIDnm7jlkIzml7bvvIzmm7Tplb/nmoTniYjmnKzlj7fmm7TlpKcKICAgIHBhcnRzMS5sZW4oKS5jbXAoJnBhcnRzMi5sZW4oKSkKfQoKZm4gbWFpbigpIHsKICAgIHByaW50bG4hKCIxLjIuMyB2cyAxLjIuNDogezo/fSIsIGNvbXBhcmVfdmVyc2lvbnMoIjEuMi4zIiwgIjEuMi40IikpOyAgLy8gTGVzcwogICAgcHJpbnRsbiEoIjIuMC4wIHZzIDEuOS45OiB7Oj99IiwgY29tcGFyZV92ZXJzaW9ucygiMi4wLjAiLCAiMS45LjkiKSk7ICAvLyBHcmVhdGVyCiAgICBwcmludGxuISgiMS4wIHZzIDEuMC4wOiB7Oj99IiwgY29tcGFyZV92ZXJzaW9ucygiMS4wIiwgIjEuMC4wIikpOyAgICAgIC8vIExlc3MKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn compare_versions(v1: &amp;str, v2: &amp;str) -&gt; std::cmp::Ordering {
     let parts1: Vec&lt;u32&gt; = v1.split('.').map(|s| s.parse().unwrap()).collect();
     let parts2: Vec&lt;u32&gt; = v2.split('.').map(|s| s.parse().unwrap()).collect();
@@ -730,6 +815,8 @@ fn main() {
     println!("1.0 vs 1.0.0: {:?}", compare_versions("1.0", "1.0.0"));      // Less
 }</code></pre>
 <h3 id="64-查找最大值和最小值"><a class="header" href="#64-查找最大值和最小值">6.4 查找最大值和最小值</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZmluZF9taW5fbWF4KGRhdGE6ICZbaTMyXSkgLT4gKGkzMiwgaTMyKSB7CiAgICBhc3NlcnQhKCFkYXRhLmlzX2VtcHR5KCkpOwogICAgbGV0IG11dCBtaW4gPSBkYXRhWzBdOwogICAgbGV0IG11dCBtYXggPSBkYXRhWzBdOwoKICAgIGZvciAmdmFsIGluIGRhdGEuaXRlcigpLnNraXAoMSkgewogICAgICAgIGlmIHZhbCA8IG1pbiB7CiAgICAgICAgICAgIG1pbiA9IHZhbDsKICAgICAgICB9CiAgICAgICAgaWYgdmFsID4gbWF4IHsKICAgICAgICAgICAgbWF4ID0gdmFsOwogICAgICAgIH0KICAgIH0KCiAgICAobWluLCBtYXgpCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgZGF0YSA9IFsyMywgNTYsIDExLCA4OSwgNDIsIDY3LCA1LCA3OF07CiAgICBsZXQgKG1pbiwgbWF4KSA9IGZpbmRfbWluX21heCgmZGF0YSk7CiAgICBwcmludGxuISgi5pyA5bCP5YC8OiB7fSwg5pyA5aSn5YC8OiB7fSIsIG1pbiwgbWF4KTsKICAgIC8vIOacgOWwj+WAvDogNSwg5pyA5aSn5YC8OiA4OQoKICAgIC8vIOS5n+WPr+S7peS9v+eUqOagh+WHhuW6k+aWueazlQogICAgbGV0IG1pbjIgPSBkYXRhLml0ZXIoKS5taW4oKS51bndyYXAoKTsKICAgIGxldCBtYXgyID0gZGF0YS5pdGVyKCkubWF4KCkudW53cmFwKCk7CiAgICBwcmludGxuISgi5pyA5bCP5YC8OiB7fSwg5pyA5aSn5YC8OiB7fSIsIG1pbjIsIG1heDIpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn find_min_max(data: &amp;[i32]) -&gt; (i32, i32) {
     assert!(!data.is_empty());
     let mut min = data[0];
@@ -760,6 +847,8 @@ fn main() {
 }</code></pre>
 <h3 id="65-二分查找"><a class="header" href="#65-二分查找">6.5 二分查找</a></h3>
 <p>关系运算是二分查找的核心：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gYmluYXJ5X3NlYXJjaChhcnI6ICZbaTMyXSwgdGFyZ2V0OiBpMzIpIC0+IE9wdGlvbjx1c2l6ZT4gewogICAgbGV0IG11dCBsZWZ0ID0gMHVzaXplOwogICAgbGV0IG11dCByaWdodCA9IGFyci5sZW4oKTsKCiAgICB3aGlsZSBsZWZ0IDwgcmlnaHQgewogICAgICAgIGxldCBtaWQgPSBsZWZ0ICsgKHJpZ2h0IC0gbGVmdCkgLyAyOwogICAgICAgIGlmIGFyclttaWRdID09IHRhcmdldCB7CiAgICAgICAgICAgIHJldHVybiBTb21lKG1pZCk7CiAgICAgICAgfSBlbHNlIGlmIGFyclttaWRdIDwgdGFyZ2V0IHsKICAgICAgICAgICAgbGVmdCA9IG1pZCArIDE7CiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgcmlnaHQgPSBtaWQ7CiAgICAgICAgfQogICAgfQoKICAgIE5vbmUKfQoKZm4gbWFpbigpIHsKICAgIGxldCBzb3J0ZWQgPSBbNSwgMTIsIDIzLCAzNCwgNDUsIDU2LCA2NywgNzgsIDg5LCAxMDBdOwoKICAgIG1hdGNoIGJpbmFyeV9zZWFyY2goJnNvcnRlZCwgNDUpIHsKICAgICAgICBTb21lKGlkeCkgPT4gcHJpbnRsbiEoIuaJvuWIsCA0Ne+8jOe0ouW8leS4uiB7fSIsIGlkeCksCiAgICAgICAgTm9uZSA9PiBwcmludGxuISgi5pyq5om+5YiwIDQ1IiksCiAgICB9CgogICAgbWF0Y2ggYmluYXJ5X3NlYXJjaCgmc29ydGVkLCA1MCkgewogICAgICAgIFNvbWUoaWR4KSA9PiBwcmludGxuISgi5om+5YiwIDUw77yM57Si5byV5Li6IHt9IiwgaWR4KSwKICAgICAgICBOb25lID0+IHByaW50bG4hKCLmnKrmib7liLAgNTAiKSwKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn binary_search(arr: &amp;[i32], target: i32) -&gt; Option&lt;usize&gt; {
     let mut left = 0usize;
     let mut right = arr.len();
@@ -794,6 +883,8 @@ fn main() {
 <hr>
 <h2 id="七关系运算与模式匹配"><a class="header" href="#七关系运算与模式匹配">七、关系运算与模式匹配</a></h2>
 <p>在 Rust 中，模式匹配（<code>match</code>）经常与关系运算结合使用：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZGVzY3JpYmVfdGVtcGVyYXR1cmUodGVtcDogZjY0KSAtPiAmJ3N0YXRpYyBzdHIgewogICAgbWF0Y2ggdGVtcCB7CiAgICAgICAgdCBpZiB0IDwgMC4wID0+ICLlhrDngrnku6XkuIsiLAogICAgICAgIHQgaWYgdCA8IDE1LjAgPT4gIuWvkuWGtyIsCiAgICAgICAgdCBpZiB0IDwgMjUuMCA9PiAi6IiS6YCCIiwKICAgICAgICB0IGlmIHQgPCAzNS4wID0+ICLngo7ng60iLAogICAgICAgIF8gPT4gIumFt+aakSIsCiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBwcmludGxuISgiLTXCsEM6ICB7fSIsIGRlc2NyaWJlX3RlbXBlcmF0dXJlKC01LjApKTsgICAvLyDlhrDngrnku6XkuIsKICAgIHByaW50bG4hKCIxMMKwQzogIHt9IiwgZGVzY3JpYmVfdGVtcGVyYXR1cmUoMTAuMCkpOyAgLy8g5a+S5Ya3CiAgICBwcmludGxuISgiMjDCsEM6ICB7fSIsIGRlc2NyaWJlX3RlbXBlcmF0dXJlKDIwLjApKTsgIC8vIOiIkumAggogICAgcHJpbnRsbiEoIjMwwrBDOiAge30iLCBkZXNjcmliZV90ZW1wZXJhdHVyZSgzMC4wKSk7ICAvLyDngo7ng60KICAgIHByaW50bG4hKCI0MMKwQzogIHt9IiwgZGVzY3JpYmVfdGVtcGVyYXR1cmUoNDAuMCkpOyAgLy8g6YW35pqRCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn describe_temperature(temp: f64) -&gt; &amp;'static str {
     match temp {
         t if t &lt; 0.0 =&gt; "冰点以下",

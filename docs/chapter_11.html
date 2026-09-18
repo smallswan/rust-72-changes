@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -248,7 +285,14 @@ $$</p>
 </tbody>
 </table>
 </div>
-<pre class="playground"><code class="language-rust edition2024">use serde::Serialize;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2VyZGUgPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJkZXJpdmUiXSB9CnNlcmRlX2pzb24gPSAiMSIKKi8KdXNlIHNlcmRlOjpTZXJpYWxpemU7CgojW2Rlcml2ZShTZXJpYWxpemUpXQojW3NlcmRlKHJlbmFtZV9hbGwgPSAiY2FtZWxDYXNlIildCnN0cnVjdCBQZXJzb24gewogICAgZmlyc3RfbmFtZTogU3RyaW5nLAogICAgbGFzdF9uYW1lOiBTdHJpbmcsCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgcGVyc29uID0gUGVyc29uIHsKICAgICAgICBmaXJzdF9uYW1lOiAiR3JheWRvbiIudG9fc3RyaW5nKCksCiAgICAgICAgbGFzdF9uYW1lOiAiSG9hcmUiLnRvX3N0cmluZygpLAogICAgfTsKCiAgICBsZXQganNvbiA9IHNlcmRlX2pzb246OnRvX3N0cmluZ19wcmV0dHkoJnBlcnNvbikudW53cmFwKCk7CgogICAgLy8gUHJpbnRzOgogICAgLy8KICAgIC8vICAgIHsKICAgIC8vICAgICAgImZpcnN0TmFtZSI6ICJHcmF5ZG9uIiwKICAgIC8vICAgICAgImxhc3ROYW1lIjogIkhvYXJlIgogICAgLy8gICAgfQogICAgcHJpbnRsbiEoInt9IiwganNvbik7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+*/
+use serde::Serialize;
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -300,6 +344,8 @@ fn main() {
 </table>
 </div>
 <p>在 Rust 中，可以使用 <code>quick-xml</code> 库来处理 XML 数据：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHF1aWNrX3htbDo6ZXZlbnRzOjpFdmVudDsKdXNlIHF1aWNrX3htbDo6UmVhZGVyOwp1c2Ugc3RkOjppbzo6QnVmUmVhZGVyOwoKZm4gbWFpbigpIHsKICAgIGxldCB4bWwgPSByIyI8P3htbCB2ZXJzaW9uPSIxLjAiIGVuY29kaW5nPSJVVEYtOCI/PgogICAgPGNvbmZpZz4KICAgICAgICA8ZGF0YWJhc2U+CiAgICAgICAgICAgIDxob3N0PmxvY2FsaG9zdDwvaG9zdD4KICAgICAgICAgICAgPHBvcnQ+NTQzMjwvcG9ydD4KICAgICAgICAgICAgPG5hbWU+bXlkYjwvbmFtZT4KICAgICAgICA8L2RhdGFiYXNlPgogICAgICAgIDxzZXJ2ZXI+CiAgICAgICAgICAgIDxob3N0PjAuMC4wLjA8L2hvc3Q+CiAgICAgICAgICAgIDxwb3J0PjgwODA8L3BvcnQ+CiAgICAgICAgPC9zZXJ2ZXI+CiAgICA8L2NvbmZpZz4iIzsKCiAgICBsZXQgbXV0IHJlYWRlciA9IFJlYWRlcjo6ZnJvbV9yZWFkZXIoeG1sLmFzX2J5dGVzKCkpOwogICAgbGV0IG11dCBidWYgPSBWZWM6Om5ldygpOwogICAgbGV0IG11dCBkZXB0aCA9IDA7CgogICAgbG9vcCB7CiAgICAgICAgbWF0Y2ggcmVhZGVyLnJlYWRfZXZlbnRfaW50bygmbXV0IGJ1ZikgewogICAgICAgICAgICBPayhFdmVudDo6U3RhcnQoZSkpID0+IHsKICAgICAgICAgICAgICAgIGRlcHRoICs9IDE7CiAgICAgICAgICAgICAgICBwcmludGxuISgiezppbmRlbnQkfTx7fT4iLCAiIiwgZS5uYW1lKCksIGluZGVudCA9IGRlcHRoICogMik7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgT2soRXZlbnQ6OkVtcHR5KGUpKSA9PiB7CiAgICAgICAgICAgICAgICBwcmludGxuISgiezppbmRlbnQkfTx7fSAvPiIsICIiLCBlLm5hbWUoKSwgaW5kZW50ID0gZGVwdGggKiAyKTsKICAgICAgICAgICAgfQogICAgICAgICAgICBPayhFdmVudDo6VGV4dChlKSkgPT4gewogICAgICAgICAgICAgICAgbGV0IHRleHQgPSBlLnVuZXNjYXBlKCkudW53cmFwKCk7CiAgICAgICAgICAgICAgICBpZiAhdGV4dC50cmltKCkuaXNfZW1wdHkoKSB7CiAgICAgICAgICAgICAgICAgICAgcHJpbnRsbiEoIns6aW5kZW50JH17fSIsICIiLCB0ZXh0LnRyaW0oKSwgaW5kZW50ID0gZGVwdGggKiAyICsgMik7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICAgICAgT2soRXZlbnQ6OkVuZChlKSkgPT4gewogICAgICAgICAgICAgICAgZGVwdGggLT0gMTsKICAgICAgICAgICAgICAgIHByaW50bG4hKCJ7OmluZGVudCR9PC97fT4iLCAiIiwgZS5uYW1lKCksIGluZGVudCA9IGRlcHRoICogMik7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgT2soRXZlbnQ6OkVvZikgPT4gYnJlYWssCiAgICAgICAgICAgIEVycihlKSA9PiBlcHJpbnRsbiEoIkVycm9yOiB7Oj99IiwgZSksCiAgICAgICAgICAgIF8gPT4ge30KICAgICAgICB9CiAgICAgICAgYnVmLmNsZWFyKCk7CiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use quick_xml::events::Event;
 use quick_xml::Reader;
 use std::io::BufReader;
@@ -373,7 +419,13 @@ logging:
   format: json
 </code></pre>
 <p>在 Rust 中，可以使用 <code>serde_yaml</code> 来处理 YAML：</p>
-<pre class="playground"><code class="language-rust edition2024">use serde::Deserialize;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2VyZGUgPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJkZXJpdmUiXSB9CiovCnVzZSBzZXJkZTo6RGVzZXJpYWxpemU7CgojW2Rlcml2ZShEZWJ1ZywgRGVzZXJpYWxpemUpXQpzdHJ1Y3QgQ29uZmlnIHsKICAgIHNlcnZlcjogU2VydmVyLAogICAgZGF0YWJhc2U6IERhdGFiYXNlLAogICAgbG9nZ2luZzogTG9nZ2luZywKfQoKI1tkZXJpdmUoRGVidWcsIERlc2VyaWFsaXplKV0Kc3RydWN0IFNlcnZlciB7CiAgICBob3N0OiBTdHJpbmcsCiAgICBwb3J0OiB1MTYsCiAgICB3b3JrZXJzOiB1c2l6ZSwKfQoKI1tkZXJpdmUoRGVidWcsIERlc2VyaWFsaXplKV0Kc3RydWN0IERhdGFiYXNlIHsKICAgIHVybDogU3RyaW5nLAogICAgcG9vbF9zaXplOiB1MzIsCiAgICB0aW1lb3V0OiBTdHJpbmcsCn0KCiNbZGVyaXZlKERlYnVnLCBEZXNlcmlhbGl6ZSldCnN0cnVjdCBMb2dnaW5nIHsKICAgIGxldmVsOiBTdHJpbmcsCiAgICBmb3JtYXQ6IFN0cmluZywKfQoKZm4gbWFpbigpIHsKICAgIGxldCB5YW1sID0gciMiCnNlcnZlcjoKICBob3N0OiAwLjAuMC4wCiAgcG9ydDogODA4MAogIHdvcmtlcnM6IDQKCmRhdGFiYXNlOgogIHVybDogInBvc3RncmVzOi8vdXNlcjpwYXNzQGxvY2FsaG9zdC9teWRiIgogIHBvb2xfc2l6ZTogMTAKICB0aW1lb3V0OiAzMHMKCmxvZ2dpbmc6CiAgbGV2ZWw6IGluZm8KICBmb3JtYXQ6IGpzb24KIiM7CgogICAgbGV0IGNvbmZpZzogQ29uZmlnID0gc2VyZGVfeWFtbDo6ZnJvbV9zdHIoeWFtbCkudW53cmFwKCk7CiAgICBwcmludGxuISgiU2VydmVyOiB7fTp7fSIsIGNvbmZpZy5zZXJ2ZXIuaG9zdCwgY29uZmlnLnNlcnZlci5wb3J0KTsKICAgIHByaW50bG4hKCJEYXRhYmFzZSBwb29sOiB7fSIsIGNvbmZpZy5kYXRhYmFzZS5wb29sX3NpemUpOwogICAgcHJpbnRsbiEoIkxvZyBsZXZlbDoge30iLCBjb25maWcubG9nZ2luZy5sZXZlbCk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+*/
+use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 struct Config {
@@ -447,7 +499,13 @@ opt-level = 3
 lto = true
 </code></pre>
 <p>在 Rust 中，可以使用 <code>toml</code> crate 来解析 TOML：</p>
-<pre class="playground"><code class="language-rust edition2024">use serde::Deserialize;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2VyZGUgPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJkZXJpdmUiXSB9CiovCnVzZSBzZXJkZTo6RGVzZXJpYWxpemU7CnVzZSBzdGQ6OmZzOwoKI1tkZXJpdmUoRGVidWcsIERlc2VyaWFsaXplKV0Kc3RydWN0IEFwcENvbmZpZyB7CiAgICBwYWNrYWdlOiBQYWNrYWdlLAogICAgZGVwZW5kZW5jaWVzOiBzdGQ6OmNvbGxlY3Rpb25zOjpIYXNoTWFwPFN0cmluZywgdG9tbDo6VmFsdWU+LAp9CgojW2Rlcml2ZShEZWJ1ZywgRGVzZXJpYWxpemUpXQpzdHJ1Y3QgUGFja2FnZSB7CiAgICBuYW1lOiBTdHJpbmcsCiAgICB2ZXJzaW9uOiBTdHJpbmcsCiAgICBlZGl0aW9uOiBTdHJpbmcsCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgY29udGVudCA9IGZzOjpyZWFkX3RvX3N0cmluZygiQ2FyZ28udG9tbCIpLnVud3JhcCgpOwogICAgbGV0IGNvbmZpZzogQXBwQ29uZmlnID0gdG9tbDo6ZnJvbV9zdHIoJmNvbnRlbnQpLnVud3JhcCgpOwogICAgcHJpbnRsbiEoIumhueebruWQjeensDoge30iLCBjb25maWcucGFja2FnZS5uYW1lKTsKICAgIHByaW50bG4hKCLniYjmnKw6IHt9IiwgY29uZmlnLnBhY2thZ2UudmVyc2lvbik7CgogICAgZm9yIChuYW1lLCB2YWx1ZSkgaW4gJmNvbmZpZy5kZXBlbmRlbmNpZXMgewogICAgICAgIHByaW50bG4hKCLkvp3otZYge306IHs6P30iLCBuYW1lLCB2YWx1ZSk7CiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+*/
+use serde::Deserialize;
 use std::fs;
 
 #[derive(Debug, Deserialize)]
@@ -562,7 +620,14 @@ struct User {
 </tbody>
 </table>
 </div>
-<pre class="playground"><code class="language-rust edition2024">use serde::{Serialize, Deserialize};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2VyZGUgPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJkZXJpdmUiXSB9CnNlcmRlX2pzb24gPSAiMSIKKi8KdXNlIHNlcmRlOjp7U2VyaWFsaXplLCBEZXNlcmlhbGl6ZX07CgojW2Rlcml2ZShTZXJpYWxpemUsIERlc2VyaWFsaXplLCBEZWJ1ZyldCiNbc2VyZGUocmVuYW1lX2FsbCA9ICJjYW1lbENhc2UiKV0Kc3RydWN0IEFwaVJlc3BvbnNlIHsKICAgIHN0YXR1c19jb2RlOiB1MTYsCiAgICBtZXNzYWdlOiBTdHJpbmcsCiAgICAjW3NlcmRlKHNraXBfc2VyaWFsaXppbmcpXQogICAgZGVidWdfaW5mbzogU3RyaW5nLAogICAgI1tzZXJkZShkZWZhdWx0KV0KICAgIHJldHJ5X2FmdGVyOiBPcHRpb248dTMyPiwKICAgICNbc2VyZGUoZmxhdHRlbildCiAgICBtZXRhZGF0YTogTWV0YWRhdGEsCn0KCiNbZGVyaXZlKFNlcmlhbGl6ZSwgRGVzZXJpYWxpemUsIERlYnVnKV0Kc3RydWN0IE1ldGFkYXRhIHsKICAgIHJlcXVlc3RfaWQ6IFN0cmluZywKICAgIHRpbWVzdGFtcDogaTY0LAp9CgpmbiBtYWluKCkgewogICAgbGV0IHJlc3AgPSBBcGlSZXNwb25zZSB7CiAgICAgICAgc3RhdHVzX2NvZGU6IDIwMCwKICAgICAgICBtZXNzYWdlOiAiT0siLnRvX3N0cmluZygpLAogICAgICAgIGRlYnVnX2luZm86ICJpbnRlcm5hbCB0cmFjZSIudG9fc3RyaW5nKCksCiAgICAgICAgcmV0cnlfYWZ0ZXI6IE5vbmUsCiAgICAgICAgbWV0YWRhdGE6IE1ldGFkYXRhIHsKICAgICAgICAgICAgcmVxdWVzdF9pZDogImFiYy0xMjMiLnRvX3N0cmluZygpLAogICAgICAgICAgICB0aW1lc3RhbXA6IDE3MDAwMDAwMDAsCiAgICAgICAgfSwKICAgIH07CgogICAgbGV0IGpzb24gPSBzZXJkZV9qc29uOjp0b19zdHJpbmdfcHJldHR5KCZyZXNwKS51bndyYXAoKTsKICAgIHByaW50bG4hKCJ7fSIsIGpzb24pOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+*/
+use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -600,7 +665,14 @@ fn main() {
 }</code></pre>
 <h3 id="1135-person-序列化示例"><a class="header" href="#1135-person-序列化示例">11.3.5 Person 序列化示例</a></h3>
 <p>以下是一个完整的 Person 结构体序列化示例：</p>
-<pre class="playground"><code class="language-rust edition2024">use serde::Serialize;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2VyZGUgPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJkZXJpdmUiXSB9CnNlcmRlX2pzb24gPSAiMSIKKi8KdXNlIHNlcmRlOjpTZXJpYWxpemU7CgojW2Rlcml2ZShTZXJpYWxpemUpXQojW3NlcmRlKHJlbmFtZV9hbGwgPSAiY2FtZWxDYXNlIildCnN0cnVjdCBQZXJzb24gewogICAgZmlyc3RfbmFtZTogU3RyaW5nLAogICAgbGFzdF9uYW1lOiBTdHJpbmcsCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgcGVyc29uID0gUGVyc29uIHsKICAgICAgICBmaXJzdF9uYW1lOiAiR3JheWRvbiIudG9fc3RyaW5nKCksCiAgICAgICAgbGFzdF9uYW1lOiAiSG9hcmUiLnRvX3N0cmluZygpLAogICAgfTsKCiAgICBsZXQganNvbiA9IHNlcmRlX2pzb246OnRvX3N0cmluZ19wcmV0dHkoJnBlcnNvbikudW53cmFwKCk7CgogICAgLy8gUHJpbnRzOgogICAgLy8KICAgIC8vICAgIHsKICAgIC8vICAgICAgImZpcnN0TmFtZSI6ICJHcmF5ZG9uIiwKICAgIC8vICAgICAgImxhc3ROYW1lIjogIkhvYXJlIgogICAgLy8gICAgfQogICAgcHJpbnRsbiEoInt9IiwganNvbik7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+*/
+use serde::Serialize;
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -627,7 +699,14 @@ fn main() {
 }</code></pre>
 <h3 id="1136-自定义-deserialize-实现"><a class="header" href="#1136-自定义-deserialize-实现">11.3.6 自定义 Deserialize 实现</a></h3>
 <p>在某些场景下，派生宏无法满足需求（如自定义数据格式、条件解析等），此时需要手动实现 <code>Deserialize</code> trait。以下是一个完整的 <code>Duration</code> 结构体自定义反序列化实现：</p>
-<pre class="playground"><code class="language-rust edition2024">use std::fmt;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2VyZGUgPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJkZXJpdmUiXSB9CnNlcmRlX2pzb24gPSAiMSIKKi8KdXNlIHN0ZDo6Zm10Owp1c2Ugc2VyZGU6OlNlcmlhbGl6ZTsKdXNlIHNlcmRlOjpkZTo6e3NlbGYsIERlc2VyaWFsaXplLCBEZXNlcmlhbGl6ZXIsIFZpc2l0b3IsIFNlcUFjY2VzcywgTWFwQWNjZXNzfTsKCiNbYWxsb3coZGVhZF9jb2RlKV0KI1tkZXJpdmUoU2VyaWFsaXplKV0Kc3RydWN0IER1cmF0aW9uIHsKICAgIHNlY3M6IHU2NCwKICAgIG5hbm9zOiB1MzIsCn0KCmltcGwgRHVyYXRpb24gewogICAgZm4gbmV3KHNlY3M6IHU2NCwgbmFub3M6IHUzMikgLT4gU2VsZiB7CiAgICAgICAgRHVyYXRpb257CiAgICAgICAgICAgIHNlY3MsCiAgICAgICAgICAgIG5hbm9zCiAgICAgICAgfQogICAgfQp9CgppbXBsPCdkZT4gRGVzZXJpYWxpemU8J2RlPiBmb3IgRHVyYXRpb24gewogICAgZm4gZGVzZXJpYWxpemU8RD4oZGVzZXJpYWxpemVyOiBEKSAtPiBSZXN1bHQ8U2VsZiwgRDo6RXJyb3I+CiAgICB3aGVyZQogICAgICAgIEQ6IERlc2VyaWFsaXplcjwnZGU+LAogICAgewogICAgICAgIGVudW0gRmllbGQgeyBTZWNzLCBOYW5vcyB9CgogICAgICAgIC8vIFRoaXMgcGFydCBjb3VsZCBhbHNvIGJlIGdlbmVyYXRlZCBpbmRlcGVuZGVudGx5IGJ5OgogICAgICAgIC8vCiAgICAgICAgLy8gICAgI1tkZXJpdmUoRGVzZXJpYWxpemUpXQogICAgICAgIC8vICAgICNbc2VyZGUoZmllbGRfaWRlbnRpZmllciwgcmVuYW1lX2FsbCA9ICJsb3dlcmNhc2UiKV0KICAgICAgICAvLyAgICBlbnVtIEZpZWxkIHsgU2VjcywgTmFub3MgfQogICAgICAgIGltcGw8J2RlPiBEZXNlcmlhbGl6ZTwnZGU+IGZvciBGaWVsZCB7CiAgICAgICAgICAgIGZuIGRlc2VyaWFsaXplPEQ+KGRlc2VyaWFsaXplcjogRCkgLT4gUmVzdWx0PEZpZWxkLCBEOjpFcnJvcj4KICAgICAgICAgICAgd2hlcmUKICAgICAgICAgICAgICAgIEQ6IERlc2VyaWFsaXplcjwnZGU+LAogICAgICAgICAgICB7CiAgICAgICAgICAgICAgICBzdHJ1Y3QgRmllbGRWaXNpdG9yOwoKICAgICAgICAgICAgICAgIGltcGw8J2RlPiBWaXNpdG9yPCdkZT4gZm9yIEZpZWxkVmlzaXRvciB7CiAgICAgICAgICAgICAgICAgICAgdHlwZSBWYWx1ZSA9IEZpZWxkOwoKICAgICAgICAgICAgICAgICAgICBmbiBleHBlY3RpbmcoJnNlbGYsIGZvcm1hdHRlcjogJm11dCBmbXQ6OkZvcm1hdHRlcikgLT4gZm10OjpSZXN1bHQgewogICAgICAgICAgICAgICAgICAgICAgICBmb3JtYXR0ZXIud3JpdGVfc3RyKCJgc2Vjc2Agb3IgYG5hbm9zYCIpCiAgICAgICAgICAgICAgICAgICAgfQoKICAgICAgICAgICAgICAgICAgICBmbiB2aXNpdF9zdHI8RT4oc2VsZiwgdmFsdWU6ICZzdHIpIC0+IFJlc3VsdDxGaWVsZCwgRT4KICAgICAgICAgICAgICAgICAgICB3aGVyZQogICAgICAgICAgICAgICAgICAgICAgICBFOiBkZTo6RXJyb3IsCiAgICAgICAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgICAgICAgICBtYXRjaCB2YWx1ZSB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAic2VjcyIgPT4gT2soRmllbGQ6OlNlY3MpLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgIm5hbm9zIiA9PiBPayhGaWVsZDo6TmFub3MpLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgXyA9PiBFcnIoZGU6OkVycm9yOjp1bmtub3duX2ZpZWxkKHZhbHVlLCBGSUVMRFMpKSwKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KCiAgICAgICAgICAgICAgICBkZXNlcmlhbGl6ZXIuZGVzZXJpYWxpemVfaWRlbnRpZmllcihGaWVsZFZpc2l0b3IpCiAgICAgICAgICAgIH0KICAgICAgICB9CgogICAgICAgIHN0cnVjdCBEdXJhdGlvblZpc2l0b3I7CgogICAgICAgIGltcGw8J2RlPiBWaXNpdG9yPCdkZT4gZm9yIER1cmF0aW9uVmlzaXRvciB7CiAgICAgICAgICAgIHR5cGUgVmFsdWUgPSBEdXJhdGlvbjsKCiAgICAgICAgICAgIGZuIGV4cGVjdGluZygmc2VsZiwgZm9ybWF0dGVyOiAmbXV0IGZtdDo6Rm9ybWF0dGVyKSAtPiBmbXQ6OlJlc3VsdCB7CiAgICAgICAgICAgICAgICBmb3JtYXR0ZXIud3JpdGVfc3RyKCJzdHJ1Y3QgRHVyYXRpb24iKQogICAgICAgICAgICB9CgogICAgICAgICAgICBmbiB2aXNpdF9zZXE8Vj4oc2VsZiwgbXV0IHNlcTogVikgLT4gUmVzdWx0PER1cmF0aW9uLCBWOjpFcnJvcj4KICAgICAgICAgICAgd2hlcmUKICAgICAgICAgICAgICAgIFY6IFNlcUFjY2VzczwnZGU+LAogICAgICAgICAgICB7CiAgICAgICAgICAgICAgICBsZXQgc2VjcyA9IHNlcS5uZXh0X2VsZW1lbnQoKT8KICAgICAgICAgICAgICAgICAgICAub2tfb3JfZWxzZSh8fCBkZTo6RXJyb3I6OmludmFsaWRfbGVuZ3RoKDAsICZzZWxmKSk/OwogICAgICAgICAgICAgICAgbGV0IG5hbm9zID0gc2VxLm5leHRfZWxlbWVudCgpPwogICAgICAgICAgICAgICAgICAgIC5va19vcl9lbHNlKHx8IGRlOjpFcnJvcjo6aW52YWxpZF9sZW5ndGgoMSwgJnNlbGYpKT87CiAgICAgICAgICAgICAgICBPayhEdXJhdGlvbjo6bmV3KHNlY3MsIG5hbm9zKSkKICAgICAgICAgICAgfQoKICAgICAgICAgICAgZm4gdmlzaXRfbWFwPFY+KHNlbGYsIG11dCBtYXA6IFYpIC0+IFJlc3VsdDxEdXJhdGlvbiwgVjo6RXJyb3I+CiAgICAgICAgICAgIHdoZXJlCiAgICAgICAgICAgICAgICBWOiBNYXBBY2Nlc3M8J2RlPiwKICAgICAgICAgICAgewogICAgICAgICAgICAgICAgbGV0IG11dCBzZWNzID0gTm9uZTsKICAgICAgICAgICAgICAgIGxldCBtdXQgbmFub3MgPSBOb25lOwogICAgICAgICAgICAgICAgd2hpbGUgbGV0IFNvbWUoa2V5KSA9IG1hcC5uZXh0X2tleSgpPyB7CiAgICAgICAgICAgICAgICAgICAgbWF0Y2gga2V5IHsKICAgICAgICAgICAgICAgICAgICAgICAgRmllbGQ6OlNlY3MgPT4gewogICAgICAgICAgICAgICAgICAgICAgICAgICAgaWYgc2Vjcy5pc19zb21lKCkgewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiBFcnIoZGU6OkVycm9yOjpkdXBsaWNhdGVfZmllbGQoInNlY3MiKSk7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgICAgICAgICBzZWNzID0gU29tZShtYXAubmV4dF92YWx1ZSgpPyk7CiAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgRmllbGQ6Ok5hbm9zID0+IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIG5hbm9zLmlzX3NvbWUoKSB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIEVycihkZTo6RXJyb3I6OmR1cGxpY2F0ZV9maWVsZCgibmFub3MiKSk7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgICAgICAgICBuYW5vcyA9IFNvbWUobWFwLm5leHRfdmFsdWUoKT8pOwogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgbGV0IHNlY3MgPSBzZWNzLm9rX29yX2Vsc2UofHwgZGU6OkVycm9yOjptaXNzaW5nX2ZpZWxkKCJzZWNzIikpPzsKICAgICAgICAgICAgICAgIGxldCBuYW5vcyA9IG5hbm9zLm9rX29yX2Vsc2UofHwgZGU6OkVycm9yOjptaXNzaW5nX2ZpZWxkKCJuYW5vcyIpKT87CiAgICAgICAgICAgICAgICBPayhEdXJhdGlvbjo6bmV3KHNlY3MsIG5hbm9zKSkKICAgICAgICAgICAgfQogICAgICAgIH0KCiAgICAgICAgY29uc3QgRklFTERTOiAmJ3N0YXRpYyBbJidzdGF0aWMgc3RyXSA9ICZbInNlY3MiLCAibmFub3MiXTsKICAgICAgICBkZXNlcmlhbGl6ZXIuZGVzZXJpYWxpemVfc3RydWN0KCJEdXJhdGlvbiIsIEZJRUxEUywgRHVyYXRpb25WaXNpdG9yKQogICAgfQp9CgpmbiBtYWluKCl7CiAgICBsZXQgZHVyYXRpb24gPSBEdXJhdGlvbjo6bmV3KDEwdTY0LDE0MF8wMDBfMDAwdTMyKTsKICAgIGxldCBqc29uID0gc2VyZGVfanNvbjo6dG9fc3RyaW5nX3ByZXR0eSgmZHVyYXRpb24pLnVud3JhcCgpOwogICAgcHJpbnRsbiEoInt9Iixqc29uKTsKICAgIAogICAgaWYgbGV0IE9rKGR1cmF0aW9uMikgPSBzZXJkZV9qc29uOjpmcm9tX3N0cjo6PER1cmF0aW9uPigmanNvbil7CiAgICAgICAgcHJpbnRsbiEoInNlY3M6e30sIG5hbm9zOnt9IixkdXJhdGlvbjIuc2VjcywgZHVyYXRpb24yLm5hbm9zKTsgCiAgICB9CiAgICAKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+*/
+use std::fmt;
 use serde::Serialize;
 use serde::de::{self, Deserialize, Deserializer, Visitor, SeqAccess, MapAccess};
 
@@ -772,6 +851,8 @@ fn main(){
 </div>
 <h3 id="1138-错误处理"><a class="header" href="#1138-错误处理">11.3.8 错误处理</a></h3>
 <p>Serde 的错误处理通过 <code>serde_json::Error</code> 类型实现，它提供了丰富的错误信息：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2VyZGUgPSB7IHZlcnNpb24gPSAiMS4wLjIyOCIsIGZlYXR1cmVzID0gWyJkZXJpdmUiXSB9CnNlcmRlX2pzb24gPSAiMS4wIgoqLwp1c2Ugc2VyZGU6OkRlc2VyaWFsaXplOwoKI1tkZXJpdmUoRGVzZXJpYWxpemUsIERlYnVnKV0Kc3RydWN0IENvbmZpZyB7CiAgICBuYW1lOiBTdHJpbmcsCiAgICBwb3J0OiB1MTYsCn0KCmZuIG1haW4oKSB7CiAgICBsZXQganNvbiA9IHIjInsibmFtZSI6ICJ0ZXN0IiwgInBvcnQiOiA4MDgwfSIjOwogICAgCiAgICBtYXRjaCBzZXJkZV9qc29uOjpmcm9tX3N0cjo6PENvbmZpZz4oanNvbikgewogICAgICAgIE9rKGNvbmZpZykgPT4gewogICAgICAgICAgICBwcmludGxuISgi6YWN572u5Yqg6L295oiQ5YqfOiB7Oj99IiwgY29uZmlnKTsKICAgICAgICAgICAgcHJpbnRsbiEoIm5hbWU6e30scG9ydDp7fSIsY29uZmlnLm5hbWUsY29uZmlnLnBvcnQpOwogICAgICAgIH0sCiAgICAgICAgRXJyKGUpID0+IHsKICAgICAgICAgICAgZXByaW50bG4hKCLphY3nva7op6PmnpDlpLHotKU6IHt9IiwgZSk7CiAgICAgICAgICAgIC8vIOi+k+WHuuivpue7humUmeivr+WIhuexuwogICAgICAgICAgICBpZiBlLmlzX3N5bnRheCgpIHsKICAgICAgICAgICAgICAgIGVwcmludGxuISgiICAtPiBKU09OIOivreazlemUmeivryIpOwogICAgICAgICAgICB9IGVsc2UgaWYgZS5pc19kYXRhKCkgewogICAgICAgICAgICAgICAgZXByaW50bG4hKCIgIC0+IOaVsOaNruexu+Wei+S4jeWMuemFjSIpOwogICAgICAgICAgICB9IGVsc2UgaWYgZS5pc19lb2YoKSB7CiAgICAgICAgICAgICAgICBlcHJpbnRsbiEoIiAgLT4gSlNPTiDmlbDmja7kuI3lrozmlbQiKTsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/*
 [dependencies]
 serde = { version = "1.0.228", features = ["derive"] }
@@ -843,7 +924,14 @@ $$</p>
 </div>
 <h3 id="1143-文件存储示例"><a class="header" href="#1143-文件存储示例">11.4.3 文件存储示例</a></h3>
 <p>文件存储是最简单的持久化方式，适合配置文件和小型数据集：</p>
-<pre class="playground"><code class="language-rust edition2024">use serde::{Serialize, Deserialize};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2VyZGUgPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJkZXJpdmUiXSB9CnNlcmRlX2pzb24gPSAiMSIKKi8KdXNlIHNlcmRlOjp7U2VyaWFsaXplLCBEZXNlcmlhbGl6ZX07CnVzZSBzdGQ6OmZzOwoKI1tkZXJpdmUoU2VyaWFsaXplLCBEZXNlcmlhbGl6ZSwgRGVidWcpXQpzdHJ1Y3QgQXBwU2V0dGluZ3MgewogICAgdGhlbWU6IFN0cmluZywKICAgIGxhbmd1YWdlOiBTdHJpbmcsCiAgICBtYXhfY29ubmVjdGlvbnM6IHUzMiwKICAgIGF1dG9fc2F2ZTogYm9vbCwKfQoKZm4gc2F2ZV9zZXR0aW5ncyhzZXR0aW5nczogJkFwcFNldHRpbmdzLCBwYXRoOiAmc3RyKSAtPiBzdGQ6OmlvOjpSZXN1bHQ8KCk+IHsKICAgIGxldCBqc29uID0gc2VyZGVfanNvbjo6dG9fc3RyaW5nX3ByZXR0eShzZXR0aW5ncykudW53cmFwKCk7CiAgICBmczo6d3JpdGUocGF0aCwganNvbikKfQoKZm4gbG9hZF9zZXR0aW5ncyhwYXRoOiAmc3RyKSAtPiBzdGQ6OmlvOjpSZXN1bHQ8QXBwU2V0dGluZ3M+IHsKICAgIGxldCBqc29uID0gZnM6OnJlYWRfdG9fc3RyaW5nKHBhdGgpPzsKICAgIGxldCBzZXR0aW5nczogQXBwU2V0dGluZ3MgPSBzZXJkZV9qc29uOjpmcm9tX3N0cigmanNvbikudW53cmFwKCk7CiAgICBPayhzZXR0aW5ncykKfQoKZm4gbWFpbigpIHsKICAgIGxldCBzZXR0aW5ncyA9IEFwcFNldHRpbmdzIHsKICAgICAgICB0aGVtZTogImRhcmsiLnRvX3N0cmluZygpLAogICAgICAgIGxhbmd1YWdlOiAiemgtQ04iLnRvX3N0cmluZygpLAogICAgICAgIG1heF9jb25uZWN0aW9uczogMTAwLAogICAgICAgIGF1dG9fc2F2ZTogdHJ1ZSwKICAgIH07CgogICAgc2F2ZV9zZXR0aW5ncygmc2V0dGluZ3MsICJzZXR0aW5ncy5qc29uIikudW53cmFwKCk7CiAgICBwcmludGxuISgi6YWN572u5bey5L+d5a2YIik7CgogICAgbGV0IGxvYWRlZCA9IGxvYWRfc2V0dGluZ3MoInNldHRpbmdzLmpzb24iKS51bndyYXAoKTsKICAgIHByaW50bG4hKCLliqDovb3nmoTphY3nva46IHs6P30iLCBsb2FkZWQpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+*/
+use serde::{Serialize, Deserialize};
 use std::fs;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -883,7 +971,14 @@ fn main() {
 <img src="images/SeaORMbanner.png" width="600" />
 <p><a href="https://github.com/SeaQL/sea-orm">sea-orm</a> 是 Rust 生态中优秀的异步 ORM 框架，基于 SQLx 构建，提供了类型安全的数据库操作接口。</p>
 <p>以下是一个使用 SQLite 进行数据持久化的示例：</p>
-<pre class="playground"><code class="language-rust edition2024">use rusqlite::{Connection, Result};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2VyZGUgPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJkZXJpdmUiXSB9CnNlcmRlX2pzb24gPSAiMSIKKi8KdXNlIHJ1c3FsaXRlOjp7Q29ubmVjdGlvbiwgUmVzdWx0fTsKdXNlIHNlcmRlOjp7U2VyaWFsaXplLCBEZXNlcmlhbGl6ZX07CgojW2Rlcml2ZShEZWJ1ZywgU2VyaWFsaXplLCBEZXNlcmlhbGl6ZSldCnN0cnVjdCBVc2VyIHsKICAgIGlkOiBPcHRpb248aTY0PiwKICAgIG5hbWU6IFN0cmluZywKICAgIGVtYWlsOiBTdHJpbmcsCiAgICBhZ2U6IHUzMiwKfQoKZm4gaW5pdF9kYihjb25uOiAmQ29ubmVjdGlvbikgLT4gUmVzdWx0PCgpPiB7CiAgICBjb25uLmV4ZWN1dGUoCiAgICAgICAgIkNSRUFURSBUQUJMRSBJRiBOT1QgRVhJU1RTIHVzZXJzICgKICAgICAgICAgICAgaWQgICAgSU5URUdFUiBQUklNQVJZIEtFWSBBVVRPSU5DUkVNRU5ULAogICAgICAgICAgICBuYW1lICBURVhUIE5PVCBOVUxMLAogICAgICAgICAgICBlbWFpbCBURVhUIE5PVCBOVUxMIFVOSVFVRSwKICAgICAgICAgICAgYWdlICAgSU5URUdFUiBOT1QgTlVMTAogICAgICAgICkiLAogICAgICAgIFtdLAogICAgKT87CiAgICBPaygoKSkKfQoKZm4gaW5zZXJ0X3VzZXIoY29ubjogJkNvbm5lY3Rpb24sIHVzZXI6ICZVc2VyKSAtPiBSZXN1bHQ8aTY0PiB7CiAgICBjb25uLmV4ZWN1dGUoCiAgICAgICAgIklOU0VSVCBJTlRPIHVzZXJzIChuYW1lLCBlbWFpbCwgYWdlKSBWQUxVRVMgKD8xLCA/MiwgPzMpIiwKICAgICAgICBbJnVzZXIubmFtZSwgJnVzZXIuZW1haWwsICZ1c2VyLmFnZS50b19zdHJpbmcoKV0sCiAgICApPzsKICAgIE9rKGNvbm4ubGFzdF9pbnNlcnRfcm93aWQoKSkKfQoKZm4gcXVlcnlfdXNlcnMoY29ubjogJkNvbm5lY3Rpb24pIC0+IFJlc3VsdDxWZWM8VXNlcj4+IHsKICAgIGxldCBtdXQgc3RtdCA9IGNvbm4ucHJlcGFyZSgiU0VMRUNUIGlkLCBuYW1lLCBlbWFpbCwgYWdlIEZST00gdXNlcnMiKT87CiAgICBsZXQgdXNlcl9pdGVyID0gc3RtdC5xdWVyeV9tYXAoW10sIHxyb3d8IHsKICAgICAgICBPayhVc2VyIHsKICAgICAgICAgICAgaWQ6IFNvbWUocm93LmdldCgwKT8pLAogICAgICAgICAgICBuYW1lOiByb3cuZ2V0KDEpPywKICAgICAgICAgICAgZW1haWw6IHJvdy5nZXQoMik/LAogICAgICAgICAgICBhZ2U6IHJvdy5nZXQoMyk/LAogICAgICAgIH0pCiAgICB9KT87CgogICAgbGV0IG11dCB1c2VycyA9IFZlYzo6bmV3KCk7CiAgICBmb3IgdXNlciBpbiB1c2VyX2l0ZXIgewogICAgICAgIHVzZXJzLnB1c2godXNlcj8pOwogICAgfQogICAgT2sodXNlcnMpCn0KCmZuIG1haW4oKSAtPiBSZXN1bHQ8KCk+IHsKICAgIGxldCBjb25uID0gQ29ubmVjdGlvbjo6b3BlbigidXNlcnMuZGIiKT87CiAgICBpbml0X2RiKCZjb25uKT87CgogICAgbGV0IHVzZXIgPSBVc2VyIHsKICAgICAgICBpZDogTm9uZSwKICAgICAgICBuYW1lOiAi5byg5LiJIi50b19zdHJpbmcoKSwKICAgICAgICBlbWFpbDogInpoYW5nc2FuQGV4YW1wbGUuY29tIi50b19zdHJpbmcoKSwKICAgICAgICBhZ2U6IDI4LAogICAgfTsKCiAgICBsZXQgaWQgPSBpbnNlcnRfdXNlcigmY29ubiwgJnVzZXIpPzsKICAgIHByaW50bG4hKCLmj5LlhaXnlKjmiLfmiJDlip/vvIxJRDoge30iLCBpZCk7CgogICAgbGV0IHVzZXJzID0gcXVlcnlfdXNlcnMoJmNvbm4pPzsKICAgIGxldCBqc29uID0gc2VyZGVfanNvbjo6dG9fc3RyaW5nX3ByZXR0eSgmdXNlcnMpLnVud3JhcCgpOwogICAgcHJpbnRsbiEoIuaJgOacieeUqOaItzpcbnt9IiwganNvbik7CgogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+*/
+use rusqlite::{Connection, Result};
 use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -1022,7 +1117,13 @@ async fn upload_file(
 </div>
 <h3 id="1154-plotters-折线图示例"><a class="header" href="#1154-plotters-折线图示例">11.5.4 plotters 折线图示例</a></h3>
 <p><code>plotters</code> 是 Rust 中最流行的纯绑图库，无需外部依赖，支持多种输出格式：</p>
-<pre class="playground"><code class="language-rust edition2024">use plotters::prelude::*;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcGxvdHRlcnMgPSAiMC4zIgoqLwp1c2UgcGxvdHRlcnM6OnByZWx1ZGU6Oio7CgpmbiBtYWluKCkgLT4gUmVzdWx0PCgpLCBCb3g8ZHluIHN0ZDo6ZXJyb3I6OkVycm9yPj4gewogICAgbGV0IHJvb3QgPSBCaXRNYXBCYWNrZW5kOjpuZXcoImxpbmVfY2hhcnQucG5nIiwgKDgwMCwgNjAwKSkKICAgICAgICAuaW50b19kcmF3aW5nX2FyZWEoKTsKICAgIHJvb3QuZmlsbCgmV0hJVEUpPzsKICAgIAogICAgLy8g5Yib5bu657uR5Zu+5Yy65Z+fCiAgICBsZXQgbXV0IGNoYXJ0ID0gQ2hhcnRCdWlsZGVyOjpvbigmcm9vdCkKICAgICAgICAuY2FwdGlvbigi5pyI5bqm6ZSA5ZSu6aKd6LaL5Yq/IiwgKCJNaWNyb3NvZnQgWWFIZWkiLCAzMCkpCiAgICAgICAgLnhfbGFiZWxfYXJlYV9zaXplKDQwKQogICAgICAgIC55X2xhYmVsX2FyZWFfc2l6ZSg2MCkKICAgICAgICAubWFyZ2luKDEwKQogICAgICAgIC5idWlsZF9jYXJ0ZXNpYW5fMmQoMXUzMi4uMTJ1MzIsIDBmNjQuLjEwMGY2NCk/OwoKICAgIGNoYXJ0LmNvbmZpZ3VyZV9tZXNoKCkKICAgICAgICAueF9kZXNjKCLmnIjku70iKQogICAgICAgIC55X2Rlc2MoIumUgOWUrumine+8iOS4h+WFg++8iSIpCiAgICAgICAgLmRyYXcoKT87CgogICAgLy8g57uY5Yi25oqY57q/CiAgICBsZXQgZGF0YTogVmVjPCh1MzIsIGY2NCk+ID0gdmVjIVsKICAgICAgICAoMSwgMjUuMCksICgyLCAzMi4wKSwgKDMsIDI4LjApLCAoNCwgNDUuMCksCiAgICAgICAgKDUsIDUyLjApLCAoNiwgNDguMCksICg3LCA2MS4wKSwgKDgsIDU4LjApLAogICAgICAgICg5LCA3Mi4wKSwgKDEwLCA2OC4wKSwgKDExLCA4MC4wKSwgKDEyLCA5NS4wKSwKICAgIF07CgogICAgY2hhcnQuZHJhd19zZXJpZXMoTGluZVNlcmllczo6bmV3KAogICAgICAgIGRhdGEuaXRlcigpLm1hcCh8Jih4LCB5KXwgKHgsIHkpKSwKICAgICAgICAmUkVELAogICAgKSk/CiAgICAubGVnZW5kKHwoeCwgeSl8IFBhdGhFbGVtZW50OjpuZXcodmVjIVsoeCwgeSksICh4ICsgMjAsIHkpXSwgUkVEKSk7CgogICAgcm9vdC5wcmVzZW50KCk/OwogICAgcHJpbnRsbiEoIuaKmOe6v+WbvuW3suS/neWtmOS4uiBsaW5lX2NoYXJ0LnBuZyIpOwogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+plotters = "0.3"
+*/
+use plotters::prelude::*;
 
 fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
     let root = BitMapBackend::new("line_chart.png", (800, 600))
@@ -1060,7 +1161,13 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
     Ok(())
 }</code></pre>
 <h3 id="1155-plotters-柱状图示例"><a class="header" href="#1155-plotters-柱状图示例">11.5.5 plotters 柱状图示例</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use plotters::prelude::*;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcGxvdHRlcnMgPSAiMC4zIgoqLwp1c2UgcGxvdHRlcnM6OnByZWx1ZGU6Oio7CgpmbiBtYWluKCkgLT4gUmVzdWx0PCgpLCBCb3g8ZHluIHN0ZDo6ZXJyb3I6OkVycm9yPj4gewogICAgbGV0IHJvb3QgPSBCaXRNYXBCYWNrZW5kOjpuZXcoImJhcl9jaGFydC5wbmciLCAoODAwLCA2MDApKQogICAgICAgIC5pbnRvX2RyYXdpbmdfYXJlYSgpOwogICAgcm9vdC5maWxsKCZXSElURSk/OwoKICAgIGxldCBtdXQgY2hhcnQgPSBDaGFydEJ1aWxkZXI6Om9uKCZyb290KQogICAgICAgIC5jYXB0aW9uKCLlkITnvJbnqIvor63oqIDkvb/nlKjnjociLCAoIk1pY3Jvc29mdCBZYUhlaSIsIDMwKSkKICAgICAgICAueF9sYWJlbF9hcmVhX3NpemUoNTApCiAgICAgICAgLnlfbGFiZWxfYXJlYV9zaXplKDYwKQogICAgICAgIC5tYXJnaW4oMTApCiAgICAgICAgLmJ1aWxkX2NhcnRlc2lhbl8yZCgwdXNpemUuLjV1c2l6ZSwgMGY2NC4uNDBmNjQpPzsKCiAgICBjaGFydC5jb25maWd1cmVfbWVzaCgpCiAgICAgICAgLnhfZGVzYygi57yW56iL6K+t6KiAIikKICAgICAgICAueV9kZXNjKCLkvb/nlKjnjocgKCUpIikKICAgICAgICAueF9sYWJlbHMoJlsiUnVzdCIsICJQeXRob24iLCAiSmF2YSIsICJHbyIsICJDKysiXSkKICAgICAgICAuZHJhdygpPzsKCiAgICBsZXQgZGF0YTogVmVjPCh1c2l6ZSwgZjY0KT4gPSB2ZWMhWwogICAgICAgICgwLCAxMy41KSwgKDEsIDI4LjEpLCAoMiwgMTYuMyksICgzLCA4LjcpLCAoNCwgMTAuMiksCiAgICBdOwoKICAgIGxldCBjb2xvcnMgPSBbUkVELCBCTFVFLCBHUkVFTiwgT1JBTkdFLCBQVVJQTEVdOwoKICAgIGNoYXJ0LmRyYXdfc2VyaWVzKAogICAgICAgIGRhdGEuaXRlcigpLmVudW1lcmF0ZSgpLm1hcCh8KGksICYoeCwgeSkpfCB7CiAgICAgICAgICAgIFJlY3RhbmdsZTo6bmV3KAogICAgICAgICAgICAgICAgWyh4LCAwKSwgKHggKyAxLCB5KV0sCiAgICAgICAgICAgICAgICBjb2xvcnNbaV0uZmlsbGVkKCksCiAgICAgICAgICAgICkKICAgICAgICB9KSwKICAgICk/OwoKICAgIHJvb3QucHJlc2VudCgpPzsKICAgIHByaW50bG4hKCLmn7Hnirblm77lt7Lkv53lrZjkuLogYmFyX2NoYXJ0LnBuZyIpOwogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+plotters = "0.3"
+*/
+use plotters::prelude::*;
 
 fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
     let root = BitMapBackend::new("bar_chart.png", (800, 600))
@@ -1130,7 +1237,13 @@ $$</p>
 <li><strong>数据校验</strong>：范围检查、正则匹配、业务规则验证</li>
 <li><strong>聚合计算</strong>：分组统计、滚动窗口、连接关联</li>
 </ul>
-<pre class="playground"><code class="language-rust edition2024">use serde::{Serialize, Deserialize};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2VyZGUgPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJkZXJpdmUiXSB9CiovCnVzZSBzZXJkZTo6e1NlcmlhbGl6ZSwgRGVzZXJpYWxpemV9Owp1c2Ugc3RkOjpjb2xsZWN0aW9uczo6SGFzaE1hcDsKCiNbZGVyaXZlKERlYnVnLCBTZXJpYWxpemUsIERlc2VyaWFsaXplLCBDbG9uZSldCnN0cnVjdCBSZWNvcmQgewogICAgaWQ6IFN0cmluZywKICAgIG5hbWU6IFN0cmluZywKICAgIHZhbHVlOiBmNjQsCiAgICBzb3VyY2U6IFN0cmluZywKfQoKLy8vIOaVsOaNrua4hea0l++8muWOu+mHjeWSjOagvOW8j+agh+WHhuWMlgpmbiBkZWR1cGxpY2F0ZShyZWNvcmRzOiBWZWM8UmVjb3JkPikgLT4gVmVjPFJlY29yZD4gewogICAgbGV0IG11dCBzZWVuID0gSGFzaE1hcDo6bmV3KCk7CiAgICBmb3IgcmVjb3JkIGluIHJlY29yZHMgewogICAgICAgIHNlZW4uZW50cnkocmVjb3JkLmlkLmNsb25lKCkpCiAgICAgICAgICAgIC5vcl9pbnNlcnQocmVjb3JkKTsKICAgIH0KICAgIHNlZW4uaW50b192YWx1ZXMoKS5jb2xsZWN0KCkKfQoKLy8vIOaVsOaNrui9rOaNou+8muWAvOWfn+aYoOWwhApmbiBub3JtYWxpemVfdmFsdWVzKHJlY29yZHM6ICZtdXQgW1JlY29yZF0sIG1pbjogZjY0LCBtYXg6IGY2NCkgewogICAgbGV0IHJhbmdlID0gbWF4IC0gbWluOwogICAgZm9yIHJlY29yZCBpbiByZWNvcmRzLml0ZXJfbXV0KCkgewogICAgICAgIHJlY29yZC52YWx1ZSA9IChyZWNvcmQudmFsdWUgLSBtaW4pIC8gcmFuZ2U7CiAgICB9Cn0KCi8vLyDmlbDmja7ono3lkIjvvJrlkIjlubblpJrkuKrmnaXmupDnmoTmlbDmja4KZm4gbWVyZ2Vfc291cmNlcyhzb3VyY2VzOiBWZWM8VmVjPFJlY29yZD4+KSAtPiBWZWM8UmVjb3JkPiB7CiAgICBsZXQgYWxsOiBWZWM8UmVjb3JkPiA9IHNvdXJjZXMuaW50b19pdGVyKCkuZmxhdHRlbigpLmNvbGxlY3QoKTsKICAgIGxldCBtdXQgZGVkdXBlZCA9IGRlZHVwbGljYXRlKGFsbCk7CiAgICBpZiBsZXQgKFNvbWUoJm1pbl92YWwpLCBTb21lKCZtYXhfdmFsKSkgPSAoCiAgICAgICAgZGVkdXBlZC5pdGVyKCkubWFwKHxyfCByLnZhbHVlKS5yZWR1Y2UoZjY0OjptaW4pLAogICAgICAgIGRlZHVwZWQuaXRlcigpLm1hcCh8cnwgci52YWx1ZSkucmVkdWNlKGY2NDo6bWF4KSwKICAgICkgewogICAgICAgIG5vcm1hbGl6ZV92YWx1ZXMoJm11dCBkZWR1cGVkLCBtaW5fdmFsLCBtYXhfdmFsKTsKICAgIH0KICAgIGRlZHVwZWQKfQoKZm4gbWFpbigpIHsKICAgIGxldCBzb3VyY2VfYSA9IHZlYyFbCiAgICAgICAgUmVjb3JkIHsgaWQ6ICIxIi5pbnRvKCksIG5hbWU6ICJBbHBoYSIuaW50bygpLCB2YWx1ZTogMTAwLjAsIHNvdXJjZTogIkEiLmludG8oKSB9LAogICAgICAgIFJlY29yZCB7IGlkOiAiMiIuaW50bygpLCBuYW1lOiAiQmV0YSIuaW50bygpLCB2YWx1ZTogMjAwLjAsIHNvdXJjZTogIkEiLmludG8oKSB9LAogICAgXTsKICAgIGxldCBzb3VyY2VfYiA9IHZlYyFbCiAgICAgICAgUmVjb3JkIHsgaWQ6ICIxIi5pbnRvKCksIG5hbWU6ICJBbHBoYSIuaW50bygpLCB2YWx1ZTogMTAwLjAsIHNvdXJjZTogIkIiLmludG8oKSB9LAogICAgICAgIFJlY29yZCB7IGlkOiAiMyIuaW50bygpLCBuYW1lOiAiR2FtbWEiLmludG8oKSwgdmFsdWU6IDMwMC4wLCBzb3VyY2U6ICJCIi5pbnRvKCkgfSwKICAgIF07CgogICAgbGV0IG1lcmdlZCA9IG1lcmdlX3NvdXJjZXModmVjIVtzb3VyY2VfYSwgc291cmNlX2JdKTsKICAgIHByaW50bG4hKCLono3lkIjlkI7lhbEge30g5p2h6K6w5b2VOiIsIG1lcmdlZC5sZW4oKSk7CiAgICBmb3IgciBpbiAmbWVyZ2VkIHsKICAgICAgICBwcmludGxuISgiICB7fSAtIHt9IChub3JtYWxpemVkOiB7Oi4yfSkiLCByLmlkLCByLm5hbWUsIHIudmFsdWUpOwogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+*/
+use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -1223,6 +1336,8 @@ fn main() {
 <p><a href="https://github.com/apache/datafusion">DataFusion</a> 是基于 Apache Arrow 构建的查询引擎，用 Rust 编写，提供了 SQL 查询能力和 DataFrame API，适合构建高性能的数据分析系统。</p>
 <h3 id="1175-rust-arrow-crate-示例"><a class="header" href="#1175-rust-arrow-crate-示例">11.7.5 Rust arrow crate 示例</a></h3>
 <p>以下示例展示了如何使用 Rust 的 <code>arrow</code> crate 创建和操作列式数据：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIGFycm93OjphcnJheTo6e0Zsb2F0NjRBcnJheSwgSW50NjRBcnJheSwgU3RyaW5nQXJyYXl9Owp1c2UgYXJyb3c6OmRhdGF0eXBlczo6e0RhdGFUeXBlLCBGaWVsZCwgU2NoZW1hfTsKdXNlIGFycm93OjpyZWNvcmRfYmF0Y2g6OlJlY29yZEJhdGNoOwp1c2Ugc3RkOjpzeW5jOjpBcmM7CgpmbiBtYWluKCkgewogICAgLy8g5a6a5LmJIFNjaGVtYQogICAgbGV0IHNjaGVtYSA9IFNjaGVtYTo6bmV3KHZlYyFbCiAgICAgICAgRmllbGQ6Om5ldygiY2l0eSIsIERhdGFUeXBlOjpVdGY4LCBmYWxzZSksCiAgICAgICAgRmllbGQ6Om5ldygicG9wdWxhdGlvbiIsIERhdGFUeXBlOjpJbnQ2NCwgZmFsc2UpLAogICAgICAgIEZpZWxkOjpuZXcoImF2Z190ZW1wZXJhdHVyZSIsIERhdGFUeXBlOjpGbG9hdDY0LCBmYWxzZSksCiAgICBdKTsKCiAgICAvLyDliJvlu7rliJfmlbDmja4KICAgIGxldCBjaXRpZXMgPSBTdHJpbmdBcnJheTo6ZnJvbSh2ZWMhWwogICAgICAgICLljJfkuqwiLCAi5LiK5rW3IiwgIuW5v+W3niIsICLmt7HlnLMiLCAi5p2t5beeIiwKICAgIF0pOwogICAgbGV0IHBvcHVsYXRpb25zID0gSW50NjRBcnJheTo6ZnJvbSh2ZWMhWwogICAgICAgIDIxXzU0MF8wMDAsIDI0Xzg3MF8wMDAsIDE4XzY4MF8wMDAsIDE3XzU2MF8wMDAsIDEyXzIwMF8wMDAsCiAgICBdKTsKICAgIGxldCB0ZW1wZXJhdHVyZXMgPSBGbG9hdDY0QXJyYXk6OmZyb20odmVjIVsKICAgICAgICAxMi42LCAxNi4xLCAyMi4wLCAyMi40LCAxNi45LAogICAgXSk7CgogICAgLy8g5Yib5bu6IFJlY29yZEJhdGNoCiAgICBsZXQgYmF0Y2ggPSBSZWNvcmRCYXRjaDo6dHJ5X25ldygKICAgICAgICBBcmM6Om5ldyhzY2hlbWEpLAogICAgICAgIHZlYyFbCiAgICAgICAgICAgIEFyYzo6bmV3KGNpdGllcyksCiAgICAgICAgICAgIEFyYzo6bmV3KHBvcHVsYXRpb25zKSwKICAgICAgICAgICAgQXJjOjpuZXcodGVtcGVyYXR1cmVzKSwKICAgICAgICBdLAogICAgKS51bndyYXAoKTsKCiAgICBwcmludGxuISgiUmVjb3JkQmF0Y2gg5YyF5ZCrIHt9IOihjCwge30g5YiXIiwgYmF0Y2gubnVtX3Jvd3MoKSwgYmF0Y2gubnVtX2NvbHVtbnMoKSk7CiAgICBwcmludGxuISgiU2NoZW1hOiB7Oj99IiwgYmF0Y2guc2NoZW1hKCkpOwoKICAgIC8vIOiuv+mXruWIl+aVsOaNrgogICAgbGV0IHRlbXBfY29sID0gYmF0Y2gKICAgICAgICAuY29sdW1uKDIpCiAgICAgICAgLmFzX2FueSgpCiAgICAgICAgLmRvd25jYXN0X3JlZjo6PEZsb2F0NjRBcnJheT4oKQogICAgICAgIC51bndyYXAoKTsKICAgIHByaW50bG4hKCLlubPlnYfmuKnluqY6IHs6P30iLCB0ZW1wX2NvbC52YWx1ZXMoKSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use arrow::array::{Float64Array, Int64Array, StringArray};
 use arrow::datatypes::{DataType, Field, Schema};
 use arrow::record_batch::RecordBatch;

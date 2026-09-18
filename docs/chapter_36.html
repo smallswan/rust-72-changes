@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -211,6 +248,8 @@
 <h3 id="12-人工神经元mcculloch-pitts-模型"><a class="header" href="#12-人工神经元mcculloch-pitts-模型">1.2 人工神经元（McCulloch-Pitts 模型）</a></h3>
 <p>1943 年，Warren McCulloch 和 Walter Pitts 提出了第一个人工神经元模型。一个神经元接收 $n$ 个输入 $x_1, x_2, \ldots, x_n$，每个输入对应一个权重 $w_1, w_2, \ldots, w_n$，加上偏置 $b$，经过激活函数 $f$ 后产生输出：</p>
 <p>$$y = f\left(\sum_{i=1}^{n} w_i x_i + b\right) = f(\mathbf{w}^T \mathbf{x} + b)$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOS6uuW3peelnue7j+WFg++8muWKoOadg+axguWSjCArIOa/gOa0u+WHveaVsApzdHJ1Y3QgTmV1cm9uIHsKICAgIHdlaWdodHM6IFZlYzxmNjQ+LAogICAgYmlhczogZjY0LAp9CgppbXBsIE5ldXJvbiB7CiAgICBmbiBuZXcod2VpZ2h0czogVmVjPGY2ND4sIGJpYXM6IGY2NCkgLT4gU2VsZiB7CiAgICAgICAgTmV1cm9uIHsgd2VpZ2h0cywgYmlhcyB9CiAgICB9CgogICAgLy8vIOWKoOadg+axguWSjAogICAgZm4gd2VpZ2h0ZWRfc3VtKCZzZWxmLCBpbnB1dHM6ICZbZjY0XSkgLT4gZjY0IHsKICAgICAgICBzZWxmLndlaWdodHMuaXRlcigpCiAgICAgICAgICAgIC56aXAoaW5wdXRzLml0ZXIoKSkKICAgICAgICAgICAgLm1hcCh8KHcsIHgpfCB3ICogeCkKICAgICAgICAgICAgLnN1bTo6PGY2ND4oKSArIHNlbGYuYmlhcwogICAgfQoKICAgIC8vLyDliY3lkJHkvKDmkq3vvIjkvb/nlKjpmLbot4Pmv4DmtLvlh73mlbDvvIkKICAgIGZuIGZvcndhcmQoJnNlbGYsIGlucHV0czogJltmNjRdKSAtPiBmNjQgewogICAgICAgIGxldCBzdW0gPSBzZWxmLndlaWdodGVkX3N1bShpbnB1dHMpOwogICAgICAgIGlmIHN1bSA+PSAwLjAgeyAxLjAgfSBlbHNlIHsgMC4wIH0KICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIC8vIEFORCDpl6jvvJp3MT0xLCB3Mj0xLCBiaWFzPS0xLjUKICAgIGxldCBhbmRfZ2F0ZSA9IE5ldXJvbjo6bmV3KHZlYyFbMS4wLCAxLjBdLCAtMS41KTsKICAgIHByaW50bG4hKCJBTkQoMCwwKSA9IHt9IiwgYW5kX2dhdGUuZm9yd2FyZCgmWzAuMCwgMC4wXSkpOyAvLyAwCiAgICBwcmludGxuISgiQU5EKDAsMSkgPSB7fSIsIGFuZF9nYXRlLmZvcndhcmQoJlswLjAsIDEuMF0pKTsgLy8gMAogICAgcHJpbnRsbiEoIkFORCgxLDEpID0ge30iLCBhbmRfZ2F0ZS5mb3J3YXJkKCZbMS4wLCAxLjBdKSk7IC8vIDEKCiAgICAvLyBPUiDpl6jvvJp3MT0xLCB3Mj0xLCBiaWFzPS0wLjUKICAgIGxldCBvcl9nYXRlID0gTmV1cm9uOjpuZXcodmVjIVsxLjAsIDEuMF0sIC0wLjUpOwogICAgcHJpbnRsbiEoIk9SKDAsMSkgID0ge30iLCBvcl9nYXRlLmZvcndhcmQoJlswLjAsIDEuMF0pKTsgIC8vIDEKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 人工神经元：加权求和 + 激活函数
 struct Neuron {
     weights: Vec&lt;f64&gt;,
@@ -258,6 +297,8 @@ fn main() {
 <p>$$w_j \leftarrow w_j + \eta (y_i - \hat{y}<em>i) x</em>{ij}$$</p>
 <p>$$b \leftarrow b + \eta (y_i - \hat{y}_i)$$</p>
 <p>其中 $\eta$ 是学习率，$y_i$ 是真实标签，$\hat{y}_i$ 是预测值。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOaEn+efpeacuuWIhuexu+WZqApzdHJ1Y3QgUGVyY2VwdHJvbiB7CiAgICB3ZWlnaHRzOiBWZWM8ZjY0PiwKICAgIGJpYXM6IGY2NCwKICAgIGxlYXJuaW5nX3JhdGU6IGY2NCwKfQoKaW1wbCBQZXJjZXB0cm9uIHsKICAgIGZuIG5ldyhuX2lucHV0czogdXNpemUsIGxyOiBmNjQpIC0+IFNlbGYgewogICAgICAgIFBlcmNlcHRyb24gewogICAgICAgICAgICB3ZWlnaHRzOiB2ZWMhWzAuMDsgbl9pbnB1dHNdLAogICAgICAgICAgICBiaWFzOiAwLjAsCiAgICAgICAgICAgIGxlYXJuaW5nX3JhdGU6IGxyLAogICAgICAgIH0KICAgIH0KCiAgICBmbiBwcmVkaWN0KCZzZWxmLCBpbnB1dHM6ICZbZjY0XSkgLT4gaTMyIHsKICAgICAgICBsZXQgc3VtID0gc2VsZi53ZWlnaHRzLml0ZXIoKQogICAgICAgICAgICAuemlwKGlucHV0cy5pdGVyKCkpCiAgICAgICAgICAgIC5tYXAofCh3LCB4KXwgdyAqIHgpCiAgICAgICAgICAgIC5zdW06OjxmNjQ+KCkgKyBzZWxmLmJpYXM7CiAgICAgICAgaWYgc3VtID49IDAuMCB7IDEgfSBlbHNlIHsgMCB9CiAgICB9CgogICAgLy8vIOiuree7g+S4gOS4qiBlcG9jaAogICAgZm4gdHJhaW5fZXBvY2goJm11dCBzZWxmLCBzYW1wbGVzOiAmWyhWZWM8ZjY0PiwgaTMyKV0pIHsKICAgICAgICBmb3IgKGlucHV0cywgbGFiZWwpIGluIHNhbXBsZXMgewogICAgICAgICAgICBsZXQgcHJlZGljdGlvbiA9IHNlbGYucHJlZGljdChpbnB1dHMpOwogICAgICAgICAgICBsZXQgZXJyb3IgPSAoKmxhYmVsIC0gcHJlZGljdGlvbikgYXMgZjY0ICogc2VsZi5sZWFybmluZ19yYXRlOwogICAgICAgICAgICBmb3IgdyBpbiAmbXV0IHNlbGYud2VpZ2h0cyB7CiAgICAgICAgICAgICAgICAqdyArPSBlcnJvciAqIDEuMDsgLy8g566A5YyW77ya5YGH6K6+IGlucHV0cyDkuLogMC8xCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZm9yICh3LCB4KSBpbiBzZWxmLndlaWdodHMuaXRlcl9tdXQoKS56aXAoaW5wdXRzLml0ZXIoKSkgewogICAgICAgICAgICAgICAgKncgKz0gZXJyb3IgKiB4OwogICAgICAgICAgICB9CiAgICAgICAgICAgIHNlbGYuYmlhcyArPSBlcnJvcjsKICAgICAgICB9CiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICAvLyBBTkQg6YC76L6R6Zeo55qE6K6t57uD5pWw5o2uCiAgICBsZXQgc2FtcGxlcyA9IHZlYyFbCiAgICAgICAgKHZlYyFbMC4wLCAwLjBdLCAwKSwKICAgICAgICAodmVjIVswLjAsIDEuMF0sIDApLAogICAgICAgICh2ZWMhWzEuMCwgMC4wXSwgMCksCiAgICAgICAgKHZlYyFbMS4wLCAxLjBdLCAxKSwKICAgIF07CgogICAgbGV0IG11dCBwID0gUGVyY2VwdHJvbjo6bmV3KDIsIDAuMSk7CiAgICBmb3IgZXBvY2ggaW4gMC4uMjAgewogICAgICAgIHAudHJhaW5fZXBvY2goJnNhbXBsZXMpOwogICAgfQoKICAgIHByaW50bG4hKCJBTkQoMCwwKSA9IHt9IiwgcC5wcmVkaWN0KCZbMC4wLCAwLjBdKSk7IC8vIDAKICAgIHByaW50bG4hKCJBTkQoMSwxKSA9IHt9IiwgcC5wcmVkaWN0KCZbMS4wLCAxLjBdKSk7IC8vIDEKICAgIHByaW50bG4hKCLmnYPph406IHs6P30iLCBwLndlaWdodHMpOwogICAgcHJpbnRsbiEoIuWBj+e9rjoge30iLCBwLmJpYXMpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 感知机分类器
 struct Perceptron {
     weights: Vec&lt;f64&gt;,
@@ -434,6 +475,8 @@ fn rand_simple() -&gt; impl Fn() -&gt; f64 {
 </table>
 </div>
 <h3 id="42-rust-实现"><a class="header" href="#42-rust-实现">4.2 Rust 实现</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOa/gOa0u+WHveaVsOmbhuWQiApmbiBzaWdtb2lkKHg6IGY2NCkgLT4gZjY0IHsKICAgIDEuMCAvICgxLjAgKyAoLXgpLmV4cCgpKQp9CgpmbiBzaWdtb2lkX2Rlcml2YXRpdmUoeDogZjY0KSAtPiBmNjQgewogICAgbGV0IHMgPSBzaWdtb2lkKHgpOwogICAgcyAqICgxLjAgLSBzKQp9CgpmbiB0YW5oX2FjdGl2YXRpb24oeDogZjY0KSAtPiBmNjQgewogICAgeC50YW5oKCkKfQoKZm4gcmVsdSh4OiBmNjQpIC0+IGY2NCB7CiAgICBpZiB4ID4gMC4wIHsgeCB9IGVsc2UgeyAwLjAgfQp9CgpmbiByZWx1X2Rlcml2YXRpdmUoeDogZjY0KSAtPiBmNjQgewogICAgaWYgeCA+IDAuMCB7IDEuMCB9IGVsc2UgeyAwLjAgfQp9CgpmbiBsZWFreV9yZWx1KHg6IGY2NCwgYWxwaGE6IGY2NCkgLT4gZjY0IHsKICAgIGlmIHggPiAwLjAgeyB4IH0gZWxzZSB7IGFscGhhICogeCB9Cn0KCi8vLyBTb2Z0bWF477ya5bCG5ZCR6YeP6L2s5Li65qaC546H5YiG5biDCmZuIHNvZnRtYXgobG9naXRzOiAmW2Y2NF0pIC0+IFZlYzxmNjQ+IHsKICAgIGxldCBtYXggPSBsb2dpdHMuaXRlcigpLmNsb25lZCgpLmZvbGQoZjY0OjpORUdfSU5GSU5JVFksIGY2NDo6bWF4KTsKICAgIGxldCBleHBzOiBWZWM8ZjY0PiA9IGxvZ2l0cy5pdGVyKCkubWFwKHwmeHwgKHggLSBtYXgpLmV4cCgpKS5jb2xsZWN0KCk7CiAgICBsZXQgc3VtOiBmNjQgPSBleHBzLml0ZXIoKS5zdW0oKTsKICAgIGV4cHMuaXRlcigpLm1hcCh8ZXwgZSAvIHN1bSkuY29sbGVjdCgpCn0KCmZuIG1haW4oKSB7CiAgICAvLyBTaWdtb2lkIOa1i+ivlQogICAgcHJpbnRsbiEoInNpZ21vaWQoMCkgICA9IHs6LjR9Iiwgc2lnbW9pZCgwLjApKTsgICAgLy8gMC41MDAwCiAgICBwcmludGxuISgic2lnbW9pZCgxMCkgID0gezouNH0iLCBzaWdtb2lkKDEwLjApKTsgICAvLyDiiYgxLjAwMDAKICAgIHByaW50bG4hKCJzaWdtb2lkKC0xMCkgPSB7Oi40fSIsIHNpZ21vaWQoLTEwLjApKTsgIC8vIOKJiDAuMDAwMAoKICAgIC8vIFJlTFUg5rWL6K+VCiAgICBwcmludGxuISgicmVsdSgtMykgPSB7fSIsIHJlbHUoLTMuMCkpOyAgLy8gMAogICAgcHJpbnRsbiEoInJlbHUoNSkgID0ge30iLCByZWx1KDUuMCkpOyAgIC8vIDUKCiAgICAvLyBTb2Z0bWF4IOa1i+ivlQogICAgbGV0IGxvZ2l0cyA9IFsyLjAsIDEuMCwgMC4xXTsKICAgIGxldCBwcm9icyA9IHNvZnRtYXgoJmxvZ2l0cyk7CiAgICBwcmludGxuISgic29mdG1heChbMiwgMSwgMC4xXSkgPSB7Oj99IiwgcHJvYnMpOwogICAgLy8g4omIIFswLjY1OTAsIDAuMjQyNCwgMC4wOTg2XQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 激活函数集合
 fn sigmoid(x: f64) -&gt; f64 {
     1.0 / (1.0 + (-x).exp())
@@ -503,6 +546,8 @@ fn main() {
 <p>多分类交叉熵：</p>
 <p>$$\mathcal{L}<em>{\text{CE}} = -\sum</em>{i=1}^{n} \sum_{j=1}^{C} y_{ij} \ln(\hat{y}_{ij})$$</p>
 <p>其中 $C$ 是类别数，$y_{ij}$ 是 one-hot 编码的真实标签。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOaNn+WkseWHveaVsApmbiBtc2VfbG9zcyhwcmVkaWN0aW9uczogJltmNjRdLCB0YXJnZXRzOiAmW2Y2NF0pIC0+IGY2NCB7CiAgICBsZXQgbiA9IHByZWRpY3Rpb25zLmxlbigpIGFzIGY2NDsKICAgIHByZWRpY3Rpb25zLml0ZXIoKQogICAgICAgIC56aXAodGFyZ2V0cy5pdGVyKCkpCiAgICAgICAgLm1hcCh8KHAsIHQpfCAocCAtIHQpLnBvd2koMikpCiAgICAgICAgLnN1bTo6PGY2ND4oKSAvIG4KfQoKLy8vIOS6jOWIhuexu+S6pOWPieeGtQpmbiBiaW5hcnlfY3Jvc3NfZW50cm9weShwcmVkaWN0aW9uczogJltmNjRdLCB0YXJnZXRzOiAmW2Y2NF0pIC0+IGY2NCB7CiAgICBsZXQgbiA9IHByZWRpY3Rpb25zLmxlbigpIGFzIGY2NDsKICAgIHByZWRpY3Rpb25zLml0ZXIoKQogICAgICAgIC56aXAodGFyZ2V0cy5pdGVyKCkpCiAgICAgICAgLm1hcCh8KHAsICZ0KXwgewogICAgICAgICAgICBsZXQgcF9jbGFtcGVkID0gcC5jbGFtcCgxZS03LCAxLjAgLSAxZS03KTsKICAgICAgICAgICAgLXQgKiBwX2NsYW1wZWQubG4oKSAtICgxLjAgLSB0KSAqICgxLjAgLSBwX2NsYW1wZWQpLmxuKCkKICAgICAgICB9KQogICAgICAgIC5zdW06OjxmNjQ+KCkgLyBuCn0KCi8vLyDlpJrliIbnsbvkuqTlj4nnhrXvvIh0YXJnZXRzIOS4uiBvbmUtaG90IOe8luegge+8iQpmbiBjcm9zc19lbnRyb3B5X2xvc3MocHJlZGljdGlvbnM6ICZbZjY0XSwgdGFyZ2V0czogJltmNjRdKSAtPiBmNjQgewogICAgcHJlZGljdGlvbnMuaXRlcigpCiAgICAgICAgLnppcCh0YXJnZXRzLml0ZXIoKSkKICAgICAgICAubWFwKHwocCwgJnQpfCB7CiAgICAgICAgICAgIGlmIHQgPiAwLjAgewogICAgICAgICAgICAgICAgLXQgKiBwLmNsYW1wKDFlLTcsIDEuMCkubG4oKQogICAgICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAgICAgMC4wCiAgICAgICAgICAgIH0KICAgICAgICB9KQogICAgICAgIC5zdW0oKQp9CgpmbiBtYWluKCkgewogICAgbGV0IHByZWRzID0gdmVjIVswLjksIDAuMSwgMC4zXTsKICAgIGxldCB0YXJnZXRzID0gdmVjIVsxLjAsIDAuMCwgMC4wXTsKICAgIHByaW50bG4hKCJNU0UgPSB7Oi42fSIsIG1zZV9sb3NzKCZwcmVkcywgJnRhcmdldHMpKTsKICAgIHByaW50bG4hKCJDRSA9IHs6LjZ9IiwgY3Jvc3NfZW50cm9weV9sb3NzKCZwcmVkcywgJnRhcmdldHMpKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 损失函数
 fn mse_loss(predictions: &amp;[f64], targets: &amp;[f64]) -&gt; f64 {
     let n = predictions.len() as f64;
@@ -574,6 +619,8 @@ fn main() {
 <p>$$\hat{m}_t = \frac{m_t}{1 - \beta_1^t}, \quad \hat{v}_t = \frac{v_t}{1 - \beta_2^t} \quad \text{（偏差修正）}$$</p>
 <p>$$\theta \leftarrow \theta - \eta \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}$$</p>
 <p>默认参数：$\beta_1 = 0.9$，$\beta_2 = 0.999$，$\epsilon = 10^{-8}$。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIEFkYW0g5LyY5YyW5Zmo55qEIFJ1c3Qg5a6e546wCnN0cnVjdCBBZGFtT3B0aW1pemVyIHsKICAgIGxyOiBmNjQsCiAgICBiZXRhMTogZjY0LAogICAgYmV0YTI6IGY2NCwKICAgIGVwc2lsb246IGY2NCwKICAgIG06IFZlYzxmNjQ+LCAgLy8g5LiA6Zi255+pCiAgICB2OiBWZWM8ZjY0PiwgIC8vIOS6jOmYtuefqQogICAgdDogdXNpemUsICAgICAvLyDml7bpl7TmraUKfQoKaW1wbCBBZGFtT3B0aW1pemVyIHsKICAgIGZuIG5ldyhwYXJhbXM6ICZbZjY0XSwgbHI6IGY2NCkgLT4gU2VsZiB7CiAgICAgICAgQWRhbU9wdGltaXplciB7CiAgICAgICAgICAgIGxyLAogICAgICAgICAgICBiZXRhMTogMC45LAogICAgICAgICAgICBiZXRhMjogMC45OTksCiAgICAgICAgICAgIGVwc2lsb246IDFlLTgsCiAgICAgICAgICAgIG06IHZlYyFbMC4wOyBwYXJhbXMubGVuKCldLAogICAgICAgICAgICB2OiB2ZWMhWzAuMDsgcGFyYW1zLmxlbigpXSwKICAgICAgICAgICAgdDogMCwKICAgICAgICB9CiAgICB9CgogICAgLy8vIOWNleatpeabtOaWsO+8mnBhcmFtcyDlsLHlnLDkv67mlLkKICAgIGZuIHN0ZXAoJm11dCBzZWxmLCBwYXJhbXM6ICZtdXQgW2Y2NF0sIGdyYWRzOiAmW2Y2NF0pIHsKICAgICAgICBzZWxmLnQgKz0gMTsKICAgICAgICBmb3IgaSBpbiAwLi5wYXJhbXMubGVuKCkgewogICAgICAgICAgICAvLyDmm7TmlrDkuIDpmLbnn6nlkozkuozpmLbnn6kKICAgICAgICAgICAgc2VsZi5tW2ldID0gc2VsZi5iZXRhMSAqIHNlbGYubVtpXSArICgxLjAgLSBzZWxmLmJldGExKSAqIGdyYWRzW2ldOwogICAgICAgICAgICBzZWxmLnZbaV0gPSBzZWxmLmJldGEyICogc2VsZi52W2ldICsgKDEuMCAtIHNlbGYuYmV0YTIpICogZ3JhZHNbaV0ucG93aSgyKTsKCiAgICAgICAgICAgIC8vIOWBj+W3ruS/ruatowogICAgICAgICAgICBsZXQgbV9oYXQgPSBzZWxmLm1baV0gLyAoMS4wIC0gc2VsZi5iZXRhMS5wb3dpKHNlbGYudCBhcyBpMzIpKTsKICAgICAgICAgICAgbGV0IHZfaGF0ID0gc2VsZi52W2ldIC8gKDEuMCAtIHNlbGYuYmV0YTIucG93aShzZWxmLnQgYXMgaTMyKSk7CgogICAgICAgICAgICAvLyDlj4LmlbDmm7TmlrAKICAgICAgICAgICAgcGFyYW1zW2ldIC09IHNlbGYubHIgKiBtX2hhdCAvICh2X2hhdC5zcXJ0KCkgKyBzZWxmLmVwc2lsb24pOwogICAgICAgIH0KICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIC8vIOekuuS+i++8mueUqCBBZGFtIOacgOWwj+WMliBmKHgpID0gKHgtMyleMgogICAgbGV0IG11dCB4ID0gdmVjIVswLjBdOwogICAgbGV0IG11dCBvcHRpbWl6ZXIgPSBBZGFtT3B0aW1pemVyOjpuZXcoJngsIDAuMSk7CgogICAgZm9yIHN0ZXAgaW4gMS4uPTEwMCB7CiAgICAgICAgLy8g5qKv5bqm77yaZGYvZHggPSAyKHgtMykKICAgICAgICBsZXQgZ3JhZCA9IHZlYyFbMi4wICogKHhbMF0gLSAzLjApXTsKICAgICAgICBvcHRpbWl6ZXIuc3RlcCgmbXV0IHgsICZncmFkKTsKICAgICAgICBpZiBzdGVwICUgMjAgPT0gMCB7CiAgICAgICAgICAgIHByaW50bG4hKCJTdGVwIHt9OiB4ID0gezouNn0sIGYoeCkgPSB7Oi42fSIsIHN0ZXAsIHhbMF0sICh4WzBdIC0gMy4wKS5wb3dpKDIpKTsKICAgICAgICB9CiAgICB9CiAgICAvLyDmnIDnu4ggeCDiiYggMy4wCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// Adam 优化器的 Rust 实现
 struct AdamOptimizer {
     lr: f64,
@@ -739,6 +786,8 @@ fn backward(
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOeugOaYkyAyRCDljbfnp6/mk43kvZzvvIjml6AgcGFkZGluZ++8jHN0cmlkZT0x77yJCmZuIGNvbnYyZChpbnB1dDogJltWZWM8ZjY0Pl0sIGtlcm5lbDogJltWZWM8ZjY0Pl0pIC0+IFZlYzxWZWM8ZjY0Pj4gewogICAgbGV0IChoX2luLCB3X2luKSA9IChpbnB1dC5sZW4oKSwgaW5wdXRbMF0ubGVuKCkpOwogICAgbGV0IChrX2gsIGtfdykgPSAoa2VybmVsLmxlbigpLCBrZXJuZWxbMF0ubGVuKCkpOwogICAgbGV0IGhfb3V0ID0gaF9pbiAtIGtfaCArIDE7CiAgICBsZXQgd19vdXQgPSB3X2luIC0ga193ICsgMTsKCiAgICBsZXQgbXV0IG91dHB1dCA9IHZlYyFbdmVjIVswLjA7IHdfb3V0XTsgaF9vdXRdOwogICAgZm9yIGkgaW4gMC4uaF9vdXQgewogICAgICAgIGZvciBqIGluIDAuLndfb3V0IHsKICAgICAgICAgICAgbGV0IG11dCBzdW0gPSAwLjA7CiAgICAgICAgICAgIGZvciBraSBpbiAwLi5rX2ggewogICAgICAgICAgICAgICAgZm9yIGtqIGluIDAuLmtfdyB7CiAgICAgICAgICAgICAgICAgICAgc3VtICs9IGlucHV0W2kgKyBraV1baiArIGtqXSAqIGtlcm5lbFtraV1ba2pdOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgICAgIG91dHB1dFtpXVtqXSA9IHN1bTsKICAgICAgICB9CiAgICB9CiAgICBvdXRwdXQKfQoKLy8vIOacgOWkp+axoOWMlu+8iDJ4Mu+8iQpmbiBtYXhfcG9vbDJkKGlucHV0OiAmW1ZlYzxmNjQ+XSkgLT4gVmVjPFZlYzxmNjQ+PiB7CiAgICBsZXQgaCA9IGlucHV0LmxlbigpIC8gMjsKICAgIGxldCB3ID0gaW5wdXRbMF0ubGVuKCkgLyAyOwogICAgbGV0IG11dCBvdXRwdXQgPSB2ZWMhW3ZlYyFbMC4wOyB3XTsgaF07CiAgICBmb3IgaSBpbiAwLi5oIHsKICAgICAgICBmb3IgaiBpbiAwLi53IHsKICAgICAgICAgICAgb3V0cHV0W2ldW2pdID0gWwogICAgICAgICAgICAgICAgaW5wdXRbMippXVsyKmpdLCBpbnB1dFsyKmldWzIqaisxXSwKICAgICAgICAgICAgICAgIGlucHV0WzIqaSsxXVsyKmpdLCBpbnB1dFsyKmkrMV1bMipqKzFdLAogICAgICAgICAgICBdLmludG9faXRlcigpLmNsb25lZCgpLmZvbGQoZjY0OjpORUdfSU5GSU5JVFksIGY2NDo6bWF4KTsKICAgICAgICB9CiAgICB9CiAgICBvdXRwdXQKfQoKZm4gbWFpbigpIHsKICAgIC8vIDV4NSDovpPlhaXlm77lg48KICAgIGxldCBpbWFnZSA9IHZlYyFbCiAgICAgICAgdmVjIVsxLjAsIDIuMCwgMC4wLCAxLjAsIDMuMF0sCiAgICAgICAgdmVjIVswLjAsIDEuMCwgMi4wLCAzLjAsIDEuMF0sCiAgICAgICAgdmVjIVsxLjAsIDMuMCwgMS4wLCAwLjAsIDIuMF0sCiAgICAgICAgdmVjIVsyLjAsIDAuMCwgMy4wLCAxLjAsIDAuMF0sCiAgICAgICAgdmVjIVsxLjAsIDIuMCwgMS4wLCAyLjAsIDEuMF0sCiAgICBdOwoKICAgIC8vIDN4MyDovrnnvJjmo4DmtYvljbfnp6/moLgKICAgIGxldCBrZXJuZWwgPSB2ZWMhWwogICAgICAgIHZlYyFbLTEuMCwgLTEuMCwgLTEuMF0sCiAgICAgICAgdmVjIVstMS4wLCAgOC4wLCAtMS4wXSwKICAgICAgICB2ZWMhWy0xLjAsIC0xLjAsIC0xLjBdLAogICAgXTsKCiAgICBsZXQgZmVhdHVyZV9tYXAgPSBjb252MmQoJmltYWdlLCAma2VybmVsKTsKICAgIHByaW50bG4hKCLljbfnp6/nu5PmnpwgKDN4Myk6Iik7CiAgICBmb3Igcm93IGluICZmZWF0dXJlX21hcCB7CiAgICAgICAgcHJpbnRsbiEoIiAgezo/fSIsIHJvdy5pdGVyKCkubWFwKHx2fCBmb3JtYXQhKCJ7OjYuMX0iLCB2KSkuY29sbGVjdDo6PFZlYzxfPj4oKSk7CiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 简易 2D 卷积操作（无 padding，stride=1）
 fn conv2d(input: &amp;[Vec&lt;f64&gt;], kernel: &amp;[Vec&lt;f64&gt;]) -&gt; Vec&lt;Vec&lt;f64&gt;&gt; {
     let (h_in, w_in) = (input.len(), input[0].len());
@@ -901,6 +950,8 @@ impl LSTMCell {
 <p><strong>多头注意力（Multi-Head Attention）</strong> 允许模型同时关注不同位置的不同表示子空间：</p>
 <p>$$\text{MultiHead}(Q,K,V) = \text{Concat}(\text{head}_1, \ldots, \text{head}_h) W^O$$</p>
 <p>$$\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOeugOaYk+iHquazqOaEj+WKm+acuuWItu+8iFJ1c3Qg5a6e546w77yJCmZuIHNlbGZfYXR0ZW50aW9uKHg6ICZbVmVjPGY2ND5dLCB3X3E6ICZbVmVjPGY2ND5dLCB3X2s6ICZbVmVjPGY2ND5dLCB3X3Y6ICZbVmVjPGY2ND5dKQogICAgLT4gVmVjPFZlYzxmNjQ+Pgp7CiAgICBsZXQgc2VxX2xlbiA9IHgubGVuKCk7CiAgICBsZXQgZF9rID0gd19xWzBdLmxlbigpOwoKICAgIC8vIOiuoeeulyBRLCBLLCBWCiAgICBsZXQgcTogVmVjPFZlYzxmNjQ+PiA9IHguaXRlcigpCiAgICAgICAgLm1hcCh8eGl8IG1hdF92ZWNfbXVsKHdfcSwgeGkpKS5jb2xsZWN0KCk7CiAgICBsZXQgazogVmVjPFZlYzxmNjQ+PiA9IHguaXRlcigpCiAgICAgICAgLm1hcCh8eGl8IG1hdF92ZWNfbXVsKHdfaywgeGkpKS5jb2xsZWN0KCk7CiAgICBsZXQgdjogVmVjPFZlYzxmNjQ+PiA9IHguaXRlcigpCiAgICAgICAgLm1hcCh8eGl8IG1hdF92ZWNfbXVsKHdfdiwgeGkpKS5jb2xsZWN0KCk7CgogICAgLy8g6K6h566X5rOo5oSP5Yqb5YiG5pWw77yac2NvcmVzID0gUSAqIEteVCAvIHNxcnQoZF9rKQogICAgbGV0IHNjYWxlID0gKGRfayBhcyBmNjQpLnNxcnQoKTsKICAgIGxldCBtdXQgc2NvcmVzID0gdmVjIVt2ZWMhWzAuMDsgc2VxX2xlbl07IHNlcV9sZW5dOwogICAgZm9yIGkgaW4gMC4uc2VxX2xlbiB7CiAgICAgICAgZm9yIGogaW4gMC4uc2VxX2xlbiB7CiAgICAgICAgICAgIGxldCBkb3Q6IGY2NCA9IHFbaV0uaXRlcigpLnppcChrW2pdLml0ZXIoKSkKICAgICAgICAgICAgICAgIC5tYXAofChhLCBiKXwgYSAqIGIpLnN1bSgpOwogICAgICAgICAgICBzY29yZXNbaV1bal0gPSBkb3QgLyBzY2FsZTsKICAgICAgICB9CiAgICB9CgogICAgLy8gU29mdG1heO+8iOaMieihjO+8iQogICAgZm9yIHJvdyBpbiAmbXV0IHNjb3JlcyB7CiAgICAgICAgbGV0IG1heCA9IHJvdy5pdGVyKCkuY2xvbmVkKCkuZm9sZChmNjQ6Ok5FR19JTkZJTklUWSwgZjY0OjptYXgpOwogICAgICAgIGxldCBleHBzOiBWZWM8ZjY0PiA9IHJvdy5pdGVyKCkubWFwKHxzfCAocyAtIG1heCkuZXhwKCkpLmNvbGxlY3QoKTsKICAgICAgICBsZXQgc3VtOiBmNjQgPSBleHBzLml0ZXIoKS5zdW0oKTsKICAgICAgICBmb3IgKHIsIGUpIGluIHJvdy5pdGVyX211dCgpLnppcChleHBzLml0ZXIoKSkgewogICAgICAgICAgICAqciA9IGUgLyBzdW07CiAgICAgICAgfQogICAgfQoKICAgIC8vIOi+k+WHuiA9IHNjb3JlcyAqIFYKICAgIGxldCBtdXQgb3V0cHV0ID0gdmVjIVt2ZWMhWzAuMDsgdlswXS5sZW4oKV07IHNlcV9sZW5dOwogICAgZm9yIGkgaW4gMC4uc2VxX2xlbiB7CiAgICAgICAgZm9yIGogaW4gMC4udlswXS5sZW4oKSB7CiAgICAgICAgICAgIG91dHB1dFtpXVtqXSA9IHNjb3Jlc1tpXS5pdGVyKCkuemlwKHYuaXRlcigpKQogICAgICAgICAgICAgICAgLm1hcCh8KHMsIHZrKXwgcyAqIHZrW2pdKS5zdW0oKTsKICAgICAgICB9CiAgICB9CgogICAgb3V0cHV0Cn0KCi8vLyDnn6npmLUt5ZCR6YeP5LmY5rOVCmZuIG1hdF92ZWNfbXVsKG1hdDogJltWZWM8ZjY0Pl0sIHZlYzogJltmNjRdKSAtPiBWZWM8ZjY0PiB7CiAgICBtYXQuaXRlcigpLm1hcCh8cm93fCB7CiAgICAgICAgcm93Lml0ZXIoKS56aXAodmVjLml0ZXIoKSkubWFwKHwoYSwgYil8IGEgKiBiKS5zdW0oKQogICAgfSkuY29sbGVjdCgpCn0KCmZuIG1haW4oKSB7CiAgICAvLyAzIOS4qiB0b2tlbu+8jOavj+S4qiA0IOe7tAogICAgbGV0IHggPSB2ZWMhWwogICAgICAgIHZlYyFbMS4wLCAwLjAsIDEuMCwgMC4wXSwKICAgICAgICB2ZWMhWzAuMCwgMS4wLCAwLjAsIDEuMF0sCiAgICAgICAgdmVjIVsxLjAsIDEuMCwgMC4wLCAwLjBdLAogICAgXTsKICAgIGxldCBkX21vZGVsID0gNDsKCiAgICAvLyDnroDljJbvvJpXX3EgPSBXX2sgPSBXX3YgPSDljZXkvY3nn6npmLUKICAgIGxldCB3ID0gdmVjIVt2ZWMhWzAuMDsgZF9tb2RlbF07IGRfbW9kZWxdOwogICAgbGV0IGlkZW50aXR5OiBWZWM8VmVjPGY2ND4+ID0gKDAuLmRfbW9kZWwpCiAgICAgICAgLm1hcCh8aXwgKDAuLmRfbW9kZWwpLm1hcCh8anwgaWYgaSA9PSBqIHsgMS4wIH0gZWxzZSB7IDAuMCB9KS5jb2xsZWN0KCkpCiAgICAgICAgLmNvbGxlY3QoKTsKCiAgICBsZXQgb3V0cHV0ID0gc2VsZl9hdHRlbnRpb24oJngsICZpZGVudGl0eSwgJmlkZW50aXR5LCAmaWRlbnRpdHkpOwogICAgcHJpbnRsbiEoIuiHquazqOaEj+WKm+i+k+WHujoiKTsKICAgIGZvciByb3cgaW4gJm91dHB1dCB7CiAgICAgICAgcHJpbnRsbiEoIiAgezo/fSIsIHJvdy5pdGVyKCkubWFwKHx2fCBmb3JtYXQhKCJ7Oi40fSIsIHYpKS5jb2xsZWN0Ojo8VmVjPF8+PigpKTsKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 简易自注意力机制（Rust 实现）
 fn self_attention(x: &amp;[Vec&lt;f64&gt;], w_q: &amp;[Vec&lt;f64&gt;], w_k: &amp;[Vec&lt;f64&gt;], w_v: &amp;[Vec&lt;f64&gt;])
     -&gt; Vec&lt;Vec&lt;f64&gt;&gt;
@@ -990,7 +1041,14 @@ fn main() {
 candle-nn = "0.8"
 candle-core = "0.8"
 </code></pre>
-<pre class="playground"><code class="language-rust edition2024">use candle_core::{Tensor, Device, Result};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KY2FuZGxlLWNvcmUgPSAiMC45IgpjYW5kbGUtbm4gPSAiMC45IgoqLwp1c2UgY2FuZGxlX2NvcmU6OntUZW5zb3IsIERldmljZSwgUmVzdWx0fTsKdXNlIGNhbmRsZV9ubjo6e0xpbmVhciwgVmFyQnVpbGRlciwgTW9kdWxlfTsKCi8vLyBNTklTVCDliIbnsbvnvZHnu5zvvJo3ODQgLT4gMjU2IC0+IDEyOCAtPiAxMApzdHJ1Y3QgTW5pc3RNb2RlbCB7CiAgICBmYzE6IExpbmVhciwKICAgIGZjMjogTGluZWFyLAogICAgZmMzOiBMaW5lYXIsCn0KCmltcGwgTW5pc3RNb2RlbCB7CiAgICBmbiBuZXcodnM6IFZhckJ1aWxkZXIpIC0+IFJlc3VsdDxTZWxmPiB7CiAgICAgICAgT2soTW5pc3RNb2RlbCB7CiAgICAgICAgICAgIGZjMTogY2FuZGxlX25uOjpsaW5lYXIoNzg0LCAyNTYsIHZzLnBwKCJmYzEiKSk/LAogICAgICAgICAgICBmYzI6IGNhbmRsZV9ubjo6bGluZWFyKDI1NiwgMTI4LCB2cy5wcCgiZmMyIikpPywKICAgICAgICAgICAgZmMzOiBjYW5kbGVfbm46OmxpbmVhcigxMjgsIDEwLCB2cy5wcCgiZmMzIikpPywKICAgICAgICB9KQogICAgfQoKICAgIGZuIGZvcndhcmQoJnNlbGYsIHg6ICZUZW5zb3IpIC0+IFJlc3VsdDxUZW5zb3I+IHsKICAgICAgICBsZXQgeCA9IHNlbGYuZmMxLmZvcndhcmQoeCk/OwogICAgICAgIGxldCB4ID0geC5yZWx1KCk/OwogICAgICAgIGxldCB4ID0gc2VsZi5mYzIuZm9yd2FyZCh4KT87CiAgICAgICAgbGV0IHggPSB4LnJlbHUoKT87CiAgICAgICAgc2VsZi5mYzMuZm9yd2FyZCgmeCkgIC8vIOS6pOWPieeGteaNn+WkseiHquW4piBzb2Z0bWF4CiAgICB9Cn0KCmZuIG1haW4oKSAtPiBSZXN1bHQ8KCk+IHsKICAgIGxldCBkZXZpY2UgPSBEZXZpY2U6OmN1ZGFfaWZfYXZhaWxhYmxlKDApPzsKCiAgICAvLyDliJvlu7rmqKHlnovvvIjpmo/mnLrliJ3lp4vljJbvvIkKICAgIGxldCB2cyA9IFZhckJ1aWxkZXI6Om5ldygKICAgICAgICBjYW5kbGVfbm46OkluaXQ6OkthaW1pbmdVbmlmb3JtLAogICAgICAgIDEuMCAvIDI1Ni4wLAogICAgICAgIGNhbmRsZV9jb3JlOjpEVHlwZTo6RjMyLAogICAgICAgICZkZXZpY2UsCiAgICApOwogICAgbGV0IG1vZGVsID0gTW5pc3RNb2RlbDo6bmV3KHZzKT87CgogICAgLy8g5qih5ouf6L6T5YWl77yaYmF0Y2hfc2l6ZT00LCDmr4/lvKDlm77lsZXlubPkuLogNzg0IOe7tAogICAgbGV0IGR1bW15X2lucHV0ID0gVGVuc29yOjpyYW5kbigwZjMyLCAxZjMyLCAoNCwgNzg0KSwgJmRldmljZSk/OwogICAgbGV0IGxvZ2l0cyA9IG1vZGVsLmZvcndhcmQoJmR1bW15X2lucHV0KT87CiAgICBwcmludGxuISgi6L6T5Ye65b2i54q2OiB7Oj99IiwgbG9naXRzLnNoYXBlKCkpOyAgLy8gWzQsIDEwXQoKICAgIC8vIOmihOa1i+exu+WIqwogICAgbGV0IHByZWRpY3RlZCA9IGxvZ2l0cy5hcmdtYXgoMSk/OwogICAgcHJpbnRsbiEoIumihOa1i+exu+WIqzogezo/fSIsIHByZWRpY3RlZC50b192ZWMxOjo8dTMyPigpPyk7CgogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+candle-core = "0.9"
+candle-nn = "0.9"
+*/
+use candle_core::{Tensor, Device, Result};
 use candle_nn::{Linear, VarBuilder, Module};
 
 /// MNIST 分类网络：784 -&gt; 256 -&gt; 128 -&gt; 10
@@ -1105,7 +1163,13 @@ impl&lt;B: Backend&gt; MnistModel&lt;B&gt; {
 <li><strong>WASM 支持</strong>：可在浏览器中运行 ML 模型</li>
 <li><strong>易于部署</strong>：单一二进制文件，无依赖地狱</li>
 </ul>
-<pre class="playground"><code class="language-rust edition2024">/// 使用 ndarray 进行矩阵运算（神经网络基础）
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KbmRhcnJheSA9ICIwLjE2IgoqLwovLy8g5L2/55SoIG5kYXJyYXkg6L+b6KGM55+p6Zi16L+Q566X77yI56We57uP572R57uc5Z+656GA77yJCnVzZSBuZGFycmF5Ojp7QXJyYXkxLCBhcnJheX07CgpmbiBtYWluKCkgewogICAgLy8g5p2D6YeN55+p6Zi1IDN4MgogICAgbGV0IHcgPSBhcnJheSFbWzAuNSwgMC4zXSwKICAgICAgICAgICAgICAgICAgICBbMC4yLCAwLjhdLAogICAgICAgICAgICAgICAgICAgIFswLjEsIDAuNl1dOwoKICAgIC8vIOi+k+WFpeWQkemHjyAyeDEKICAgIGxldCB4ID0gYXJyYXkhWzEuMCwgMi4wXTsKCiAgICAvLyDnn6npmLXkuZjms5XvvJp6ID0gVyAqIHggKyBiCiAgICBsZXQgYiA9IGFycmF5IVswLjEsIC0wLjEsIDAuMl07CiAgICBsZXQgeiA9IHcuZG90KCZ4KSArIGI7CiAgICBwcmludGxuISgi57q/5oCn6L6T5Ye6IHogPSB7Oj99Iiwgeik7ICAvLyBbMS4wLCAxLjYsIDEuNV0KCiAgICAvLyBSZUxVIOa/gOa0uwogICAgbGV0IGE6IEFycmF5MTxmNjQ+ID0gei5tYXB2KHx2OiBmNjR8IHYubWF4KDAuMCkpOwogICAgcHJpbnRsbiEoIlJlTFUg5r+A5rS75ZCOIGEgPSB7Oj99IiwgYSk7ICAvLyBbMS4wLCAxLjYsIDEuNV0KCiAgICAvLyBTb2Z0bWF4CiAgICBsZXQgZXhwX2EgPSBhLm1hcHYofHY6IGY2NHwgdi5leHAoKSk7CiAgICBsZXQgc3VtX2V4cCA9IGV4cF9hLnN1bSgpOwogICAgbGV0IHByb2JzID0gZXhwX2EgLyBzdW1fZXhwOwogICAgcHJpbnRsbiEoIlNvZnRtYXgg6L6T5Ye6ID0gezo/fSIsIHByb2JzKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+ndarray = "0.16"
+*/
+/// 使用 ndarray 进行矩阵运算（神经网络基础）
 use ndarray::{Array1, array};
 
 fn main() {

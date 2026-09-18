@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -391,6 +428,8 @@ println!("{}", column_name_to_number("AF".to_string()));
 <h3 id="131-力扣实战十进制整数的反码"><a class="header" href="#131-力扣实战十进制整数的反码">1.3.1 力扣实战：十进制整数的反码</a></h3>
 <p><a href="https://leetcode-cn.com/problems/complement-of-base-10-integer/">1009. 十进制整数的反码</a></p>
 <p>原码通过与掩码进行异或（XOR）运算得到“反码“，注意：这里的“反码“和真正的反码定义是不一样的。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#cHViIGZuIGJpdHdpc2VfY29tcGxlbWVudChuOiBpMzIpIC0+IGkzMiB7CiAgICBpZiBuID09IDAgewogICAgICAgIHJldHVybiAxOwogICAgfQogICAgbGV0IG11dCBudW0gPSBuOwogICAgbGV0IG11dCBtYXJrID0gMTsKICAgIGxldCBtdXQgaGlnaF9iaXQgPSAwOwogICAgd2hpbGUgbnVtID4gMCB7CiAgICAgICAgbnVtID4+PSAxOwogICAgICAgIGhpZ2hfYml0ICs9IDE7CiAgICB9CgogICAgLy9kYmchKGhpZ2hfYml0KTsKICAgIGxldCBtYXJrID0gbWF0Y2ggKGhpZ2hfYml0ID09IDMxKSB7CiAgICAgICAgdHJ1ZSA9PiBpMzI6Ok1BWCAtIDEsCiAgICAgICAgZmFsc2UgPT4gKDEgPDwgaGlnaF9iaXQpIC0gMSwKICAgIH07CgogICAgbiBeIG1hcmsKfQoKZm4gbWFpbigpIHsKICAgIGxldCBuID0gOTExOwogICAgbGV0IGNvbXBsZW1lbnQgPSBiaXR3aXNlX2NvbXBsZW1lbnQobik7CiAgICBwcmludGxuISgiezowMzJifSIsIG4pOwogICAgcHJpbnRsbiEoIns6MDMyYn0iLCBjb21wbGVtZW50KTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">pub fn bitwise_complement(n: i32) -&gt; i32 {
     if n == 0 {
         return 1;
@@ -481,6 +520,8 @@ println!("{}", p);
 </table>
 </div>
 <h3 id="152-浮点数的精度问题"><a class="header" href="#152-浮点数的精度问题">1.5.2 浮点数的精度问题</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOm7mOiupOaYryBmNjQKICAgIGxldCBhOiBmNjQgPSAwLjE7CiAgICBsZXQgYjogZjY0ID0gMC4yOwoKICAgIC8vIOS9v+eUqCBmMzIg57K+5bqm5pu05L2OCiAgICBsZXQgYzogZjMyID0gMC4xOwogICAgbGV0IGQ6IGYzMiA9IDAuMjsKCiAgICBwcmludGxuISgiZjY0OiB7fSIsIGEgKyBiKTsgIC8vIDAuMzAwMDAwMDAwMDAwMDAwMDQKICAgIHByaW50bG4hKCJmMzI6IHt9IiwgYyArIGQpOyAgLy8gMC4zCgogICAgLy8g5q+U6L6D5rWu54K55pWw77yI5LiN5o6o6I2Q55u05o6l5L2/55SoID0977yJCiAgICBsZXQgeDogZjY0ID0gMC4xICsgMC4yOwogICAgbGV0IHk6IGY2NCA9IDAuMzsKICAgIHByaW50bG4hKCLnm7TmjqXmr5TovoM6IHt9IiwgeCA9PSB5KTsgIC8vIGZhbHNlCgogICAgLy8g5L2/55So5a655beu5q+U6L6DCiAgICBsZXQgZXBzID0gMWUtMTA7CiAgICBwcmludGxuISgi5a655beu5q+U6L6DOiB7fSIsICh4IC0geSkuYWJzKCkgPCBlcHMpOyAgLy8gdHJ1ZQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 默认是 f64
     let a: f64 = 0.1;

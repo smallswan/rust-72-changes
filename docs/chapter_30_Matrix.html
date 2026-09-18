@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -215,6 +252,8 @@
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIG5hbGdlYnJhIGFzIG5hOwp1c2UgbmE6OntNYXRyaXgyLCBNYXRyaXgzfTsKCmZuIG1haW4oKSB7CiAgICAvLyDljZXkvY3nn6npmLUKICAgIGxldCBpMiA9IE1hdHJpeDI6OjxmNjQ+OjppZGVudGl0eSgpOwogICAgcHJpbnRsbiEoIuWNleS9jeefqemYtSBJ4oKCOlxue30iLCBpMik7CgogICAgLy8g5a+56KeS55+p6Zi1CiAgICBsZXQgZGlhZzogTWF0cml4MzxmNjQ+ID0gTWF0cml4Mzo6ZnJvbV9kaWFnb25hbCgmbmE6OlZlY3RvcjM6Om5ldygxLjAsIDIuMCwgMy4wKSk7CiAgICBwcmludGxuISgi5a+56KeS55+p6Zi1IGRpYWc6XG57fSIsIGRpYWcpOwoKICAgIC8vIOmbtuefqemYtQogICAgbGV0IHplcm86IE1hdHJpeDI8ZjY0PiA9IE1hdHJpeDI6Onplcm9zKCk7CiAgICBwcmludGxuISgi6Zu255+p6Zi1IHplcm86XG57fSIsIHplcm8pOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use nalgebra as na;
 use na::{Matrix2, Matrix3};
 
@@ -246,6 +285,8 @@ fn main() {
 <blockquote>
 <p><strong>注意：</strong> 矩阵乘法不满足交换律，即一般情况下 $AB \neq BA$。</p>
 </blockquote>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWF0cml4X211bHRpcGx5KGE6ICZWZWM8VmVjPGY2ND4+LCBiOiAmVmVjPFZlYzxmNjQ+PikgLT4gT3B0aW9uPFZlYzxWZWM8ZjY0Pj4+IHsKICAgIGxldCByb3dzX2EgPSBhLmxlbigpOwogICAgbGV0IGNvbHNfYSA9IGFbMF0ubGVuKCk7CiAgICBsZXQgY29sc19iID0gYlswXS5sZW4oKTsKCiAgICBpZiBjb2xzX2EgIT0gYi5sZW4oKSB7CiAgICAgICAgcmV0dXJuIE5vbmU7CiAgICB9CgogICAgbGV0IG11dCByZXN1bHQgPSB2ZWMhW3ZlYyFbMC4wOyBjb2xzX2JdOyByb3dzX2FdOwogICAgZm9yIGkgaW4gMC4ucm93c19hIHsKICAgICAgICBmb3IgaiBpbiAwLi5jb2xzX2IgewogICAgICAgICAgICBmb3IgayBpbiAwLi5jb2xzX2EgewogICAgICAgICAgICAgICAgcmVzdWx0W2ldW2pdICs9IGFbaV1ba10gKiBiW2tdW2pdOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQogICAgU29tZShyZXN1bHQpCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgYSA9IHZlYyFbdmVjIVsxLjAsIDIuMF0sIHZlYyFbMy4wLCA0LjBdXTsKICAgIGxldCBiID0gdmVjIVt2ZWMhWzUuMCwgNi4wXSwgdmVjIVs3LjAsIDguMF1dOwoKICAgIGlmIGxldCBTb21lKGMpID0gbWF0cml4X211bHRpcGx5KCZhLCAmYikgewogICAgICAgIHByaW50bG4hKCJBIMOXIEIgPSIpOwogICAgICAgIGZvciByb3cgaW4gJmMgewogICAgICAgICAgICBwcmludGxuISgiICB7Oj99Iiwgcm93KTsKICAgICAgICB9CiAgICAgICAgLy8gWzE5LCAyMl0KICAgICAgICAvLyBbNDMsIDUwXQogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn matrix_multiply(a: &amp;Vec&lt;Vec&lt;f64&gt;&gt;, b: &amp;Vec&lt;Vec&lt;f64&gt;&gt;) -&gt; Option&lt;Vec&lt;Vec&lt;f64&gt;&gt;&gt; {
     let rows_a = a.len();
     let cols_a = a[0].len();
@@ -307,6 +348,8 @@ fn main() {
 <li>$(AB)^T = B^T A^T$</li>
 <li>$(A^{-1})^T = (A^T)^{-1}$</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gdHJhbnNwb3NlKG1hdHJpeDogJlZlYzxWZWM8ZjY0Pj4pIC0+IFZlYzxWZWM8ZjY0Pj4gewogICAgbGV0IHJvd3MgPSBtYXRyaXgubGVuKCk7CiAgICBsZXQgY29scyA9IG1hdHJpeFswXS5sZW4oKTsKICAgIGxldCBtdXQgcmVzdWx0ID0gdmVjIVt2ZWMhWzAuMDsgcm93c107IGNvbHNdOwogICAgZm9yIGkgaW4gMC4ucm93cyB7CiAgICAgICAgZm9yIGogaW4gMC4uY29scyB7CiAgICAgICAgICAgIHJlc3VsdFtqXVtpXSA9IG1hdHJpeFtpXVtqXTsKICAgICAgICB9CiAgICB9CiAgICByZXN1bHQKfQoKZm4gbWFpbigpIHsKICAgIGxldCBhID0gdmVjIVt2ZWMhWzEuMCwgMi4wLCAzLjBdLCB2ZWMhWzQuMCwgNS4wLCA2LjBdXTsKICAgIGxldCBhdCA9IHRyYW5zcG9zZSgmYSk7CiAgICBwcmludGxuISgiQSDnmoTovaznva46Iik7CiAgICBmb3Igcm93IGluICZhdCB7CiAgICAgICAgcHJpbnRsbiEoIiAgezo/fSIsIHJvdyk7CiAgICB9CiAgICAvLyBbMSwgNF0KICAgIC8vIFsyLCA1XQogICAgLy8gWzMsIDZdCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn transpose(matrix: &amp;Vec&lt;Vec&lt;f64&gt;&gt;) -&gt; Vec&lt;Vec&lt;f64&gt;&gt; {
     let rows = matrix.len();
     let cols = matrix[0].len();
@@ -370,6 +413,8 @@ fn main() {
 </tbody>
 </table>
 </div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gaW52ZXJzZV8yeDIoYTogZjY0LCBiOiBmNjQsIGM6IGY2NCwgZDogZjY0KSAtPiBPcHRpb248W1tmNjQ7IDJdOyAyXT4gewogICAgbGV0IGRldCA9IGEgKiBkIC0gYiAqIGM7CiAgICBpZiBkZXQgPT0gMC4wIHsKICAgICAgICByZXR1cm4gTm9uZTsKICAgIH0KCiAgICBTb21lKFsKICAgICAgICBbZCAvIGRldCwgLWIgLyBkZXRdLAogICAgICAgIFstYyAvIGRldCwgYSAvIGRldF0sCiAgICBdKQp9CgpmbiBtYWluKCkgewogICAgbWF0Y2ggaW52ZXJzZV8yeDIoMS4wLCAyLjAsIDMuMCwgNC4wKSB7CiAgICAgICAgU29tZShpbnYpID0+IHsKICAgICAgICAgICAgcHJpbnRsbiEoIumAhuefqemYtToiKTsKICAgICAgICAgICAgZm9yIHJvdyBpbiAmaW52IHsKICAgICAgICAgICAgICAgIHByaW50bG4hKCIgIHs6P30iLCByb3cpOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIE5vbmUgPT4gcHJpbnRsbiEoIuefqemYteS4jeWPr+mAhiIpLAogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn inverse_2x2(a: f64, b: f64, c: f64, d: f64) -&gt; Option&lt;[[f64; 2]; 2]&gt; {
     let det = a * d - b * c;
     if det == 0.0 {
@@ -441,7 +486,13 @@ fn main() {
 </tbody>
 </table>
 </div>
-<pre class="playground"><code class="language-rust edition2024">use nalgebra::Matrix3;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KbmFsZ2VicmEgPSAiMC4zMyIKKi8KdXNlIG5hbGdlYnJhOjpNYXRyaXgzOwoKZm4gbWFpbigpIHsKICAgIGxldCBhID0gTWF0cml4Mzo6bmV3KAogICAgICAgIDEuMCwgMi4wLCAzLjAsCiAgICAgICAgNC4wLCA1LjAsIDYuMCwKICAgICAgICA3LjAsIDguMCwgOS4wLAogICAgKTsKICAgIHByaW50bG4hKCLnn6npmLXnmoTnp6k6IHt9IiwgYS5yYW5rKDFlLTkpKTsgIC8vIDIKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+nalgebra = "0.33"
+*/
+use nalgebra::Matrix3;
 
 fn main() {
     let a = Matrix3::new(
@@ -475,7 +526,13 @@ fn main() {
 <p>若 $n$ 阶矩阵 $A$ 有 $n$ 个线性无关的特征向量，则 $A$ 可以<strong>对角化</strong>：</p>
 <p>$$P^{-1}AP = \Lambda = \text{diag}(\lambda_1, \lambda_2, \ldots, \lambda_n)$$</p>
 <p>其中 $P$ 的列是 $A$ 的特征向量，$\Lambda$ 是对角矩阵。</p>
-<pre class="playground"><code class="language-rust edition2024">use nalgebra::{Matrix2};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KbmFsZ2VicmEgPSAiMC4zMyIKKi8KdXNlIG5hbGdlYnJhOjp7TWF0cml4Mn07CgpmbiBtYWluKCkgewogICAgbGV0IGEgPSBNYXRyaXgyOjpuZXcoMy4wLCAxLjAsIDEuMCwgMy4wKTsKCiAgICAvLyDorqHnrpfnibnlvoHlgLwKICAgIGxldCBlaWdlbiA9IGEuc3ltbWV0cmljX2VpZ2VuKCk7CiAgICBwcmludGxuISgi54m55b6B5YC8OiB7Oj99IiwgZWlnZW4uZWlnZW52YWx1ZXMpOwogICAgcHJpbnRsbiEoIueJueW+geWQkemHjzpcbnt9IiwgZWlnZW4uZWlnZW52ZWN0b3JzKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+nalgebra = "0.33"
+*/
+use nalgebra::{Matrix2};
 
 fn main() {
     let a = Matrix2::new(3.0, 1.0, 1.0, 3.0);
@@ -503,7 +560,13 @@ fn main() {
 <li>旋转矩阵是正交矩阵</li>
 <li>$\det(R(\theta)) = \cos^2\theta + \sin^2\theta = 1$</li>
 </ul>
-<pre class="playground"><code class="language-rust edition2024">use nalgebra::{Rotation2, Vector2};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KbmFsZ2VicmEgPSAiMC4zMyIKKi8KdXNlIG5hbGdlYnJhOjp7Um90YXRpb24yLCBWZWN0b3IyfTsKCmZuIG1haW4oKSB7CiAgICBsZXQgdiA9IFZlY3RvcjI6Om5ldygxLjAsIDAuMCk7CiAgICBsZXQgYW5nbGUgPSBzdGQ6OmY2NDo6Y29uc3RzOjpGUkFDX1BJXzQ7IC8vIDQ1wrAKCiAgICBsZXQgcm90YXRpb24gPSBSb3RhdGlvbjI6Om5ldyhhbmdsZSk7CiAgICBsZXQgcm90YXRlZCA9IHJvdGF0aW9uICogdjsKCiAgICBwcmludGxuISgi5Y6f5ZCR6YePOiB7Oj99Iiwgdik7CiAgICBwcmludGxuISgi5peL6L2sIDQ1wrAg5ZCOOiB7fSIsIHJvdGF0ZWQpOwogICAgLy8gKDAuNzA3MSwgMC43MDcxKQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+nalgebra = "0.33"
+*/
+use nalgebra::{Rotation2, Vector2};
 
 fn main() {
     let v = Vector2::new(1.0, 0.0);
@@ -531,7 +594,13 @@ $$R_y(\theta) = \begin{pmatrix} \cos\theta &amp; 0 &amp; \sin\theta \ 0 &amp; 1 
 $$R_z(\theta) = \begin{pmatrix} \cos\theta &amp; -\sin\theta &amp; 0 \ \sin\theta &amp; \cos\theta &amp; 0 \ 0 &amp; 0 &amp; 1 \end{pmatrix}$$</p>
 </li>
 </ul>
-<pre class="playground"><code class="language-rust edition2024">use nalgebra::{Rotation3, Vector3, UnitVector3};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KbmFsZ2VicmEgPSAiMC4zMyIKKi8KdXNlIG5hbGdlYnJhOjp7Um90YXRpb24zLCBWZWN0b3IzLCBVbml0VmVjdG9yM307CgpmbiBtYWluKCkgewogICAgbGV0IHYgPSBWZWN0b3IzOjpuZXcoMS4wLCAxLjAsIDEuMCk7CiAgICBsZXQgYW5nbGUgPSBzdGQ6OmY2NDo6Y29uc3RzOjpGUkFDX1BJXzQ7IC8vIDQ1wrAKCiAgICAvLyDml4vovazovbTvvJpa6L205Y2V5L2N5ZCR6YePCiAgICBsZXQgYXhpcyA9IFVuaXRWZWN0b3IzOjpuZXdfbm9ybWFsaXplKFZlY3RvcjM6Om5ldygwLjAsIDAuMCwgMS4wKSk7CiAgICBsZXQgcm90YXRpb24gPSBSb3RhdGlvbjM6OmZyb21fYXhpc19hbmdsZSgmYXhpcywgYW5nbGUpOwoKICAgIGxldCByb3RhdGVkID0gcm90YXRpb24gKiB2OwoKICAgIHByaW50bG4hKCLljp/lkJHph486IHs6P30iLCB2KTsKICAgIHByaW50bG4hKCLnu5Va6L205peL6L2sNDXCsOWQjjogezouND99Iiwgcm90YXRlZCk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+nalgebra = "0.33"
+*/
+use nalgebra::{Rotation3, Vector3, UnitVector3};
 
 fn main() {
     let v = Vector3::new(1.0, 1.0, 1.0);
@@ -554,7 +623,13 @@ fn main() {
 <p>将矩阵分解为下三角矩阵 $L$ 和上三角矩阵 $U$ 的乘积：</p>
 <p>$$A = LU$$</p>
 <p>LU 分解常用于求解线性方程组。</p>
-<pre class="playground"><code class="language-rust edition2024">use nalgebra::{Matrix3, Vector3};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KbmFsZ2VicmEgPSAiMC4zMyIKKi8KdXNlIG5hbGdlYnJhOjp7TWF0cml4MywgVmVjdG9yM307CgpmbiBtYWluKCkgewogICAgbGV0IGEgPSBNYXRyaXgzOjpuZXcoCiAgICAgICAgNS4wLCAtMy4wLCAtNC4wLAogICAgICAgIDQuMCwgLTEwLjAsIDUuMCwKICAgICAgICAyLjAsIDEuMCwgLTEwLjAsCiAgICApOwoKICAgIGxldCBiID0gVmVjdG9yMzo6bmV3KDEwLjAsIC0yMC4wLCAtMTIuMCk7CgogICAgLy8gTFUg5YiG6Kej5rGC6KejCiAgICBsZXQgeCA9IGEubHUoKS5zb2x2ZSgmYikuZXhwZWN0KCLnn6npmLXlpYflvIIiKTsKICAgIHByaW50bG4hKCLop6MgeCA9IHt9IiwgeCk7CiAgICBwcmludGxuISgi6aqM6K+BIEEqeCA9IHt9IiwgYSAqIHgpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+nalgebra = "0.33"
+*/
+use nalgebra::{Matrix3, Vector3};
 
 fn main() {
     let a = Matrix3::new(
@@ -573,6 +648,8 @@ fn main() {
 <h3 id="102-qr-分解"><a class="header" href="#102-qr-分解">10.2 QR 分解</a></h3>
 <p>将矩阵分解为正交矩阵 $Q$ 和上三角矩阵 $R$ 的乘积：</p>
 <p>$$A = QR$$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIG5hbGdlYnJhIGFzIG5hOwoKZm4gbWFpbigpIHsKICAgIGxldCBhID0gbmE6Ok1hdHJpeDM6Om5ldygKICAgICAgICAxLjAsIDIuMCwgMy4wLAogICAgICAgIDQuMCwgNS4wLCA2LjAsCiAgICAgICAgNy4wLCA4LjAsIDEwLjAsCiAgICApOwoKICAgIGxldCBxciA9IGEucXIoKTsKICAgIGxldCBxID0gcXIucSgpOwogICAgbGV0IHIgPSBxci5yKCk7CgogICAgcHJpbnRsbiEoIlE6XG57fSIsIHEpOwogICAgcHJpbnRsbiEoIlI6XG57fSIsIHIpOwogICAgcHJpbnRsbiEoIumqjOivgSBRKlI6XG57fSIsICZxICogJnIpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use nalgebra as na;
 
 fn main() {
@@ -597,7 +674,13 @@ fn main() {
 <blockquote>
 <p>SVD 是 PCA、最小二乘、图像压缩、推荐系统的数学基础。</p>
 </blockquote>
-<pre class="playground"><code class="language-rust edition2024">use nalgebra::Matrix3;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KbmFsZ2VicmEgPSAiMC4zMyIKKi8KdXNlIG5hbGdlYnJhOjpNYXRyaXgzOwoKZm4gbWFpbigpIHsKICAgIGxldCBhID0gTWF0cml4Mzo6bmV3KAogICAgICAgIDEuMCwgMi4wLCAzLjAsCiAgICAgICAgNC4wLCA1LjAsIDYuMCwKICAgICAgICA3LjAsIDguMCwgMTAuMCwKICAgICk7CgogICAgbGV0IHN2ZCA9IGEuc3ZkKHRydWUsIHRydWUpOwogICAgcHJpbnRsbiEoIuWlh+W8guWAvDogezo/fSIsIHN2ZC5zaW5ndWxhcl92YWx1ZXMpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+nalgebra = "0.33"
+*/
+use nalgebra::Matrix3;
 
 fn main() {
     let a = Matrix3::new(

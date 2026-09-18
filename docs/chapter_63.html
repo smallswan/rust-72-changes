@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -412,7 +449,14 @@ spec:
 <h3 id="71-什么是-serverless"><a class="header" href="#71-什么是-serverless">7.1 什么是 Serverless</a></h3>
 <p>用户只写业务代码，无需关心服务器、扩容、高可用——平台按调用次数计费，空闲时不产生费用。</p>
 <h3 id="72-faas-示例aws-lambda-风格"><a class="header" href="#72-faas-示例aws-lambda-风格">7.2 FaaS 示例（AWS Lambda 风格）</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use lambda_runtime::{service_fn, LambdaEvent};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2VyZGVfanNvbiA9ICIxIgp0b2tpbyA9IHsgdmVyc2lvbiA9ICIxIiwgZmVhdHVyZXMgPSBbImZ1bGwiXSB9CiovCnVzZSBsYW1iZGFfcnVudGltZTo6e3NlcnZpY2VfZm4sIExhbWJkYUV2ZW50fTsKdXNlIHNlcmRlX2pzb246Ontqc29uLCBWYWx1ZX07Cgphc3luYyBmbiBoYW5kbGVyKGV2ZW50OiBMYW1iZGFFdmVudDxWYWx1ZT4pIC0+IFJlc3VsdDxWYWx1ZSwgbGFtYmRhX3J1bnRpbWU6OkVycm9yPiB7CiAgICBsZXQgYm9keSA9IGV2ZW50LnBheWxvYWQ7CiAgICBPayhqc29uISh7CiAgICAgICAgInN0YXR1c0NvZGUiOiAyMDAsCiAgICAgICAgImJvZHkiOiBmb3JtYXQhKCLmlLbliLDor7fmsYI6IHt9IiwgYm9keSkKICAgIH0pKQp9CgojW3Rva2lvOjptYWluXQphc3luYyBmbiBtYWluKCkgLT4gUmVzdWx0PCgpLCBsYW1iZGFfcnVudGltZTo6RXJyb3I+IHsKICAgIGxldCBmdW5jID0gc2VydmljZV9mbihoYW5kbGVyKTsKICAgIGxhbWJkYV9ydW50aW1lOjpydW4oZnVuYykuYXdhaXQ/OwogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+*/
+use lambda_runtime::{service_fn, LambdaEvent};
 use serde_json::{json, Value};
 
 async fn handler(event: LambdaEvent&lt;Value&gt;) -&gt; Result&lt;Value, lambda_runtime::Error&gt; {
@@ -539,7 +583,14 @@ async fn main() -&gt; Result&lt;(), lambda_runtime::Error&gt; {
 </tbody>
 </table>
 </div>
-<pre class="playground"><code class="language-rust edition2024">use reqwest::Client;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2VyZGVfanNvbiA9ICIxIgp0b2tpbyA9IHsgdmVyc2lvbiA9ICIxIiwgZmVhdHVyZXMgPSBbImZ1bGwiXSB9CiovCnVzZSByZXF3ZXN0OjpDbGllbnQ7CnVzZSBzZXJkZV9qc29uOjpqc29uOwoKLy8g6LCD55So5LqR56uvIEFQSSDnmoTnpLrkvosKI1t0b2tpbzo6bWFpbl0KYXN5bmMgZm4gbWFpbigpIC0+IFJlc3VsdDwoKSwgQm94PGR5biBzdGQ6OmVycm9yOjpFcnJvcj4+IHsKICAgIGxldCBjbGllbnQgPSBDbGllbnQ6Om5ldygpOwogICAgbGV0IHJlc3AgPSBjbGllbnQKICAgICAgICAucG9zdCgiaHR0cHM6Ly9hcGkuZXhhbXBsZS5jb20vY2hhdCIpCiAgICAgICAgLmpzb24oJmpzb24hKHsgIm1vZGVsIjogInF3ZW4tbWF4IiwgInByb21wdCI6ICLkvaDlpb0iIH0pKQogICAgICAgIC5zZW5kKCkKICAgICAgICAuYXdhaXQ/OwogICAgcHJpbnRsbiEoIueKtuaAgeeggToge30iLCByZXNwLnN0YXR1cygpKTsKICAgIE9rKCgpKQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+*/
+use reqwest::Client;
 use serde_json::json;
 
 // 调用云端 API 的示例

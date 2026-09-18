@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -614,7 +651,16 @@ pub fn calculate_merkle_root(transactions: &amp;[Transaction]) -&gt; String {
 }
 <span class="boring">}</span></code></pre>
 <h3 id="完整的区块链演示"><a class="header" href="#完整的区块链演示">完整的区块链演示</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use sha2::{Sha256, Digest};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KY2hyb25vID0gIjAuNCIKc2VyZGUgPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJkZXJpdmUiXSB9CnNlcmRlX2pzb24gPSAiMSIKc2hhMiA9ICIwLjExIgoqLwp1c2Ugc2hhMjo6e1NoYTI1NiwgRGlnZXN0fTsKdXNlIGNocm9ubzo6VXRjOwp1c2Ugc2VyZGU6OntTZXJpYWxpemUsIERlc2VyaWFsaXplfTsKCiNbZGVyaXZlKERlYnVnLCBDbG9uZSwgU2VyaWFsaXplLCBEZXNlcmlhbGl6ZSldCnN0cnVjdCBUcmFuc2FjdGlvbiB7CiAgICBmcm9tOiBTdHJpbmcsCiAgICB0bzogU3RyaW5nLAogICAgYW1vdW50OiBmNjQsCn0KCiNbZGVyaXZlKERlYnVnLCBDbG9uZSwgU2VyaWFsaXplLCBEZXNlcmlhbGl6ZSldCnN0cnVjdCBCbG9jayB7CiAgICBpbmRleDogdTY0LAogICAgdGltZXN0YW1wOiBpNjQsCiAgICB0cmFuc2FjdGlvbnM6IFZlYzxUcmFuc2FjdGlvbj4sCiAgICBwcmV2aW91c19oYXNoOiBTdHJpbmcsCiAgICBtZXJrbGVfcm9vdDogU3RyaW5nLAogICAgaGFzaDogU3RyaW5nLAogICAgbm9uY2U6IHU2NCwKfQoKaW1wbCBCbG9jayB7CiAgICBmbiBuZXcoaW5kZXg6IHU2NCwgdHJhbnNhY3Rpb25zOiBWZWM8VHJhbnNhY3Rpb24+LCBwcmV2aW91c19oYXNoOiBTdHJpbmcpIC0+IFNlbGYgewogICAgICAgIGxldCB0aW1lc3RhbXAgPSBVdGM6Om5vdygpLnRpbWVzdGFtcCgpOwogICAgICAgIGxldCBtZXJrbGVfcm9vdCA9IGNhbGN1bGF0ZV9tZXJrbGVfcm9vdCgmdHJhbnNhY3Rpb25zKTsKICAgICAgICBsZXQgbXV0IGJsb2NrID0gQmxvY2sgewogICAgICAgICAgICBpbmRleCwKICAgICAgICAgICAgdGltZXN0YW1wLAogICAgICAgICAgICB0cmFuc2FjdGlvbnMsCiAgICAgICAgICAgIHByZXZpb3VzX2hhc2gsCiAgICAgICAgICAgIG1lcmtsZV9yb290LAogICAgICAgICAgICBoYXNoOiBTdHJpbmc6Om5ldygpLAogICAgICAgICAgICBub25jZTogMCwKICAgICAgICB9OwogICAgICAgIGJsb2NrLmhhc2ggPSBibG9jay5jYWxjdWxhdGVfaGFzaCgpOwogICAgICAgIGJsb2NrCiAgICB9CgogICAgZm4gY2FsY3VsYXRlX2hhc2goJnNlbGYpIC0+IFN0cmluZyB7CiAgICAgICAgbGV0IGlucHV0ID0gZm9ybWF0ISgKICAgICAgICAgICAgInt9e317fXt9e317fSIsCiAgICAgICAgICAgIHNlbGYuaW5kZXgsIHNlbGYudGltZXN0YW1wLCBzZWxmLm1lcmtsZV9yb290LAogICAgICAgICAgICBzZWxmLnByZXZpb3VzX2hhc2gsIHNlbGYubm9uY2UsCiAgICAgICAgICAgIHNlcmRlX2pzb246OnRvX3N0cmluZygmc2VsZi50cmFuc2FjdGlvbnMpLnVud3JhcF9vcl9kZWZhdWx0KCkKICAgICAgICApOwogICAgICAgIGxldCBtdXQgaGFzaGVyID0gU2hhMjU2OjpuZXcoKTsKICAgICAgICBoYXNoZXIudXBkYXRlKGlucHV0KTsKICAgICAgICBmb3JtYXQhKCJ7Onh9IiwgaGFzaGVyLmZpbmFsaXplKCkpCiAgICB9CgogICAgZm4gbWluZSgmbXV0IHNlbGYsIGRpZmZpY3VsdHk6IHVzaXplKSB7CiAgICAgICAgbGV0IHRhcmdldCA9ICIwIi5yZXBlYXQoZGlmZmljdWx0eSk7CiAgICAgICAgd2hpbGUgIXNlbGYuaGFzaC5zdGFydHNfd2l0aCgmdGFyZ2V0KSB7CiAgICAgICAgICAgIHNlbGYubm9uY2UgKz0gMTsKICAgICAgICAgICAgc2VsZi5oYXNoID0gc2VsZi5jYWxjdWxhdGVfaGFzaCgpOwogICAgICAgIH0KICAgIH0KfQoKZm4gY2FsY3VsYXRlX21lcmtsZV9yb290KHRyYW5zYWN0aW9uczogJltUcmFuc2FjdGlvbl0pIC0+IFN0cmluZyB7CiAgICBpZiB0cmFuc2FjdGlvbnMuaXNfZW1wdHkoKSB7CiAgICAgICAgcmV0dXJuICIwIi5yZXBlYXQoNjQpOwogICAgfQogICAgbGV0IG11dCBoYXNoZXM6IFZlYzxTdHJpbmc+ID0gdHJhbnNhY3Rpb25zLml0ZXIoKS5tYXAofHR4fCB7CiAgICAgICAgbGV0IGlucHV0ID0gZm9ybWF0ISgie317fXt9IiwgdHguZnJvbSwgdHgudG8sIHR4LmFtb3VudCk7CiAgICAgICAgbGV0IG11dCBoYXNoZXIgPSBTaGEyNTY6Om5ldygpOwogICAgICAgIGhhc2hlci51cGRhdGUoaW5wdXQpOwogICAgICAgIGZvcm1hdCEoIns6eH0iLCBoYXNoZXIuZmluYWxpemUoKSkKICAgIH0pLmNvbGxlY3QoKTsKCiAgICB3aGlsZSBoYXNoZXMubGVuKCkgPiAxIHsKICAgICAgICBpZiBoYXNoZXMubGVuKCkgJSAyICE9IDAgewogICAgICAgICAgICBoYXNoZXMucHVzaChoYXNoZXMubGFzdCgpLnVud3JhcCgpLmNsb25lKCkpOwogICAgICAgIH0KICAgICAgICBsZXQgbXV0IG5leHRfbGV2ZWwgPSBWZWM6Om5ldygpOwogICAgICAgIGZvciBpIGluICgwLi5oYXNoZXMubGVuKCkpLnN0ZXBfYnkoMikgewogICAgICAgICAgICBsZXQgY29tYmluZWQgPSBmb3JtYXQhKCJ7fXt9IiwgaGFzaGVzW2ldLCBoYXNoZXNbaSArIDFdKTsKICAgICAgICAgICAgbGV0IG11dCBoYXNoZXIgPSBTaGEyNTY6Om5ldygpOwogICAgICAgICAgICBoYXNoZXIudXBkYXRlKGNvbWJpbmVkKTsKICAgICAgICAgICAgbmV4dF9sZXZlbC5wdXNoKGZvcm1hdCEoIns6eH0iLCBoYXNoZXIuZmluYWxpemUoKSkpOwogICAgICAgIH0KICAgICAgICBoYXNoZXMgPSBuZXh0X2xldmVsOwogICAgfQogICAgaGFzaGVzWzBdLmNsb25lKCkKfQoKc3RydWN0IEJsb2NrY2hhaW4gewogICAgY2hhaW46IFZlYzxCbG9jaz4sCiAgICBkaWZmaWN1bHR5OiB1c2l6ZSwKICAgIHBlbmRpbmdfdHJhbnNhY3Rpb25zOiBWZWM8VHJhbnNhY3Rpb24+LAp9CgppbXBsIEJsb2NrY2hhaW4gewogICAgZm4gbmV3KCkgLT4gU2VsZiB7CiAgICAgICAgbGV0IGdlbmVzaXMgPSBCbG9jazo6bmV3KDAsIHZlYyFbXSwgIjAiLnJlcGVhdCg2NCkpOwogICAgICAgIEJsb2NrY2hhaW4gewogICAgICAgICAgICBjaGFpbjogdmVjIVtnZW5lc2lzXSwKICAgICAgICAgICAgZGlmZmljdWx0eTogNCwKICAgICAgICAgICAgcGVuZGluZ190cmFuc2FjdGlvbnM6IFZlYzo6bmV3KCksCiAgICAgICAgfQogICAgfQoKICAgIGZuIGFkZF90cmFuc2FjdGlvbigmbXV0IHNlbGYsIHR4OiBUcmFuc2FjdGlvbikgewogICAgICAgIHNlbGYucGVuZGluZ190cmFuc2FjdGlvbnMucHVzaCh0eCk7CiAgICB9CgogICAgZm4gbWluZV9wZW5kaW5nX3RyYW5zYWN0aW9ucygmbXV0IHNlbGYsIG1pbmVyX2FkZHJlc3M6IFN0cmluZykgewogICAgICAgIC8vIOWlluWKseS6pOaYkwogICAgICAgIGxldCByZXdhcmRfdHggPSBUcmFuc2FjdGlvbiB7CiAgICAgICAgICAgIGZyb206ICJuZXR3b3JrIi50b19zdHJpbmcoKSwKICAgICAgICAgICAgdG86IG1pbmVyX2FkZHJlc3MsCiAgICAgICAgICAgIGFtb3VudDogNTAuMCwKICAgICAgICB9OwogICAgICAgIHNlbGYucGVuZGluZ190cmFuc2FjdGlvbnMucHVzaChyZXdhcmRfdHgpOwoKICAgICAgICBsZXQgbXV0IGJsb2NrID0gQmxvY2s6Om5ldygKICAgICAgICAgICAgc2VsZi5jaGFpbi5sZW4oKSBhcyB1NjQsCiAgICAgICAgICAgIHNlbGYucGVuZGluZ190cmFuc2FjdGlvbnMuY2xvbmUoKSwKICAgICAgICAgICAgc2VsZi5jaGFpbi5sYXN0KCkudW53cmFwKCkuaGFzaC5jbG9uZSgpLAogICAgICAgICk7CiAgICAgICAgYmxvY2subWluZShzZWxmLmRpZmZpY3VsdHkpOwogICAgICAgIHNlbGYuY2hhaW4ucHVzaChibG9jayk7CiAgICAgICAgc2VsZi5wZW5kaW5nX3RyYW5zYWN0aW9ucy5jbGVhcigpOwogICAgfQoKICAgIGZuIGlzX3ZhbGlkKCZzZWxmKSAtPiBib29sIHsKICAgICAgICBmb3IgaSBpbiAxLi5zZWxmLmNoYWluLmxlbigpIHsKICAgICAgICAgICAgbGV0IGN1cnJlbnQgPSAmc2VsZi5jaGFpbltpXTsKICAgICAgICAgICAgbGV0IHByZXZpb3VzID0gJnNlbGYuY2hhaW5baSAtIDFdOwoKICAgICAgICAgICAgaWYgY3VycmVudC5oYXNoICE9IGN1cnJlbnQuY2FsY3VsYXRlX2hhc2goKSB7CiAgICAgICAgICAgICAgICByZXR1cm4gZmFsc2U7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgaWYgY3VycmVudC5wcmV2aW91c19oYXNoICE9IHByZXZpb3VzLmhhc2ggewogICAgICAgICAgICAgICAgcmV0dXJuIGZhbHNlOwogICAgICAgICAgICB9CiAgICAgICAgICAgIGlmICFjdXJyZW50Lmhhc2guc3RhcnRzX3dpdGgoJiIwIi5yZXBlYXQoc2VsZi5kaWZmaWN1bHR5KSkgewogICAgICAgICAgICAgICAgcmV0dXJuIGZhbHNlOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIHRydWUKICAgIH0KCiAgICBmbiBnZXRfYmFsYW5jZSgmc2VsZiwgYWRkcmVzczogJnN0cikgLT4gZjY0IHsKICAgICAgICBsZXQgbXV0IGJhbGFuY2UgPSAwLjA7CiAgICAgICAgZm9yIGJsb2NrIGluICZzZWxmLmNoYWluIHsKICAgICAgICAgICAgZm9yIHR4IGluICZibG9jay50cmFuc2FjdGlvbnMgewogICAgICAgICAgICAgICAgaWYgdHguZnJvbSA9PSBhZGRyZXNzIHsKICAgICAgICAgICAgICAgICAgICBiYWxhbmNlIC09IHR4LmFtb3VudDsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIGlmIHR4LnRvID09IGFkZHJlc3MgewogICAgICAgICAgICAgICAgICAgIGJhbGFuY2UgKz0gdHguYW1vdW50OwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIGJhbGFuY2UKICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIGxldCBtdXQgYmxvY2tjaGFpbiA9IEJsb2NrY2hhaW46Om5ldygpOwoKICAgIHByaW50bG4hKCI9PT0g5byA5aeL5oyW55+/ID09PSIpOwogICAgYmxvY2tjaGFpbi5hZGRfdHJhbnNhY3Rpb24oVHJhbnNhY3Rpb24gewogICAgICAgIGZyb206ICJhbGljZSIudG9fc3RyaW5nKCksCiAgICAgICAgdG86ICJib2IiLnRvX3N0cmluZygpLAogICAgICAgIGFtb3VudDogMTAuMCwKICAgIH0pOwogICAgYmxvY2tjaGFpbi5taW5lX3BlbmRpbmdfdHJhbnNhY3Rpb25zKCJtaW5lcjEiLnRvX3N0cmluZygpKTsKCiAgICBibG9ja2NoYWluLmFkZF90cmFuc2FjdGlvbihUcmFuc2FjdGlvbiB7CiAgICAgICAgZnJvbTogImJvYiIudG9fc3RyaW5nKCksCiAgICAgICAgdG86ICJjaGFybGllIi50b19zdHJpbmcoKSwKICAgICAgICBhbW91bnQ6IDUuMCwKICAgIH0pOwogICAgYmxvY2tjaGFpbi5taW5lX3BlbmRpbmdfdHJhbnNhY3Rpb25zKCJtaW5lcjEiLnRvX3N0cmluZygpKTsKCiAgICBwcmludGxuISgiXG49PT0g5Yy65Z2X6ZO+54q25oCBID09PSIpOwogICAgZm9yIGJsb2NrIGluICZibG9ja2NoYWluLmNoYWluIHsKICAgICAgICBwcmludGxuISgi5Yy65Z2XIHt9OiB7fSIsIGJsb2NrLmluZGV4LCBibG9jay5oYXNoKTsKICAgIH0KCiAgICBwcmludGxuISgiXG49PT0g5L2Z6aKd5p+l6K+iID09PSIpOwogICAgcHJpbnRsbiEoIm1pbmVyMToge30iLCBibG9ja2NoYWluLmdldF9iYWxhbmNlKCJtaW5lcjEiKSk7CiAgICBwcmludGxuISgiYWxpY2U6IHt9IiwgYmxvY2tjaGFpbi5nZXRfYmFsYW5jZSgiYWxpY2UiKSk7CiAgICBwcmludGxuISgiYm9iOiB7fSIsIGJsb2NrY2hhaW4uZ2V0X2JhbGFuY2UoImJvYiIpKTsKICAgIHByaW50bG4hKCJjaGFybGllOiB7fSIsIGJsb2NrY2hhaW4uZ2V0X2JhbGFuY2UoImNoYXJsaWUiKSk7CgogICAgcHJpbnRsbiEoIlxuPT09IOmqjOivgeWMuuWdl+mTviA9PT0iKTsKICAgIHByaW50bG4hKCLmnInmlYg6IHt9IiwgYmxvY2tjaGFpbi5pc192YWxpZCgpKTsKCiAgICAvLyDlsJ3or5Xnr6HmlLkKICAgIHByaW50bG4hKCJcbj09PSDnr6HmlLnmtYvor5UgPT09Iik7CiAgICBpZiBibG9ja2NoYWluLmNoYWluLmxlbigpID4gMSB7CiAgICAgICAgYmxvY2tjaGFpbi5jaGFpblsxXS50cmFuc2FjdGlvbnNbMF0uYW1vdW50ID0gMTAwMC4wOwogICAgICAgIHByaW50bG4hKCLnr6HmlLnlkI7mnInmlYg6IHt9IiwgYmxvY2tjaGFpbi5pc192YWxpZCgpKTsKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+chrono = "0.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.11"
+*/
+use sha2::{Sha256, Digest};
 use chrono::Utc;
 use serde::{Serialize, Deserialize};
 

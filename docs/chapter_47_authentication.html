@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -308,7 +345,14 @@
 <li><strong>Argon2id</strong>：两者兼顾，<strong>推荐使用</strong></li>
 </ul>
 <h3 id="4734-rust实现argon2密码哈希"><a class="header" href="#4734-rust实现argon2密码哈希">47.3.4 Rust实现：Argon2密码哈希</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use argon2::{
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KYXJnb24yID0gIjAuNSIKcmFuZF9jb3JlID0geyB2ZXJzaW9uID0gIjAuNiIsIGZlYXR1cmVzID0gWyJnZXRyYW5kb20iXSB9CiovCnVzZSBhcmdvbjI6OnsKICAgIHBhc3N3b3JkX2hhc2g6OnsKICAgICAgICByYW5kX2NvcmU6Ok9zUm5nLAogICAgICAgIFBhc3N3b3JkSGFzaCwgUGFzc3dvcmRIYXNoZXIsIFBhc3N3b3JkVmVyaWZpZXIsIFNhbHRTdHJpbmcKICAgIH0sCiAgICBBcmdvbjIsCn07CgovLy8g55Sf5oiQ5a+G56CB5ZOI5biMCmZuIGhhc2hfcGFzc3dvcmQocGFzc3dvcmQ6ICZzdHIpIC0+IFJlc3VsdDxTdHJpbmcsIGFyZ29uMjo6cGFzc3dvcmRfaGFzaDo6RXJyb3I+IHsKICAgIGxldCBzYWx0ID0gU2FsdFN0cmluZzo6Z2VuZXJhdGUoJm11dCBPc1JuZyk7CiAgICBsZXQgYXJnb24yID0gQXJnb24yOjpkZWZhdWx0KCk7CiAgICBsZXQgcGFzc3dvcmRfaGFzaCA9IGFyZ29uMgogICAgICAgIC5oYXNoX3Bhc3N3b3JkKHBhc3N3b3JkLmFzX2J5dGVzKCksICZzYWx0KT8KICAgICAgICAudG9fc3RyaW5nKCk7CiAgICBPayhwYXNzd29yZF9oYXNoKQp9CgovLy8g6aqM6K+B5a+G56CBCmZuIHZlcmlmeV9wYXNzd29yZChwYXNzd29yZDogJnN0ciwgaGFzaDogJnN0cikgLT4gUmVzdWx0PGJvb2wsIGFyZ29uMjo6cGFzc3dvcmRfaGFzaDo6RXJyb3I+IHsKICAgIGxldCBwYXJzZWRfaGFzaCA9IFBhc3N3b3JkSGFzaDo6bmV3KGhhc2gpPzsKICAgIGxldCBhcmdvbjIgPSBBcmdvbjI6OmRlZmF1bHQoKTsKICAgIG1hdGNoIGFyZ29uMi52ZXJpZnlfcGFzc3dvcmQocGFzc3dvcmQuYXNfYnl0ZXMoKSwgJnBhcnNlZF9oYXNoKSB7CiAgICAgICAgT2soKCkpID0+IE9rKHRydWUpLAogICAgICAgIEVycihhcmdvbjI6OnBhc3N3b3JkX2hhc2g6OkVycm9yOjpQYXNzd29yZCkgPT4gT2soZmFsc2UpLAogICAgICAgIEVycihlKSA9PiBFcnIoZSksCiAgICB9Cn0KCmZuIG1haW4oKSAtPiBSZXN1bHQ8KCksIEJveDxkeW4gc3RkOjplcnJvcjo6RXJyb3I+PiB7CiAgICBsZXQgcGFzc3dvcmQgPSAibXlfc2VjdXJlX3Bhc3N3b3JkXzEyMyI7CiAgICAKICAgIC8vIOazqOWGjOaXtu+8mueUn+aIkOWTiOW4jAogICAgbGV0IGhhc2ggPSBoYXNoX3Bhc3N3b3JkKHBhc3N3b3JkKT87CiAgICBwcmludGxuISgi5a+G56CB5ZOI5biMOiB7fSIsIGhhc2gpOwogICAgLy8g6L6T5Ye656S65L6LOiAkYXJnb24yaWQkdj0xOSRtPTY1NTM2LHQ9MyxwPTQkLi4uJAogICAgCiAgICAvLyDnmbvlvZXml7bvvJrpqozor4Hlr4bnoIEKICAgIGxldCBpc192YWxpZCA9IHZlcmlmeV9wYXNzd29yZChwYXNzd29yZCwgJmhhc2gpPzsKICAgIHByaW50bG4hKCLpqozor4Hnu5Pmnpw6IHt9IiwgaXNfdmFsaWQpOwogICAgCiAgICBsZXQgaXNfaW52YWxpZCA9IHZlcmlmeV9wYXNzd29yZCgid3JvbmdfcGFzc3dvcmQiLCAmaGFzaCk/OwogICAgcHJpbnRsbiEoIumUmeivr+WvhueggemqjOivgToge30iLCBpc19pbnZhbGlkKTsKICAgIAogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+argon2 = "0.5"
+rand_core = { version = "0.6", features = ["getrandom"] }
+*/
+use argon2::{
     password_hash::{
         rand_core::OsRng,
         PasswordHash, PasswordHasher, PasswordVerifier, SaltString
@@ -407,7 +451,13 @@ T = (Current Unix time - T0) / X
 </ol>
 <p>验证时，服务器通常检查当前时间窗口及前后各一个窗口（共3个窗口，约90秒），以容纳时间偏差。</p>
 <h3 id="4744-rust实现totp生成与验证"><a class="header" href="#4744-rust实现totp生成与验证">47.4.4 Rust实现：TOTP生成与验证</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use totp_rs::{Algorithm, Secret, TOTP};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcXJjb2RlID0gIjAuMTQiCiovCnVzZSB0b3RwX3JzOjp7QWxnb3JpdGhtLCBTZWNyZXQsIFRPVFB9Owp1c2UgcXJjb2RlOjpRckNvZGU7CnVzZSBxcmNvZGU6OnJlbmRlcjo6dW5pY29kZTsKCmZuIGNyZWF0ZV90b3RwKGFjY291bnQ6ICZzdHIsIGlzc3VlcjogJnN0cikgLT4gUmVzdWx0PFRPVFAsIEJveDxkeW4gc3RkOjplcnJvcjo6RXJyb3I+PiB7CiAgICBsZXQgc2VjcmV0ID0gU2VjcmV0OjpnZW5lcmF0ZV9zZWNyZXQoKS50b19ieXRlcygpPzsKICAgIAogICAgbGV0IHRvdHAgPSBUT1RQOjpuZXcoCiAgICAgICAgQWxnb3JpdGhtOjpTSEExLCAgICAvLyBITUFD566X5rOVCiAgICAgICAgNiwgICAgICAgICAgICAgICAgICAgLy8g6aqM6K+B56CB5L2N5pWwCiAgICAgICAgMSwgICAgICAgICAgICAgICAgICAgLy8g5a656ZSZ56qX5Y+j77yI5YmN5ZCO5ZCEMeS4quaXtumXtOatpe+8iQogICAgICAgIDMwLCAgICAgICAgICAgICAgICAgIC8vIOaXtumXtOatpemVv++8iOenku+8iQogICAgICAgIHNlY3JldCwKICAgICk/OwogICAgCiAgICBPayh0b3RwKQp9CgpmbiBnZW5lcmF0ZV9xcl9jb2RlKHRvdHA6ICZUT1RQLCBhY2NvdW50OiAmc3RyLCBpc3N1ZXI6ICZzdHIpIHsKICAgIC8vIOeUn+aIkOespuWQiEdvb2dsZSBBdXRoZW50aWNhdG9y5qC85byP55qEVVJJCiAgICBsZXQgdXJpID0gdG90cC5nZXRfdXJpKGlzc3Vlci50b19zdHJpbmcoKSwgYWNjb3VudC50b19zdHJpbmcoKSk7CiAgICBwcmludGxuISgiVE9UUCBVUkk6IHt9IiwgdXJpKTsKICAgIAogICAgLy8g55Sf5oiQ5LqM57u056CBCiAgICBsZXQgY29kZSA9IFFyQ29kZTo6bmV3KHVyaSkudW53cmFwKCk7CiAgICBsZXQgc3RyaW5nID0gY29kZS5yZW5kZXI6Ojx1bmljb2RlOjpEZW5zZTF4Mj4oKQogICAgICAgIC5kYXJrX2NvbG9yKHVuaWNvZGU6OkRlbnNlMXgyOjpMaWdodCkKICAgICAgICAubGlnaHRfY29sb3IodW5pY29kZTo6RGVuc2UxeDI6OkRhcmspCiAgICAgICAgLmJ1aWxkKCk7CiAgICBwcmludGxuISgie30iLCBzdHJpbmcpOwp9CgpmbiBtYWluKCkgLT4gUmVzdWx0PCgpLCBCb3g8ZHluIHN0ZDo6ZXJyb3I6OkVycm9yPj4gewogICAgbGV0IGFjY291bnQgPSAidXNlckBleGFtcGxlLmNvbSI7CiAgICBsZXQgaXNzdWVyID0gIlJ1c3RBcHAiOwogICAgCiAgICAvLyDliJvlu7pUT1RQCiAgICBsZXQgdG90cCA9IGNyZWF0ZV90b3RwKGFjY291bnQsIGlzc3Vlcik/OwogICAgCiAgICAvLyDnlJ/miJDkuoznu7TnoIHkvpvnlKjmiLfmiavmj48KICAgIGdlbmVyYXRlX3FyX2NvZGUoJnRvdHAsIGFjY291bnQsIGlzc3Vlcik7CiAgICAKICAgIC8vIOeUn+aIkOW9k+WJjemqjOivgeeggQogICAgbGV0IHRva2VuID0gdG90cC5nZW5lcmF0ZV9jdXJyZW50KCk/OwogICAgcHJpbnRsbiEoIuW9k+WJjemqjOivgeeggToge30iLCB0b2tlbik7CiAgICAKICAgIC8vIOmqjOivgeeUqOaIt+i+k+WFpeeahOmqjOivgeeggQogICAgbGV0IHVzZXJfaW5wdXQgPSAiMTIzNDU2IjsgLy8g5YGH6K6+55So5oi36L6T5YWlCiAgICBsZXQgaXNfdmFsaWQgPSB0b3RwLmNoZWNrKHVzZXJfaW5wdXQsIAogICAgICAgIHN0ZDo6dGltZTo6U3lzdGVtVGltZTo6bm93KCkKICAgICAgICAgICAgLmR1cmF0aW9uX3NpbmNlKHN0ZDo6dGltZTo6VU5JWF9FUE9DSCk/CiAgICAgICAgICAgIC5hc19zZWNzKCkKICAgICk7CiAgICBwcmludGxuISgi6aqM6K+B57uT5p6cOiB7fSIsIGlzX3ZhbGlkKTsKICAgIAogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+qrcode = "0.14"
+*/
+use totp_rs::{Algorithm, Secret, TOTP};
 use qrcode::QrCode;
 use qrcode::render::unicode;
 
@@ -574,7 +624,14 @@ fn setup_webauthn() -&gt; Result&lt;Webauthn, WebauthnError&gt; {
 </ul>
 <p>相比OIDC，SAML配置更复杂，但在传统企业环境中仍广泛使用。</p>
 <h3 id="4765-rust实现jwt处理"><a class="header" href="#4765-rust实现jwt处理">47.6.5 Rust实现：JWT处理</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KanNvbndlYnRva2VuID0gIjkiCnNlcmRlID0geyB2ZXJzaW9uID0gIjEiLCBmZWF0dXJlcyA9IFsiZGVyaXZlIl0gfQoqLwp1c2UganNvbndlYnRva2VuOjp7ZGVjb2RlLCBlbmNvZGUsIERlY29kaW5nS2V5LCBFbmNvZGluZ0tleSwgSGVhZGVyLCBWYWxpZGF0aW9ufTsKdXNlIHNlcmRlOjp7RGVzZXJpYWxpemUsIFNlcmlhbGl6ZX07CnVzZSBzdGQ6OnRpbWU6OntTeXN0ZW1UaW1lLCBVTklYX0VQT0NIfTsKCiNbZGVyaXZlKERlYnVnLCBTZXJpYWxpemUsIERlc2VyaWFsaXplKV0Kc3RydWN0IENsYWltcyB7CiAgICBzdWI6IFN0cmluZywgICAgICAgIC8vIOS4u+mimO+8iOeUqOaIt0lE77yJCiAgICBpc3M6IFN0cmluZywgICAgICAgIC8vIOetvuWPkeiAhQogICAgYXVkOiBTdHJpbmcsICAgICAgICAvLyDlj5fkvJcKICAgIGV4cDogdXNpemUsICAgICAgICAgLy8g6L+H5pyf5pe26Ze0CiAgICBpYXQ6IHVzaXplLCAgICAgICAgIC8vIOetvuWPkeaXtumXtAogICAgI1tzZXJkZShza2lwX3NlcmlhbGl6aW5nX2lmID0gIk9wdGlvbjo6aXNfbm9uZSIpXQogICAgbmFtZTogT3B0aW9uPFN0cmluZz4sCn0KCmZuIGN1cnJlbnRfdGltZXN0YW1wKCkgLT4gdXNpemUgewogICAgU3lzdGVtVGltZTo6bm93KCkKICAgICAgICAuZHVyYXRpb25fc2luY2UoVU5JWF9FUE9DSCkKICAgICAgICAudW53cmFwKCkKICAgICAgICAuYXNfc2VjcygpIGFzIHVzaXplCn0KCmZuIGNyZWF0ZV9qd3QodXNlcl9pZDogJnN0ciwgc2VjcmV0OiAmc3RyKSAtPiBSZXN1bHQ8U3RyaW5nLCBqc29ud2VidG9rZW46OmVycm9yczo6RXJyb3I+IHsKICAgIGxldCBub3cgPSBjdXJyZW50X3RpbWVzdGFtcCgpOwogICAgbGV0IGNsYWltcyA9IENsYWltcyB7CiAgICAgICAgc3ViOiB1c2VyX2lkLnRvX3N0cmluZygpLAogICAgICAgIGlzczogInJ1c3QtYXBwIi50b19zdHJpbmcoKSwKICAgICAgICBhdWQ6ICJydXN0LWNsaWVudCIudG9fc3RyaW5nKCksCiAgICAgICAgaWF0OiBub3csCiAgICAgICAgZXhwOiBub3cgKyAzNjAwLCAvLyAx5bCP5pe25ZCO6L+H5pyfCiAgICAgICAgbmFtZTogU29tZSgi5byg5LiJIi50b19zdHJpbmcoKSksCiAgICB9OwogICAgCiAgICBlbmNvZGUoCiAgICAgICAgJkhlYWRlcjo6ZGVmYXVsdCgpLAogICAgICAgICZjbGFpbXMsCiAgICAgICAgJkVuY29kaW5nS2V5Ojpmcm9tX3NlY3JldChzZWNyZXQuYXNfYnl0ZXMoKSksCiAgICApCn0KCmZuIHZlcmlmeV9qd3QodG9rZW46ICZzdHIsIHNlY3JldDogJnN0cikgLT4gUmVzdWx0PENsYWltcywganNvbndlYnRva2VuOjplcnJvcnM6OkVycm9yPiB7CiAgICBsZXQgbXV0IHZhbGlkYXRpb24gPSBWYWxpZGF0aW9uOjpkZWZhdWx0KCk7CiAgICB2YWxpZGF0aW9uLnNldF9pc3N1ZXIoJlsicnVzdC1hcHAiXSk7CiAgICB2YWxpZGF0aW9uLnNldF9hdWRpZW5jZSgmWyJydXN0LWNsaWVudCJdKTsKICAgIAogICAgbGV0IHRva2VuX2RhdGEgPSBkZWNvZGU6OjxDbGFpbXM+KAogICAgICAgIHRva2VuLAogICAgICAgICZEZWNvZGluZ0tleTo6ZnJvbV9zZWNyZXQoc2VjcmV0LmFzX2J5dGVzKCkpLAogICAgICAgICZ2YWxpZGF0aW9uLAogICAgKT87CiAgICAKICAgIE9rKHRva2VuX2RhdGEuY2xhaW1zKQp9CgpmbiBtYWluKCkgLT4gUmVzdWx0PCgpLCBCb3g8ZHluIHN0ZDo6ZXJyb3I6OkVycm9yPj4gewogICAgbGV0IHNlY3JldCA9ICJ5b3VyLTI1Ni1iaXQtc2VjcmV0LWtleS1oZXJlISEhIjsKICAgIGxldCB1c2VyX2lkID0gInVzZXJfMTIzNDUiOwogICAgCiAgICAvLyDnlJ/miJBKV1QKICAgIGxldCB0b2tlbiA9IGNyZWF0ZV9qd3QodXNlcl9pZCwgc2VjcmV0KT87CiAgICBwcmludGxuISgi55Sf5oiQ55qESldUOiB7fSIsIHRva2VuKTsKICAgIAogICAgLy8g6aqM6K+BSldUCiAgICBsZXQgY2xhaW1zID0gdmVyaWZ5X2p3dCgmdG9rZW4sIHNlY3JldCk/OwogICAgcHJpbnRsbiEoIumqjOivgemAmui/h++8jOeUqOaItzogezo/fSIsIGNsYWltcyk7CiAgICAKICAgIC8vIOWwneivleeUqOmUmeivr+WvhumSpemqjOivgQogICAgbGV0IHJlc3VsdCA9IHZlcmlmeV9qd3QoJnRva2VuLCAid3Jvbmctc2VjcmV0Iik7CiAgICBtYXRjaCByZXN1bHQgewogICAgICAgIE9rKF8pID0+IHByaW50bG4hKCLkuI3lupTmiJDlip8iKSwKICAgICAgICBFcnIoZSkgPT4gcHJpbnRsbiEoIumqjOivgeWksei0pe+8iOmihOacn++8iToge30iLCBlKSwKICAgIH0KICAgIAogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+jsonwebtoken = "9"
+serde = { version = "1", features = ["derive"] }
+*/
+use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 use std::time::{SystemTime, UNIX_EPOCH};
 

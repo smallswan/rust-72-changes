@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -650,6 +687,8 @@ fn k_fold_indices(n: usize, k: usize) -&gt; Vec&lt;(Vec&lt;usize&gt;, Vec&lt;usi
 </div>
 <h3 id="61-使用-polars-进行数据处理"><a class="header" href="#61-使用-polars-进行数据处理">6.1 使用 Polars 进行数据处理</a></h3>
 <p>Polars 是 Rust 生态中最强大的数据处理库，类似于 Python 的 Pandas，但性能更优。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHBvbGFyczo6cHJlbHVkZTo6KjsKCmZuIG1haW4oKSAtPiBSZXN1bHQ8KCksIEJveDxkeW4gc3RkOjplcnJvcjo6RXJyb3I+PiB7CiAgICAvLyDor7vlj5YgQ1NWIOaWh+S7tgogICAgbGV0IGRmID0gQ3N2UmVhZE9wdGlvbnM6OmRlZmF1bHQoKQogICAgICAgIC50cnlfaW50b19yZWFkZXJfd2l0aF9maWxlX3BhdGgoU29tZSgiZGF0YS5jc3YiLmludG8oKSkpPwogICAgICAgIC5maW5pc2goKT87CgogICAgLy8g5Z+65pys57uf6K6h5L+h5oGvCiAgICBwcmludGxuISgi5pWw5o2u5b2i54q2OiB7fSDooYwgw5cge30g5YiXIiwgZGYuaGVpZ2h0KCksIGRmLndpZHRoKCkpOwogICAgcHJpbnRsbiEoInt9IiwgZGYuZGVzY3JpYmUoTm9uZSk/KTsKCiAgICAvLyDov4fmu6TlkozpgInmi6kKICAgIGxldCBmaWx0ZXJlZCA9IGRmLmNsb25lKCkubGF6eSgpCiAgICAgICAgLmZpbHRlcihjb2woImFnZSIpLmd0KGxpdCgxOCkpKQogICAgICAgIC5zZWxlY3QoW2NvbCgibmFtZSIpLCBjb2woImFnZSIpLCBjb2woImluY29tZSIpXSkKICAgICAgICAuY29sbGVjdCgpPzsKCiAgICBwcmludGxuISgi6L+H5ruk5ZCOOlxue30iLCBmaWx0ZXJlZCk7CiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use polars::prelude::*;
 
 fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
@@ -673,7 +712,13 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 }</code></pre>
 <h3 id="62-使用-linfa-进行聚类"><a class="header" href="#62-使用-linfa-进行聚类">6.2 使用 Linfa 进行聚类</a></h3>
 <p>Linfa 提供了多种机器学习算法的 Rust 原生实现。</p>
-<pre class="playground"><code class="language-rust edition2024">use linfa::prelude::*;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KbmRhcnJheSA9ICIwLjE2IgoqLwp1c2UgbGluZmE6OnByZWx1ZGU6Oio7CnVzZSBsaW5mYV9jbHVzdGVyaW5nOjpLTWVhbnM7CnVzZSBuZGFycmF5OjpBcnJheTI7CgpmbiBtYWluKCkgLT4gUmVzdWx0PCgpLCBCb3g8ZHluIHN0ZDo6ZXJyb3I6OkVycm9yPj4gewogICAgLy8g5p6E6YCg5pWw5o2uCiAgICBsZXQgZGF0YSA9IEFycmF5Mjo6ZnJvbV9zaGFwZV92ZWMoKDYsIDIpLCB2ZWMhWwogICAgICAgIDEuMCwgMi4wLCAgMS41LCAxLjgsICA1LjAsIDguMCwKICAgICAgICA4LjAsIDguMCwgIDEuMCwgMC42LCAgOS4wLCAxMS4wLAogICAgXSk/OwoKICAgIGxldCBkYXRhc2V0ID0gRGF0YXNldDo6ZnJvbShkYXRhKTsKCiAgICAvLyBLLU1lYW5zIOiBmuexu++8jGs9MgogICAgbGV0IG1vZGVsID0gS01lYW5zOjpwYXJhbXMoMikKICAgICAgICAubWF4X25faXRlcmF0aW9ucygxMDApCiAgICAgICAgLmZpdCgmZGF0YXNldCk/OwoKICAgIHByaW50bG4hKCLnsIfkuK3lv4M6XG57fSIsIG1vZGVsLmNlbnRyb2lkcygpKTsKCiAgICAvLyDpooTmtYvmlrDmlbDmja7ngrnnmoTnsIflvZLlsZ4KICAgIGxldCBwcmVkaWN0aW9uID0gbW9kZWwucHJlZGljdCgKICAgICAgICAmQXJyYXkyOjpmcm9tX3NoYXBlX3ZlYygoMSwgMiksIHZlYyFbMi4wLCAxLjVdKT8KICAgICk7CiAgICBwcmludGxuISgi5paw54K55omA5bGe57CHOiB7Oj99IiwgcHJlZGljdGlvbik7CgogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+ndarray = "0.16"
+*/
+use linfa::prelude::*;
 use linfa_clustering::KMeans;
 use ndarray::Array2;
 

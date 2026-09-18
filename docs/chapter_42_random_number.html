@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -249,6 +286,8 @@
 <li>$a - 1$ 能被 $m$ 的所有质因子整除</li>
 <li>若 $m$ 是 4 的倍数，则 $a - 1$ 也是 4 的倍数</li>
 </ol>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOe6v+aAp+WQjOS9meazle+8iExDR++8ieeahOeugOWNleWunueOsApzdHJ1Y3QgTGNnIHsKICAgIHN0YXRlOiB1NjQsCiAgICBhOiB1NjQsCiAgICBjOiB1NjQsCiAgICBtOiB1NjQsCn0KCmltcGwgTGNnIHsKICAgIGZuIG5ldyhzZWVkOiB1NjQsIGE6IHU2NCwgYzogdTY0LCBtOiB1NjQpIC0+IFNlbGYgewogICAgICAgIFNlbGYgeyBzdGF0ZTogc2VlZCwgYSwgYywgbSB9CiAgICB9CgogICAgZm4gbmV4dCgmbXV0IHNlbGYpIC0+IHU2NCB7CiAgICAgICAgLy8geF97bisxfSA9IChhICogeF9uICsgYykgbW9kIG0KICAgICAgICBzZWxmLnN0YXRlID0gKHNlbGYuYS53cmFwcGluZ19tdWwoc2VsZi5zdGF0ZSkud3JhcHBpbmdfYWRkKHNlbGYuYykpICUgc2VsZi5tOwogICAgICAgIHNlbGYuc3RhdGUKICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIC8vIOS9v+eUqOe7j+WFuOWPguaVsO+8mmdsaWJjIOS9v+eUqOeahOWPguaVsAogICAgbGV0IG11dCBsY2cgPSBMY2c6Om5ldyg0MiwgMTEwMzUxNTI0NSwgMTIzNDUsIDEgPDwgMzEpOwogICAgZm9yIF8gaW4gMC4uMTAgewogICAgICAgIHByaW50bG4hKCJ7fSIsIGxjZy5uZXh0KCkpOwogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">/// 线性同余法（LCG）的简单实现
 struct Lcg {
     state: u64,
@@ -286,7 +325,13 @@ fn main() {
 <li><strong>快速</strong>：多数平台上每生成一个 32 位随机数仅需几纳秒</li>
 <li><strong>通过多数统计测试</strong>：Diehard 和大部分 NIST 测试</li>
 </ul>
-<pre class="playground"><code class="language-rust edition2024">// 注意：rand 0.9+ 的 StdRng 实际使用 ChaCha8 算法，而非梅森旋转器
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwovLyDms6jmhI/vvJpyYW5kIDAuOSsg55qEIFN0ZFJuZyDlrp7pmYXkvb/nlKggQ2hhQ2hhOCDnrpfms5XvvIzogIzpnZ7mooXmo67ml4vovazlmagKLy8g5aaC6ZyA5L2/55So5qKF5qOu5peL6L2s5Zmo77yM6ZyA6KaB6aKd5aSW55qEIHJhbmRfbXQgY3JhdGUKdXNlIHJhbmQ6OlJuZ0V4dDsKdXNlIHJhbmQ6OlNlZWRhYmxlUm5nOwoKZm4gbWFpbigpIHsKICAgIC8vIHJhbmQ6OnJuZygpIOm7mOiupOS9v+eUqCBUaHJlYWRSbmfvvIzlhoXpg6jln7rkuo4gQ2hhQ2hhOAogICAgbGV0IG11dCBybmcgPSByYW5kOjpybmdzOjpTdGRSbmc6OmZyb21fc2VlZChbNDJ1ODsgMzJdKTsKICAgIGZvciBfIGluIDAuLjUgewogICAgICAgIHByaW50bG4hKCJ7fSIsIHJuZy5yYW5kb206Ojx1NjQ+KCkpOwogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+// 注意：rand 0.9+ 的 StdRng 实际使用 ChaCha8 算法，而非梅森旋转器
 // 如需使用梅森旋转器，需要额外的 rand_mt crate
 use rand::RngExt;
 use rand::SeedableRng;
@@ -304,7 +349,13 @@ fn main() {
 <p>$$x_{n+1} = (a \cdot x_n + c) \mod 2^n$$
 $$\text{output} = \text{rotate}(x_{n+1} \oplus (x_{n+1} &gt;&gt; r), x_{n+1} &gt;&gt; s)$$</p>
 <p><strong>Xoshiro</strong> 系列由 Sebastiano Vigna 提出，基于 XOR-shift/rotate 操作，速度极快且统计质量优秀。</p>
-<pre class="playground"><code class="language-rust edition2024">use rand::RngExt;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwp1c2UgcmFuZDo6Um5nRXh0Owp1c2UgcmFuZDo6U2VlZGFibGVSbmc7CgpmbiBtYWluKCkgewogICAgLy8g5L2/55SoIFN0ZFJuZ++8iENoYUNoYTgg566X5rOV77yJCiAgICBsZXQgbXV0IHJuZyA9IHJhbmQ6OnJuZ3M6OlN0ZFJuZzo6c2VlZF9mcm9tX3U2NCg0Mik7CiAgICBwcmludGxuISgiU3RkUm5nIChDaGFDaGE4KToge30iLCBybmcucmFuZG9tOjo8dTY0PigpKTsKCiAgICAvLyDkvb/nlKggU21hbGxSbmfvvIjlubPlj7DkvJjljJbnmoTlv6vpgJ/nlJ/miJDlmajvvIkKICAgIGxldCBtdXQgcm5nID0gcmFuZDo6cm5nczo6U21hbGxSbmc6OnNlZWRfZnJvbV91NjQoNDIpOwogICAgcHJpbnRsbiEoIlNtYWxsUm5nOiB7fSIsIHJuZy5yYW5kb206Ojx1NjQ+KCkpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+use rand::RngExt;
 use rand::SeedableRng;
 
 fn main() {
@@ -340,7 +391,14 @@ fn main() {
 <li><strong>AMD RDRAND 指令</strong>：类似 Intel 的实现</li>
 <li><strong>ARM RNDR 指令</strong>：ARMv8.5+ 引入的随机数指令</li>
 </ul>
-<pre class="playground"><code class="language-rust edition2024">// ⚠️ 需要本地编译，不支持 Playground
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZF9jb3JlID0gIjAuMTAiCnJkcmFuZCA9ICIwLjkiCiovCi8vIOKaoO+4jyDpnIDopoHmnKzlnLDnvJbor5HvvIzkuI3mlK/mjIEgUGxheWdyb3VuZAovLyDkvb/nlKggcmRyYW5kIGNyYXRlIOiuv+mXruehrOS7tumaj+acuuaVsOeUn+aIkOWZqAovLyBDYXJnby50b21sOiByZHJhbmQgPSAiMC44IgovLyDms6jmhI/vvJpyZHJhbmQg5L6d6LWWIENQVSDnoazku7bmjIfku6TvvIhJbnRlbCBSRFJBTkQvUkRTRUVE77yJ77yMUGxheWdyb3VuZCDml6Dms5Xov5DooYwKdXNlIHJhbmRfY29yZTo6VHJ5Um5nOwp1c2UgcmRyYW5kOjpSZFJhbmQ7CgpmbiBtYWluKCkgewogICAgaWYgbGV0IE9rKG11dCBybmcpID0gUmRSYW5kOjpuZXcoKSB7CiAgICAgICAgaWYgbGV0IE9rKHZhbCkgPSBybmcudHJ5X25leHRfdTY0KCkgewogICAgICAgICAgICBwcmludGxuISgiSGFyZHdhcmUgcmFuZG9tOiB7fSIsIHZhbCk7CiAgICAgICAgfQogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand_core = "0.10"
+rdrand = "0.9"
+*/
+// ⚠️ 需要本地编译，不支持 Playground
 // 使用 rdrand crate 访问硬件随机数生成器
 // Cargo.toml: rdrand = "0.8"
 // 注意：rdrand 依赖 CPU 硬件指令（Intel RDRAND/RDSEED），Playground 无法运行
@@ -369,7 +427,13 @@ fn main() {
 </tbody>
 </table>
 </div>
-<pre class="playground"><code class="language-rust edition2024">// 使用 rand::rng() 获取密码学安全的线程本地 RNG
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwovLyDkvb/nlKggcmFuZDo6cm5nKCkg6I635Y+W5a+G56CB5a2m5a6J5YWo55qE57q/56iL5pys5ZywIFJORwovLyDlnKggcmFuZCAwLjkg5Lit77yMVGhyZWFkUm5nIOS9v+eUqCBDaGFDaGExMiDnrpfms5XvvIzlhbfmnInlr4bnoIHlrablronlhajmgKcKdXNlIHJhbmQ6OlJuZ0V4dDsKCgpmbiBtYWluKCkgewogICAgbGV0IG11dCBybmcgPSByYW5kOjpybmcoKTsKICAgIGxldCBtdXQgYnVmID0gWzB1ODsgMzJdOwogICAgcm5nLmZpbGwoJm11dCBidWYpOwogICAgcHJpbnRsbiEoIk9TIHJhbmRvbSBieXRlczogezowMng/fSIsIGJ1Zik7CiAgICAKICAgIC8vIOS5n+WPr+S7peebtOaOpeeUn+aIkOWNleS4quWAvAogICAgbGV0IHJhbmRvbV91NjQ6IHU2NCA9IHJuZy5yYW5kb20oKTsKICAgIHByaW50bG4hKCJSYW5kb20gdTY0OiB7fSIsIHJhbmRvbV91NjQpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+// 使用 rand::rng() 获取密码学安全的线程本地 RNG
 // 在 rand 0.9 中，ThreadRng 使用 ChaCha12 算法，具有密码学安全性
 use rand::RngExt;
 
@@ -397,14 +461,26 @@ fn main() {
 <h2 id="rust-中的随机数"><a class="header" href="#rust-中的随机数">Rust 中的随机数</a></h2>
 <p>Rust 生态中随机数的核心 crate 是 <code>rand</code>，它提供了丰富的随机数生成功能。<code>rand</code> 0.9+ 版本进行了重大重构，API 更加现代化。</p>
 <h3 id="rand-crate-基础用法"><a class="header" href="#rand-crate-基础用法">rand crate 基础用法</a></h3>
-<pre class="playground"><code class="language-rust edition2024">// ✅ 正确方式
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwovLyDinIUg5q2j56Gu5pa55byPCnVzZSByYW5kOjpSbmdFeHQ7CgpmbiBtYWluKCkgewogICAgbGV0IHg6IHU4ID0gcmFuZDo6cmFuZG9tKCk7CiAgICBwcmludGxuISgie30iLCB4KTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+// ✅ 正确方式
 use rand::RngExt;
 
 fn main() {
     let x: u8 = rand::random();
     println!("{}", x);
 }</code></pre>
-<pre class="playground"><code class="language-rust edition2024">// import commonly used items from the prelude:
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwovLyBpbXBvcnQgY29tbW9ubHkgdXNlZCBpdGVtcyBmcm9tIHRoZSBwcmVsdWRlOgp1c2UgcmFuZDo6Um5nRXh0Owp1c2UgcmFuZDo6c2VxOjpJdGVyYXRvclJhbmRvbTsKdXNlIHJhbmQ6OnByZWx1ZGU6OlNsaWNlUmFuZG9tOwoKZm4gbWFpbigpIHsKICAgIC8vIFdlIGNhbiB1c2UgcmFuZG9tKCkgaW1tZWRpYXRlbHkuIEl0IGNhbiBwcm9kdWNlIHZhbHVlcyBvZiBtYW55IGNvbW1vbiB0eXBlczoKICAgIGxldCB4OiB1OCA9IHJhbmQ6OnJhbmRvbSgpOwogICAgcHJpbnRsbiEoInt9IiwgeCk7CgogICAgaWYgcmFuZDo6cmFuZG9tKCkgeyAvLyBnZW5lcmF0ZXMgYSBib29sZWFuCiAgICAgICAgcHJpbnRsbiEoIkhlYWRzISIpOwogICAgfQoKICAgIC8vIElmIHdlIHdhbnQgdG8gYmUgYSBiaXQgbW9yZSBleHBsaWNpdCAoYW5kIGEgbGl0dGxlIG1vcmUgZWZmaWNpZW50KSB3ZSBjYW4KICAgIC8vIG1ha2UgYSBoYW5kbGUgdG8gdGhlIHRocmVhZC1sb2NhbCBnZW5lcmF0b3I6CiAgICBsZXQgbXV0IHJuZyA9IHJhbmQ6OnJuZygpOwogICAgaWYgcm5nLnJhbmRvbSgpIHsgLy8gcmFuZG9tIGJvb2wKICAgICAgICBsZXQgeDogZjY0ID0gcm5nLnJhbmRvbSgpOyAvLyByYW5kb20gbnVtYmVyIGluIHJhbmdlIFswLCAxKQogICAgICAgIGxldCB5ID0gcm5nLnJhbmRvbV9yYW5nZSgtMTAuMC4uMTAuMCk7CiAgICAgICAgcHJpbnRsbiEoInggaXM6IHt9IiwgeCk7CiAgICAgICAgcHJpbnRsbiEoInkgaXM6IHt9IiwgeSk7CiAgICB9CgogICAgcHJpbnRsbiEoIkRpY2Ugcm9sbDoge30iLCBybmcucmFuZG9tX3JhbmdlKDEuLj02KSk7CiAgICBwcmludGxuISgiTnVtYmVyIGZyb20gMCB0byA5OiB7fSIsIHJuZy5yYW5kb21fcmFuZ2UoMC4uMTApKTsKICAgIAogICAgLy8gU29tZXRpbWVzIGl0J3MgdXNlZnVsIHRvIHVzZSBkaXN0cmlidXRpb25zIGRpcmVjdGx5OgogICAgbGV0IGRpc3RyID0gcmFuZDo6ZGlzdHI6OlVuaWZvcm06Om5ld19pbmNsdXNpdmUoMSwgMTAwKS51bndyYXAoKTsKICAgIGxldCBtdXQgbnVtcyA9IFswaTMyOyAzXTsKICAgIGZvciB4IGluICZtdXQgbnVtcyB7CiAgICAgICAgKnggPSBybmcuc2FtcGxlKGRpc3RyKTsKICAgIH0KICAgIHByaW50bG4hKCJTb21lIG51bWJlcnM6IHs6P30iLCBudW1zKTsKCiAgICAvLyBXZSBjYW4gYWxzbyBpbnRlcmFjdCB3aXRoIGl0ZXJhdG9ycyBhbmQgc2xpY2VzOgogICAgbGV0IGFycm93c19pdGVyID0gIuKeoeKsiOKshuKsieKsheKsi+Ksh+KsiiIuY2hhcnMoKTsKICAgIHByaW50bG4hKCJMZXRzIGdvIGluIHRoaXMgZGlyZWN0aW9uOiB7fSIsIGFycm93c19pdGVyLmNob29zZSgmbXV0IHJuZykudW53cmFwKCkpOwogICAgbGV0IG11dCBudW1zID0gWzEsIDIsIDMsIDQsIDVdOwogICAgbnVtcy5zaHVmZmxlKCZtdXQgcm5nKTsKICAgIHByaW50bG4hKCJJIHNodWZmbGVkIG15IHs6P30iLCBudW1zKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+// import commonly used items from the prelude:
 use rand::RngExt;
 use rand::seq::IteratorRandom;
 use rand::prelude::SliceRandom;
@@ -457,7 +533,13 @@ fn main() {
 <span class="boring">}</span></code></pre>
 <h3 id="threadrng-与线程本地生成器"><a class="header" href="#threadrng-与线程本地生成器">ThreadRng 与线程本地生成器</a></h3>
 <p><code>rand::rng()</code> 返回一个线程本地的随机数生成器（ThreadRng），它是懒初始化的，每个线程拥有独立的实例，无需加锁，性能优异。</p>
-<pre class="playground"><code class="language-rust edition2024">use rand::RngExt;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwp1c2UgcmFuZDo6Um5nRXh0OwoKZm4gbWFpbigpIHsKICAgIGxldCBtdXQgcm5nID0gcmFuZDo6cm5nKCk7CgogICAgLy8g55Sf5oiQ5ZCE56eN5Z+65pys57G75Z6LCiAgICBsZXQgYTogdTggPSBybmcucmFuZG9tKCk7CiAgICBsZXQgYjogdTE2ID0gcm5nLnJhbmRvbSgpOwogICAgbGV0IGM6IHUzMiA9IHJuZy5yYW5kb20oKTsKICAgIGxldCBkOiB1NjQgPSBybmcucmFuZG9tKCk7CiAgICBsZXQgZTogZjMyID0gcm5nLnJhbmRvbSgpOyAvLyBbMCwgMSkKICAgIGxldCBmOiBmNjQgPSBybmcucmFuZG9tKCk7IC8vIFswLCAxKQogICAgbGV0IGc6IGJvb2wgPSBybmcucmFuZG9tKCk7CiAgICBsZXQgaDogY2hhciA9IHJuZy5yYW5kb20oKTsgLy8g6ZqP5py6IFVuaWNvZGUg5a2X56ymCgogICAgcHJpbnRsbiEoInU4PXt9LCB1MTY9e30sIHUzMj17fSwgdTY0PXt9IiwgYSwgYiwgYywgZCk7CiAgICBwcmludGxuISgiZjMyPXt9LCBmNjQ9e30sIGJvb2w9e30sIGNoYXI9e30iLCBlLCBmLCBnLCBoKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+use rand::RngExt;
 
 fn main() {
     let mut rng = rand::rng();
@@ -477,7 +559,13 @@ fn main() {
 }</code></pre>
 <h3 id="各种概率分布"><a class="header" href="#各种概率分布">各种概率分布</a></h3>
 <p><code>rand::distr</code> 模块提供了丰富的概率分布：</p>
-<pre class="playground"><code class="language-rust edition2024">// ⚠️ 需要 rand_distr 依赖
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwovLyDimqDvuI8g6ZyA6KaBIHJhbmRfZGlzdHIg5L6d6LWWCi8vIOKaoO+4jyBOb3JtYWzjgIFFeHDjgIFMb2dOb3JtYWzjgIFQYXJldG8g5bey5LuOIHJhbmQgMC45IOenu+iHsyByYW5kX2Rpc3RyIGNyYXRlCi8vIFBsYXlncm91bmQg5Lit6ZyA6KaB5re75Yqg5L6d6LWW77yacmFuZF9kaXN0ciA9ICIwLjUiCnVzZSByYW5kOjpSbmdFeHQ7CnVzZSByYW5kOjpkaXN0cjo6e1VuaWZvcm0sIEJlcm5vdWxsaX07CnVzZSByYW5kX2Rpc3RyOjp7Tm9ybWFsLCBFeHAsIExvZ05vcm1hbCwgUGFyZXRvfTsKCmZuIG1haW4oKSB7CiAgICBsZXQgbXV0IHJuZyA9IHJhbmQ6OnJuZygpOwoKICAgIC8vIOWdh+WMgOWIhuW4gyBbYSwgYl0KICAgIGxldCB1bmlmb3JtID0gVW5pZm9ybTo6bmV3KDEuMCwgMTAwLjApLnVud3JhcCgpOwogICAgcHJpbnRsbiEoIlVuaWZvcm06IHt9Iiwgcm5nLnNhbXBsZSh1bmlmb3JtKSk7CgogICAgLy8g5q2j5oCB5YiG5biDIE4ozrwsIM+DwrIp77yM5Z2H5YC85Li6MO+8jOagh+WHhuW3ruS4ujEKICAgIGxldCBub3JtYWwgPSBOb3JtYWw6Om5ldygwLjAsIDEuMCkudW53cmFwKCk7CiAgICBwcmludGxuISgiTm9ybWFsOiB7fSIsIHJuZy5zYW1wbGUobm9ybWFsKSk7CgogICAgLy8g5Lyv5Yqq5Yip5YiG5biD77ya5Lul5qaC546HIHAg6L+U5ZueIHRydWUKICAgIGxldCBiZXJub3VsbGkgPSBCZXJub3VsbGk6Om5ldygwLjcpLnVud3JhcCgpOwogICAgcHJpbnRsbiEoIkJlcm5vdWxsaToge30iLCBybmcuc2FtcGxlKGJlcm5vdWxsaSkpOwoKICAgIC8vIOaMh+aVsOWIhuW4gwogICAgbGV0IGV4cCA9IEV4cDo6bmV3KDIuMCkudW53cmFwKCk7CiAgICBwcmludGxuISgiRXhwb25lbnRpYWw6IHt9Iiwgcm5nLnNhbXBsZShleHApKTsKCiAgICAvLyDlr7nmlbDmraPmgIHliIbluIMKICAgIGxldCBsb2dfbm9ybWFsID0gTG9nTm9ybWFsOjpuZXcoMC4wLCAxLjApLnVud3JhcCgpOwogICAgcHJpbnRsbiEoIkxvZ05vcm1hbDoge30iLCBybmcuc2FtcGxlKGxvZ19ub3JtYWwpKTsKCiAgICAvLyDluJXntK/miZjliIbluIMKICAgIGxldCBwYXJldG8gPSBQYXJldG86Om5ldygxLjAsIDIuMCkudW53cmFwKCk7CiAgICBwcmludGxuISgiUGFyZXRvOiB7fSIsIHJuZy5zYW1wbGUocGFyZXRvKSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+// ⚠️ 需要 rand_distr 依赖
 // ⚠️ Normal、Exp、LogNormal、Pareto 已从 rand 0.9 移至 rand_distr crate
 // Playground 中需要添加依赖：rand_distr = "0.5"
 use rand::RngExt;
@@ -512,7 +600,13 @@ fn main() {
     println!("Pareto: {}", rng.sample(pareto));
 }</code></pre>
 <h3 id="随机选择与洗牌"><a class="header" href="#随机选择与洗牌">随机选择与洗牌</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use rand::seq::{SliceRandom, IteratorRandom};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwp1c2UgcmFuZDo6c2VxOjp7U2xpY2VSYW5kb20sIEl0ZXJhdG9yUmFuZG9tfTsKdXNlIHJhbmQ6OlJuZ0V4dDsKdXNlIHJhbmQ6OnByZWx1ZGU6OkluZGV4ZWRSYW5kb207CgoKZm4gbWFpbigpIHsKICAgIGxldCBtdXQgcm5nID0gcmFuZDo6cm5nKCk7CgogICAgLy8g5LuO5YiH54mH5Lit6ZqP5py66YCJ5oup5LiA5Liq5YWD57SgCiAgICBsZXQgY29sb3JzID0gWyJyZWQiLCAiZ3JlZW4iLCAiYmx1ZSIsICJ5ZWxsb3ciXTsKICAgIGxldCBjaG9zZW4gPSBjb2xvcnMuY2hvb3NlKCZtdXQgcm5nKS51bndyYXAoKTsKICAgIHByaW50bG4hKCJDaG9zZW4gY29sb3I6IHt9IiwgY2hvc2VuKTsKCiAgICAvLyDpmo/mnLrpgInmi6nlpJrkuKrkuI3ph43lpI3lhYPntKAKICAgIGxldCBjaG9zZW5fbXVsdGlwbGUgPSBjb2xvcnMuY2hvb3NlX211bHRpcGxlKCZtdXQgcm5nLCAyKTsKICAgIHByaW50bG4hKCJDaG9zZW4gMiBjb2xvcnM6IHs6P30iLCBjaG9zZW5fbXVsdGlwbGUpOwoKICAgIC8vIOS7jui/reS7o+WZqOS4remaj+acuumAieaLqQogICAgbGV0IGNob3Nlbl9mcm9tX2l0ZXIgPSAoMS4uPTEwMCkuY2hvb3NlKCZtdXQgcm5nKTsKICAgIHByaW50bG4hKCJSYW5kb20gbnVtYmVyIGZyb20gMS4uPTEwMDogezo/fSIsIGNob3Nlbl9mcm9tX2l0ZXIpOwoKICAgIC8vIOa0l+eJjO+8iEZpc2hlci1ZYXRlcyDnrpfms5XvvIkKICAgIGxldCBtdXQgZGVjayA9IHZlYyFbMSwgMiwgMywgNCwgNSwgNiwgNywgOCwgOSwgMTBdOwogICAgZGVjay5zaHVmZmxlKCZtdXQgcm5nKTsKICAgIHByaW50bG4hKCJTaHVmZmxlZCBkZWNrOiB7Oj99IiwgZGVjayk7CgogICAgLy8g6YOo5YiG5rSX54mM77ya5Y+q5omT5Lmx5YmNIGsg5Liq5L2N572uCiAgICBsZXQgbXV0IGNhcmRzID0gdmVjIVsiQSIsICJCIiwgIkMiLCAiRCIsICJFIl07CiAgICBjYXJkcy5wYXJ0aWFsX3NodWZmbGUoJm11dCBybmcsIDMpOwogICAgcHJpbnRsbiEoIlRvcCAzIHJhbmRvbSBjYXJkczogezo/fSIsICZjYXJkc1suLjNdKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+use rand::seq::{SliceRandom, IteratorRandom};
 use rand::RngExt;
 use rand::prelude::IndexedRandom;
 
@@ -545,7 +639,13 @@ fn main() {
 }</code></pre>
 <h3 id="自定义分布"><a class="header" href="#自定义分布">自定义分布</a></h3>
 <p>通过实现 <code>Distribution</code> trait，可以创建自定义的概率分布：</p>
-<pre class="playground"><code class="language-rust edition2024">use rand::distr::{Distribution, StandardUniform};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwp1c2UgcmFuZDo6ZGlzdHI6OntEaXN0cmlidXRpb24sIFN0YW5kYXJkVW5pZm9ybX07CnVzZSByYW5kOjpSbmdFeHQ7CgovLy8g6Ieq5a6a5LmJ5YiG5biD77ya5o635Lik5Liq6aqw5a2Q5LmL5ZKMCnN0cnVjdCBEaWNlU3VtOwoKaW1wbCBEaXN0cmlidXRpb248dTg+IGZvciBEaWNlU3VtIHsKICAgIGZuIHNhbXBsZTxSOiBSbmdFeHQgKyA/U2l6ZWQ+KCZzZWxmLCBybmc6ICZtdXQgUikgLT4gdTggewogICAgICAgIGxldCBkMTogdTggPSBybmcucmFuZG9tX3JhbmdlKDEuLj02KTsKICAgICAgICBsZXQgZDI6IHU4ID0gcm5nLnJhbmRvbV9yYW5nZSgxLi49Nik7CiAgICAgICAgZDEgKyBkMgogICAgfQp9CgovLy8g5Li66Ieq5a6a5LmJ57G75Z6L5a6e546w6ZqP5py655Sf5oiQCiNbZGVyaXZlKERlYnVnKV0KZW51bSBXZWF0aGVyIHsKICAgIFN1bm55LAogICAgQ2xvdWR5LAogICAgUmFpbnksCiAgICBTdG9ybXksCn0KCmltcGwgRGlzdHJpYnV0aW9uPFdlYXRoZXI+IGZvciBTdGFuZGFyZFVuaWZvcm0gewogICAgZm4gc2FtcGxlPFI6IFJuZ0V4dCArID9TaXplZD4oJnNlbGYsIHJuZzogJm11dCBSKSAtPiBXZWF0aGVyIHsKICAgICAgICBsZXQgdmFsOiBmNjQgPSBybmcucmFuZG9tKCk7CiAgICAgICAgbWF0Y2ggdmFsIHsKICAgICAgICAgICAgdiBpZiB2IDwgMC40ID0+IFdlYXRoZXI6OlN1bm55LAogICAgICAgICAgICB2IGlmIHYgPCAwLjcgPT4gV2VhdGhlcjo6Q2xvdWR5LAogICAgICAgICAgICB2IGlmIHYgPCAwLjkgPT4gV2VhdGhlcjo6UmFpbnksCiAgICAgICAgICAgIF8gPT4gV2VhdGhlcjo6U3Rvcm15LAogICAgICAgIH0KICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIGxldCBtdXQgcm5nID0gcmFuZDo6cm5nKCk7CgogICAgLy8g5L2/55So6Ieq5a6a5LmJIERpY2VTdW0g5YiG5biDCiAgICBsZXQgZGljZSA9IERpY2VTdW07CiAgICBmb3IgXyBpbiAwLi4xMCB7CiAgICAgICAgcHJpbnRsbiEoIkRpY2Ugc3VtOiB7fSIsIHJuZy5zYW1wbGUoJmRpY2UpKTsKICAgIH0KCiAgICAvLyDkvb/nlKjoh6rlrprkuYkgV2VhdGhlciDliIbluIMKICAgIGZvciBfIGluIDAuLjUgewogICAgICAgIHByaW50bG4hKCJXZWF0aGVyOiB7Oj99Iiwgcm5nLnJhbmRvbTo6PFdlYXRoZXI+KCkpOwogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+use rand::distr::{Distribution, StandardUniform};
 use rand::RngExt;
 
 /// 自定义分布：掷两个骰子之和
@@ -601,7 +701,13 @@ fn main() {
 <li><strong><code>SeedableRng</code></strong>：可从种子初始化的生成器 trait</li>
 <li><strong><code>CryptoRng</code></strong>：标记 trait，表示生成器具有密码学安全性</li>
 </ul>
-<pre class="playground"><code class="language-rust edition2024">use rand::{RngExt, CryptoRng};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwp1c2UgcmFuZDo6e1JuZ0V4dCwgQ3J5cHRvUm5nfTsKCmZuIGdlbmVyYXRlX3dpdGhfcm5nPFI6IFJuZ0V4dCArIENyeXB0b1JuZz4ocm5nOiAmbXV0IFIpIC0+IFt1ODsgMzJdIHsKICAgIGxldCBtdXQga2V5ID0gWzB1ODsgMzJdOwogICAgcm5nLmZpbGwoJm11dCBrZXkpOwogICAga2V5Cn0KCmZuIG1haW4oKSB7CiAgICAvLyByYW5kOjpybmcoKSDov5Tlm57nmoQgVGhyZWFkUm5nIOWQjOaXtuWunueOsOS6hiBSbmdFeHQg5ZKMIENyeXB0b1JuZwogICAgbGV0IG11dCBybmcgPSByYW5kOjpybmcoKTsKICAgIGxldCBrZXkgPSBnZW5lcmF0ZV93aXRoX3JuZygmbXV0IHJuZyk7CiAgICBwcmludGxuISgiQ3J5cHRvLXNhZmUga2V5OiB7OjAyeD99Iiwga2V5KTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+use rand::{RngExt, CryptoRng};
 
 fn generate_with_rng&lt;R: RngExt + CryptoRng&gt;(rng: &amp;mut R) -&gt; [u8; 32] {
     let mut key = [0u8; 32];
@@ -617,6 +723,8 @@ fn main() {
 }</code></pre>
 <h3 id="getrandom-crate"><a class="header" href="#getrandom-crate">getrandom crate</a></h3>
 <p><code>getrandom</code> crate 提供了跨平台的系统随机数访问，是 <code>rand</code> 的底层依赖，也可以单独使用：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g4pqg77iPIGdldHJhbmRvbSDmmK/ni6znq4sgY3JhdGXvvIxQbGF5Z3JvdW5kIOS4remcgOimgea3u+WKoOS+nei1lgovLyBDYXJnby50b21sOiBnZXRyYW5kb20gPSAiMC4zIgp1c2UgZ2V0cmFuZG9tOjpnZXRyYW5kb207CgpmbiBtYWluKCkgewogICAgbGV0IG11dCBidWYgPSBbMHU4OyAxNl07CiAgICBnZXRyYW5kb20oJm11dCBidWYpLmV4cGVjdCgiZmFpbGVkIHRvIGdldCByYW5kb20gYnl0ZXMiKTsKICAgIHByaW50bG4hKCJSYW5kb20gYnl0ZXM6IHs6MDJ4P30iLCBidWYpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// ⚠️ getrandom 是独立 crate，Playground 中需要添加依赖
 // Cargo.toml: getrandom = "0.3"
 use getrandom::getrandom;
@@ -648,7 +756,13 @@ fn main() {
 <li>随机数参与会话秘钥的生成；</li>
 </ul>
 <h3 id="生成-noncesaltiv密钥"><a class="header" href="#生成-noncesaltiv密钥">生成 nonce、salt、IV、密钥</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use rand::RngExt;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwp1c2UgcmFuZDo6Um5nRXh0OwoKZm4gZ2VuZXJhdGVfY3J5cHRvX3BhcmFtcygpIHsKICAgIGxldCBtdXQgcm5nID0gcmFuZDo6cm5nKCk7CgogICAgLy8g55Sf5oiQIDEyIOWtl+iKgiBub25jZe+8iOeUqOS6jiBBRVMtR0NN77yJCiAgICBsZXQgbXV0IG5vbmNlID0gWzB1ODsgMTJdOwogICAgcm5nLmZpbGwoJm11dCBub25jZSk7CiAgICBwcmludGxuISgiTm9uY2U6IHs6MDJ4P30iLCBub25jZSk7CgogICAgLy8g55Sf5oiQIDE2IOWtl+iKgiBzYWx077yI55So5LqO5a+G6ZKl5rS+55Sf77yJCiAgICBsZXQgbXV0IHNhbHQgPSBbMHU4OyAxNl07CiAgICBybmcuZmlsbCgmbXV0IHNhbHQpOwogICAgcHJpbnRsbiEoIlNhbHQ6IHs6MDJ4P30iLCBzYWx0KTsKCiAgICAvLyDnlJ/miJAgMTYg5a2X6IqCIElW77yI5Yid5aeL5YyW5ZCR6YeP77yM55So5LqOIEFFUy1DQkPvvIkKICAgIGxldCBtdXQgaXYgPSBbMHU4OyAxNl07CiAgICBybmcuZmlsbCgmbXV0IGl2KTsKICAgIHByaW50bG4hKCJJVjogezowMng/fSIsIGl2KTsKCiAgICAvLyDnlJ/miJAgMzIg5a2X6IqC5a+556ew5a+G6ZKl77yIQUVTLTI1Nu+8iQogICAgbGV0IG11dCBrZXkgPSBbMHU4OyAzMl07CiAgICBybmcuZmlsbCgmbXV0IGtleSk7CiAgICBwcmludGxuISgiQUVTLTI1NiBLZXk6IHs6MDJ4P30iLCBrZXkpOwp9CgpmbiBtYWluKCkgewogICAgZ2VuZXJhdGVfY3J5cHRvX3BhcmFtcygpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+use rand::RngExt;
 
 fn generate_crypto_params() {
     let mut rng = rand::rng();
@@ -690,7 +804,13 @@ openssl rand –base64 32 –out myr.dat
 <li><strong>种子安全</strong>：CSPRNG 的种子本身必须来自真随机源（操作系统熵池或硬件 TRNG）。</li>
 <li><strong>避免重用</strong>：nonce 和 IV 必须保证不重复使用，否则会严重削弱加密安全性。</li>
 </ol>
-<pre class="playground"><code class="language-rust edition2024">use rand::RngExt;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwp1c2UgcmFuZDo6Um5nRXh0OwoKLy8vIOWuieWFqOWcsOeUn+aIkCBSU0Eg5a+G6ZKl5a+55omA6ZyA55qE6ZqP5py657Sg5pWw56eN5a2QCmZuIGdlbmVyYXRlX3JzYV9zZWVkKCkgLT4gW3U4OyA2NF0gewogICAgbGV0IG11dCBzZWVkID0gWzB1ODsgNjRdOwogICAgcmFuZDo6cm5nKCkuZmlsbCgmbXV0IHNlZWQpOwogICAgc2VlZAp9CgovLy8g55Sf5oiQ5LiA5qyh5oCn5a+G56CB77yIT1RQ77yJ55qE5a+G6ZKlCmZuIGdlbmVyYXRlX290cF9rZXkoKSAtPiBbdTg7IDIwXSB7CiAgICBsZXQgbXV0IGtleSA9IFswdTg7IDIwXTsgLy8gSE9UUC9UT1RQIOS9v+eUqCAyMCDlrZfoioLvvIgxNjAg5L2N77yJCiAgICByYW5kOjpybmcoKS5maWxsKCZtdXQga2V5KTsKICAgIGtleQp9CgpmbiBtYWluKCkgewogICAgbGV0IHJzYV9zZWVkID0gZ2VuZXJhdGVfcnNhX3NlZWQoKTsKICAgIHByaW50bG4hKCJSU0Egc2VlZDogezowMng/fSIsIHJzYV9zZWVkKTsKCiAgICBsZXQgb3RwX2tleSA9IGdlbmVyYXRlX290cF9rZXkoKTsKICAgIHByaW50bG4hKCJPVFAga2V5OiB7OjAyeD99Iiwgb3RwX2tleSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+use rand::RngExt;
 
 /// 安全地生成 RSA 密钥对所需的随机素数种子
 fn generate_rsa_seed() -&gt; [u8; 64] {
@@ -752,7 +872,13 @@ fn main() {
 <li><strong>随机偏移变体（Random Excursions Variant）测试</strong>：随机游走的变体</li>
 <li><strong>Maurer 通用统计（Maurer’s Universal）测试</strong>：评估信息存储能力</li>
 </ol>
-<pre class="playground"><code class="language-rust edition2024">/// 简单的频率测试示例
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwovLy8g566A5Y2V55qE6aKR546H5rWL6K+V56S65L6LCmZuIGZyZXF1ZW5jeV90ZXN0KGJpdHM6ICZbdThdKSAtPiBmNjQgewogICAgbGV0IHRvdGFsX2JpdHMgPSBiaXRzLmxlbigpICogODsKICAgIGxldCBvbmVzOiB1c2l6ZSA9IGJpdHMuaXRlcigpLm1hcCh8YnwgYi5jb3VudF9vbmVzKCkgYXMgdXNpemUpLnN1bSgpOwogICAgbGV0IHMgPSAob25lcyBhcyBmNjQgLSB0b3RhbF9iaXRzIGFzIGY2NCAvIDIuMCkgLyAodG90YWxfYml0cyBhcyBmNjQgLyAyLjApLnNxcnQoKTsKICAgIC8vIOS9v+eUqOivr+W3ruWHveaVsOiuoeeulyBwLXZhbHVlCiAgICBsZXQgcF92YWx1ZSA9IGVyZl9jb21wbGVtZW50KHMgLyAyLjBfZjY0LnNxcnQoKSk7CiAgICBwX3ZhbHVlCn0KCmZuIGVyZl9jb21wbGVtZW50KHg6IGY2NCkgLT4gZjY0IHsKICAgIC8vIOeugOWMlueahOS6kuihpeivr+W3ruWHveaVsOi/keS8vAogICAgbGV0IHQgPSAxLjAgLyAoMS4wICsgMC4zMjc1OTExICogeC5hYnMoKSk7CiAgICBsZXQgcG9seSA9IHQgKiAoMC4yNTQ4Mjk1OTIgKyB0ICogKC0wLjI4NDQ5NjczNiArIHQgKiAoMS40MjE0MTM3NDEKICAgICAgICArIHQgKiAoLTEuNDUzMTUyMDI3ICsgdCAqIDEuMDYxNDA1NDI5KSkpKTsKICAgIGxldCByZXN1bHQgPSAxLjAgLSBwb2x5ICogKC14ICogeCkuZXhwKCk7CiAgICBpZiB4ID49IDAuMCB7IHJlc3VsdCB9IGVsc2UgeyAyLjAgLSByZXN1bHQgfQp9CgpmbiBtYWluKCkgewogICAgdXNlIHJhbmQ6OlJuZ0V4dDsKICAgIGxldCBtdXQgcm5nID0gcmFuZDo6cm5nKCk7CiAgICBsZXQgbXV0IGJpdHMgPSBbMHU4OyAyNTZdOwogICAgcm5nLmZpbGwoJm11dCBiaXRzKTsKICAgIGxldCBwID0gZnJlcXVlbmN5X3Rlc3QoJmJpdHMpOwogICAgcHJpbnRsbiEoIkZyZXF1ZW5jeSB0ZXN0IHAtdmFsdWU6IHt9IiwgcCk7CiAgICBpZiBwID4gMC4wMSB7CiAgICAgICAgcHJpbnRsbiEoIlBBU1M6IOW6j+WIl+mAmui/h+S6humikeeOh+a1i+ivlSIpOwogICAgfSBlbHNlIHsKICAgICAgICBwcmludGxuISgiRkFJTDog5bqP5YiX5pyq6YCa6L+H6aKR546H5rWL6K+VIik7CiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+/// 简单的频率测试示例
 fn frequency_test(bits: &amp;[u8]) -&gt; f64 {
     let total_bits = bits.len() * 8;
     let ones: usize = bits.iter().map(|b| b.count_ones() as usize).sum();
@@ -787,7 +913,13 @@ fn main() {
 <h2 id="随机数用途"><a class="header" href="#随机数用途">随机数用途</a></h2>
 <p>随机数模拟现实中的场景，比如抽奖、掷骰子、游戏中随机关卡、电影特效等。</p>
 <h3 id="非密码学用途"><a class="header" href="#非密码学用途">非密码学用途</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use rand::RngExt;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwp1c2UgcmFuZDo6Um5nRXh0Owp1c2UgcmFuZDo6c2VxOjpTbGljZVJhbmRvbTsKdXNlIHJhbmQ6OnByZWx1ZGU6OkluZGV4ZWRSYW5kb207CgpmbiBtYWluKCkgewogICAgbGV0IG11dCBybmcgPSByYW5kOjpybmcoKTsKCiAgICAvLyAxLiDmqKHmi5/mjrfpqrDlrZAKICAgIGxldCBkaWNlX3JvbGwgPSBybmcucmFuZG9tX3JhbmdlKDEuLj02KTsKICAgIHByaW50bG4hKCLpqrDlrZDngrnmlbA6IHt9IiwgZGljZV9yb2xsKTsKCiAgICAvLyAyLiDmir3lpZbns7vnu58KICAgIGxldCBwYXJ0aWNpcGFudHMgPSBbIkFsaWNlIiwgIkJvYiIsICJDaGFybGllIiwgIkRhdmlkIiwgIkV2ZSJdOwogICAgbGV0IHdpbm5lciA9IHBhcnRpY2lwYW50cy5jaG9vc2UoJm11dCBybmcpLnVud3JhcCgpOwogICAgcHJpbnRsbiEoIuS4reWlluiAhToge30iLCB3aW5uZXIpOwoKICAgIC8vIDMuIOeUn+aIkOmaj+acuuWvhuegge+8iOmdnuWuieWFqOeUqOmAlO+8iQogICAgbGV0IGNoYXJzOiBWZWM8Y2hhcj4gPSAiYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWjAxMjM0NTY3ODkiCiAgICAgICAgLmNoYXJzKCkuY29sbGVjdCgpOwogICAgbGV0IHBhc3N3b3JkOiBTdHJpbmcgPSAoMC4uMTIpLm1hcCh8X3wgY2hhcnMuY2hvb3NlKCZtdXQgcm5nKS51bndyYXAoKSkuY29sbGVjdCgpOwogICAgcHJpbnRsbiEoIumaj+acuuWvhueggToge30iLCBwYXNzd29yZCk7CgogICAgLy8gNC4g6JKZ54m55Y2h5rSb5pa55rOV5Lyw566XIM+ACiAgICBsZXQgbiA9IDFfMDAwXzAwMDsKICAgIGxldCBpbnNpZGU6IHVzaXplID0gKDAuLm4pCiAgICAgICAgLmZpbHRlcih8X3wgewogICAgICAgICAgICBsZXQgeDogZjY0ID0gcm5nLnJhbmRvbSgpOwogICAgICAgICAgICBsZXQgeTogZjY0ID0gcm5nLnJhbmRvbSgpOwogICAgICAgICAgICB4ICogeCArIHkgKiB5IDw9IDEuMAogICAgICAgIH0pCiAgICAgICAgLmNvdW50KCk7CiAgICBsZXQgcGkgPSA0LjAgKiBpbnNpZGUgYXMgZjY0IC8gbiBhcyBmNjQ7CiAgICBwcmludGxuISgiz4Ag55qE5Lyw566X5YC8OiB7fSAo6K+v5beuOiB7Oi42fSkiLCBwaSwgKHBpIC0gc3RkOjpmNjQ6OmNvbnN0czo6UEkpLmFicygpKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+use rand::RngExt;
 use rand::seq::SliceRandom;
 use rand::prelude::IndexedRandom;
 
@@ -822,7 +954,13 @@ fn main() {
     println!("π 的估算值: {} (误差: {:.6})", pi, (pi - std::f64::consts::PI).abs());
 }</code></pre>
 <h3 id="密码学用途"><a class="header" href="#密码学用途">密码学用途</a></h3>
-<pre class="playground"><code class="language-rust edition2024">use rand::RngExt;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwp1c2UgcmFuZDo6Um5nRXh0OwoKZm4gbWFpbigpIHsKICAgIGxldCBtdXQgcm5nID0gcmFuZDo6cm5nKCk7CgogICAgLy8gMS4g55Sf5oiQ5Lya6K+d5a+G6ZKlCiAgICBsZXQgbXV0IHNlc3Npb25fa2V5ID0gWzB1ODsgMzJdOwogICAgcm5nLmZpbGwoJm11dCBzZXNzaW9uX2tleSk7CiAgICBwcmludGxuISgi5Lya6K+d5a+G6ZKlOiB7OjAyeD99IiwgJnNlc3Npb25fa2V5Wy4uOF0pOwoKICAgIC8vIDIuIOeUn+aIkCBUTFMg6ZqP5py65pWw77yI5qih5ouf77yJCiAgICBsZXQgbXV0IGNsaWVudF9yYW5kb20gPSBbMHU4OyAzMl07CiAgICBybmcuZmlsbCgmbXV0IGNsaWVudF9yYW5kb20pOwogICAgcHJpbnRsbiEoIkNsaWVudCBSYW5kb206IHs6MDJ4P30iLCAmY2xpZW50X3JhbmRvbVsuLjhdKTsKCiAgICAvLyAzLiDnlJ/miJDlr4bnoIHlrablronlhajnmoTpmo/mnLrlr4bnoIEKICAgIHVzZSByYW5kOjpkaXN0cjo6e0FscGhhbnVtZXJpYywgRGlzdHJpYnV0aW9ufTsKICAgIGxldCBwYXNzd29yZDogU3RyaW5nID0gKDAuLjI0KQogICAgICAgIC5tYXAofF98IHJuZy5zYW1wbGUoQWxwaGFudW1lcmljKSBhcyBjaGFyKQogICAgICAgIC5jb2xsZWN0KCk7CiAgICBwcmludGxuISgi5a6J5YWo6ZqP5py65a+G56CBOiB7fSIsIHBhc3N3b3JkKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+use rand::RngExt;
 
 fn main() {
     let mut rng = rand::rng();
@@ -869,6 +1007,8 @@ fn main() {
 <h2 id="练习题"><a class="header" href="#练习题">练习题</a></h2>
 <h3 id="练习-1实现简单的-lcg-并验证周期"><a class="header" href="#练习-1实现简单的-lcg-并验证周期">练习 1：实现简单的 LCG 并验证周期</a></h3>
 <p>实现一个 LCG 生成器，使用参数 $a = 1664525$、$c = 1013904223$、$m = 2^{32}$（Numerical Recipes 推荐参数），验证从种子 1 开始，序列的周期是否为 $2^{32}$。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g5o+Q56S677ya5L2/55SoIEhhc2hTZXQg5qOA5rWL6YeN5aSN5YC8CnVzZSBzdGQ6OmNvbGxlY3Rpb25zOjpIYXNoU2V0OwoKc3RydWN0IExjZyB7CiAgICBzdGF0ZTogdTMyLAp9CgppbXBsIExjZyB7CiAgICBmbiBuZXcoc2VlZDogdTMyKSAtPiBTZWxmIHsKICAgICAgICBTZWxmIHsgc3RhdGU6IHNlZWQgfQogICAgfQoKICAgIGZuIG5leHQoJm11dCBzZWxmKSAtPiB1MzIgewogICAgICAgIHNlbGYuc3RhdGUgPSBzZWxmLnN0YXRlLndyYXBwaW5nX211bCgxNjY0NTI1KS53cmFwcGluZ19hZGQoMTAxMzkwNDIyMyk7CiAgICAgICAgc2VsZi5zdGF0ZQogICAgfQp9CgpmbiBtYWluKCkgewogICAgbGV0IG11dCBsY2cgPSBMY2c6Om5ldygxKTsKICAgIGxldCBtdXQgc2VlbiA9IEhhc2hTZXQ6Om5ldygpOwogICAgbGV0IG11dCBjb3VudCA9IDB1NjQ7CgogICAgbG9vcCB7CiAgICAgICAgbGV0IHZhbCA9IGxjZy5uZXh0KCk7CiAgICAgICAgaWYgIXNlZW4uaW5zZXJ0KHZhbCkgewogICAgICAgICAgICBwcmludGxuISgi5ZGo5pyf6ZW/5bqmOiB7fSIsIGNvdW50KTsKICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgfQogICAgICAgIGNvdW50ICs9IDE7CiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">// 提示：使用 HashSet 检测重复值
 use std::collections::HashSet;
 
@@ -904,7 +1044,13 @@ fn main() {
 <h3 id="练习-2蒙特卡洛积分"><a class="header" href="#练习-2蒙特卡洛积分">练习 2：蒙特卡洛积分</a></h3>
 <p>使用蒙特卡洛方法计算以下定积分的近似值：</p>
 <p>$$\int_0^1 \sin(x) , dx = 1 - \cos(1) \approx 0.4597$$</p>
-<pre class="playground"><code class="language-rust edition2024">use rand::RngExt;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwp1c2UgcmFuZDo6Um5nRXh0OwoKZm4gbWFpbigpIHsKICAgIGxldCBtdXQgcm5nID0gcmFuZDo6cm5nKCk7CiAgICBsZXQgbiA9IDFfMDAwXzAwMDsKICAgIGxldCBtdXQgc3VtID0gMC4wOwoKICAgIGZvciBfIGluIDAuLm4gewogICAgICAgIGxldCB4OiBmNjQgPSBybmcucmFuZG9tKCk7IC8vIFswLCAxKQogICAgICAgIHN1bSArPSB4LnNpbigpOwogICAgfQoKICAgIGxldCByZXN1bHQgPSBzdW0gLyBuIGFzIGY2NDsKICAgIGxldCBleGFjdCA9IDEuMCAtIDEuMF9mNjQuY29zKCk7CiAgICBwcmludGxuISgi6JKZ54m55Y2h5rSb57uT5p6cOiB7Oi42fSIsIHJlc3VsdCk7CiAgICBwcmludGxuISgi57K+56Gu5YC8OiB7Oi42fSIsIGV4YWN0KTsKICAgIHByaW50bG4hKCLor6/lt646IHs6LjZ9IiwgKHJlc3VsdCAtIGV4YWN0KS5hYnMoKSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+use rand::RngExt;
 
 fn main() {
     let mut rng = rand::rng();
@@ -924,7 +1070,13 @@ fn main() {
 }</code></pre>
 <h3 id="练习-3密码学安全随机密码生成器"><a class="header" href="#练习-3密码学安全随机密码生成器">练习 3：密码学安全随机密码生成器</a></h3>
 <p>编写一个函数，生成包含大写字母、小写字母、数字和特殊字符的密码，确保每种字符至少出现一次，且使用密码学安全的随机源。</p>
-<pre class="playground"><code class="language-rust edition2024">use rand::seq::SliceRandom;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwp1c2UgcmFuZDo6c2VxOjpTbGljZVJhbmRvbTsKdXNlIHJhbmQ6OlJuZ0V4dDsKdXNlIHJhbmQ6OnByZWx1ZGU6OkluZGV4ZWRSYW5kb207CgoKZm4gZ2VuZXJhdGVfc2VjdXJlX3Bhc3N3b3JkKGxlbmd0aDogdXNpemUpIC0+IFN0cmluZyB7CiAgICBsZXQgbXV0IHJuZyA9IHJhbmQ6OnJuZygpOwogICAgbGV0IHVwcGVyY2FzZTogVmVjPGNoYXI+ID0gIkFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaIi5jaGFycygpLmNvbGxlY3QoKTsKICAgIGxldCBsb3dlcmNhc2U6IFZlYzxjaGFyPiA9ICJhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5eiIuY2hhcnMoKS5jb2xsZWN0KCk7CiAgICBsZXQgZGlnaXRzOiBWZWM8Y2hhcj4gPSAiMDEyMzQ1Njc4OSIuY2hhcnMoKS5jb2xsZWN0KCk7CiAgICBsZXQgc3BlY2lhbDogVmVjPGNoYXI+ID0gIiFAIyQlXiYqKClfKy09W117fXw7OiwuPD4/Ii5jaGFycygpLmNvbGxlY3QoKTsKCiAgICBsZXQgbXV0IHBhc3N3b3JkOiBWZWM8Y2hhcj4gPSBWZWM6OndpdGhfY2FwYWNpdHkobGVuZ3RoKTsKCiAgICAvLyDnoa7kv53mr4/nsbvlrZfnrKboh7PlsJHkuIDkuKoKICAgIHBhc3N3b3JkLnB1c2goKnVwcGVyY2FzZS5jaG9vc2UoJm11dCBybmcpLnVud3JhcCgpKTsKICAgIHBhc3N3b3JkLnB1c2goKmxvd2VyY2FzZS5jaG9vc2UoJm11dCBybmcpLnVud3JhcCgpKTsKICAgIHBhc3N3b3JkLnB1c2goKmRpZ2l0cy5jaG9vc2UoJm11dCBybmcpLnVud3JhcCgpKTsKICAgIHBhc3N3b3JkLnB1c2goKnNwZWNpYWwuY2hvb3NlKCZtdXQgcm5nKS51bndyYXAoKSk7CgogICAgLy8g5aGr5YWF5Ymp5L2Z5a2X56ymCiAgICBsZXQgYWxsX2NoYXJzOiBWZWM8Y2hhcj4gPSB1cHBlcmNhc2UuaXRlcigpCiAgICAgICAgLmNoYWluKGxvd2VyY2FzZS5pdGVyKCkpCiAgICAgICAgLmNoYWluKGRpZ2l0cy5pdGVyKCkpCiAgICAgICAgLmNoYWluKHNwZWNpYWwuaXRlcigpKQogICAgICAgIC5jb3BpZWQoKQogICAgICAgIC5jb2xsZWN0KCk7CgogICAgd2hpbGUgcGFzc3dvcmQubGVuKCkgPCBsZW5ndGggewogICAgICAgIHBhc3N3b3JkLnB1c2goKmFsbF9jaGFycy5jaG9vc2UoJm11dCBybmcpLnVud3JhcCgpKTsKICAgIH0KCiAgICAvLyDmtJfniYzmiZPkubHpobrluo8KICAgIHBhc3N3b3JkLnNodWZmbGUoJm11dCBybmcpOwogICAgcGFzc3dvcmQuaW50b19pdGVyKCkuY29sbGVjdCgpCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgcGFzc3dvcmQgPSBnZW5lcmF0ZV9zZWN1cmVfcGFzc3dvcmQoMjApOwogICAgcHJpbnRsbiEoIuWuieWFqOWvhueggToge30iLCBwYXNzd29yZCk7CiAgICBwcmludGxuISgi6ZW/5bqmOiB7fSIsIHBhc3N3b3JkLmxlbigpKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+use rand::seq::SliceRandom;
 use rand::RngExt;
 use rand::prelude::IndexedRandom;
 
@@ -968,7 +1120,13 @@ fn main() {
 }</code></pre>
 <h3 id="练习-4随机数质量可视化检验"><a class="header" href="#练习-4随机数质量可视化检验">练习 4：随机数质量可视化检验</a></h3>
 <p>编写程序生成 10,000 个随机点 $(x, y)$，其中 $x, y \in [0, 1)$，将结果输出为 CSV 格式，然后用散点图可视化检验分布的均匀性。</p>
-<pre class="playground"><code class="language-rust edition2024">use rand::RngExt;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwp1c2UgcmFuZDo6Um5nRXh0Owp1c2Ugc3RkOjppbzo6V3JpdGU7CgpmbiBtYWluKCkgewogICAgbGV0IG11dCBybmcgPSByYW5kOjpybmcoKTsKICAgIGxldCBtdXQgZmlsZSA9IHN0ZDo6ZnM6OkZpbGU6OmNyZWF0ZSgicmFuZG9tX3BvaW50cy5jc3YiKQogICAgICAgIC5leHBlY3QoIuaXoOazleWIm+W7uuaWh+S7tiIpOwoKICAgIHdyaXRlbG4hKGZpbGUsICJ4LHkiKS51bndyYXAoKTsKICAgIGZvciBfIGluIDAuLjEwXzAwMCB7CiAgICAgICAgbGV0IHg6IGY2NCA9IHJuZy5yYW5kb20oKTsKICAgICAgICBsZXQgeTogZjY0ID0gcm5nLnJhbmRvbSgpOwogICAgICAgIHdyaXRlbG4hKGZpbGUsICJ7Oi42fSx7Oi42fSIsIHgsIHkpLnVud3JhcCgpOwogICAgfQoKICAgIHByaW50bG4hKCLlt7LnlJ/miJAgcmFuZG9tX3BvaW50cy5jc3bvvIzljIXlkKsgMTAwMDAg5Liq6ZqP5py654K5Iik7CiAgICBwcmludGxuISgi5Y+v5L2/55SoIFB5dGhvbiBtYXRwbG90bGliIOaIluWFtuS7luW3peWFt+e7mOWItuaVo+eCueWbvumqjOivgeWdh+WMgOaApyIpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+use rand::RngExt;
 use std::io::Write;
 
 fn main() {

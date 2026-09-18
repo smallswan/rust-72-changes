@@ -19,6 +19,43 @@
                 ]
             });">
         </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
 
         <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5878eae0.js";
+            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-545e538a.js"></script>
@@ -190,6 +227,8 @@
                     <main>
                         <h1 id="第十四-算数运算"><a class="header" href="#第十四-算数运算">第十四 算数运算</a></h1>
 <h2 id="算数运算符"><a class="header" href="#算数运算符">算数运算符</a></h2>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6ZjY0Ojpjb25zdHM6OntQSSwgRSxGUkFDX1BJXzIsIFNRUlRfMn07CmZuIG1haW4oKSB7CiAgICBsZXQgeCA9IDExOwogICAgbGV0IHkgPSAyOwogICAgbGV0IHogPSAtMzE7CiAgICBsZXQgciA6IGY2NCA9IDIuMDsKICAgIHByaW50bG4hKCJ7fSIsIHggKyB5KTsgCiAgICBwcmludGxuISgie30iLCB4IC0geSk7IAogICAgcHJpbnRsbiEoInt9IiwgeCAqIHkpOyAKICAgIHByaW50bG4hKCJ7fSIsIHggLyB5KTsgCiAgICBwcmludGxuISgie30iLCB4ICUgeSk7IAogICAgcHJpbnRsbiEoInt9IiwgeiAlIHgpOyAKICAgIHByaW50bG4hKCJ7fSIsIFBJICogci5wb3dpKDIpKTsKICAgIHByaW50bG4hKCJ7fSIsIGY2NDo6c2luKEZSQUNfUElfMikpOwogICAgcHJpbnRsbiEoInt9IiwgU1FSVF8yKTsKICAgIHByaW50bG4hKCJ7fSIsIDQwOTZfZjY0LmxvZzIoKSk7CiAgICBwcmludGxuISgie30iLCA0MDk2X2Y2NC5sb2cxMCgpKTsKICAgIC8v6auY6ICD55yf6aKYOiBhID0gMC4xZV4wLjEgLCBiID0gMS85ICwgYyA9IC1sbigwLjkp77yM5rGC5LiJ6ICF55qE5aSn5bCP5YWz57O7CiAgICAvL+ato+ehruetlOahiO+8mmMgPCBhIDwgYgogICAgcHJpbnRsbiEoInt9IiwgMC4xICogRS5wb3dmKDAuMSkpOwogICAgcHJpbnRsbiEoInt9IiwgMS4wX2Y2NCAvIDkuMF9mNjQpOwogICAgcHJpbnRsbiEoInt9IiwgLSgwLjlfZjY0KS5sbigpKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::f64::consts::{PI, E,FRAC_PI_2, SQRT_2};
 fn main() {
     let x = 11;
@@ -217,6 +256,8 @@ fn main() {
 <p>$$ (a + b)\mod n = ((a\mod n) + (b\mod n)) \mod n $$
 $$ (a - b)\mod n = ((a\mod n) - (b\mod n)) \mod n $$
 $$ (a * b)\mod n = ((a\mod n) * (b\mod n)) \mod n $$</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBhOiBpNjQgPSAxMjM0NTsKICAgIGxldCBiOiBpNjQgPSA2Nzg5OwogICAgbGV0IG46IGk2NCA9IDk3OwoKICAgIC8vIFJ1c3Qg55qEICUg5piv4oCc5L2Z5pWw4oCd77yI5Y+v6IO95Li66LSf77yJ77yM6KaB5b6X5Yiw55yf5q2j55qE4oCc5qih4oCd6ZyA55SoIHJlbV9ldWNsaWTvvIwKICAgIC8vIOWQpuWImeW9k+S4remXtOe7k+aenOS4uui0n+aXtuS4iui/sOaAp+i0qOS4jeS4peagvOaIkOeri+OAggogICAgYXNzZXJ0X2VxISgoYSArIGIpLnJlbV9ldWNsaWQobiksIChhLnJlbV9ldWNsaWQobikgKyBiLnJlbV9ldWNsaWQobikpLnJlbV9ldWNsaWQobikpOwogICAgYXNzZXJ0X2VxISgoYSAtIGIpLnJlbV9ldWNsaWQobiksIChhLnJlbV9ldWNsaWQobikgLSBiLnJlbV9ldWNsaWQobikpLnJlbV9ldWNsaWQobikpOwogICAgYXNzZXJ0X2VxISgoYSAqIGIpLnJlbV9ldWNsaWQobiksIChhLnJlbV9ldWNsaWQobikgKiBiLnJlbV9ldWNsaWQobikpLnJlbV9ldWNsaWQobikpOwoKICAgIHByaW50bG4hKCIoYStiKSBtb2QgbiA9IHt9IiwgKGEgKyBiKS5yZW1fZXVjbGlkKG4pKTsKICAgIHByaW50bG4hKCIoYS1iKSBtb2QgbiA9IHt9IiwgKGEgLSBiKS5yZW1fZXVjbGlkKG4pKTsKICAgIHByaW50bG4hKCIoYSpiKSBtb2QgbiA9IHt9IiwgKGEgKiBiKS5yZW1fZXVjbGlkKG4pKTsKICAgIHByaW50bG4hKCLmqKHov5DnrpfkuInmnaHmgKfotKjlnYflt7Lpqozor4Eg4pyFIik7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let a: i64 = 12345;
     let b: i64 = 6789;
@@ -235,6 +276,8 @@ $$ (a * b)\mod n = ((a\mod n) * (b\mod n)) \mod n $$</p>
 }</code></pre>
 <h2 id="整数溢出处理"><a class="header" href="#整数溢出处理">整数溢出处理</a></h2>
 <p>当运算结果超出类型范围时，Rust 提供了四种显式的溢出处理方式（Debug 模式下直接算术溢出会 panic）：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCBhOiB1OCA9IDI1MDsKICAgIGxldCBiOiB1OCA9IDEwOwoKICAgIC8vIDEuIGNoZWNrZWRfKu+8mua6ouWHuui/lOWbniBOb25lCiAgICBwcmludGxuISgiY2hlY2tlZF9hZGQ6ICAgICB7Oj99IiwgYS5jaGVja2VkX2FkZChiKSk7IC8vIE5vbmUKICAgIC8vIDIuIHdyYXBwaW5nXyrvvJrmuqLlh7rlm57nu5XvvIjmqKEgMl5u77yJCiAgICBwcmludGxuISgid3JhcHBpbmdfYWRkOiAgICB7fSIsIGEud3JhcHBpbmdfYWRkKGIpKTsgIC8vIDQgICgyNjAgLSAyNTYpCiAgICAvLyAzLiBzYXR1cmF0aW5nXyrvvJrmuqLlh7rppbHlkozliLDovrnnlYzlgLwKICAgIHByaW50bG4hKCJzYXR1cmF0aW5nX2FkZDogIHt9IiwgYS5zYXR1cmF0aW5nX2FkZChiKSk7IC8vIDI1NQogICAgLy8gNC4gb3ZlcmZsb3dpbmdfKu+8mui/lOWbnu+8iOe7k+aenCwg5piv5ZCm5rqi5Ye677yJCiAgICBwcmludGxuISgib3ZlcmZsb3dpbmdfYWRkOiB7Oj99IiwgYS5vdmVyZmxvd2luZ19hZGQoYikpOyAvLyAoNCwgdHJ1ZSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let a: u8 = 250;
     let b: u8 = 10;
@@ -249,6 +292,8 @@ $$ (a * b)\mod n = ((a\mod n) * (b\mod n)) \mod n $$</p>
     println!("overflowing_add: {:?}", a.overflowing_add(b)); // (4, true)
 }</code></pre>
 <h2 id="三角函数反三角函数"><a class="header" href="#三角函数反三角函数">三角函数，反三角函数</a></h2>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6ZjY0Ojpjb25zdHM6OlBJOwoKZm4gbWFpbigpIHsKICAgIC8vIOW8p+W6pgogICAgbGV0IHg6IGY2NCA9IFBJIC8gMi4wOwogICAgcHJpbnRsbiEoInt9IiwgZjY0OjpzaW4oUEkpKTsgCiAgICBwcmludGxuISgie30iLCB4LnNpbigpKTsgCiAgICBwcmludGxuISgie30iLCB4LmNvcygpKTsgCiAgICBwcmludGxuISgie30iLCB4LnRhbigpKTsKICAgIHByaW50bG4hKCJ7fSIsIChQSSAvIDQuMCkudGFuKCkpOwogICAgLy8g6K6h566XIDMwIOW6piAoz4AvNiDlvKfluqYpIOeahOato+W8puWAvAogICAgbGV0IGFuZ2xlX2RlZyA9IDMwLjBfZjY0OwogICAgLy8g6L2s5o2i5Li65byn5bqmCiAgICBsZXQgYW5nbGVfcmFkID0gYW5nbGVfZGVnLnRvX3JhZGlhbnMoKTsgCiAgICBsZXQgc2luX3ZhbCA9IGFuZ2xlX3JhZC5zaW4oKTsKICAgIHByaW50bG4hKCJzaW4oMzDCsCkgPSB7fSIsIHNpbl92YWwpOwogICAgcHJpbnRsbiEoInNpbig2MMKwKSA9IHt9IiwgNjAuMF9mNjQudG9fcmFkaWFucygpLnNpbigpKTsKCiAgICAvLyDpqozor4EgdGFuKHgpIOaYr+WQpuetieS6jiBzaW4oeCkgLyBjb3MoeCkKICAgIGxldCB4ID0gNi4wX2Y2NDsKICAgIGxldCB0YW5fZGlyZWN0ID0geC50YW4oKTsKICAgIGxldCB0YW5fY29tcHV0ZWQgPSB4LnNpbigpIC8geC5jb3MoKTsKICAgIHByaW50bG4hKCJ0YW4oNsKwKSA9IHt9IiwgdGFuX2RpcmVjdCk7CiAgICBwcmludGxuISgic2luKDbCsCkvY29zKDbCsCkgPSB7fSIsIHRhbl9jb21wdXRlZCk7CgogICAgLy/li77kuInogqHlm5vlvKbkupTvvIzmsYLli77miYDlr7nlupTnmoTop5LluqbmmK/lpJrlsJHvvJ8KICAgIC8vc2luKHgpID0gMy8177yM5rGC5a+55bqU55qE6KeS5bqmeAogICAgbGV0IHggPSAwLjZfZjY0OwogICAgbGV0IHRoZXRhID0geC5hc2luKCk7CiAgICBsZXQgdGhldGFfZGVnID0gdGhldGEgKiAxODAuMCAvIFBJOwogICAgcHJpbnRsbiEoIuW8p+W6piA9IHt9IO+8jOinkuW6piA9IHt9IiwgdGhldGEsIHRoZXRhX2RlZyk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">use std::f64::consts::PI;
 
 fn main() {
@@ -284,6 +329,8 @@ fn main() {
 
 </code></pre>
 <h2 id="20以内所有阶乘"><a class="header" href="#20以内所有阶乘">20以内所有阶乘</a></h2>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZmFjdG9yaWFsX2NoZWNrZWQobjogdTY0KSAtPiBPcHRpb248dTY0PiB7CiAgICAoMi4uPW4pLnRyeV9mb2xkKDF1NjQsIHxhY2M6IHU2NCwgeDogdTY0fCB7CiAgICAgICAgbGV0IGFjYyA9IGFjYy5jaGVja2VkX211bCh4KT87CiAgICAgICAgU29tZShhY2MpCiAgICB9KQp9CgpmbiBtYWluKCkgewogICAgLy8g5L2/55So56S65L6LCiAgICBmb3IgaSBpbiAyLi49MjAgewogICAgICAgICAgICBtYXRjaCBmYWN0b3JpYWxfY2hlY2tlZChpKSB7CiAgICAgICAgICAgICAgICBTb21lKHJlc3VsdCkgPT4gcHJpbnRsbiEoInt9ISA9IHt9IiwgaSwgcmVzdWx0KSwKICAgICAgICAgICAgICAgIE5vbmUgPT4gcHJpbnRsbiEoIuiuoeeul+a6ouWHuiIpLAogICAgICAgICAgICB9CiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
 <pre class="playground"><code class="language-rust edition2024">fn factorial_checked(n: u64) -&gt; Option&lt;u64&gt; {
     (2..=n).try_fold(1u64, |acc: u64, x: u64| {
         let acc = acc.checked_mul(x)?;
