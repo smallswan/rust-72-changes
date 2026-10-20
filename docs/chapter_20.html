@@ -86,10 +86,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
+            window.path_to_searchindex_js = "searchindex-09f1c163.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-545e538a.js"></script>
+        <script src="toc-a6286dd9.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -226,7 +226,6 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="第二十章-哈希"><a class="header" href="#第二十章-哈希">第二十章 哈希</a></h1>
-<p><a href="https://baike.baidu.com/item/Hash/390310?fromtitle=%E5%93%88%E5%B8%8C&amp;fromid=24086145&amp;fr=aladdin">散列函数</a></p>
 <h2 id="201-哈希函数概述"><a class="header" href="#201-哈希函数概述">20.1 哈希函数概述</a></h2>
 <h3 id="什么是哈希函数"><a class="header" href="#什么是哈希函数">什么是哈希函数</a></h3>
 <p>哈希函数（Hash Function）是一种将任意长度的输入数据映射为固定长度输出数据的函数。这个固定长度的输出通常被称为<strong>哈希值</strong>（Hash Value）、<strong>摘要</strong>（Digest）或<strong>指纹</strong>（Fingerprint）。无论输入数据是一个字节还是数个 TB，哈希函数始终输出相同长度的结果。</p>
@@ -603,7 +602,7 @@ fn main() {
 <li><strong>内层哈希</strong>：计算 $H((K’ \oplus ipad) \parallel m)$</li>
 <li><strong>外层哈希</strong>：计算 $H((K’ \oplus opad) \parallel \text{内层结果})$</li>
 </ol>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaG1hYyA9ICIwLjEyIgpzaGEyID0gIjAuMTAiCmhleCA9ICIwLjQiCiovCnVzZSBobWFjOjp7SG1hYywgTWFjfTsKdXNlIHNoYTI6OlNoYTI1NjsKCnR5cGUgSG1hY1NoYTI1NiA9IEhtYWM8U2hhMjU2PjsKCmZuIG1haW4oKSB7CiAgICAvLyDliJvlu7ogSE1BQy1TSEEyNTYKICAgIGxldCBtdXQgbWFjID0gSG1hY1NoYTI1Njo6bmV3X2Zyb21fc2xpY2UoYiJteS1zZWNyZXQta2V5IikKICAgICAgICAuZXhwZWN0KCJITUFDIGNhbiB0YWtlIGtleSBvZiBhbnkgc2l6ZSIpOwogICAgbWFjLnVwZGF0ZShiImhlbGxvIHdvcmxkIik7CiAgICBsZXQgcmVzdWx0ID0gbWFjLmZpbmFsaXplKCk7CiAgICBwcmludGxuISgiSE1BQy1TSEEyNTYgPSB7fSIsIGhleDo6ZW5jb2RlKHJlc3VsdC5pbnRvX2J5dGVzKCkpKTsKCiAgICAvLyDpqozor4EgSE1BQwogICAgdXNlIGhtYWM6Ok1hYzsKICAgIGxldCBtdXQgbWFjMiA9IEhtYWNTaGEyNTY6Om5ld19mcm9tX3NsaWNlKGIibXktc2VjcmV0LWtleSIpLnVud3JhcCgpOwogICAgbWFjMi51cGRhdGUoYiJoZWxsbyB3b3JsZCIpOwogICAgbWFjMi52ZXJpZnkocmVzdWx0LmludG9fYnl0ZXMoKSkuZXhwZWN0KCJITUFDIHZlcmlmaWNhdGlvbiBmYWlsZWQiKTsKICAgIHByaW50bG4hKCJITUFDIHZlcmlmaWNhdGlvbiBwYXNzZWQhIik7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaG1hYyA9ICIwLjEyIgpzaGEyID0gIjAuMTAiCmhleCA9ICIwLjQiCiovCnVzZSBobWFjOjp7SG1hY307CnVzZSBzaGEyOjpTaGEyNTY7Cgp0eXBlIEhtYWNTaGEyNTYgPSBIbWFjPFNoYTI1Nj47CgpmbiBtYWluKCkgewogICAgLy8g5Yib5bu6IEhNQUMtU0hBMjU2CiAgICBsZXQgbXV0IG1hYyA9IEhtYWNTaGEyNTY6Om5ld19mcm9tX3NsaWNlKGIibXktc2VjcmV0LWtleSIpCiAgICAgICAgLmV4cGVjdCgiSE1BQyBjYW4gdGFrZSBrZXkgb2YgYW55IHNpemUiKTsKICAgIG1hYy51cGRhdGUoYiJoZWxsbyB3b3JsZCIpOwogICAgbGV0IHJlc3VsdCA9IG1hYy5maW5hbGl6ZSgpOwogICAgcHJpbnRsbiEoIkhNQUMtU0hBMjU2ID0ge30iLCBoZXg6OmVuY29kZSgmcmVzdWx0LmNsb25lKCkuaW50b19ieXRlcygpKSk7CgogICAgLy8g6aqM6K+BIEhNQUMKICAgIHVzZSBobWFjOjpNYWM7CiAgICBsZXQgbXV0IG1hYzIgPSBIbWFjU2hhMjU2OjpuZXdfZnJvbV9zbGljZShiIm15LXNlY3JldC1rZXkiKS51bndyYXAoKTsKICAgIG1hYzIudXBkYXRlKGIiaGVsbG8gd29ybGQiKTsKICAgIG1hYzIudmVyaWZ5KCZyZXN1bHQuaW50b19ieXRlcygpKS5leHBlY3QoIkhNQUMgdmVyaWZpY2F0aW9uIGZhaWxlZCIpOwogICAgcHJpbnRsbiEoIkhNQUMgdmVyaWZpY2F0aW9uIHBhc3NlZCEiKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
 <pre class="playground"><code class="language-rust edition2024">/*
 [dependencies]
@@ -611,7 +610,7 @@ hmac = "0.12"
 sha2 = "0.10"
 hex = "0.4"
 */
-use hmac::{Hmac, Mac};
+use hmac::{Hmac};
 use sha2::Sha256;
 
 type HmacSha256 = Hmac&lt;Sha256&gt;;
@@ -622,13 +621,13 @@ fn main() {
         .expect("HMAC can take key of any size");
     mac.update(b"hello world");
     let result = mac.finalize();
-    println!("HMAC-SHA256 = {}", hex::encode(result.into_bytes()));
+    println!("HMAC-SHA256 = {}", hex::encode(&amp;result.clone().into_bytes()));
 
     // 验证 HMAC
     use hmac::Mac;
     let mut mac2 = HmacSha256::new_from_slice(b"my-secret-key").unwrap();
     mac2.update(b"hello world");
-    mac2.verify(result.into_bytes()).expect("HMAC verification failed");
+    mac2.verify(&amp;result.into_bytes()).expect("HMAC verification failed");
     println!("HMAC verification passed!");
 }</code></pre>
 <h3 id="gmac--gcm-模式"><a class="header" href="#gmac--gcm-模式">GMAC / GCM 模式</a></h3>

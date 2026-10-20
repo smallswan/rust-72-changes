@@ -86,10 +86,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
+            window.path_to_searchindex_js = "searchindex-09f1c163.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-545e538a.js"></script>
+        <script src="toc-a6286dd9.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -419,9 +419,18 @@ fn main() {
 </tbody>
 </table>
 </div>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gY29zaW5lX3NpbWlsYXJpdHkoYTogJltmNjRdLCBiOiAmW2Y2NF0pIC0+IGY2NCB7CiAgICBsZXQgZG90ID0gZG90X3Byb2R1Y3QoYSwgYik7CiAgICBsZXQgbWFnX2EgPSBtYWduaXR1ZGUoYSk7CiAgICBsZXQgbWFnX2IgPSBtYWduaXR1ZGUoYik7CiAgICBkb3QgLyAobWFnX2EgKiBtYWdfYikKfQoKZm4gbWFpbigpIHsKICAgIGxldCBkb2MxID0gdmVjIVsxLjAsIDIuMCwgMS4wLCAwLjBdOyAgLy8g5paH5qGjMeeahOivjemikeWQkemHjwogICAgbGV0IGRvYzIgPSB2ZWMhWzEuMCwgMi4wLCAxLjAsIDAuMF07ICAvLyDmlofmoaMy77yI5LiO5paH5qGjMeebuOWQjO+8iQogICAgbGV0IGRvYzMgPSB2ZWMhWzAuMCwgMC4wLCAwLjAsIDEuMF07ICAvLyDmlofmoaMz77yI5a6M5YWo5LiN5ZCM77yJCgogICAgcHJpbnRsbiEoImRvYzEg5LiOIGRvYzIg55u45Ly85bqmOiB7Oi40fSIsIGNvc2luZV9zaW1pbGFyaXR5KCZkb2MxLCAmZG9jMikpOyAgLy8gMS4wMDAwCiAgICBwcmludGxuISgiZG9jMSDkuI4gZG9jMyDnm7jkvLzluqY6IHs6LjR9IiwgY29zaW5lX3NpbWlsYXJpdHkoJmRvYzEsICZkb2MzKSk7ICAvLyAwLjAwMDAKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#CmZuIGRvdF9wcm9kdWN0KGE6ICZbZjY0XSwgYjogJltmNjRdKSAtPiBmNjQgewogICAgYS5pdGVyKCkuemlwKGIuaXRlcigpKS5tYXAofCh4LCB5KXwgeCAqIHkpLnN1bSgpCn0KCmZuIG1hZ25pdHVkZShhOiAmW2Y2NF0pIC0+IGY2NCB7CiAgICBhLml0ZXIoKS5tYXAofHh8IHggKiB4KS5zdW06OjxmNjQ+KCkuc3FydCgpCn0KCmZuIGNvc2luZV9zaW1pbGFyaXR5KGE6ICZbZjY0XSwgYjogJltmNjRdKSAtPiBmNjQgewogICAgbGV0IGRvdCA9IGRvdF9wcm9kdWN0KGEsIGIpOwogICAgbGV0IG1hZ19hID0gbWFnbml0dWRlKGEpOwogICAgbGV0IG1hZ19iID0gbWFnbml0dWRlKGIpOwogICAgZG90IC8gKG1hZ19hICogbWFnX2IpCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgZG9jMSA9IHZlYyFbMS4wLCAyLjAsIDEuMCwgMC4wXTsgIC8vIOaWh+ahozHnmoTor43popHlkJHph48KICAgIGxldCBkb2MyID0gdmVjIVsxLjAsIDIuMCwgMS4wLCAwLjBdOyAgLy8g5paH5qGjMu+8iOS4juaWh+ahozHnm7jlkIzvvIkKICAgIGxldCBkb2MzID0gdmVjIVswLjAsIDAuMCwgMC4wLCAxLjBdOyAgLy8g5paH5qGjM++8iOWujOWFqOS4jeWQjO+8iQoKICAgIHByaW50bG4hKCJkb2MxIOS4jiBkb2MyIOebuOS8vOW6pjogezouNH0iLCBjb3NpbmVfc2ltaWxhcml0eSgmZG9jMSwgJmRvYzIpKTsgIC8vIDEuMDAwMAogICAgcHJpbnRsbiEoImRvYzEg5LiOIGRvYzMg55u45Ly85bqmOiB7Oi40fSIsIGNvc2luZV9zaW1pbGFyaXR5KCZkb2MxLCAmZG9jMykpOyAgLy8gMC4wMDAwCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
-<pre class="playground"><code class="language-rust edition2024">fn cosine_similarity(a: &amp;[f64], b: &amp;[f64]) -&gt; f64 {
+<pre class="playground"><code class="language-rust edition2024">
+fn dot_product(a: &amp;[f64], b: &amp;[f64]) -&gt; f64 {
+    a.iter().zip(b.iter()).map(|(x, y)| x * y).sum()
+}
+
+fn magnitude(a: &amp;[f64]) -&gt; f64 {
+    a.iter().map(|x| x * x).sum::&lt;f64&gt;().sqrt()
+}
+
+fn cosine_similarity(a: &amp;[f64], b: &amp;[f64]) -&gt; f64 {
     let dot = dot_product(a, b);
     let mag_a = magnitude(a);
     let mag_b = magnitude(b);
@@ -491,10 +500,15 @@ fn main() {
 <p>$$\vec{\beta}_3 = \vec{\alpha}_3 - \frac{(\vec{\alpha}_3, \vec{\beta}_1)}{(\vec{\beta}_1, \vec{\beta}_1)}\vec{\beta}_1 - \frac{(\vec{\alpha}_3, \vec{\beta}_2)}{(\vec{\beta}_2, \vec{\beta}_2)}\vec{\beta}_2$$</p>
 <p>一般地：
 $$ \vec{\beta}_k = \vec{\alpha}<em>k - \sum</em>{j=1}^{k-1} \frac{(\vec{\alpha}_k, \vec{\beta}_j)}{(\vec{\beta}_j, \vec{\beta}_j)}\vec{\beta}_j $$</p>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZ3JhbV9zY2htaWR0KHZlY3RvcnM6ICZbVmVjPGY2ND5dKSAtPiBWZWM8VmVjPGY2ND4+IHsKICAgIGxldCBtdXQgcmVzdWx0ID0gVmVjOjpuZXcoKTsKCiAgICBmb3IgdiBpbiB2ZWN0b3JzIHsKICAgICAgICBsZXQgbXV0IHUgPSB2LmNsb25lKCk7CiAgICAgICAgZm9yIG9ydGhvIGluICZyZXN1bHQgewogICAgICAgICAgICBsZXQgcHJvaiA9IGRvdF9wcm9kdWN0KHYsIG9ydGhvKSAvIGRvdF9wcm9kdWN0KG9ydGhvLCBvcnRobyk7CiAgICAgICAgICAgIHUgPSB1Lml0ZXIoKS56aXAob3J0aG8uaXRlcigpKS5tYXAofChhLCBiKXwgYSAtIHByb2ogKiBiKS5jb2xsZWN0KCk7CiAgICAgICAgfQogICAgICAgIHJlc3VsdC5wdXNoKHUpOwogICAgfQoKICAgIHJlc3VsdAp9CgpmbiBtYWluKCkgewogICAgbGV0IHZlY3RvcnMgPSB2ZWMhWwogICAgICAgIHZlYyFbMS4wLCAxLjAsIDAuMF0sCiAgICAgICAgdmVjIVsxLjAsIDAuMCwgMS4wXSwKICAgICAgICB2ZWMhWzAuMCwgMS4wLCAxLjBdLAogICAgXTsKCiAgICBsZXQgb3J0aG9nb25hbCA9IGdyYW1fc2NobWlkdCgmdmVjdG9ycyk7CiAgICBwcmludGxuISgi5q2j5Lqk5YyW57uT5p6cOiIpOwogICAgZm9yIHYgaW4gJm9ydGhvZ29uYWwgewogICAgICAgIHByaW50bG4hKCIgIHs6P30iLCB2KTsKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#CmZuIGRvdF9wcm9kdWN0KGE6ICZbZjY0XSwgYjogJltmNjRdKSAtPiBmNjQgewogICAgYS5pdGVyKCkuemlwKGIuaXRlcigpKS5tYXAofCh4LCB5KXwgeCAqIHkpLnN1bSgpCn0KCmZuIGdyYW1fc2NobWlkdCh2ZWN0b3JzOiAmW1ZlYzxmNjQ+XSkgLT4gVmVjPFZlYzxmNjQ+PiB7CiAgICBsZXQgbXV0IHJlc3VsdDogVmVjPFZlYzxmNjQ+PiA9IFZlYzo6bmV3KCk7CgogICAgZm9yIHYgaW4gdmVjdG9ycyB7CiAgICAgICAgbGV0IG11dCB1ID0gdi5jbG9uZSgpOwogICAgICAgIGZvciBvcnRobyBpbiAmcmVzdWx0IHsKICAgICAgICAgICAgbGV0IHByb2ogPSBkb3RfcHJvZHVjdCh2LCBvcnRobykgLyBkb3RfcHJvZHVjdChvcnRobywgb3J0aG8pOwogICAgICAgICAgICB1ID0gdS5pdGVyKCkuemlwKG9ydGhvLml0ZXIoKSkubWFwKHwoYSwgYil8IGEgLSBwcm9qICogYikuY29sbGVjdCgpOwogICAgICAgIH0KICAgICAgICByZXN1bHQucHVzaCh1KTsKICAgIH0KCiAgICByZXN1bHQKfQoKZm4gbWFpbigpIHsKICAgIGxldCB2ZWN0b3JzID0gdmVjIVsKICAgICAgICB2ZWMhWzEuMCwgMS4wLCAwLjBdLAogICAgICAgIHZlYyFbMS4wLCAwLjAsIDEuMF0sCiAgICAgICAgdmVjIVswLjAsIDEuMCwgMS4wXSwKICAgIF07CgogICAgbGV0IG9ydGhvZ29uYWwgPSBncmFtX3NjaG1pZHQoJnZlY3RvcnMpOwogICAgcHJpbnRsbiEoIuato+S6pOWMlue7k+aenDoiKTsKICAgIGZvciB2IGluICZvcnRob2dvbmFsIHsKICAgICAgICBwcmludGxuISgiICB7Oj99Iiwgdik7CiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
-<pre class="playground"><code class="language-rust edition2024">fn gram_schmidt(vectors: &amp;[Vec&lt;f64&gt;]) -&gt; Vec&lt;Vec&lt;f64&gt;&gt; {
-    let mut result = Vec::new();
+<pre class="playground"><code class="language-rust edition2024">
+fn dot_product(a: &amp;[f64], b: &amp;[f64]) -&gt; f64 {
+    a.iter().zip(b.iter()).map(|(x, y)| x * y).sum()
+}
+
+fn gram_schmidt(vectors: &amp;[Vec&lt;f64&gt;]) -&gt; Vec&lt;Vec&lt;f64&gt;&gt; {
+    let mut result: Vec&lt;Vec&lt;f64&gt;&gt; = Vec::new();
 
     for v in vectors {
         let mut u = v.clone();

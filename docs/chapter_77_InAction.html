@@ -86,10 +86,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
+            window.path_to_searchindex_js = "searchindex-09f1c163.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-545e538a.js"></script>
+        <script src="toc-a6286dd9.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -232,6 +232,7 @@
 <hr>
 <h2 id="一leetcode-实战"><a class="header" href="#一leetcode-实战">一、LeetCode 实战</a></h2>
 <ul>
+<li><a href="https://rustlings.rust-lang.org/">rustlings</a> rust官方练习🦀</li>
 <li><a href="https://leetcode.cn">力扣（LeetCode）</a> — 全球极客挚爱的技术成长平台</li>
 <li><a href="https://github.com/smallswan/leetcode-rust">leetcode-rust</a> — 用 Rust 刷 LeetCode 的代码仓库</li>
 <li><a href="https://myphysics-lab.com/">myphysics-lab</a> — 免费在线物理模拟平台</li>
@@ -442,29 +443,43 @@ fn main() {
 <li><a href="./practice/electricity_manage_sqlite.html">电费查询系统(管理)</a></li>
 </ul>
 <pre><code class="language-shell">python -m http.server 8080
-
-http://localhost:8080/electricity_query_sqlite.html
----
-
-## 八、同余
-
-**定义：** 两个整数 $a$ 和 $b$ 对模数 $m$ 同余，记作 $a \equiv b \pmod{m}$。
-
-**性质：**
-
-- 同余的加法：若 $a \equiv b \pmod{m}$，则 $a + c \equiv b + c \pmod{m}$
-- 同余的乘法：若 $a \equiv b \pmod{m}$，则 $a \times c \equiv b \times c \pmod{m}$
-- 同余的幂：若 $a \equiv b \pmod{m}$，则 $a^c \equiv b^c \pmod{m}$
-
----
-
-## 九、学习路径参考
-
-- [Python 3.13.13 文档](https://docs.python.org/zh-cn/3.13/index.html)
-- [《The Founder's Playbook: Building an AI-Native Startup》](https://a16z.com/)
-- 三维向量的旋转、剪切、缩放
-- 二维向量的旋转、剪切、缩放
+# 然后访问 http://localhost:8080/electricity_query_sqlite.html
 </code></pre>
+<hr>
+<h2 id="八同余"><a class="header" href="#八同余">八、同余</a></h2>
+<p><strong>定义：</strong> 两个整数 $a$ 和 $b$ 对模数 $m$ 同余，记作 $a \equiv b \pmod{m}$。</p>
+<p><strong>性质：</strong></p>
+<ul>
+<li>同余的加法：若 $a \equiv b \pmod{m}$，则 $a + c \equiv b + c \pmod{m}$</li>
+<li>同余的乘法：若 $a \equiv b \pmod{m}$，则 $a \times c \equiv b \times c \pmod{m}$</li>
+<li>同余的幂：若 $a \equiv b \pmod{m}$，则 $a^c \equiv b^c \pmod{m}$</li>
+</ul>
+<hr>
+<h2 id="九学习路径参考"><a class="header" href="#九学习路径参考">九、学习路径参考</a></h2>
+<ul>
+<li><a href="https://docs.python.org/zh-cn/3.13/index.html">Python 3.13.13 文档</a></li>
+<li><a href="https://a16z.com/">《The Founder’s Playbook: Building an AI-Native Startup》</a></li>
+<li>三维向量的旋转、剪切、缩放</li>
+<li>二维向量的旋转、剪切、缩放</li>
+</ul>
+<hr>
+<h2 id="十rust-重写现有工具"><a class="header" href="#十rust-重写现有工具">十、Rust 重写现有工具</a></h2>
+<p>「实战」不只有自己从零写，还有把别人写了四十年的东西重写一遍。这几年最值得关注的工程现象之一，就是现成工具被 Rust 逐个「换芯」：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>原项目</th><th>Rust 重写</th><th>状态</th></tr>
+</thead>
+<tbody>
+<tr><td>GNU coreutils</td><td>uutils/coreutils</td><td>Ubuntu 25.10 起成为默认</td></tr>
+<tr><td>sudo.ws</td><td>sudo-rs</td><td>Ubuntu 25.10 起成为默认</td></tr>
+<tr><td>NGINX（Cloudflare 内部）</td><td>Pingora</td><td>每天 1 万亿请求，CPU 降约 70%</td></tr>
+<tr><td>pip / poetry / pyenv</td><td>uv</td><td>官方基准快 10–100 倍</td></tr>
+<tr><td>Zig 版 Bun</td><td>Bun（Rust 版）</td><td>2026 年 11 天完成移植，引发巨大争议</td></tr>
+</tbody>
+</table>
+</div>
+<p>完整清单、数字、代码和「什么时候不该重写」的判据，见 <a href="./chapter_80_RustRewrite.html">附录7 Rust 重写浪潮</a>。</p>
 
                     </main>
 

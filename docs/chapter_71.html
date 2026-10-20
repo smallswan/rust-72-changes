@@ -86,10 +86,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
+            window.path_to_searchindex_js = "searchindex-09f1c163.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-545e538a.js"></script>
+        <script src="toc-a6286dd9.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -465,6 +465,23 @@ base64 = "0.21"
 hex = "0.4"
 </code></pre>
 <h3 id="sm3-杂凑算法示例"><a class="header" href="#sm3-杂凑算法示例">SM3 杂凑算法示例</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaGV4LWxpdGVyYWwgPSAiMS4xLjAiCnNtMyA9ICIwLjQuMiIKKi8KZm4gbWFpbigpIHsKICAgIHVzZSBzbTM6OntEaWdlc3QsIFNtM307CiAgICB1c2UgaGV4X2xpdGVyYWw6OmhleDsKICAgIGxldCBtdXQgaGFzaGVyID0gU20zOjpuZXcoKTsKICAgIGhhc2hlci51cGRhdGUoYiJoZWxsbyB3b3JsZCIpOwogICAgbGV0IGhhc2ggPSBoYXNoZXIuZmluYWxpemUoKTsKICAgIGFzc2VydF9lcSEoaGFzaFsuLl0sIGhleCEoIjQ0ZjAwNjFlNjlmYTZmZGZjMjkwYzQ5NDY1NGEwNWRjMGMwNTNkYTdlNWM1MmI4NGVmOTNhOWQ2N2QzZmZmODgiKSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+hex-literal = "1.1.0"
+sm3 = "0.4.2"
+*/
+fn main() {
+    use sm3::{Digest, Sm3};
+    use hex_literal::hex;
+    let mut hasher = Sm3::new();
+    hasher.update(b"hello world");
+    let hash = hasher.finalize();
+    assert_eq!(hash[..], hex!("44f0061e69fa6fdfc290c494654a05dc0c053da7e5c52b84ef93a9d67d3fff88"));
+}</code></pre>
+<pre><code class="language-shell">echo -n "hello world" |openssl sm3
+</code></pre>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>use libsm::sm3::hash::Sm3Hash;

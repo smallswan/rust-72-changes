@@ -1,0 +1,1319 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>附录6 瑞士军刀 - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-09f1c163.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-a6286dd9.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="附录6-瑞士军刀"><a class="header" href="#附录6-瑞士军刀">附录6 瑞士军刀</a></h1>
+<blockquote>
+<p>工欲善其事，必先利其器。</p>
+<p>一把小刀，十八般武艺；一条命令，胜过千次点击。</p>
+</blockquote>
+<hr>
+<h2 id="一命令行的哲学"><a class="header" href="#一命令行的哲学">一、命令行的哲学</a></h2>
+<p>图形界面让你<strong>点得到</strong>，命令行让你<strong>说得出</strong>。说得出，就能自动化、能复现、能组合。</p>
+<h3 id="11-unix-哲学"><a class="header" href="#11-unix-哲学">1.1 Unix 哲学</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>原则</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>小而专</td><td>每个程序只做一件事，并做到极致</td></tr>
+<tr><td>文本流</td><td>程序的输入输出都是纯文本，人人能读、人人能接</td></tr>
+<tr><td>可组合</td><td>用管道把小工具拼成大工具</td></tr>
+<tr><td>沉默是金</td><td>干得好就闭嘴，出错了才说话</td></tr>
+</tbody>
+</table>
+</div>
+<p><code>grep</code> 负责找，<code>sed</code> 负责改，<code>awk</code> 负责算，<code>sort</code> 负责排——它们谁都不全能，但拼起来几乎无所不能。</p>
+<h3 id="12-管道与重定向"><a class="header" href="#12-管道与重定向">1.2 管道与重定向</a></h3>
+<pre><code class="language-shell"># 管道：把上一个命令的输出，交给下一个命令当输入
+cat access.log | grep "404" | wc -l
+
+# 重定向：&gt; 覆盖写，&gt;&gt; 追加写，&lt; 读入
+echo "hello" &gt; a.txt
+echo "world" &gt;&gt; a.txt
+sort &lt; a.txt
+
+# 错误流：2&gt; 重定向错误，2&gt;&amp;1 把错误并进标准输出
+cargo build &gt; build.log 2&gt;&amp;1
+
+# 丢弃输出（黑洞）
+cargo build &gt; /dev/null 2&gt;&amp;1
+
+# 命令替换：把命令的输出当参数用
+echo "今天是 $(date +%F)"
+
+# 逻辑连接：&amp;&amp; 成功才继续；|| 失败才执行；; 顺序执行不管成败
+cargo test &amp;&amp; echo "测试通过" || echo "测试失败"
+
+# here-document：把一段文本喂给命令
+mysql -u root -p db &lt;&lt;'EOF'
+SELECT COUNT(*) FROM elevator_records;
+EOF
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>符号</th><th>作用</th></tr>
+</thead>
+<tbody>
+<tr><td><code>|</code></td><td>管道，前一个的输出 → 后一个的输入</td></tr>
+<tr><td><code>&gt;</code> / <code>&gt;&gt;</code></td><td>标准输出覆盖 / 追加到文件</td></tr>
+<tr><td><code>2&gt;</code></td><td>标准错误重定向</td></tr>
+<tr><td><code>2&gt;&amp;1</code></td><td>错误合并到标准输出</td></tr>
+<tr><td><code>&amp;&gt;</code></td><td>标准输出与错误一起重定向（Bash）</td></tr>
+<tr><td><code>&lt;</code></td><td>从文件读入</td></tr>
+<tr><td><code>$(...)</code></td><td>命令替换，取命令的输出</td></tr>
+<tr><td><code>&amp;&amp;</code> / <code>||</code></td><td>成功才执行 / 失败才执行</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>小技巧：按 <code>↑</code> 翻历史命令，<code>Ctrl+R</code> 反向搜索历史命令，<code>Ctrl+C</code> 终止，<code>Ctrl+U</code> 清空当前行。</p>
+</blockquote>
+<hr>
+<h2 id="二curl网络传输万能刀"><a class="header" href="#二curl网络传输万能刀">二、curl——网络传输万能刀</a></h2>
+<p><code>curl</code> 支持 HTTP、HTTPS、FTP、SFTP、SMTP 等 20 多种协议，是测试接口、下载文件、调试网络的第一把刀。</p>
+<h3 id="21-最常用的三招"><a class="header" href="#21-最常用的三招">2.1 最常用的三招</a></h3>
+<pre><code class="language-shell"># 1. 抓取网页（输出到屏幕）
+curl https://example.com
+
+# 2. 下载并保存（-o 指定文件名，-O 用远端原名）
+curl -o page.html https://example.com
+curl -O https://example.com/data.csv
+
+# 3. 跟随重定向、显示进度（-L 跟随 3xx，-# 显示进度条）
+curl -L -# -O https://example.com/big.zip
+</code></pre>
+<h3 id="22-常用参数速查"><a class="header" href="#22-常用参数速查">2.2 常用参数速查</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>参数</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><code>-o 文件</code> / <code>-O</code></td><td>保存到指定文件 / 用远端文件名</td></tr>
+<tr><td><code>-L</code></td><td>跟随重定向（301/302）</td></tr>
+<tr><td><code>-i</code> / <code>-I</code></td><td>输出含响应头 / 只请求响应头（HEAD）</td></tr>
+<tr><td><code>-d 'k=v&amp;k2=v2'</code></td><td>发送表单数据（POST）</td></tr>
+<tr><td><code>-X POST</code></td><td>指定请求方法（GET/POST/PUT/DELETE）</td></tr>
+<tr><td><code>-H 'K: V'</code></td><td>添加请求头</td></tr>
+<tr><td><code>-F 'file=@a.png'</code></td><td>上传文件（multipart/form-data）</td></tr>
+<tr><td><code>-u 用户:密码</code></td><td>Basic 认证</td></tr>
+<tr><td><code>-b</code> / <code>-c</code></td><td>发送 Cookie / 保存 Cookie 到文件</td></tr>
+<tr><td><code>-s</code> / <code>-v</code></td><td>静默模式 / 显示详细交互过程</td></tr>
+<tr><td><code>--max-time 10</code></td><td>总超时（秒）</td></tr>
+<tr><td><code>-C -</code></td><td>断点续传</td></tr>
+<tr><td><code>--limit-rate 200k</code></td><td>限速</td></tr>
+<tr><td><code>-k</code></td><td>跳过证书校验（仅调试）</td></tr>
+<tr><td><code>-x http://proxy:8080</code></td><td>走代理</td></tr>
+<tr><td><code>--retry 3</code></td><td>失败自动重试 3 次</td></tr>
+<tr><td><code>-w '%{http_code}'</code></td><td>输出指定统计信息</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="23-实战"><a class="header" href="#23-实战">2.3 实战</a></h3>
+<pre><code class="language-shell"># 测试一个 JSON 接口，只看状态码和耗时
+curl -s -o /dev/null -w "状态=%{http_code} 耗时=%{time_total}s\n" https://api.github.com
+
+# 发送 JSON（-d 默认表单编码，JSON 要手动加 Content-Type）
+curl -X POST https://httpbin.org/post \
+  -H 'Content-Type: application/json' \
+  -d '{"room":"A1801","paid":132.5}'
+
+# 下载所有记录（带 Cookie 登录态）
+curl -L -b cookies.txt -c cookies.txt -O https://example.com/export.csv
+
+# 大文件断点续传：中断后重跑同一条命令即可
+curl -C - -O https://example.com/ubuntu.iso
+
+# 只取响应头，看服务器类型、缓存策略
+curl -sI https://www.rust-lang.org | head -5
+</code></pre>
+<p><code>curl</code> 与 <code>jq</code> 是天生一对：</p>
+<pre><code class="language-shell"># 取 GitHub 上 Rust 仓库的 star 数
+curl -s https://api.github.com/repos/rust-lang/rust | jq '.stargazers_count'
+</code></pre>
+<hr>
+<h2 id="三git程序员的时光机"><a class="header" href="#三git程序员的时光机">三、git——程序员的时光机</a></h2>
+<p><code>git</code> 是分布式版本控制系统：每次提交都是完整快照，永远可以回到过去，也永远有后悔药。</p>
+<h3 id="31-一次性配置"><a class="header" href="#31-一次性配置">3.1 一次性配置</a></h3>
+<pre><code class="language-shell">git config --global user.name  "你的名字"
+git config --global user.email "you@example.com"
+git config --global init.defaultBranch main
+git config --global core.autocrlf input    # Windows 建议开启
+
+# 让日志更好看：一行、图形、全分支、带标签
+git config --global alias.lg "log --oneline --graph --all --decorate"
+</code></pre>
+<h3 id="32-日常三件套"><a class="header" href="#32-日常三件套">3.2 日常三件套</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>命令</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><code>git status</code></td><td>看当前状态（改了哪些文件）</td></tr>
+<tr><td><code>git add 文件</code> / <code>git add -p</code></td><td>暂存修改 / 交互式逐块挑选</td></tr>
+<tr><td><code>git commit -m "说明"</code></td><td>提交</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-shell">git init                     # 把当前目录变成仓库
+git clone https://github.com/user/repo.git
+
+git diff                     # 看未暂存的改动
+git diff --staged            # 看已暂存的改动
+git log --oneline -10        # 最近 10 条提交
+git show HEAD                # 看最新一次提交的细节
+</code></pre>
+<h3 id="33-分支写代码的分身术"><a class="header" href="#33-分支写代码的分身术">3.3 分支：写代码的分身术</a></h3>
+<pre><code class="language-shell">git switch -c feature/login   # 新建并切换分支（老写法：git checkout -b）
+git switch main               # 切回 main
+git branch -a                 # 列出所有分支（含远端）
+git merge feature/login       # 把 feature/login 合并进当前分支
+git rebase main               # 把当前分支的提交挪到 main 之后（历史更干净）
+git branch -d feature/login   # 删除已合并的分支
+</code></pre>
+<h3 id="34-与远端同步"><a class="header" href="#34-与远端同步">3.4 与远端同步</a></h3>
+<pre><code class="language-shell">git remote -v                        # 查看远端地址
+git fetch origin                     # 只下载，不合并
+git pull --rebase                    # 拉取并变基（推荐）
+git push -u origin main              # 首次推送并建立追踪
+git push                             # 之后直接推
+</code></pre>
+<h3 id="35-后悔药大全"><a class="header" href="#35-后悔药大全">3.5 后悔药大全</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>想干什么</th><th>命令</th></tr>
+</thead>
+<tbody>
+<tr><td>丢弃工作区改动（未 add）</td><td><code>git restore 文件</code></td></tr>
+<tr><td>取消暂存（已 add 未 commit）</td><td><code>git restore --staged 文件</code></td></tr>
+<tr><td>修改最近一次提交信息</td><td><code>git commit --amend</code></td></tr>
+<tr><td>撤销某次提交（保留历史）</td><td><code>git revert 提交号</code></td></tr>
+<tr><td>回退到某次提交（重置暂存区）</td><td><code>git reset --soft 提交号</code></td></tr>
+<tr><td>暂存现场，先干别的</td><td><code>git stash push -m "说明"</code> / <code>git stash pop</code></td></tr>
+<tr><td>找回任何“消失“的提交</td><td><code>git reflog</code></td></tr>
+</tbody>
+</table>
+</div>
+<p><code>git reflog</code> 记录了 HEAD 的每一次移动，是终极后悔药：只要提交过就找得回来。</p>
+<h3 id="36-高手工具"><a class="header" href="#36-高手工具">3.6 高手工具</a></h3>
+<pre><code class="language-shell"># 二分查找：定位"哪次提交引入了 bug"
+git bisect start
+git bisect bad                # 当前版本是坏的
+git bisect good v1.0          # v1.0 是好的
+# git 自动切到中间版本，手工测试后标记 good/bad，重复直到定位
+git bisect reset              # 结束，回到原分支
+
+# 也可以全自动：写个脚本，退出码 0 表示好版本
+git bisect start HEAD v1.0
+git bisect run cargo test
+
+# 谁改了这行代码？（追责也算追星）
+git blame -L 10,20 src/main.rs
+
+# 把别的分支的某一次提交"摘"过来
+git cherry-pick 提交号
+
+# 一个仓库，多个工作目录（同时开两条线，互不干扰）
+git worktree add ../hotfix hotfix-branch
+</code></pre>
+<hr>
+<h2 id="四grep文本搜索之王"><a class="header" href="#四grep文本搜索之王">四、grep——文本搜索之王</a></h2>
+<p><code>grep</code> = <strong>G</strong>lobal <strong>R</strong>egular <strong>E</strong>xpression <strong>P</strong>rint：按行匹配，把命中的行打印出来。</p>
+<h3 id="41-常用参数"><a class="header" href="#41-常用参数">4.1 常用参数</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>参数</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><code>-i</code></td><td>忽略大小写</td></tr>
+<tr><td><code>-v</code></td><td>反向：输出<strong>不</strong>匹配的行</td></tr>
+<tr><td><code>-n</code></td><td>显示行号</td></tr>
+<tr><td><code>-c</code></td><td>只数数量</td></tr>
+<tr><td><code>-l</code> / <code>-L</code></td><td>只列文件名 / 只列不包含的文件名</td></tr>
+<tr><td><code>-r</code></td><td>递归搜索目录</td></tr>
+<tr><td><code>-w</code></td><td>整词匹配</td></tr>
+<tr><td><code>-x</code></td><td>整行匹配</td></tr>
+<tr><td><code>-o</code></td><td>只输出匹配到的部分</td></tr>
+<tr><td><code>-q</code></td><td>安静模式，靠退出码判断</td></tr>
+<tr><td><code>-A n</code> / <code>-B n</code> / <code>-C n</code></td><td>显示后 / 前 / 前后 n 行上下文</td></tr>
+<tr><td><code>-E</code></td><td>扩展正则（等价 <code>egrep</code>）</td></tr>
+<tr><td><code>-F</code></td><td>按纯文本匹配，不解释正则</td></tr>
+<tr><td><code>-P</code></td><td>Perl 正则（支持 <code>\d</code>、<code>\b</code> 等）</td></tr>
+<tr><td><code>-m 5</code></td><td>最多匹配 5 行后停止</td></tr>
+<tr><td><code>--exclude-dir=.git</code></td><td>排除目录</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="42-实战"><a class="header" href="#42-实战">4.2 实战</a></h3>
+<pre><code class="language-shell"># 在代码里找函数定义（递归 + 行号 + 忽略大小写）
+grep -rn "fn main" --include="*.rs" src/
+
+# 统计日志里 404 出现次数
+grep -c " 404 " access.log
+
+# 找错误行，并看前后 2 行上下文
+grep -n -C 2 "ERROR" app.log
+
+# 反向过滤：排除注释行和空行
+grep -vE '^\s*(#|$)' config.conf
+
+# 只提取 IP 地址（-o 只留匹配部分）
+grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}' access.log | sort -u
+
+# 找哪些文件引用了某个库（只列文件名）
+grep -rl "serde" --include="*.toml" .
+
+# 用退出码做判断：找到了就执行
+grep -q "TODO" src/main.rs &amp;&amp; echo "还有未完成的任务"
+</code></pre>
+<blockquote>
+<p>正则小抄：<code>^</code> 行首、<code>$</code> 行尾、<code>.</code> 任意字符、<code>*</code> 零或多次、<code>+</code> 一次或多次、<code>?</code> 零或一次、<code>[abc]</code> 字符集、<code>[^abc]</code> 反向字符集、<code>\b</code> 词边界、<code>\d</code> 数字、<code>\w</code> 单词字符、<code>{2,4}</code> 数量范围、<code>|</code> 或。</p>
+</blockquote>
+<blockquote>
+<p>搜索大型代码库时，可以试试更快的 <a href="https://github.com/BurntSushi/ripgrep">ripgrep</a>（命令名 <code>rg</code>），用法与 <code>grep -r</code> 类似但默认跳过分隔文件和 <code>.gitignore</code> 中的文件。</p>
+</blockquote>
+<hr>
+<h2 id="五sed流编辑器"><a class="header" href="#五sed流编辑器">五、sed——流编辑器</a></h2>
+<p><code>sed</code> = <strong>S</strong>tream <strong>ED</strong>itor。它逐行读取文本，按脚本加工后输出，是批量替换的利器。</p>
+<h3 id="51-工作原理"><a class="header" href="#51-工作原理">5.1 工作原理</a></h3>
+<pre><code class="language-text">读入一行 → 放入"模式空间" → 依次执行脚本命令 → 输出（默认）→ 读下一行
+</code></pre>
+<h3 id="52-替换九成场景只用-s"><a class="header" href="#52-替换九成场景只用-s">5.2 替换：九成场景只用 <code>s//</code></a></h3>
+<pre><code class="language-shell"># 语法：s/查找/替换/标志
+sed 's/old/new/'    file     # 每行只替换第一处
+sed 's/old/new/g'   file     # g = 每行全部替换
+sed 's/old/new/gi'  file     # i = 忽略大小写
+
+# 分隔符可换，处理路径时特别有用
+sed 's|/usr/local|/opt|g' file
+sed 's#a/b#c/d#g' file
+</code></pre>
+<h3 id="53-地址对哪些行动手"><a class="header" href="#53-地址对哪些行动手">5.3 地址：对哪些行动手</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>地址写法</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><code>5</code></td><td>第 5 行</td></tr>
+<tr><td><code>2,8</code></td><td>第 2 到 8 行</td></tr>
+<tr><td><code>$</code></td><td>最后一行</td></tr>
+<tr><td><code>/正则/</code></td><td>匹配正则的行</td></tr>
+<tr><td><code>/开始/,/结束/</code></td><td>从匹配“开始“的行到匹配“结束“的行</td></tr>
+<tr><td><code>1~3</code></td><td>从 1 开始，每隔 3 行（GNU sed）</td></tr>
+<tr><td><code>!</code></td><td>取反，如 <code>/TODO/!d</code> 表示删除不含 TODO 的行</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-shell"># 只替换第 3 行
+sed '3s/old/new/' file
+
+# 只替换匹配 dev 的行
+sed '/dev/s/8080/9090/' config.conf
+
+# 删除匹配的行
+sed '/^#/d' config.conf       # 删注释行
+sed '/^\s*$/d' config.conf    # 删空行（含只有空格的行）
+</code></pre>
+<h3 id="54-常用命令"><a class="header" href="#54-常用命令">5.4 常用命令</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>命令</th><th>作用</th></tr>
+</thead>
+<tbody>
+<tr><td><code>s/旧/新/</code></td><td>替换</td></tr>
+<tr><td><code>d</code></td><td>删除行</td></tr>
+<tr><td><code>p</code></td><td>打印行（常配 <code>-n</code> 只输出指定行）</td></tr>
+<tr><td><code>a 文本</code></td><td>在匹配行<strong>后</strong>追加一行</td></tr>
+<tr><td><code>i 文本</code></td><td>在匹配行<strong>前</strong>插入一行</td></tr>
+<tr><td><code>c 文本</code></td><td>用文本替换整行</td></tr>
+<tr><td><code>y/abc/xyz/</code></td><td>字符逐一替换（如大小写转换）</td></tr>
+<tr><td><code>q</code></td><td>处理到此处退出</td></tr>
+<tr><td><code>=</code></td><td>打印行号</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="55-实战"><a class="header" href="#55-实战">5.5 实战</a></h3>
+<pre><code class="language-shell"># 1. 原地修改（-i），并留一份 .bak 备份
+sed -i.bak 's/localhost/127.0.0.1/g' config.conf
+
+# 2. 只打印第 10-20 行（-n 关闭默认输出，p 手动打印）
+sed -n '10,20p' file.txt
+
+# 3. 提取 &lt;title&gt; 标签内容
+sed -n 's/.*&lt;title&gt;\(.*\)&lt;\/title&gt;.*/\1/p' page.html
+
+# 4. 删除行尾空白（含 Windows 的 \r，处理跨平台换行神器）
+sed -i 's/[[:space:]]*$//' file.txt
+sed -i 's/\r$//' file.txt
+
+# 5. 在匹配行后面插一行
+sed '/^\[dependencies\]/a serde = "1"' Cargo.toml
+
+# 6. 每行前加行号
+sed = file.txt | sed 'N;s/\n/\t/'
+
+# 7. 批量重命名文件（配合 shell 循环）
+for f in *.jpeg; do mv "$f" "$(echo "$f" | sed 's/jpeg/jpg/')"; done
+</code></pre>
+<blockquote>
+<p>口诀：<strong>改内容用 <code>s</code>，删行用 <code>d</code>，看范围用 <code>-n</code> 加 <code>p</code>，批量改文件记得先 <code>-i.bak</code>。</strong></p>
+</blockquote>
+<hr>
+<h2 id="六awk文本处理的语言"><a class="header" href="#六awk文本处理的语言">六、awk——文本处理的语言</a></h2>
+<p><code>awk</code> 不只是命令，它是一门完整的文本处理语言：按行读取、按列处理、能算能判能统计。</p>
+<h3 id="61-程序结构"><a class="header" href="#61-程序结构">6.1 程序结构</a></h3>
+<pre><code class="language-text">BEGIN { 处理之前执行一次 }
+匹配条件 { 对每一行执行的动作 }
+END   { 处理之后执行一次 }
+</code></pre>
+<pre><code class="language-shell"># 打印每一行（默认动作就是 print $0）
+awk '{print}' file.txt
+
+# 打印第一列和第三列
+awk '{print $1, $3}' data.txt
+
+# 带表头表尾的统计报告
+awk 'BEGIN {print "开始统计"} {sum += $1} END {print "合计:", sum}' nums.txt
+</code></pre>
+<h3 id="62-内置变量"><a class="header" href="#62-内置变量">6.2 内置变量</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>变量</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><code>$0</code></td><td>整行</td></tr>
+<tr><td><code>$1</code>…<code>$n</code></td><td>第 1…n 列</td></tr>
+<tr><td><code>$NF</code></td><td>最后一列；<code>$(NF-1)</code> 倒数第二列</td></tr>
+<tr><td><code>NF</code></td><td>当前行的列数</td></tr>
+<tr><td><code>NR</code></td><td>已读行数（总行号）</td></tr>
+<tr><td><code>FNR</code></td><td>当前文件内的行号</td></tr>
+<tr><td><code>FS</code> / <code>OFS</code></td><td>输入 / 输出列分隔符（默认空白 / 空格）</td></tr>
+<tr><td><code>RS</code></td><td>输入行分隔符</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-shell"># -F 指定分隔符（处理 CSV / /etc/passwd）
+awk -F: '{print $1}' /etc/passwd
+awk -F, '{print $2, $4}' data.csv        # 简单 CSV
+awk -F'\t' '{print $NF}' data.tsv        # 制表符分隔
+</code></pre>
+<h3 id="63-条件与正则"><a class="header" href="#63-条件与正则">6.3 条件与正则</a></h3>
+<pre><code class="language-shell"># 只处理第 3 列大于 100 的行
+awk '$3 &gt; 100 {print $1, $3}' data.txt
+
+# 匹配正则的行（等价于 grep，但能做后续处理）
+awk '/ERROR/ {count++} END {print count+0}' app.log
+
+# 多条件：与 &amp;&amp;、或 ||、非 !
+awk -F, '$3 &gt; 60 &amp;&amp; $4 == "及格" {print $1}' scores.csv
+
+# 只打印前 5 行（NR 行号）
+awk 'NR &lt;= 5' file.txt
+
+# 跳过表头
+awk 'NR &gt; 1 {print $1}' data.csv
+</code></pre>
+<h3 id="64-数组与统计awk-的看家本领"><a class="header" href="#64-数组与统计awk-的看家本领">6.4 数组与统计（awk 的看家本领）</a></h3>
+<pre><code class="language-shell"># 求和与平均
+awk '{sum += $1} END {print "和:", sum, "平均:", sum/NR}' nums.txt
+
+# 分组计数：统计每个 IP 的访问次数
+awk '{count[$1]++} END {for (ip in count) print count[ip], ip}' access.log
+
+# 去重（按某列）
+awk '!seen[$2]++' data.txt
+
+# 条件分组统计：每个房间的已交金额合计
+awk -F, 'NR &gt; 1 {sum[$1] += $3} END {for (r in sum) printf "%-8s %10.2f\n", r, sum[r]}' fees.csv
+</code></pre>
+<blockquote>
+<p><code>!seen[$2]++</code> 是 awk 最优雅的惯用法：第一次见到 <code>$2</code> 时值为 0，取非为真 → 打印；之后值为 1、2、3…，取非为假 → 跳过。</p>
+</blockquote>
+<h3 id="65-内置函数"><a class="header" href="#65-内置函数">6.5 内置函数</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>函数</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><code>length(s)</code></td><td>字符串长度（不带参数则整行）</td></tr>
+<tr><td><code>substr(s, 起始, 长度)</code></td><td>取子串</td></tr>
+<tr><td><code>index(s, t)</code></td><td>子串位置</td></tr>
+<tr><td><code>split(s, 数组, 分隔符)</code></td><td>拆分字符串到数组</td></tr>
+<tr><td><code>sub(正则, 替换)</code> / <code>gsub(...)</code></td><td>替换第一处 / 全部</td></tr>
+<tr><td><code>match(s, 正则)</code></td><td>匹配位置</td></tr>
+<tr><td><code>sprintf(fmt, ...)</code></td><td>格式化（不打印，返回值）</td></tr>
+<tr><td><code>toupper</code> / <code>tolower</code></td><td>大小写转换</td></tr>
+<tr><td><code>int(x)</code></td><td>取整</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-shell"># printf 格式化输出表格
+awk -F, 'BEGIN {printf "%-8s %10s\n", "房号", "金额"}
+         NR &gt; 1 {printf "%-8s %10.2f\n", $1, $3}' fees.csv
+
+# 取子串：从第 1 列前 4 个字符分组（如按年份统计）
+awk '{sum[substr($1, 1, 4)] += $2} END {for (y in sum) print y, sum[y]}' data.txt
+</code></pre>
+<h3 id="66-流程控制"><a class="header" href="#66-流程控制">6.6 流程控制</a></h3>
+<pre><code class="language-shell"># if / else
+awk '{if ($3 &gt; 90) print $1, "优秀"; else print $1, "加油"}' scores.txt
+
+# next 跳过本行后续处理；exit 立即结束
+awk '/^#/ {next} {print}' config.conf
+awk 'NR &gt; 100 {exit} {print}' big.txt
+
+# 处理多个文件，FNR 区分文件
+awk 'FNR == 1 {print "== " FILENAME}' a.txt b.txt
+</code></pre>
+<hr>
+<h2 id="七其他神器"><a class="header" href="#七其他神器">七、其他神器</a></h2>
+<h3 id="71-find按条件找文件"><a class="header" href="#71-find按条件找文件">7.1 find——按条件找文件</a></h3>
+<pre><code class="language-shell">find . -name "*.rs"                      # 按名字（-iname 忽略大小写）
+find . -type d -name "target"            # 只找目录
+find . -size +10M                        # 大于 10MB 的文件
+find . -mtime -7                         # 最近 7 天修改过
+find . -name "*.log" -delete             # 找到就删（危险，先去掉 -delete 看看）
+find . -name "*.tmp" -exec rm {} \;      # 对每个结果执行命令
+find . -name "*.rs" -exec wc -l {} +     # + 号批量传参，比 \; 快
+find . -empty                            # 空文件/空目录
+</code></pre>
+<blockquote>
+<p>处理含空格的文件名：用 <code>-print0</code> 配 <code>xargs -0</code>，否则会被拆断。</p>
+</blockquote>
+<h3 id="72-xargs把输入变成参数"><a class="header" href="#72-xargs把输入变成参数">7.2 xargs——把“输入“变成“参数“</a></h3>
+<pre><code class="language-shell"># 把 grep 找到的文件名，逐个交给 sed 处理
+grep -rl "old_name" --include="*.rs" . | xargs sed -i 's/old_name/new_name/g'
+
+# 每行一个参数；-P 4 开 4 个并发
+cat urls.txt | xargs -n 1 -P 4 curl -O
+
+# -I{} 占位符：把参数放在命令的任意位置
+find . -name "*.bak" | xargs -I{} mv {} /tmp/backup/
+
+# 配合 -0 处理诡异文件名
+find . -name "*.log" -print0 | xargs -0 rm
+</code></pre>
+<h3 id="73-sort--uniq排序与去重"><a class="header" href="#73-sort--uniq排序与去重">7.3 sort / uniq——排序与去重</a></h3>
+<pre><code class="language-shell">sort file                  # 字典序
+sort -n file               # 按数值
+sort -rn file              # 数值逆序
+sort -u file               # 排序并去重
+sort -k2 -t, file.csv      # 按逗号分隔的第 2 列
+sort -h sizes.txt          # 按人类可读大小（1K、2M）
+
+uniq file                  # 去相邻重复行（先 sort！）
+uniq -c file               # 统计相邻重复次数
+uniq -d file               # 只输出重复过的行
+</code></pre>
+<h3 id="74-cut--tr--wc--head--tail--tee"><a class="header" href="#74-cut--tr--wc--head--tail--tee">7.4 cut / tr / wc / head / tail / tee</a></h3>
+<pre><code class="language-shell">cut -d, -f1,3 data.csv     # 取第 1、3 列
+cut -c1-10 file            # 取每行前 10 个字符
+
+tr 'a-z' 'A-Z' &lt; file      # 小写转大写
+tr -d '\r' &lt; win.txt       # 删除所有 \r（等效 dos2unix）
+tr -s ' ' &lt; file           # 压缩连续空格为一个
+
+wc -l file                 # 行数（-w 词数，-c 字节数）
+head -n 20 file            # 前 20 行（head -20 亦可）
+tail -n 20 file            # 后 20 行
+tail -f app.log            # 实时跟随日志（Ctrl+C 退出）
+
+command | tee out.txt      # 一边输出到屏幕，一边存文件
+command | tee -a out.txt   # 追加模式
+</code></pre>
+<h3 id="75-jqjson-的-awk"><a class="header" href="#75-jqjson-的-awk">7.5 jq——JSON 的 awk</a></h3>
+<pre><code class="language-shell">curl -s https://api.github.com/repos/rust-lang/rust | jq '.'          # 美化
+jq '.stargazers_count' data.json              # 取字段
+jq -r '.name' data.json                       # -r 去掉引号（裸字符串）
+jq '.[0]' list.json                           # 取数组第一个元素
+jq '.[] | .room' data.json                    # 遍历数组取字段
+jq '[.[] | select(.paid &gt; 100)]' data.json    # 过滤
+jq 'length' list.json                         # 数组长度
+jq 'keys' obj.json                            # 键列表
+jq -c '.items[]' big.json                     # -c 紧凑输出，一行一条
+jq -r '.[] | [.room, .paid] | @csv' data.json # 转 CSV
+</code></pre>
+<h3 id="76-tar--ssh--rsync--diff"><a class="header" href="#76-tar--ssh--rsync--diff">7.6 tar / ssh / rsync / diff</a></h3>
+<pre><code class="language-shell"># 打包与解包
+tar -czf backup.tar.gz src/          # c 创建 z gzip f 文件名
+tar -xzf backup.tar.gz               # x 解包
+tar -tzf backup.tar.gz               # t 列表（先看看里面有什么）
+tar -czf b.tgz --exclude=target src/ # 排除目录
+
+# 远程登录与传文件
+ssh -i ~/.ssh/id_rsa -p 2222 user@host
+ssh -N -L 8080:localhost:80 user@host   # 本地端口转发
+scp -r dist/ user@host:/var/www/        # 复制目录
+
+# rsync：增量同步之王（只传差异部分）
+rsync -avz --progress src/ user@host:/backup/
+rsync -avz --delete --exclude="*.log" src/ user@host:/backup/
+
+# 比较与打补丁
+diff -u old.rs new.rs &gt; patch.diff
+patch -p1 &lt; patch.diff
+diff -rq dir1 dir2                     # 递归对比，只报告差异
+</code></pre>
+<h3 id="77-帮助与文档"><a class="header" href="#77-帮助与文档">7.7 帮助与文档</a></h3>
+<pre><code class="language-shell">man grep              # 手册（q 退出，/ 搜索）
+grep --help           # 速查参数
+tldr tar              # 只看常用例子（需安装 tldr）
+apropos "copy file"   # 搜索相关命令
+history | grep curl   # 翻自己的历史命令
+</code></pre>
+<h3 id="78-windows-用户怎么办"><a class="header" href="#78-windows-用户怎么办">7.8 Windows 用户怎么办</a></h3>
+<p>Windows 10/11 自带 <code>curl.exe</code>（PowerShell 里 <code>curl</code> 是别名，要写 <code>curl.exe</code> 才是真 curl）。想要完整的瑞士军刀，推荐三选一：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方案</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>Git Bash</td><td>装 Git 就自带，含 grep/sed/awk/sort 等全套 GNU 工具</td></tr>
+<tr><td>WSL</td><td>装 Linux 子系统，原汁原味</td></tr>
+<tr><td>MSYS2 / Cygwin</td><td>单独的 Unix 工具链</td></tr>
+</tbody>
+</table>
+</div>
+<p>Windows CMD 对照表：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Unix</th><th>CMD</th><th>PowerShell</th></tr>
+</thead>
+<tbody>
+<tr><td><code>ls</code></td><td><code>dir</code></td><td><code>Get-ChildItem</code>（别名 <code>ls</code>）</td></tr>
+<tr><td><code>cat</code></td><td><code>type</code></td><td><code>Get-Content</code>（别名 <code>cat</code>）</td></tr>
+<tr><td><code>grep</code></td><td><code>findstr</code></td><td><code>Select-String</code></td></tr>
+<tr><td><code>rm</code></td><td><code>del</code></td><td><code>Remove-Item</code></td></tr>
+<tr><td><code>cp</code></td><td><code>copy</code></td><td><code>Copy-Item</code></td></tr>
+<tr><td><code>mv</code></td><td><code>move</code></td><td><code>Move-Item</code></td></tr>
+<tr><td><code>which</code></td><td><code>where</code></td><td><code>Get-Command</code></td></tr>
+<tr><td><code>curl</code></td><td><code>curl.exe</code></td><td><code>curl.exe</code></td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>注意：PowerShell 不是 Bash，<code>for f in *.txt; do ...</code> 这类循环语法会报错。要么用 PowerShell 语法（<code>ForEach-Object</code>），要么开 Git Bash 执行。</p>
+</blockquote>
+<hr>
+<h2 id="八openssl密码学界的瑞士军刀"><a class="header" href="#八openssl密码学界的瑞士军刀">八、openssl——密码学界的瑞士军刀</a></h2>
+<p><code>openssl</code> 是 OpenSSL 库的命令行前端。它既是哈希机、加解密器、随机数发生器，又是证书工厂和 TLS 探针——安全相关的零碎活儿，一把刀几乎全能包办。</p>
+<pre><code class="language-shell">openssl version -a                      # 版本、构建信息、默认配置目录
+openssl list -providers                 # OpenSSL 3.x 的算法提供者（default / legacy / fips）
+openssl list -cipher-algorithms         # 支持的对称算法
+openssl list -digest-algorithms         # 支持的摘要算法
+openssl list -public-key-algorithms     # 支持的公钥算法
+</code></pre>
+<p>命令结构永远是 <code>openssl &lt;动词&gt; [选项]</code>，动词就是你要做的事：<code>dgst</code>（摘要）、<code>enc</code>（对称加解密）、<code>rand</code>（随机数）、<code>genpkey</code>（生成密钥）、<code>req</code>（证书请求）、<code>x509</code>（证书处理）、<code>s_client</code>（TLS 客户端）。</p>
+<blockquote>
+<p>Linux、macOS 一般自带 OpenSSL；Windows 可以用 Git Bash 自带的 <code>openssl</code>，或安装 Win64 OpenSSL。注意 OpenSSL 1.1.1 已于 2023 年 9 月停止维护，新项目请用 3.x。</p>
+</blockquote>
+<h3 id="81-摘要dgst指纹与完整性"><a class="header" href="#81-摘要dgst指纹与完整性">8.1 摘要（dgst）：指纹与完整性</a></h3>
+<pre><code class="language-shell">openssl dgst -sha256 file.tar.gz        # 计算 SHA-256
+openssl dgst -sha3-256 file             # SHA-3
+openssl dgst -sm3 file                  # 国密 SM3（见第 71 章）
+echo -n "abc" | openssl dgst -sha256    # 从标准输入算（-n 不加换行）
+
+openssl dgst -sha256 -r file            # coreutils 格式，可直接交给 sha256sum -c
+openssl dgst -sha256 -hmac "secret" msg # HMAC：带密钥的消息认证码
+</code></pre>
+<p>示例输出：</p>
+<pre><code class="language-text">SHA2-256(msg.txt)= 853867ce5b3bea173bc7b3b2c5f5f74445c9be20f9fcfe96eb65e2b9ce62fa29
+SM3(msg.txt)= df89b14eaf53f44d7ac52aa138c4f418b7e335d6099df101c684b7447c616144
+</code></pre>
+<blockquote>
+<p>校验下载文件：把官方公布的哈希存成 <code>SHA256SUMS</code>，然后 <code>sha256sum -c SHA256SUMS</code>；用 OpenSSL 生成的 <code>-r</code> 格式与此兼容。</p>
+<p><strong>摘要 ≠ 加密</strong>：哈希不可逆，只能验证完整性，不能保密。</p>
+</blockquote>
+<h3 id="82-对称加密enc最容易踩坑的一节"><a class="header" href="#82-对称加密enc最容易踩坑的一节">8.2 对称加密（enc）：最容易踩坑的一节</a></h3>
+<p><code>enc</code> 有两种用法，对应两种密钥来源。</p>
+<p><strong>A. 用口令派生密钥（日常文件加密）</strong></p>
+<pre><code class="language-shell"># 加密（会交互式提示输入口令，口令不会进入 shell 历史）
+openssl enc -aes-256-cbc -pbkdf2 -iter 100000 -salt -in secret.txt -out secret.enc
+
+# 解密
+openssl enc -d -aes-256-cbc -pbkdf2 -iter 100000 -in secret.enc -out secret.txt
+</code></pre>
+<p>关键参数：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>参数</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td><code>-pbkdf2</code></td><td>用 PBKDF2 从口令派生密钥（不加则用旧的 EVP_BytesToKey）</td></tr>
+<tr><td><code>-iter 100000</code></td><td>迭代次数，3.x 默认 10000，建议 ≥ 100000；<strong>加解密必须一致</strong></td></tr>
+<tr><td><code>-salt</code></td><td>加盐，1.1.0 起默认开启；<code>-nosalt</code> 会削弱安全性</td></tr>
+<tr><td><code>-a</code></td><td>输出 Base64，方便贴进邮件、JSON、配置文件</td></tr>
+<tr><td><code>-d</code></td><td>解密</td></tr>
+<tr><td><code>-md sha256</code></td><td>派生密钥用的摘要，1.1.0 起默认 SHA-256</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>B. 直接给密钥和 IV（脚本、跨语言对接）</strong></p>
+<pre><code class="language-shell"># -K 密钥（64 个十六进制字符 = 32 字节），-iv 初始向量（32 个十六进制字符 = 16 字节）
+openssl enc -aes-256-cbc -nosalt \
+  -K 0123456789abcdeffedcba987654321000112233445566778899aabbccddeeff \
+  -iv 000102030405060708090a0b0c0d0e0f \
+  -in secret.txt -out secret2.enc
+</code></pre>
+<blockquote>
+<p><code>-K</code> 给的是<strong>密钥本身</strong>，<code>-iv</code> 给的是<strong>初始向量</strong>，都不要手工拼凑：密钥用 <code>openssl rand -hex 32</code> 生成，IV 用 <code>openssl rand -hex 16</code> 生成，且每次加密都换。</p>
+</blockquote>
+<p><strong>三个必须知道的坑：</strong></p>
+<ol>
+<li><strong><code>enc</code> 不做认证</strong>。密文被改动一个字节，解密出来是乱码但不报错（还有 padding oracle 风险）。它只负责“看不懂“，不负责“没被动过“。</li>
+<li><strong><code>enc</code> 不支持 AEAD</strong>。执行 <code>openssl enc -aes-256-gcm ...</code> 会直接报错：<code>enc: AEAD ciphers not supported</code>。要 GCM/CCM 这类带认证的模式，请改用编程库（第 71 章有 Rust 示例）、<code>openssl cms</code>，或者 <code>age</code> 这类现代工具。</li>
+<li><strong>老密文解不开，多半是摘要变了</strong>。1.1.0 起派生密钥的默认摘要由 MD5 变成 SHA-256，解 2016 年前用 <code>enc</code> 加密的数据要补 <code>-md md5</code>。</li>
+</ol>
+<h3 id="83-随机数编码与口令哈希"><a class="header" href="#83-随机数编码与口令哈希">8.3 随机数、编码与口令哈希</a></h3>
+<pre><code class="language-shell">openssl rand -hex 32              # 32 字节随机数 → 64 位十六进制
+openssl rand -base64 24           # 24 字节随机数 → Base64（适合当口令/密钥）
+openssl rand -out key.bin 32      # 直接写入文件
+
+openssl base64 -in a.bin -out a.b64
+openssl base64 -d -in a.b64 -out a.bin
+
+openssl passwd -6 -salt abcdefgh password   # 生成 /etc/shadow 风格 SHA-512 口令哈希
+</code></pre>
+<pre><code class="language-text">$6$abcdefgh$yVfUwsw5T.JApa8POvClA1pQ5peiq97DUNyXCZN5IrF.BMSkiaLQ5kvpuEm/VQ1Tvh/KV2TcaWh8qinoW5dhA1
+</code></pre>
+<blockquote>
+<p>生成密钥、IV、盐，一律用 <code>openssl rand</code>（或 <code>getrandom</code>）。不要用 <code>$RANDOM</code>、时间戳、<code>/dev/urandom</code> 手搓——这些“看起来随机“的东西往往一点不随机。</p>
+</blockquote>
+<h3 id="84-密钥生成查看导出"><a class="header" href="#84-密钥生成查看导出">8.4 密钥：生成、查看、导出</a></h3>
+<pre><code class="language-shell"># RSA 3072（兼容性最好，性能一般）
+openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:3072 -out key.pem
+
+# EC P-256（TLS 首选：密钥短、速度快）
+openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -out ec.pem
+
+# Ed25519（现代签名算法，短密钥高强度）
+openssl genpkey -algorithm ED25519 -out ed.pem
+
+# SM2（国密，OpenSSL 3.x 内置）
+openssl genpkey -algorithm SM2 -out sm2.pem
+
+# 查看私钥参数、导出公钥
+openssl pkey -in key.pem -text -noout
+openssl rsa -in key.pem -pubout -out key.pub.pem
+openssl pkey -in ec.pem -pubout -out ec.pub.pem
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>算法</th><th>典型用途</th><th>命令里的关键点</th></tr>
+</thead>
+<tbody>
+<tr><td>RSA 3072/4096</td><td>兼容老系统、证书签名</td><td><code>-pkeyopt rsa_keygen_bits:3072</code></td></tr>
+<tr><td>EC P-256</td><td>TLS、移动端、性能敏感场景</td><td><code>-pkeyopt ec_paramgen_curve:P-256</code></td></tr>
+<tr><td>Ed25519</td><td>SSH、签名、现代协议</td><td><code>-algorithm ED25519</code></td></tr>
+<tr><td>SM2</td><td>国密合规场景</td><td><code>-algorithm SM2</code></td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>私钥默认是<strong>明文 PEM</strong>。要么 <code>chmod 600</code> 并用磁盘加密保护，要么生成时就加密：<code>openssl genpkey ... -aes-256-cbc -pass pass:你的口令</code>。</p>
+</blockquote>
+<h3 id="85-证书自签请求查看转换"><a class="header" href="#85-证书自签请求查看转换">8.5 证书：自签、请求、查看、转换</a></h3>
+<p><strong>自签证书（本地开发、内网服务常用）</strong></p>
+<pre><code class="language-shell">openssl req -x509 -new -key key.pem -out cert.pem -days 365 \
+  -subj "/CN=example.com" \
+  -addext "subjectAltName=DNS:example.com,DNS:*.example.com,IP:127.0.0.1"
+</code></pre>
+<blockquote>
+<p>现代浏览器和 TLS 库只看 <strong>SAN（subjectAltName）</strong>，不再看 CN。只写 <code>/CN=...</code> 的证书在 Chrome、Rustls 里会直接报“名称不匹配“。</p>
+</blockquote>
+<p><strong>发起 CSR 给 CA 签名</strong></p>
+<pre><code class="language-shell">openssl req -new -key key.pem -out req.csr -subj "/CN=demo.example.com"
+openssl req -in req.csr -noout -text -verify   # 检查内容与自签名
+</code></pre>
+<p><strong>查看证书</strong></p>
+<pre><code class="language-shell">openssl x509 -in cert.pem -noout -subject -issuer -dates -fingerprint -sha256
+openssl x509 -in cert.pem -noout -text                  # 全部字段
+openssl x509 -in cert.pem -noout -ext subjectAltName     # 只看 SAN
+</code></pre>
+<pre><code class="language-text">subject=CN = example.com
+issuer=CN = example.com
+notBefore=Oct 18 15:31:54 2026 GMT
+notAfter=Oct 18 15:31:54 2027 GMT
+sha256 Fingerprint=78:54:2D:57:82:E8:1F:75:72:FC:BA:E6:EF:01:8A:F8:BF:69:78:18:17:1D:CA:3E:A2:27:CA:A3:66:DD:D8:3D
+</code></pre>
+<p><strong>格式转换（PEM ⇄ DER、打包成 PFX）</strong></p>
+<pre><code class="language-shell">openssl x509 -in cert.pem -outform der -out cert.der     # PEM → DER
+openssl x509 -inform der -in cert.der -out cert.pem      # DER → PEM
+
+# 证书 + 私钥打包成 PKCS#12（Windows / Java 常用，注意设口令）
+openssl pkcs12 -export -inkey key.pem -in cert.pem -out bundle.p12 -passout pass:******
+openssl pkcs12 -in bundle.p12 -nodes -passin pass:****** # 拆回 PEM（-nodes：私钥不加密）
+</code></pre>
+<blockquote>
+<p><code>-nodes</code> 是 “no DES”，意思是<strong>不加密私钥</strong>，拆出来的文件要立刻妥善保管。</p>
+</blockquote>
+<h3 id="86-签名与验签"><a class="header" href="#86-签名与验签">8.6 签名与验签</a></h3>
+<pre><code class="language-shell"># 用私钥签名（dgst 内部先做 SHA-256，再对摘要签名）
+openssl dgst -sha256 -sign key.pem -out sig.bin msg.txt
+
+# 用公钥验签
+openssl dgst -sha256 -verify key.pub.pem -signature sig.bin msg.txt
+# 输出：Verified OK
+
+# 公钥也可以从证书里取
+openssl x509 -in cert.pem -pubkey -noout &gt; pub.pem
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>想做的事</th><th>命令</th><th>用什么密钥</th></tr>
+</thead>
+<tbody>
+<tr><td>保证内容没被篡改、且来源可信</td><td><code>dgst -sign</code> / <code>dgst -verify</code></td><td>私钥签、公钥验</td></tr>
+<tr><td>保证内容只有对方能看</td><td><code>pkeyutl -encrypt</code> / <code>pkeyutl -decrypt</code></td><td>公钥加密、私钥解密</td></tr>
+<tr><td>只想验证完整性（不防伪造）</td><td><code>dgst</code> / <code>sha256sum</code></td><td>不需要密钥</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="87-tls-诊断s_client网站的体检仪"><a class="header" href="#87-tls-诊断s_client网站的体检仪">8.7 TLS 诊断（s_client）：网站的体检仪</a></h3>
+<pre><code class="language-shell"># 最常用：看协议版本、加密套件、证书概况
+openssl s_client -connect example.com:443 -servername example.com -brief
+
+# 打印完整证书链（排查中间证书缺失）
+openssl s_client -connect example.com:443 -servername example.com -showcerts
+
+# 只关心证书到期时间
+echo | openssl s_client -connect example.com:443 -servername example.com 2&gt;/dev/null \
+  | openssl x509 -noout -enddate
+
+# 非 HTTPS 协议的 STARTTLS 探测
+openssl s_client -connect mail.example.com:25 -starttls smtp
+openssl s_client -connect db.example.com:5432 -starttls postgres
+
+# 校验证书链（用自定义 CA）
+openssl verify -CAfile ca.pem cert.pem
+</code></pre>
+<p><code>-brief</code> 的典型输出：</p>
+<pre><code class="language-text">CONNECTION ESTABLISHED
+Protocol version: TLSv1.3
+Ciphersuite: TLS_AES_256_GCM_SHA384
+Peer certificate: CN = example.com
+Hash used: SHA256
+Signature type: ECDSA
+Server Temp Key: X25519, 253 bits
+</code></pre>
+<blockquote>
+<p><strong><code>-servername</code> 必须带</strong>：一个 IP 上可能挂着几十个站点（SNI），不指定就只能拿到默认站点的证书。</p>
+<p>Windows 上常看到 <code>Verification error: unable to get local issuer certificate</code>，意思是本机的 CA 根证书路径没配好（OpenSSL 默认去 <code>/usr/local/ssl</code> 之类的位置找），不代表站点有问题。用 <code>-CAfile</code> 指定根证书即可。</p>
+<p>在线体检更省事：<a href="https://badssl.com/">badssl.com</a> 提供了过期证书、错误域名、弱协议等各种“病号“，<a href="https://testssl.sh/">testssl.sh</a> 能把几十项配置一次查完。</p>
+</blockquote>
+<h3 id="88-常见坑与安全清单"><a class="header" href="#88-常见坑与安全清单">8.8 常见坑与安全清单</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>坑</th><th>表现</th><th>正确做法</th></tr>
+</thead>
+<tbody>
+<tr><td>口令写在命令行</td><td><code>-pass pass:xxx</code> 会被 <code>ps</code> / 进程列表看到</td><td>交互式输入，或 <code>-pass file:pw.txt</code>、<code>-pass env:VAR</code>、<code>-pass stdin</code></td></tr>
+<tr><td>以为 <code>enc</code> 能防篡改</td><td>密文被改后解密成乱码但不报错</td><td>需要完整性就用 AEAD、签名或 <code>sha256sum</code> 校验</td></tr>
+<tr><td>用 ECB 模式</td><td><code>-aes-256-ecb</code> 相同明文块出相同密文</td><td>用 CBC/CTR，且 IV 每次随机</td></tr>
+<tr><td>复用 IV</td><td>CTR/OFB 下最致命，等于泄露明文异或值</td><td>每次加密生成新的随机 IV，和密文一起存</td></tr>
+<tr><td>老算法不可用</td><td><code>Error setting cipher ...</code></td><td>3.x 里旧算法在 legacy provider：加 <code>-provider legacy -provider default</code></td></tr>
+<tr><td>证书只写 CN</td><td>浏览器报名称不匹配</td><td>一定加 <code>subjectAltName</code></td></tr>
+<tr><td>私钥没保护</td><td>明文 PEM 被拷走即失守</td><td><code>chmod 600</code> + 磁盘加密，或生成时给私钥加密</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="89-一页速查表"><a class="header" href="#89-一页速查表">8.9 一页速查表</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>任务</th><th>命令</th></tr>
+</thead>
+<tbody>
+<tr><td>看版本</td><td><code>openssl version -a</code></td></tr>
+<tr><td>算 SHA-256</td><td><code>openssl dgst -sha256 文件</code></td></tr>
+<tr><td>算 SM3</td><td><code>openssl dgst -sm3 文件</code></td></tr>
+<tr><td>HMAC</td><td><code>openssl dgst -sha256 -hmac 密钥 文件</code></td></tr>
+<tr><td>口令加密文件</td><td><code>openssl enc -aes-256-cbc -pbkdf2 -iter 100000 -in 明文 -out 密文</code></td></tr>
+<tr><td>解密文件</td><td><code>openssl enc -d -aes-256-cbc -pbkdf2 -iter 100000 -in 密文 -out 明文</code></td></tr>
+<tr><td>生成随机密钥</td><td><code>openssl rand -hex 32</code></td></tr>
+<tr><td>生成 RSA 私钥</td><td><code>openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:3072 -out key.pem</code></td></tr>
+<tr><td>导出公钥</td><td><code>openssl pkey -in key.pem -pubout -out key.pub.pem</code></td></tr>
+<tr><td>自签证书</td><td><code>openssl req -x509 -new -key key.pem -out cert.pem -days 365 -addext "subjectAltName=DNS:example.com"</code></td></tr>
+<tr><td>看证书信息</td><td><code>openssl x509 -in cert.pem -noout -subject -dates -fingerprint -sha256</code></td></tr>
+<tr><td>证书转 DER</td><td><code>openssl x509 -in cert.pem -outform der -out cert.der</code></td></tr>
+<tr><td>打包 PFX</td><td><code>openssl pkcs12 -export -inkey key.pem -in cert.pem -out bundle.p12</code></td></tr>
+<tr><td>签名文件</td><td><code>openssl dgst -sha256 -sign key.pem -out sig.bin 文件</code></td></tr>
+<tr><td>验签</td><td><code>openssl dgst -sha256 -verify pub.pem -signature sig.bin 文件</code></td></tr>
+<tr><td>查 TLS 配置</td><td><code>openssl s_client -connect 域名:443 -servername 域名 -brief</code></td></tr>
+<tr><td>查证书期限</td><td><code>echo | openssl s_client -connect 域名:443 -servername 域名 2&gt;/dev/null | openssl x509 -noout -enddate</code></td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="九组合技一条命令的威力"><a class="header" href="#九组合技一条命令的威力">九、组合技：一条命令的威力</a></h2>
+<p>小刀单用削铅笔，组合起来能造飞机。下面每一条都是一行命令完成的真实任务。</p>
+<h3 id="91-日志分析"><a class="header" href="#91-日志分析">9.1 日志分析</a></h3>
+<pre><code class="language-shell"># 访问量 Top 10 的 IP
+awk '{print $1}' access.log | sort | uniq -c | sort -rn | head -10
+
+# 各 HTTP 状态码占比
+awk '{print $9}' access.log | sort | uniq -c | sort -rn
+
+# 每个 IP 的流量合计（第 10 列是字节数）
+awk '{sum[$1] += $10} END {for (ip in sum) print sum[ip], ip}' access.log | sort -rn | head
+
+# 统计每分钟的请求量，找出流量尖峰
+awk '{print substr($4, 2, 17)}' access.log | uniq -c | sort -rn | head
+</code></pre>
+<h3 id="92-批量文件操作"><a class="header" href="#92-批量文件操作">9.2 批量文件操作</a></h3>
+<pre><code class="language-shell"># 把项目中所有 old_api() 替换成 new_api()，并列出改动的文件
+grep -rl "old_api" --include="*.rs" . | xargs sed -i.bak 's/old_api/new_api/g'
+grep -rl "new_api" --include="*.rs" . | wc -l
+
+# 找出最大的 10 个目录
+du -h --max-depth=1 . | sort -rh | head -10
+
+# 清理 30 天前的日志
+find /var/log -name "*.log" -mtime +30 -exec rm {} \;
+</code></pre>
+<h3 id="93-数据统计csv"><a class="header" href="#93-数据统计csv">9.3 数据统计（CSV）</a></h3>
+<p>假设 <code>fees.csv</code> 形如：<code>房号,月份,金额</code></p>
+<pre><code class="language-shell"># 每户合计与总合计
+awk -F, 'NR &gt; 1 {sum[$1] += $3; total += $3}
+         END {for (r in sum) print r, sum[r]; print "总计", total}' fees.csv
+
+# 按月统计（排序输出）
+awk -F, 'NR &gt; 1 {m[$2] += $3} END {for (month in m) print month, m[month]}' fees.csv | sort
+
+# 找出单笔超过 500 的记录（相当于带格式化的 grep）
+awk -F, 'NR &gt; 1 &amp;&amp; $3 &gt; 500 {print $0}' fees.csv
+</code></pre>
+<h3 id="94-接口监控与自动化"><a class="header" href="#94-接口监控与自动化">9.4 接口监控与自动化</a></h3>
+<pre><code class="language-shell"># 每 5 秒看一次接口状态码
+watch -n 5 'curl -s -o /dev/null -w "%{http_code}\n" https://example.com'
+
+# 每天备份数据库并保留 7 份
+sqlite3 electricity_data.db ".backup backup_$(date +%F).db"
+ls -t backup_*.db | tail -n +8 | xargs -r rm
+</code></pre>
+<h3 id="95-git-组合技"><a class="header" href="#95-git-组合技">9.5 git 组合技</a></h3>
+<pre><code class="language-shell"># 查看两周内自己改了哪些文件
+git log --since="2 weeks ago" --author="$(git config user.name)" --name-only --pretty=format:
+
+# 找出贡献最多的 5 位作者
+git shortlog -sn --all | head -5
+
+# 统计每人增删行数
+git log --numstat --pretty=format: | awk 'NF==3 {add[$3] += $1; del[$3] += $2}
+     END {for (f in add) printf "%-30s +%d -%d\n", f, add[f], del[f]}' | sort -k2 -rn | head
+</code></pre>
+<hr>
+<h2 id="十打造你自己的瑞士军刀rust-版"><a class="header" href="#十打造你自己的瑞士军刀rust-版">十、打造你自己的瑞士军刀（Rust 版）</a></h2>
+<p>这些工具的原理并不神秘，用 Rust 几十行就能复刻一个迷你版。</p>
+<h3 id="101-迷你-grepminigrep"><a class="header" href="#101-迷你-grepminigrep">10.1 迷你 grep（minigrep）</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6ZW52Owp1c2Ugc3RkOjpmczo6RmlsZTsKdXNlIHN0ZDo6aW86OntCdWZSZWFkLCBCdWZSZWFkZXJ9OwoKZm4gbWFpbigpIHsKICAgIGxldCBhcmdzOiBWZWM8U3RyaW5nPiA9IGVudjo6YXJncygpLmNvbGxlY3QoKTsKICAgIGlmIGFyZ3MubGVuKCkgPCAzIHsKICAgICAgICBlcHJpbnRsbiEoIueUqOazlTogbWluaWdyZXAgPOWFs+mUruWtlz4gPOaWh+S7tj4iKTsKICAgICAgICBzdGQ6OnByb2Nlc3M6OmV4aXQoMSk7CiAgICB9CiAgICBsZXQgKHBhdHRlcm4sIHBhdGgpID0gKCZhcmdzWzFdLCAmYXJnc1syXSk7CgogICAgbGV0IGZpbGUgPSBtYXRjaCBGaWxlOjpvcGVuKHBhdGgpIHsKICAgICAgICBPayhmKSA9PiBmLAogICAgICAgIEVycihlKSA9PiB7CiAgICAgICAgICAgIGVwcmludGxuISgi5peg5rOV5omT5byAIHtwYXRofToge2V9Iik7CiAgICAgICAgICAgIHN0ZDo6cHJvY2Vzczo6ZXhpdCgxKTsKICAgICAgICB9CiAgICB9OwoKICAgIGxldCBwYXR0ZXJuID0gcGF0dGVybi50b19sb3dlcmNhc2UoKTsKICAgIGZvciAobm8sIGxpbmUpIGluIEJ1ZlJlYWRlcjo6bmV3KGZpbGUpLmxpbmVzKCkuZW51bWVyYXRlKCkgewogICAgICAgIGxldCBsaW5lID0gbGluZS5leHBlY3QoIuivu+WPluWksei0pSIpOwogICAgICAgIGlmIGxpbmUudG9fbG93ZXJjYXNlKCkuY29udGFpbnMoJnBhdHRlcm4pIHsKICAgICAgICAgICAgcHJpbnRsbiEoInt9Ont9Iiwgbm8gKyAxLCBsaW5lKTsKICAgICAgICB9CiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">use std::env;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
+
+fn main() {
+    let args: Vec&lt;String&gt; = env::args().collect();
+    if args.len() &lt; 3 {
+        eprintln!("用法: minigrep &lt;关键字&gt; &lt;文件&gt;");
+        std::process::exit(1);
+    }
+    let (pattern, path) = (&amp;args[1], &amp;args[2]);
+
+    let file = match File::open(path) {
+        Ok(f) =&gt; f,
+        Err(e) =&gt; {
+            eprintln!("无法打开 {path}: {e}");
+            std::process::exit(1);
+        }
+    };
+
+    let pattern = pattern.to_lowercase();
+    for (no, line) in BufReader::new(file).lines().enumerate() {
+        let line = line.expect("读取失败");
+        if line.to_lowercase().contains(&amp;pattern) {
+            println!("{}:{}", no + 1, line);
+        }
+    }
+}</code></pre>
+<pre><code class="language-shell">rustc -O minigrep.rs
+./minigrep error app.log        # 等价于 grep -i -n error app.log
+</code></pre>
+<h3 id="102-迷你-wc"><a class="header" href="#102-迷你-wc">10.2 迷你 wc</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6aW86OntzZWxmLCBCdWZSZWFkfTsKCmZuIG1haW4oKSB7CiAgICBsZXQgKG11dCBsaW5lcywgbXV0IHdvcmRzLCBtdXQgYnl0ZXMpID0gKDB1c2l6ZSwgMHVzaXplLCAwdXNpemUpOwogICAgZm9yIGxpbmUgaW4gaW86OnN0ZGluKCkubG9jaygpLmxpbmVzKCkgewogICAgICAgIGxldCBsaW5lID0gbGluZS5leHBlY3QoIuivu+WPluWksei0pSIpOwogICAgICAgIGxpbmVzICs9IDE7CiAgICAgICAgd29yZHMgKz0gbGluZS5zcGxpdF93aGl0ZXNwYWNlKCkuY291bnQoKTsKICAgICAgICBieXRlcyArPSBsaW5lLmxlbigpICsgMTsgLy8gKzEg6KGl5Zue5o2i6KGM56ymCiAgICB9CiAgICBwcmludGxuISgie2xpbmVzfSB7d29yZHN9IHtieXRlc30iKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">use std::io::{self, BufRead};
+
+fn main() {
+    let (mut lines, mut words, mut bytes) = (0usize, 0usize, 0usize);
+    for line in io::stdin().lock().lines() {
+        let line = line.expect("读取失败");
+        lines += 1;
+        words += line.split_whitespace().count();
+        bytes += line.len() + 1; // +1 补回换行符
+    }
+    println!("{lines} {words} {bytes}");
+}</code></pre>
+<pre><code class="language-shell">cargo build --release
+cat app.log | ./target/release/miniwc
+</code></pre>
+<h3 id="103-迷你-awk按列求和"><a class="header" href="#103-迷你-awk按列求和">10.3 迷你 awk（按列求和）</a></h3>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6aW86OntzZWxmLCBCdWZSZWFkfTsKCmZuIG1haW4oKSB7CiAgICBsZXQgbXV0IHN1bSA9IDAuMF9mNjQ7CiAgICBmb3IgbGluZSBpbiBpbzo6c3RkaW4oKS5sb2NrKCkubGluZXMoKSB7CiAgICAgICAgbGV0IGxpbmUgPSBsaW5lLmV4cGVjdCgi6K+75Y+W5aSx6LSlIik7CiAgICAgICAgaWYgbGV0IFNvbWUoZmllbGQpID0gbGluZS5zcGxpdCgnLCcpLm50aCgyKSB7CiAgICAgICAgICAgIGlmIGxldCBPayh2YWx1ZSkgPSBmaWVsZC50cmltKCkucGFyc2U6OjxmNjQ+KCkgewogICAgICAgICAgICAgICAgc3VtICs9IHZhbHVlOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQogICAgcHJpbnRsbiEoIuWQiOiuoToge3N1bTouMn0iKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">use std::io::{self, BufRead};
+
+fn main() {
+    let mut sum = 0.0_f64;
+    for line in io::stdin().lock().lines() {
+        let line = line.expect("读取失败");
+        if let Some(field) = line.split(',').nth(2) {
+            if let Ok(value) = field.trim().parse::&lt;f64&gt;() {
+                sum += value;
+            }
+        }
+    }
+    println!("合计: {sum:.2}");
+}</code></pre>
+<pre><code class="language-shell">cat fees.csv | ./target/release/minisum    # 等价于 awk -F, '{sum += $3} END {print sum}'
+</code></pre>
+<blockquote>
+<p>这些迷你工具加起来不到 60 行，却覆盖了 grep、wc、awk 的核心思路：<strong>读入文本流 → 按行/列切割 → 统计或过滤 → 输出文本流</strong>。理解了这一层，命令行就再也没有魔法。</p>
+</blockquote>
+<hr>
+<h2 id="十一参考资料"><a class="header" href="#十一参考资料">十一、参考资料</a></h2>
+<ul>
+<li><a href="https://curl.se/docs/">curl 官方文档</a>——一切参数的出处</li>
+<li><a href="https://git-scm.com/book/zh/v2">Pro Git（中文版）</a>——最权威的 Git 免费书</li>
+<li><a href="https://www.gnu.org/software/grep/manual/grep.html">GNU grep 手册</a></li>
+<li><a href="https://www.gnu.org/software/sed/manual/sed.html">GNU sed 手册</a></li>
+<li><a href="https://www.gnu.org/software/gawk/manual/gawk.html">GNU awk 手册</a></li>
+<li><a href="http://www.pement.org/awk/awk1line.txt">AWK 一行流（awk1line）</a>——经典的一句话脚本集</li>
+<li><a href="https://jqlang.github.io/jq/manual/">jq 手册</a></li>
+<li><a href="https://explainshell.com/">explainshell</a>——粘贴命令，逐段解释</li>
+<li><a href="https://tldr.sh/">tldr pages</a>——比 man 更实用的例子手册</li>
+<li><a href="https://github.com/jlevy/the-art-of-command-line/blob/master/README-zh.md">命令行的艺术（The Art of Command Line）</a></li>
+<li><a href="https://github.com/BurntSushi/ripgrep">ripgrep</a>——更快的 grep</li>
+<li><a href="https://doc.rust-lang.org/">Rust 官方文档</a>——用 Rust 重写你自己的工具时</li>
+<li><a href="https://docs.openssl.org/">OpenSSL 官方文档</a>——<code>openssl</code> 所有子命令与参数的出处</li>
+<li><a href="https://docs.openssl.org/master/man1/">openssl 手册页索引</a>——按子命令查（<code>openssl-enc</code>、<code>openssl-req</code>、<code>openssl-x509</code>、<code>openssl-s_client</code>）</li>
+<li><a href="https://openssl-library.org/news/vulnerabilities/">OpenSSL 安全策略与已知漏洞</a>——升级前先看这里</li>
+<li><a href="https://ssl-config.mozilla.org/">Mozilla SSL 配置生成器</a>——生成服务器端 TLS 配置与对应的 openssl 自检命令</li>
+<li><a href="https://badssl.com/">badssl.com</a>——过期证书、错误域名、弱协议等“病号“合集，练手 <code>s_client</code> 的靶场</li>
+<li><a href="https://testssl.sh/">testssl.sh</a>——一条命令体检 TLS 配置</li>
+<li><a href="https://certbot.eff.org/">Let’s Encrypt / Certbot</a>——自动签发与续期免费证书</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_78_Game.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_80_RustRewrite.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_78_Game.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_80_RustRewrite.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

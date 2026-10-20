@@ -86,10 +86,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
+            window.path_to_searchindex_js = "searchindex-09f1c163.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-545e538a.js"></script>
+        <script src="toc-a6286dd9.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -252,10 +252,13 @@
 </tbody>
 </table>
 </div>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIG5hbGdlYnJhIGFzIG5hOwp1c2UgbmE6OntNYXRyaXgyLCBNYXRyaXgzfTsKCmZuIG1haW4oKSB7CiAgICAvLyDljZXkvY3nn6npmLUKICAgIGxldCBpMiA9IE1hdHJpeDI6OjxmNjQ+OjppZGVudGl0eSgpOwogICAgcHJpbnRsbiEoIuWNleS9jeefqemYtSBJ4oKCOlxue30iLCBpMik7CgogICAgLy8g5a+56KeS55+p6Zi1CiAgICBsZXQgZGlhZzogTWF0cml4MzxmNjQ+ID0gTWF0cml4Mzo6ZnJvbV9kaWFnb25hbCgmbmE6OlZlY3RvcjM6Om5ldygxLjAsIDIuMCwgMy4wKSk7CiAgICBwcmludGxuISgi5a+56KeS55+p6Zi1IGRpYWc6XG57fSIsIGRpYWcpOwoKICAgIC8vIOmbtuefqemYtQogICAgbGV0IHplcm86IE1hdHJpeDI8ZjY0PiA9IE1hdHJpeDI6Onplcm9zKCk7CiAgICBwcmludGxuISgi6Zu255+p6Zi1IHplcm86XG57fSIsIHplcm8pOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KbmFsZ2VicmEgPSAiMC4zMyIKKi8KdXNlIG5hbGdlYnJhOjp7TWF0cml4MiwgTWF0cml4MyxWZWN0b3IzfTsKCmZuIG1haW4oKSB7CiAgICAvLyDljZXkvY3nn6npmLUKICAgIGxldCBpMiA9IE1hdHJpeDI6OjxmNjQ+OjppZGVudGl0eSgpOwogICAgcHJpbnRsbiEoIuWNleS9jeefqemYtSBJ4oKCOlxue30iLCBpMik7CgogICAgLy8g5a+56KeS55+p6Zi1CiAgICBsZXQgZGlhZzogTWF0cml4MzxmNjQ+ID0gTWF0cml4Mzo6ZnJvbV9kaWFnb25hbCgmVmVjdG9yMzo6bmV3KDEuMCwgMi4wLCAzLjApKTsKICAgIHByaW50bG4hKCLlr7nop5Lnn6npmLUgZGlhZzpcbnt9IiwgZGlhZyk7CgogICAgLy8g6Zu255+p6Zi1CiAgICBsZXQgemVybzogTWF0cml4MjxmNjQ+ID0gTWF0cml4Mjo6emVyb3MoKTsKICAgIHByaW50bG4hKCLpm7bnn6npmLUgemVybzpcbnt9IiwgemVybyk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
-<pre class="playground"><code class="language-rust edition2024">use nalgebra as na;
-use na::{Matrix2, Matrix3};
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+nalgebra = "0.33"
+*/
+use nalgebra::{Matrix2, Matrix3,Vector3};
 
 fn main() {
     // 单位矩阵
@@ -263,7 +266,7 @@ fn main() {
     println!("单位矩阵 I₂:\n{}", i2);
 
     // 对角矩阵
-    let diag: Matrix3&lt;f64&gt; = Matrix3::from_diagonal(&amp;na::Vector3::new(1.0, 2.0, 3.0));
+    let diag: Matrix3&lt;f64&gt; = Matrix3::from_diagonal(&amp;Vector3::new(1.0, 2.0, 3.0));
     println!("对角矩阵 diag:\n{}", diag);
 
     // 零矩阵
@@ -648,9 +651,13 @@ fn main() {
 <h3 id="102-qr-分解"><a class="header" href="#102-qr-分解">10.2 QR 分解</a></h3>
 <p>将矩阵分解为正交矩阵 $Q$ 和上三角矩阵 $R$ 的乘积：</p>
 <p>$$A = QR$$</p>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIG5hbGdlYnJhIGFzIG5hOwoKZm4gbWFpbigpIHsKICAgIGxldCBhID0gbmE6Ok1hdHJpeDM6Om5ldygKICAgICAgICAxLjAsIDIuMCwgMy4wLAogICAgICAgIDQuMCwgNS4wLCA2LjAsCiAgICAgICAgNy4wLCA4LjAsIDEwLjAsCiAgICApOwoKICAgIGxldCBxciA9IGEucXIoKTsKICAgIGxldCBxID0gcXIucSgpOwogICAgbGV0IHIgPSBxci5yKCk7CgogICAgcHJpbnRsbiEoIlE6XG57fSIsIHEpOwogICAgcHJpbnRsbiEoIlI6XG57fSIsIHIpOwogICAgcHJpbnRsbiEoIumqjOivgSBRKlI6XG57fSIsICZxICogJnIpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KbmFsZ2VicmEgPSAiMC4zMyIKKi8KdXNlIG5hbGdlYnJhIGFzIG5hOwoKZm4gbWFpbigpIHsKICAgIGxldCBhID0gbmE6Ok1hdHJpeDM6Om5ldygKICAgICAgICAxLjAsIDIuMCwgMy4wLAogICAgICAgIDQuMCwgNS4wLCA2LjAsCiAgICAgICAgNy4wLCA4LjAsIDEwLjAsCiAgICApOwoKICAgIGxldCBxciA9IGEucXIoKTsKICAgIGxldCBxID0gcXIucSgpOwogICAgbGV0IHIgPSBxci5yKCk7CgogICAgcHJpbnRsbiEoIlE6XG57fSIsIHEpOwogICAgcHJpbnRsbiEoIlI6XG57fSIsIHIpOwogICAgcHJpbnRsbiEoIumqjOivgSBRKlI6XG57fSIsICZxICogJnIpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
-<pre class="playground"><code class="language-rust edition2024">use nalgebra as na;
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+nalgebra = "0.33"
+*/
+use nalgebra as na;
 
 fn main() {
     let a = na::Matrix3::new(

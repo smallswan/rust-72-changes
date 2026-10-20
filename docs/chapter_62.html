@@ -86,10 +86,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
+            window.path_to_searchindex_js = "searchindex-09f1c163.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-545e538a.js"></script>
+        <script src="toc-a6286dd9.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -512,9 +512,9 @@ fn mutex_example() {
 </table>
 </div>
 <h3 id="73-rust-文件操作"><a class="header" href="#73-rust-文件操作">7.3 Rust 文件操作</a></h3>
-<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>use std::fs;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6ZnM7CnVzZSBzdGQ6OmlvOjpXcml0ZTsKCmZuIGZpbGVfb3BzKCkgewogICAgLy8g5YaZ5paH5Lu2CiAgICBmczo6d3JpdGUoImhlbGxvLnR4dCIsICJIZWxsbywgT1MhXG4iKS51bndyYXAoKTsKCiAgICAvLyDov73liqDlhpnlhaUKICAgIGxldCBtdXQgZiA9IGZzOjpPcGVuT3B0aW9uczo6bmV3KCkKICAgICAgICAuYXBwZW5kKHRydWUpCiAgICAgICAgLm9wZW4oImhlbGxvLnR4dCIpCiAgICAgICAgLnVud3JhcCgpOwogICAgZi53cml0ZV9hbGwoYiJBcHBlbmQgbGluZS5cbiIpLnVud3JhcCgpOwoKICAgIC8vIOivu+aWh+S7tgogICAgbGV0IGNvbnRlbnQgPSBmczo6cmVhZF90b19zdHJpbmcoImhlbGxvLnR4dCIpLnVud3JhcCgpOwogICAgcHJpbnRsbiEoIntjb250ZW50fSIpOwoKICAgIC8vIOmBjeWOhuebruW9lQogICAgZm9yIGVudHJ5IGluIGZzOjpyZWFkX2RpcigiLiIpLnVud3JhcCgpIHsKICAgICAgICBwcmludGxuISgiezo/fSIsIGVudHJ5LnVud3JhcCgpLmZpbGVfbmFtZSgpKTsKICAgIH0KfQpmbiBtYWluKCkgewogICAgZmlsZV9vcHMoKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">use std::fs;
 use std::io::Write;
 
 fn file_ops() {
@@ -537,7 +537,9 @@ fn file_ops() {
         println!("{:?}", entry.unwrap().file_name());
     }
 }
-<span class="boring">}</span></code></pre>
+fn main() {
+    file_ops();
+}</code></pre>
 <hr>
 <h2 id="八设备管理与-io"><a class="header" href="#八设备管理与-io">八、设备管理与 I/O</a></h2>
 <h3 id="81-io-控制方式"><a class="header" href="#81-io-控制方式">8.1 I/O 控制方式</a></h3>

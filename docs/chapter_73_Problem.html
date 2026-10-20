@@ -86,10 +86,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
+            window.path_to_searchindex_js = "searchindex-09f1c163.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-545e538a.js"></script>
+        <script src="toc-a6286dd9.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -319,15 +319,17 @@ $$</p>
 <h3 id="91-汉诺塔tower-of-hanoi"><a class="header" href="#91-汉诺塔tower-of-hanoi">9.1 汉诺塔（Tower of Hanoi）</a></h3>
 <p>将 $n$ 个大小不同的圆盘从一根柱子移动到另一根柱子，要求每次只移动一个圆盘，且大盘不能压在小盘上。</p>
 <p><strong>最少移动次数：</strong> $2^n - 1$</p>
-<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>fn hanoi(n: u32, from: &amp;str, to: &amp;str, aux: &amp;str) {
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gaGFub2kobjogdTMyLCBmcm9tOiAmc3RyLCB0bzogJnN0ciwgYXV4OiAmc3RyKSB7CiAgICBpZiBuID09IDAgeyByZXR1cm47IH0KICAgIGhhbm9pKG4gLSAxLCBmcm9tLCBhdXgsIHRvKTsKICAgIHByaW50bG4hKCLnp7vliqjlnIbnm5gge30g5LuOIHt9IOWIsCB7fSIsIG4sIGZyb20sIHRvKTsKICAgIGhhbm9pKG4gLSAxLCBhdXgsIHRvLCBmcm9tKTsKfQpmbiBtYWluKCkgewogICAgaGFub2koMywgIkEiLCAiQyIsICJCIik7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">fn hanoi(n: u32, from: &amp;str, to: &amp;str, aux: &amp;str) {
     if n == 0 { return; }
     hanoi(n - 1, from, aux, to);
     println!("移动圆盘 {} 从 {} 到 {}", n, from, to);
     hanoi(n - 1, aux, to, from);
 }
-<span class="boring">}</span></code></pre>
+fn main() {
+    hanoi(3, "A", "C", "B");
+}</code></pre>
 <h3 id="92-斐波那契数列"><a class="header" href="#92-斐波那契数列">9.2 斐波那契数列</a></h3>
 <p>$$F(n) = F(n-1) + F(n-2), \quad F(0)=0, ; F(1)=1$$</p>
 <p>数列：0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, …</p>
@@ -423,21 +425,24 @@ fn is_safe(row: usize, col: usize, cols: &amp;[usize]) -&gt; bool {
 <p>$n$ 个人围成一圈，从第 1 人开始报数，每报到 $m$ 的人出局，求最后幸存者的编号。</p>
 <p><strong>递推公式：</strong></p>
 <p>$$J(1) = 0, \quad J(n) = (J(n-1) + m) \bmod n$$</p>
-<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>fn josephus(n: usize, m: usize) -&gt; usize {
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gam9zZXBodXMobjogdXNpemUsIG06IHVzaXplKSAtPiB1c2l6ZSB7CiAgICBsZXQgbXV0IHBvcyA9IDB1c2l6ZTsKICAgIGZvciBpIGluIDIuLj1uIHsKICAgICAgICBwb3MgPSAocG9zICsgbSkgJSBpOwogICAgfQogICAgcG9zCn0KZm4gbWFpbigpIHsKICAgIGxldCByZXN1bHQgPSBqb3NlcGh1cyg3LCAzKTsKICAgIHByaW50bG4hKCJSZXN1bHQ6IHt9IiwgcmVzdWx0KTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">fn josephus(n: usize, m: usize) -&gt; usize {
     let mut pos = 0usize;
     for i in 2..=n {
         pos = (pos + m) % i;
     }
     pos
 }
-<span class="boring">}</span></code></pre>
+fn main() {
+    let result = josephus(7, 3);
+    println!("Result: {}", result);
+}</code></pre>
 <h3 id="102-表达式求值与逆波兰表示法"><a class="header" href="#102-表达式求值与逆波兰表示法">10.2 表达式求值与逆波兰表示法</a></h3>
 <p>将中缀表达式 <code>3 + 4 * 2</code> 转换为后缀表达式（逆波兰表示法）<code>3 4 2 * +</code>，可用栈高效求值。</p>
-<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>fn eval_rpn(tokens: &amp;[&amp;str]) -&gt; f64 {
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZXZhbF9ycG4odG9rZW5zOiAmWyZzdHJdKSAtPiBmNjQgewogICAgbGV0IG11dCBzdGFjazogVmVjPGY2ND4gPSBWZWM6Om5ldygpOwogICAgZm9yICZ0b2tlbiBpbiB0b2tlbnMgewogICAgICAgIG1hdGNoIHRva2VuIHsKICAgICAgICAgICAgIisiIHwgIi0iIHwgIioiIHwgIi8iID0+IHsKICAgICAgICAgICAgICAgIGxldCBiID0gc3RhY2sucG9wKCkudW53cmFwKCk7CiAgICAgICAgICAgICAgICBsZXQgYSA9IHN0YWNrLnBvcCgpLnVud3JhcCgpOwogICAgICAgICAgICAgICAgbGV0IHJlc3VsdCA9IG1hdGNoIHRva2VuIHsKICAgICAgICAgICAgICAgICAgICAiKyIgPT4gYSArIGIsCiAgICAgICAgICAgICAgICAgICAgIi0iID0+IGEgLSBiLAogICAgICAgICAgICAgICAgICAgICIqIiA9PiBhICogYiwKICAgICAgICAgICAgICAgICAgICAiLyIgPT4gYSAvIGIsCiAgICAgICAgICAgICAgICAgICAgXyA9PiB1bnJlYWNoYWJsZSEoKSwKICAgICAgICAgICAgICAgIH07CiAgICAgICAgICAgICAgICBzdGFjay5wdXNoKHJlc3VsdCk7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgXyA9PiBzdGFjay5wdXNoKHRva2VuLnBhcnNlKCkudW53cmFwKCkpLAogICAgICAgIH0KICAgIH0KICAgIHN0YWNrLnBvcCgpLnVud3JhcCgpCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgdG9rZW5zID0gWyIzIiwgIjQiLCAiMiIsICIqIiwgIisiXTsKICAgIGxldCByZXN1bHQgPSBldmFsX3JwbigmdG9rZW5zKTsKICAgIHByaW50bG4hKCJSZXN1bHQ6IHt9IiwgcmVzdWx0KTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">fn eval_rpn(tokens: &amp;[&amp;str]) -&gt; f64 {
     let mut stack: Vec&lt;f64&gt; = Vec::new();
     for &amp;token in tokens {
         match token {
@@ -458,7 +463,12 @@ fn is_safe(row: usize, col: usize, cols: &amp;[usize]) -&gt; bool {
     }
     stack.pop().unwrap()
 }
-<span class="boring">}</span></code></pre>
+
+fn main() {
+    let tokens = ["3", "4", "2", "*", "+"];
+    let result = eval_rpn(&amp;tokens);
+    println!("Result: {}", result);
+}</code></pre>
 <h3 id="103-图的遍历bfs-与-dfs"><a class="header" href="#103-图的遍历bfs-与-dfs">10.3 图的遍历：BFS 与 DFS</a></h3>
 <div class="table-wrapper">
 <table>
@@ -674,6 +684,7 @@ impl&lt;T&gt; Buffer&lt;T&gt; {
 <hr>
 <h2 id="十五学习资源"><a class="header" href="#十五学习资源">十五、学习资源</a></h2>
 <ul>
+<li><a href="https://kaisery.github.io/trpl-zh-cn/">Rust 程序设计语言</a></li>
 <li><a href="https://leetcode.cn">LeetCode</a></li>
 <li><a href="https://projecteuler.net/">Project Euler</a> — 数学与编程挑战</li>
 <li><a href="https://the-algorithms.com/">The Algorithms</a> — 开源算法实现集合</li>

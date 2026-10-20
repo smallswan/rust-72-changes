@@ -86,10 +86,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
+            window.path_to_searchindex_js = "searchindex-09f1c163.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-545e538a.js"></script>
+        <script src="toc-a6286dd9.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -344,9 +344,13 @@
 <li><strong><code>mpz</code></strong>：安全多方计算框架</li>
 <li><strong><code>oprf-rs</code></strong>：不经意伪随机函数，用于隐私密码认证</li>
 </ul>
-<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// 概念演示：组合使用多种隐私技术
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10Kc2hhMiA9ICIwLjExLjAtcmMuMyIKKi8KLy8g5qaC5b+15ryU56S677ya57uE5ZCI5L2/55So5aSa56eN6ZqQ56eB5oqA5pyvCnVzZSBzaGEyOjp7U2hhMjU2LCBEaWdlc3R9OwoKLy8vIOmakOengeS/neaKpOaVsOaNruiBmuWQiO+8mue7k+WQiOaJv+ivuuOAgeWTiOW4jOWSjOeugOWNleWQjOaAgeaAneaDswpmbiBwcml2YWN5X3ByZXNlcnZpbmdfYWdncmVnYXRpb24oKSB7CiAgICAvLyDkuInkuKrlj4LkuI7mlrnnmoTmlbDmja4KICAgIGxldCBkYXRhX2EgPSAxMDB1NjQ7CiAgICBsZXQgZGF0YV9iID0gMjAwdTY0OwogICAgbGV0IGRhdGFfYyA9IDMwMHU2NDsKCiAgICAvLyDkvb/nlKjlk4jluIzkvZzkuLrnroDljZXmib/or7rvvIjlrp7pmYXlupTnlKjlupTkvb/nlKhQZWRlcnNlbuaJv+ivuu+8iQogICAgbGV0IHNhbHRfYSA9IGIicmFuZG9tX3NhbHRfYSI7CiAgICBsZXQgc2FsdF9iID0gYiJyYW5kb21fc2FsdF9iIjsKICAgIGxldCBzYWx0X2MgPSBiInJhbmRvbV9zYWx0X2MiOwoKICAgIGxldCBtdXQgaGFzaGVyX2EgPSBTaGEyNTY6Om5ldygpOwogICAgaGFzaGVyX2EudXBkYXRlKHNhbHRfYSk7CiAgICBoYXNoZXJfYS51cGRhdGUoJmRhdGFfYS50b19sZV9ieXRlcygpKTsKICAgIGxldCBjb21taXRtZW50X2EgPSBoYXNoZXJfYS5maW5hbGl6ZSgpOwoKICAgIC8vIOWPguS4juaWueaPkOS6pOaJv+ivuuWQju+8jOWGjeaPreekuuaVsOaNrgogICAgcHJpbnRsbiEoIuWPguS4juaWuUHmj5DkuqTmib/or7o6IHs6MDJ4P30iLCBjb21taXRtZW50X2EpOwoKICAgIC8vIOaVsOaNruaPreekuuWQjumqjOivgeaJv+ivugogICAgbGV0IG11dCB2ZXJpZnlfYSA9IFNoYTI1Njo6bmV3KCk7CiAgICB2ZXJpZnlfYS51cGRhdGUoc2FsdF9hKTsKICAgIHZlcmlmeV9hLnVwZGF0ZSgmZGF0YV9hLnRvX2xlX2J5dGVzKCkpOwogICAgbGV0IHZlcmlmaWVkID0gdmVyaWZ5X2EuZmluYWxpemUoKSA9PSBjb21taXRtZW50X2E7CiAgICBwcmludGxuISgi5om/6K+66aqM6K+BOiB7fSIsIHZlcmlmaWVkKTsKCiAgICAvLyDorqHnrpfogZrlkIjnu5PmnpwKICAgIGxldCB0b3RhbCA9IGRhdGFfYSArIGRhdGFfYiArIGRhdGFfYzsKICAgIHByaW50bG4hKCLogZrlkIjnu5Pmnpw6IHt9IiwgdG90YWwpOwoKICAgIC8vIOWcqOWunumZheezu+e7n+S4re+8jOiBmuWQiOiuoeeul+W6lOWcqOWvhuaWhy/lronlhajnjq/looPkuIvov5vooYwKICAgIC8vIOi/memHjOS7hea8lOekuuamguW/tea1geeoiwp9CmZuIG1haW4oKSB7CiAgICBwcml2YWN5X3ByZXNlcnZpbmdfYWdncmVnYXRpb24oKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+sha2 = "0.11.0-rc.3"
+*/
+// 概念演示：组合使用多种隐私技术
 use sha2::{Sha256, Digest};
 
 /// 隐私保护数据聚合：结合承诺、哈希和简单同态思想
@@ -383,7 +387,9 @@ fn privacy_preserving_aggregation() {
     // 在实际系统中，聚合计算应在密文/安全环境下进行
     // 这里仅演示概念流程
 }
-<span class="boring">}</span></code></pre>
+fn main() {
+    privacy_preserving_aggregation();
+}</code></pre>
 <h2 id="724-全书密码学知识体系总结"><a class="header" href="#724-全书密码学知识体系总结">72.4 全书密码学知识体系总结</a></h2>
 <p>回顾本书下卷“秘密与密码“的完整知识脉络：</p>
 <h3 id="知识图谱"><a class="header" href="#知识图谱">知识图谱</a></h3>

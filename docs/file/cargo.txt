@@ -113,3 +113,17 @@ PrtSc 系列需要粘贴到画图软件再保存，不会自动存文件
 
 IP 文化原型：Rust 官方吉祥物 Ferris（螃蟹🦀）
 这只机甲螃蟹的本体原型就是 Rust 语言标志性吉祥物Ferris（友好螃蟹），crate是 Rust 生态里代码库 / 包的专属术语，图中背部的crate标识、标语EVERY CRATE AT YOUR SERVICE（所有 Rust 库随时为你服务），都是围绕 Rust 开源生态做的创意二创，对应 crates.io、lib.rs 上海量的第三方库生态文化。
+
+
+cargo update -p ethnum
+
+cargo update -p  num-complex
+cargo update -p  num-rational
+
+cargo update -p  num-complex@0.1.43
+cargo update -p  num-complex@0.4.6
+cargo update -p  num-rational
+
+cargo update -p    num-rational@0.1.42
+cargo update -p    num-rational@0.2.4
+cargo update -p    num-rational@0.4.2

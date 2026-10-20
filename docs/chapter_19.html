@@ -86,10 +86,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e3f53d02.js";
+            window.path_to_searchindex_js = "searchindex-09f1c163.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-545e538a.js"></script>
+        <script src="toc-a6286dd9.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -248,24 +248,28 @@
 <h2 id="隐式类型转换-vs-显式类型转换"><a class="header" href="#隐式类型转换-vs-显式类型转换">隐式类型转换 vs 显式类型转换</a></h2>
 <h3 id="隐式强制转换coercion"><a class="header" href="#隐式强制转换coercion">隐式强制转换（Coercion）</a></h3>
 <p>Rust 虽然不支持一般的隐式类型转换，但在少数特定场景下，编译器会自动进行<strong>强制转换（coercion）</strong>：</p>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIDEuIOiHquWKqOino+W8leeUqOW8uuWItui9rOaNou+8iERlcmVmIGNvZXJjaW9u77yJCiAgICBsZXQgczogU3RyaW5nID0gU3RyaW5nOjpmcm9tKCJoZWxsbyIpOwogICAgbGV0IHNsaWNlOiAmc3RyID0gJnM7IC8vIFN0cmluZyDoh6rliqjop6PlvJXnlKjkuLogJnN0cgoKICAgIGxldCB2OiBWZWM8aTMyPiA9IHZlYyFbMSwgMiwgM107CiAgICBsZXQgc2xpY2U6ICZbaTMyXSA9ICZ2OyAvLyBWZWM8VD4g6Ieq5Yqo6Kej5byV55So5Li6ICZbVF0KCiAgICAvLyAyLiAmbXV0IFQg6Ieq5Yqo6L2s5o2i5Li6ICZUCiAgICBsZXQgbXV0IHggPSA0MjsKICAgIGxldCByOiAmaTMyID0gJng7IC8vIOWPr+WPmOW8leeUqOiHquWKqOi9rOS4uuS4jeWPr+WPmOW8leeUqAoKICAgIC8vIDMuIOaVsOWAvOWtl+mdoumHj+eahOexu+Wei+aOqOaWrQogICAgbGV0IHg6IGkzMiA9IDQyOyAgICAgICAvLyA0MiDooqvmjqjmlq3kuLogaTMyCiAgICBsZXQgeTogZjY0ID0gMy4xNDsgICAgIC8vIDMuMTQg6KKr5o6o5pat5Li6IGY2NAogICAgbGV0IHo6IHU4ID0gMjU1OyAgICAgICAvLyAyNTUg6KKr5o6o5pat5Li6IHU4CgogICAgLy8gNC4g6Ieq5Yqo5o+Q5Y2H77ya5pW05pWw5Y+v5Lul6Ieq5Yqo6L2s5o2i5Li65pu05aSn55qE5ZCM56ym5Y+357G75Z6L77yI5Zyo54m55a6a5LiK5LiL5paH5Lit77yJCiAgICAvLyDms6jmhI/vvJpSdXN0IOeahOiHquWKqOaPkOWNh+mdnuW4uOaciemZkO+8jOS4jeWDjyBDIOivreiogOmCo+agt+iHqueUsQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIDEuIOiHquWKqOino+W8leeUqOW8uuWItui9rOaNou+8iERlcmVmIGNvZXJjaW9u77yJCiAgICBsZXQgczogU3RyaW5nID0gU3RyaW5nOjpmcm9tKCJoZWxsbyIpOwogICAgbGV0IHNsaWNlOiAmc3RyID0gJnM7IC8vIFN0cmluZyDoh6rliqjop6PlvJXnlKjkuLogJnN0cgogICAgcHJpbnRsbiEoInt9IixzbGljZSk7CgogICAgbGV0IHY6IFZlYzxpMzI+ID0gdmVjIVsxLCAyLCAzXTsKICAgIGxldCBzbGljZTogJltpMzJdID0gJnY7IC8vIFZlYzxUPiDoh6rliqjop6PlvJXnlKjkuLogJltUXQogICAgcHJpbnRsbiEoIns6P30iLHNsaWNlKTsKCiAgICAvLyAyLiAmbXV0IFQg6Ieq5Yqo6L2s5o2i5Li6ICZUCiAgICBsZXQgbXV0IHggPSA0MjsKICAgIGxldCByOiAmaTMyID0gJng7IC8vIOWPr+WPmOW8leeUqOiHquWKqOi9rOS4uuS4jeWPr+WPmOW8leeUqAogICAgcHJpbnRsbiEoInt9IixyKTsKCiAgICAvLyAzLiDmlbDlgLzlrZfpnaLph4/nmoTnsbvlnovmjqjmlq0KICAgIGxldCB4OiBpMzIgPSA0MjsgICAgICAgLy8gNDIg6KKr5o6o5pat5Li6IGkzMgogICAgbGV0IHk6IGY2NCA9IDMuMTQ7ICAgICAvLyAzLjE0IOiiq+aOqOaWreS4uiBmNjQKICAgIGxldCB6OiB1OCA9IDI1NTsgICAgICAgLy8gMjU1IOiiq+aOqOaWreS4uiB1OAogICAgcHJpbnRsbiEoInt9LHt9LHt9Iix4LHkseik7CgogICAgLy8gNC4g6Ieq5Yqo5o+Q5Y2H77ya5pW05pWw5Y+v5Lul6Ieq5Yqo6L2s5o2i5Li65pu05aSn55qE5ZCM56ym5Y+357G75Z6L77yI5Zyo54m55a6a5LiK5LiL5paH5Lit77yJCiAgICAvLyDms6jmhI/vvJpSdXN0IOeahOiHquWKqOaPkOWNh+mdnuW4uOaciemZkO+8jOS4jeWDjyBDIOivreiogOmCo+agt+iHqueUsQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 1. 自动解引用强制转换（Deref coercion）
     let s: String = String::from("hello");
     let slice: &amp;str = &amp;s; // String 自动解引用为 &amp;str
+    println!("{}",slice);
 
     let v: Vec&lt;i32&gt; = vec![1, 2, 3];
     let slice: &amp;[i32] = &amp;v; // Vec&lt;T&gt; 自动解引用为 &amp;[T]
+    println!("{:?}",slice);
 
     // 2. &amp;mut T 自动转换为 &amp;T
     let mut x = 42;
     let r: &amp;i32 = &amp;x; // 可变引用自动转为不可变引用
+    println!("{}",r);
 
     // 3. 数值字面量的类型推断
     let x: i32 = 42;       // 42 被推断为 i32
     let y: f64 = 3.14;     // 3.14 被推断为 f64
     let z: u8 = 255;       // 255 被推断为 u8
+    println!("{},{},{}",x,y,z);
 
     // 4. 自动提升：整数可以自动转换为更大的同符号类型（在特定上下文中）
     // 注意：Rust 的自动提升非常有限，不像 C 语言那样自由
