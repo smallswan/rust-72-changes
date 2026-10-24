@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-fc5581c7.js";
+            window.path_to_searchindex_js = "searchindex-72bc1c85.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a6286dd9.js"></script>
@@ -411,6 +411,34 @@ $$xe^x+\ln(1-x)&gt;0\iff -\ln(1-x)&lt;xe^x.$$
 <h4 id="补充三者等价无穷小-x-to-0-"><a class="header" href="#补充三者等价无穷小-x-to-0-">补充：三者等价无穷小（ $$x \to 0^+ $$）</a></h4>
 <p>$$-\ln(1-x)\sim x,\quad xe^x\sim x,\quad \frac{x}{1-x}\sim x$$
 三者是<strong>同阶等价无穷小</strong>，只是从低到高：$$-\ln(1-x)&lt;xe^x&lt;\tfrac{x}{1-x}$$。</p>
+<hr>
+<h2 id="练习题"><a class="header" href="#练习题">练习题</a></h2>
+<ol>
+<li>
+<p><strong>整数除法与取余</strong>：计算 <code>7 / 2</code>、<code>7 % 2</code>、<code>-7 / 2</code>、<code>-7 % 2</code> 在 Rust 中的结果，并解释整数除法和取余的符号规则。</p>
+</li>
+<li>
+<p><strong>模运算</strong>：利用模运算的性质计算 $2^{100}\bmod 7$，并写出每一步用到的性质。</p>
+</li>
+<li>
+<p><strong>整数溢出</strong>：在 Rust 中，<code>i8</code> 的 <code>127 + 1</code> 在 debug 和 release 模式下分别会怎样？比较 <code>checked_add</code>、<code>wrapping_add</code>、<code>saturating_add</code>、<code>overflowing_add</code> 的行为。</p>
+</li>
+<li>
+<p><strong>安全平均值</strong>：实现 <code>fn avg(a: u32, b: u32) -&gt; u32</code>，要求 <code>a + b</code> 溢出时也能得到正确结果，并说明你的写法为什么安全。</p>
+</li>
+<li>
+<p><strong>三角函数</strong>：把 $30^\circ$、$45^\circ$、$60^\circ$ 转换为弧度，用 Rust 计算 <code>sin</code>、<code>cos</code>、<code>tan</code> 并与理论值比较；解释 <code>tan(π/2)</code> 为什么不是数学意义上的无穷大。</p>
+</li>
+<li>
+<p><strong>阶乘</strong>：计算 $20!$，说明为什么 <code>u64</code> 能存下 $20!$ 而 $21!$ 会溢出；再用 <code>f64</code> 或对数估算 $100!$ 的数量级。</p>
+</li>
+<li>
+<p><strong>数值稳定性</strong>：计算 $1-\cos x$（取 $x=10^{-8}$）时，为什么直接相减会损失精度？用 $2\sin^2(x/2)$ 改写公式并比较两者的结果。</p>
+</li>
+<li>
+<p><strong>不等式证明</strong>：证明 $-\ln(1-x) &lt; xe^x &lt; \dfrac{x}{1-x}$（$0&lt;x&lt;1$），并说明这三个函数在 $x\to0^+$ 时是同阶等价无穷小。</p>
+</li>
+</ol>
 
                     </main>
 

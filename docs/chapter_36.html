@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-fc5581c7.js";
+            window.path_to_searchindex_js = "searchindex-72bc1c85.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a6286dd9.js"></script>
@@ -1248,15 +1248,37 @@ fn main() {
 </table>
 </div>
 <p>神经网络是现代人工智能的核心技术。从简单的感知机到复杂的 Transformer，从 MNIST 手写识别到大语言模型，神经网络的发展深刻改变了技术世界。Rust 凭借其安全性和高性能，正在成为 AI 基础设施的重要选择。</p>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="十三练习题"><a class="header" href="#十三练习题">十三、练习题</a></h2>
 <ol>
-<li>从零实现一个两层 MLP，在 MNIST 子集上完成训练和推理</li>
-<li>用 Rust 实现 SGD 和 Adam 优化器，对比收敛速度</li>
-<li>使用 candle 框架加载预训练模型，完成文本分类或图像识别任务</li>
-<li>实现一个简易的自注意力模块，理解 Transformer 的核心机制</li>
+<li>
+<p><strong>感知机</strong>：用感知机实现 AND、OR、NAND 三个逻辑门；说明单层感知机为什么无法实现 XOR，两层网络又是如何解决它的。</p>
+</li>
+<li>
+<p><strong>激活函数</strong>：写出 Sigmoid、Tanh、ReLU 的公式和导数，比较它们的优缺点，并解释 ReLU 的“死亡神经元”问题。</p>
+</li>
+<li>
+<p><strong>前向传播</strong>：一个 2-2-1 网络，输入为 $(1,2)$；第一层权重（按行）为 <code>[[0.5, -0.5], [1, 0]]</code>，偏置 $b_1=(0,0.5)$，激活函数为 ReLU；第二层权重 $W_2=(1,-1)$，偏置 $b_2=0$，激活函数为 Sigmoid。手算网络的输出。</p>
+</li>
+<li>
+<p><strong>损失函数</strong>：写出均方误差和交叉熵的公式，并说明分类任务为什么通常使用交叉熵而不是均方误差。</p>
+</li>
+<li>
+<p><strong>梯度下降</strong>：对 $f(w)=w^2-4w+1$ 使用梯度下降求最小值，推导更新公式，并分析学习率过大和过小分别会出现什么现象。</p>
+</li>
+<li>
+<p><strong>反向传播</strong>：对一个单隐藏层网络（Sigmoid 激活、均方误差损失）推导 $\partial L/\partial w$ 的链式法则过程，说明误差是如何从输出层传回隐藏层的。</p>
+</li>
+<li>
+<p><strong>CNN 尺寸</strong>：输入为 $32\times32$ 的图像，使用 $5\times5$ 卷积核、步长 1、无填充，输出尺寸是多少？再接一个 $2\times2$ 最大池化层后呢？</p>
+</li>
+<li>
+<p><strong>注意力机制</strong>：写出缩放点积注意力公式 $\text{softmax}(QK^T/\sqrt{d_k})V$，解释为什么要除以 $\sqrt{d_k}$，以及 softmax 在这里的作用。</p>
+</li>
+<li>
+<p><strong>编程题</strong>：用 Rust 从零实现一个两层 MLP 训练 XOR，记录损失随迭代次数的变化，并观察隐藏层神经元数量对收敛的影响。</p>
+</li>
 </ol>
-</blockquote>
 
                     </main>
 

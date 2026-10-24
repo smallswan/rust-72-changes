@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-fc5581c7.js";
+            window.path_to_searchindex_js = "searchindex-72bc1c85.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a6286dd9.js"></script>
@@ -642,14 +642,37 @@ fn main() {
 </table>
 </div>
 <p>向量是连接代数与几何的桥梁，也是现代计算机科学的基石。从物理中的力和速度，到机器学习中的特征向量，向量的概念无处不在。</p>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="十二练习题"><a class="header" href="#十二练习题">十二、练习题</a></h2>
 <ol>
-<li>实现向量的各种运算（加法、数乘、点积、叉积）</li>
-<li>用余弦相似度实现简单的文档相似度计算</li>
-<li>实现施密特正交化算法</li>
+<li>
+<p><strong>向量运算</strong>：设 $\vec a=(1,2,3)$、$\vec b=(4,-1,2)$，求 $\vec a+\vec b$、$2\vec a-3\vec b$、$\vec a\cdot\vec b$ 与 $\vec a\times\vec b$。</p>
+</li>
+<li>
+<p><strong>夹角与余弦相似度</strong>：求 $\vec a=(1,0)$ 与 $\vec b=(1,1)$ 的夹角和余弦相似度；再求 $\vec a=(1,2,2)$ 与 $\vec b=(2,4,4)$ 的夹角。</p>
+</li>
+<li>
+<p><strong>模与范数</strong>：求 $\vec a=(3,-4)$ 的 $L_1$、$L_2$、$L_\infty$ 范数，并把 $\vec a$ 单位化。</p>
+</li>
+<li>
+<p><strong>线性相关性</strong>：判断向量组 $(1,2,3)$、$(2,4,6)$、$(1,0,1)$ 是否线性相关，求其秩和一个极大线性无关组。</p>
+</li>
+<li>
+<p><strong>正交与投影</strong>：设 $\vec a=(1,2,2)$，求它在 $\vec b=(1,0,0)$ 上的投影向量；再写出一个与 $\vec a$ 正交的非零向量。</p>
+</li>
+<li>
+<p><strong>施密特正交化</strong>：对 $\vec v_1=(1,1,0)$、$\vec v_2=(0,1,1)$、$\vec v_3=(1,0,1)$ 做 Gram-Schmidt 正交化，并单位化。</p>
+</li>
+<li>
+<p><strong>旋转与缩放</strong>：把向量 $(1,0)$ 先逆时针旋转 $90^\circ$，再沿 $x$ 轴方向缩放 2 倍，求最终向量，并写出对应的变换矩阵。</p>
+</li>
+<li>
+<p><strong>Rust 编程</strong>：用 nalgebra 计算两个三维向量的点积、叉积、夹角和范数，并与手算结果对比。</p>
+</li>
+<li>
+<p><strong>思考题</strong>：为什么非零的正交向量组一定线性无关？余弦相似度与欧氏距离在什么情况下会给出不同的“相似”判断？</p>
+</li>
 </ol>
-</blockquote>
 
                     </main>
 

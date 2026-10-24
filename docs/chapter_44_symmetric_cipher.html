@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-fc5581c7.js";
+            window.path_to_searchindex_js = "searchindex-72bc1c85.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a6286dd9.js"></script>
@@ -558,6 +558,37 @@ fn sm4(){
 openssl enc -sm4-ctr -pbkdf2 -d -in bank.txt -out decode.txt -a
 openssl enc -e -sm4 -in /tmp/1.txt -out /tmp/2.txt
 </code></pre>
+<hr>
+<h2 id="练习题"><a class="header" href="#练习题">练习题</a></h2>
+<ol>
+<li>
+<p><strong>流密码与分组密码</strong>：说明两者“按位/按块”处理的区别和适用场景；为什么流密码的 nonce 绝对不能重复使用？</p>
+</li>
+<li>
+<p><strong>AEAD</strong>：ChaCha20-Poly1305 中 ChaCha20 和 Poly1305 各自负责什么？如果密文被篡改一个字节，解密时会发生什么？</p>
+</li>
+<li>
+<p><strong>分组模式</strong>：比较 ECB、CBC、CTR、GCM 四种模式的特点；为什么 ECB 不适合加密图片？CBC 的 IV 需要满足什么条件？</p>
+</li>
+<li>
+<p><strong>填充</strong>：分组长度为 16 字节，明文长度为 20 字节时，PKCS#7 需要补几个字节、补什么值？如果明文正好 16 字节呢？</p>
+</li>
+<li>
+<p><strong>AES</strong>：AES-128、AES-192、AES-256 的密钥长度和轮数分别是多少？简述 SubBytes、ShiftRows、MixColumns、AddRoundKey 四步的作用。</p>
+</li>
+<li>
+<p><strong>SM4</strong>：SM4 的分组长度、密钥长度和轮数分别是多少？与 AES 相比有哪些异同？</p>
+</li>
+<li>
+<p><strong>压缩与加密的顺序</strong>：为什么应当先压缩再加密？如果先加密再压缩会怎样？结合本章的结论解释原因。</p>
+</li>
+<li>
+<p><strong>编程题</strong>：用 Rust 的 <code>chacha20poly1305</code> 或 <code>aes-gcm</code> 实现文件加解密：随机生成 nonce 并与密文一起保存，解密时验证认证标签；修改一个密文字节，验证解密会失败。</p>
+</li>
+<li>
+<p><strong>OpenSSL 实践</strong>：用 <code>openssl enc</code> 完成一次 SM4-CTR 加解密，比较加 <code>-pbkdf2</code> 与不加的区别，并说明 <code>-a</code> 参数的作用。</p>
+</li>
+</ol>
 
                     </main>
 

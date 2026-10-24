@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-fc5581c7.js";
+            window.path_to_searchindex_js = "searchindex-72bc1c85.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a6286dd9.js"></script>
@@ -479,9 +479,9 @@ fn main() {
 <li>对称性：$\binom{n}{k} = \binom{n}{n-k}$</li>
 <li>递推关系：$\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}$</li>
 </ul>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gYmlub21pYWwobjogdTY0LCBrOiB1NjQpIC0+IHU2NCB7CiAgICBpZiBrID4gbiB7IHJldHVybiAwOyB9CiAgICBpZiBrID4gbiAtIGsgeyBrID0gbiAtIGs7IH0gLy8g5Yip55So5a+556ew5oCn5LyY5YyWCiAgICBsZXQgbXV0IHJlc3VsdCA9IDF1NjQ7CiAgICBmb3IgaSBpbiAwLi5rIHsKICAgICAgICByZXN1bHQgPSByZXN1bHQgKiAobiAtIGkpIC8gKGkgKyAxKTsKICAgIH0KICAgIHJlc3VsdAp9CgpmbiBwcmludF9wYXNjYWwocm93czogdXNpemUpIHsKICAgIGZvciBuIGluIDAuLnJvd3MgewogICAgICAgIGZvciBrIGluIDAuLj1uIHsKICAgICAgICAgICAgcHJpbnQhKCJ7OjZ9IiwgYmlub21pYWwobiBhcyB1NjQsIGsgYXMgdTY0KSk7CiAgICAgICAgfQogICAgICAgIHByaW50bG4hKCk7CiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBwcmludF9wYXNjYWwoMTApOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gYmlub21pYWwobjogdTY0LCBtdXQgazogdTY0KSAtPiB1NjQgewogICAgaWYgayA+IG4geyByZXR1cm4gMDsgfQogICAgaWYgayA+IG4gLSBrIHsgayA9IG4gLSBrOyB9IC8vIOWIqeeUqOWvueensOaAp+S8mOWMlgogICAgbGV0IG11dCByZXN1bHQgPSAxdTY0OwogICAgZm9yIGkgaW4gMC4uayB7CiAgICAgICAgcmVzdWx0ID0gcmVzdWx0ICogKG4gLSBpKSAvIChpICsgMSk7CiAgICB9CiAgICByZXN1bHQKfQoKZm4gcHJpbnRfcGFzY2FsKHJvd3M6IHVzaXplKSB7CiAgICBpZiByb3dzID09IDAgewogICAgICAgIHJldHVybjsKICAgIH0KCiAgICAvLyDmnIDlpKfmlbDlrZflh7rnjrDlnKjmnIDlkI7kuIDooYzkuK3pl7TvvIznlKjlroPlhrPlrprmr4/kuKrmlbDlrZfnmoTliJflrr0KICAgIGxldCBtYXhfdmFsdWUgPSBiaW5vbWlhbCgocm93cyAtIDEpIGFzIHU2NCwgKChyb3dzIC0gMSkgLyAyKSBhcyB1NjQpOwogICAgbGV0IG11dCB3aWR0aCA9IG1heF92YWx1ZS50b19zdHJpbmcoKS5sZW4oKSArIDI7CiAgICBpZiB3aWR0aCAlIDIgIT0gMCB7CiAgICAgICAgd2lkdGggKz0gMTsgLy8g5YiX5a695Y+W5YG25pWw77yM5L+d6K+B5bGF5Lit5pe25bem5Y+z5a+556ewCiAgICB9CgogICAgZm9yIG4gaW4gMC4ucm93cyB7CiAgICAgICAgLy8g6KGM6aaW6KGl56m65qC877yM5L2/5omA5pyJ6KGM5Lul5ZCM5LiA5Liq5Lit5b+D5a+56b2QCiAgICAgICAgbGV0IGluZGVudCA9IChyb3dzIC0gMSAtIG4pICogd2lkdGggLyAyOwogICAgICAgIHByaW50ISgie30iLCAiICIucmVwZWF0KGluZGVudCkpOwogICAgICAgIGZvciBrIGluIDAuLj1uIHsKICAgICAgICAgICAgcHJpbnQhKCJ7Ol53aWR0aCR9IiwgYmlub21pYWwobiBhcyB1NjQsIGsgYXMgdTY0KSwgd2lkdGggPSB3aWR0aCk7CiAgICAgICAgfQogICAgICAgIHByaW50bG4hKCk7CiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBwcmludF9wYXNjYWwoMTApOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
-<pre class="playground"><code class="language-rust edition2024">fn binomial(n: u64, k: u64) -&gt; u64 {
+<pre class="playground"><code class="language-rust edition2024">fn binomial(n: u64, mut k: u64) -&gt; u64 {
     if k &gt; n { return 0; }
     if k &gt; n - k { k = n - k; } // 利用对称性优化
     let mut result = 1u64;
@@ -492,9 +492,23 @@ fn main() {
 }
 
 fn print_pascal(rows: usize) {
+    if rows == 0 {
+        return;
+    }
+
+    // 最大数字出现在最后一行中间，用它决定每个数字的列宽
+    let max_value = binomial((rows - 1) as u64, ((rows - 1) / 2) as u64);
+    let mut width = max_value.to_string().len() + 2;
+    if width % 2 != 0 {
+        width += 1; // 列宽取偶数，保证居中时左右对称
+    }
+
     for n in 0..rows {
+        // 行首补空格，使所有行以同一个中心对齐
+        let indent = (rows - 1 - n) * width / 2;
+        print!("{}", " ".repeat(indent));
         for k in 0..=n {
-            print!("{:6}", binomial(n as u64, k as u64));
+            print!("{:^width$}", binomial(n as u64, k as u64), width = width);
         }
         println!();
     }
@@ -573,14 +587,57 @@ fn main() {
 </table>
 </div>
 <p>微积分是理解连续变化的数学工具。从物理中的运动分析，到机器学习中的梯度下降，微积分的思想无处不在。</p>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="十三练习题"><a class="header" href="#十三练习题">十三、练习题</a></h2>
 <ol>
-<li>用数值方法验证泰勒公式的精度</li>
-<li>实现蒙特卡洛方法计算定积分</li>
-<li>用梯度下降法求解函数的极小值</li>
+<li>
+<p><strong>极限</strong>：求下列极限：</p>
+<ul>
+<li>$\displaystyle \lim_{x\to 0}\frac{\sin 3x}{2x}$</li>
+<li>$\displaystyle \lim_{x\to 0}\frac{1-\cos x}{x^2}$</li>
+<li>$\displaystyle \lim_{x\to \infty}\left(1+\frac{1}{x}\right)^{2x}$</li>
+</ul>
+</li>
+<li>
+<p><strong>导数与极值</strong>：设 $f(x)=x^2e^{-x}$，求 $f’(x)$、驻点、单调区间与极值。</p>
+</li>
+<li>
+<p><strong>中值定理</strong>：用拉格朗日中值定理证明：对任意实数 $a,b$，有 $|\sin a-\sin b|\le |a-b|$。</p>
+</li>
+<li>
+<p><strong>洛必达法则与泰勒公式</strong>：</p>
+<ul>
+<li>用洛必达法则求 $\displaystyle \lim_{x\to 0}\frac{e^x-1-x}{x^2}$；</li>
+<li>写出 $e^x$ 在 $x=0$ 处的 $n$ 阶泰勒展开，并估算用 5 阶展开计算 $e^{0.1}$ 时的截断误差。</li>
+</ul>
+</li>
+<li>
+<p><strong>积分</strong>：</p>
+<ul>
+<li>用分部积分法求 $\displaystyle \int xe^{-x}\mathrm{d}x$，进而计算 $\displaystyle \int_0^1 xe^{-x}\mathrm{d}x$；</li>
+<li>用换元法求 $\displaystyle \int_0^1 \frac{x}{\sqrt{1+x^2}}\mathrm{d}x$。</li>
+</ul>
+</li>
+<li>
+<p><strong>数值积分</strong>：用 Rust 分别实现梯形法、辛普森法和蒙特卡洛法，计算
+$\displaystyle \int_0^1 e^{-x^2}\mathrm{d}x$，
+比较 $N=10,10^2,10^3,10^4$ 时的误差，并解释三种方法的误差随 $N$ 变化的趋势。</p>
+</li>
+<li>
+<p><strong>偏导数与梯度</strong>：设 $f(x,y)=x^2+2xy+3y^2$。</p>
+<ul>
+<li>求 $\partial f/\partial x$、$\partial f/\partial y$ 和梯度 $\nabla f$；</li>
+<li>求驻点，并用 Hessian 矩阵判断其类型；</li>
+<li>求在点 $(1,1)$ 沿方向 $\mathbf{u}=(1,1)/\sqrt{2}$ 的方向导数。</li>
+</ul>
+</li>
+<li>
+<p><strong>梯度下降</strong>：用 Rust 实现梯度下降，求 $f(x)=x^4-3x^2+2$ 的极小值。分别取学习率 $\eta=0.01,0.1,0.5$，从 $x_0=2$ 出发迭代 100 次，记录 $x$ 与 $f(x)$ 的变化，并解释学习率过大或过小时的实验现象。</p>
+</li>
+<li>
+<p><strong>思考题</strong>：蒙特卡洛积分的误差为什么是 $O(1/\sqrt{N})$？与梯形法在光滑函数上的 $O(1/N^2)$ 相比，什么场景下仍然值得选择蒙特卡洛方法？</p>
+</li>
 </ol>
-</blockquote>
 <hr>
 <h2 id="学习资源"><a class="header" href="#学习资源">学习资源</a></h2>
 <div class="table-wrapper">

@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-fc5581c7.js";
+            window.path_to_searchindex_js = "searchindex-72bc1c85.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a6286dd9.js"></script>
@@ -323,7 +323,83 @@ fn main() {
         // [43, 50]
     }
 }</code></pre>
-<h3 id="24-矩阵乘法的性质"><a class="header" href="#24-矩阵乘法的性质">2.4 矩阵乘法的性质</a></h3>
+<h3 id="24-hadamard-积逐元素乘法"><a class="header" href="#24-hadamard-积逐元素乘法">2.4 Hadamard 积（逐元素乘法）</a></h3>
+<p>Hadamard 积（Hadamard product）也叫 <strong>Schur 积</strong> 或 <strong>逐元素乘法</strong>，要求两个矩阵<strong>同型</strong>（行数、列数都相同），然后把对应位置的元素直接相乘：</p>
+<p>$$(A \circ B)[i,j] = A[i,j] \cdot B[i,j]$$</p>
+<p>记作 $A \circ B$，也常写作 $A \odot B$。它和普通矩阵乘法的区别：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>项目</th><th>普通乘法 $AB$</th><th>Hadamard 积 $A \circ B$</th></tr>
+</thead>
+<tbody>
+<tr><td>维度要求</td><td>$A$ 的列数等于 $B$ 的行数</td><td>$A$、$B$ 同型</td></tr>
+<tr><td>结果维度</td><td>$m \times p$</td><td>$m \times n$</td></tr>
+<tr><td>计算方式</td><td>行与列对应元素相乘后求和</td><td>对应位置元素直接相乘</td></tr>
+<tr><td>交换律</td><td>一般不满足 $AB \neq BA$</td><td>满足 $A \circ B = B \circ A$</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>性质</strong>（设 $A, B, C$ 同型，$k$ 为标量）：</p>
+<ul>
+<li>交换律：$A \circ B = B \circ A$</li>
+<li>结合律：$(A \circ B) \circ C = A \circ (B \circ C)$</li>
+<li>分配律：$A \circ (B + C) = A \circ B + A \circ C$</li>
+<li>数乘：$k(A \circ B) = (kA) \circ B = A \circ (kB)$</li>
+<li>转置：$(A \circ B)^T = A^T \circ B^T$</li>
+<li>全 1 矩阵 $J$ 是单位元：$A \circ J = A$</li>
+</ul>
+<blockquote>
+<p><strong>Schur 乘积定理：</strong> 若 $A$、$B$ 都是半正定矩阵，则 $A \circ B$ 也是半正定矩阵。</p>
+</blockquote>
+<p><strong>Rust 实现</strong>：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gaGFkYW1hcmRfcHJvZHVjdChhOiAmW1ZlYzxmNjQ+XSwgYjogJltWZWM8ZjY0Pl0pIC0+IE9wdGlvbjxWZWM8VmVjPGY2ND4+PiB7CiAgICBpZiBhLmxlbigpICE9IGIubGVuKCkgewogICAgICAgIHJldHVybiBOb25lOyAvLyDooYzmlbDkuI3lkIwKICAgIH0KCiAgICBsZXQgbXV0IHJlc3VsdCA9IFZlYzo6d2l0aF9jYXBhY2l0eShhLmxlbigpKTsKICAgIGZvciAocm93X2EsIHJvd19iKSBpbiBhLml0ZXIoKS56aXAoYikgewogICAgICAgIGlmIHJvd19hLmxlbigpICE9IHJvd19iLmxlbigpIHsKICAgICAgICAgICAgcmV0dXJuIE5vbmU7IC8vIOWIl+aVsOS4jeWQjAogICAgICAgIH0KICAgICAgICByZXN1bHQucHVzaChyb3dfYS5pdGVyKCkuemlwKHJvd19iKS5tYXAofCh4LCB5KXwgeCAqIHkpLmNvbGxlY3QoKSk7CiAgICB9CgogICAgU29tZShyZXN1bHQpCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgYSA9IHZlYyFbdmVjIVsxLjAsIDIuMF0sIHZlYyFbMy4wLCA0LjBdXTsKICAgIGxldCBiID0gdmVjIVt2ZWMhWzUuMCwgNi4wXSwgdmVjIVs3LjAsIDguMF1dOwoKICAgIGlmIGxldCBTb21lKGMpID0gaGFkYW1hcmRfcHJvZHVjdCgmYSwgJmIpIHsKICAgICAgICBwcmludGxuISgiQSDiiJggQiA9Iik7CiAgICAgICAgZm9yIHJvdyBpbiAmYyB7CiAgICAgICAgICAgIHByaW50bG4hKCIgIHs6P30iLCByb3cpOwogICAgICAgIH0KICAgICAgICAvLyBbNS4wLCAxMi4wXQogICAgICAgIC8vIFsyMS4wLCAzMi4wXQogICAgfQoKICAgIC8vIOS4jeWQjOWei+eahOefqemYteaXoOazleWBmiBIYWRhbWFyZCDnp68KICAgIGxldCBkID0gdmVjIVt2ZWMhWzEuMCwgMi4wXV07CiAgICBhc3NlcnQhKGhhZGFtYXJkX3Byb2R1Y3QoJmEsICZkKS5pc19ub25lKCkpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">fn hadamard_product(a: &amp;[Vec&lt;f64&gt;], b: &amp;[Vec&lt;f64&gt;]) -&gt; Option&lt;Vec&lt;Vec&lt;f64&gt;&gt;&gt; {
+    if a.len() != b.len() {
+        return None; // 行数不同
+    }
+
+    let mut result = Vec::with_capacity(a.len());
+    for (row_a, row_b) in a.iter().zip(b) {
+        if row_a.len() != row_b.len() {
+            return None; // 列数不同
+        }
+        result.push(row_a.iter().zip(row_b).map(|(x, y)| x * y).collect());
+    }
+
+    Some(result)
+}
+
+fn main() {
+    let a = vec![vec![1.0, 2.0], vec![3.0, 4.0]];
+    let b = vec![vec![5.0, 6.0], vec![7.0, 8.0]];
+
+    if let Some(c) = hadamard_product(&amp;a, &amp;b) {
+        println!("A ∘ B =");
+        for row in &amp;c {
+            println!("  {:?}", row);
+        }
+        // [5.0, 12.0]
+        // [21.0, 32.0]
+    }
+
+    // 不同型的矩阵无法做 Hadamard 积
+    let d = vec![vec![1.0, 2.0]];
+    assert!(hadamard_product(&amp;a, &amp;d).is_none());
+}</code></pre>
+<p>时间复杂度为 $O(mn)$，比普通矩阵乘法的 $O(mnp)$ 低。</p>
+<p><strong>应用场景</strong>：</p>
+<ul>
+<li><strong>掩码（mask）</strong>：与 0/1 矩阵做 Hadamard 积，即可保留或屏蔽指定位置的元素。</li>
+<li><strong>逐元素加权</strong>：给每个位置设置不同权重，例如图像滤镜、注意力权重。</li>
+<li><strong>神经网络</strong>：LSTM/GRU 的门控、注意力机制里大量使用逐元素乘法。</li>
+<li><strong>NumPy / MATLAB / PyTorch</strong>：NumPy 的 <code>*</code>、MATLAB 的 <code>.*</code>、PyTorch 的 <code>*</code> 默认都是 Hadamard 积；矩阵乘法分别是 <code>@</code>、<code>*</code>、<code>@</code>（或 <code>matmul</code>）。</li>
+</ul>
+<blockquote>
+<p><strong>注意区分：</strong> Hadamard 积是逐元素乘法；而 <strong>Hadamard 矩阵</strong> 是由 $+1$、$-1$ 组成、各行两两正交的方阵，两者不是一回事。</p>
+</blockquote>
+<h3 id="25-矩阵乘法的性质"><a class="header" href="#25-矩阵乘法的性质">2.5 矩阵乘法的性质</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -338,7 +414,7 @@ fn main() {
 </tbody>
 </table>
 </div>
-<h3 id="25-矩阵的转置"><a class="header" href="#25-矩阵的转置">2.5 矩阵的转置</a></h3>
+<h3 id="26-矩阵的转置"><a class="header" href="#26-矩阵的转置">2.6 矩阵的转置</a></h3>
 <p>将矩阵的行和列互换：</p>
 <ul>
 <li>$(A^T)[i,j] = A[j,i]$</li>
@@ -743,6 +819,7 @@ fn main() {
 </thead>
 <tbody>
 <tr><td>矩阵乘法</td><td>$C[i,j] = \sum_k A[i,k]B[k,j]$，不满足交换律</td></tr>
+<tr><td>Hadamard 积</td><td>$C[i,j] = A[i,j]B[i,j]$，逐元素相乘，要求同型</td></tr>
 <tr><td>转置</td><td>$(AB)^T = B^T A^T$</td></tr>
 <tr><td>逆矩阵</td><td>$A^{-1} = A^* /</td></tr>
 <tr><td>秩</td><td>非零子式的最高阶数，初等变换不变</td></tr>
@@ -756,14 +833,40 @@ fn main() {
 </table>
 </div>
 <p>矩阵是描述线性变换的代数工具。理解矩阵的各种运算和分解，是掌握线性代数、机器学习、计算机图形学等领域的基础。</p>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="十四练习题"><a class="header" href="#十四练习题">十四、练习题</a></h2>
 <ol>
-<li>实现矩阵乘法、转置、求逆的基本算法</li>
-<li>用特征值分解判断矩阵是否正定</li>
-<li>使用 SVD 进行图像压缩实验</li>
+<li>
+<p><strong>矩阵乘法与交换律</strong>：设 <code>A = [[1, 2], [3, 4]]</code>、<code>B = [[0, 1], [1, 0]]</code>，求 $AB$ 与 $BA$，并说明 $AB\neq BA$。</p>
+</li>
+<li>
+<p><strong>Hadamard 积</strong>：设 <code>A = [[1, 2], [3, 4]]</code>、<code>B = [[5, 6], [7, 8]]</code>，求 $A\circ B$，并验证 $(A\circ B)^T=A^T\circ B^T$。</p>
+</li>
+<li>
+<p><strong>转置、行列式与逆</strong>：设 <code>A = [[1, 2], [3, 4]]</code>，求 $A^T$、$|A|$ 与 $A^{-1}$，并验证 $AA^{-1}=I$。</p>
+</li>
+<li>
+<p><strong>矩阵的秩</strong>：设矩阵的三行分别为 <code>[1, 2, 3]</code>、<code>[2, 4, 6]</code>、<code>[1, 1, 1]</code>，求矩阵的秩，并写出一个极大线性无关组。</p>
+</li>
+<li>
+<p><strong>特征值与特征向量</strong>：设 <code>A = [[2, 1], [1, 2]]</code>，求特征值、对应的特征向量，并判断 $A$ 能否对角化。</p>
+</li>
+<li>
+<p><strong>正交矩阵与旋转</strong>：旋转矩阵 $R(\theta)$ 的第一行为 $(\cos\theta,-\sin\theta)$，第二行为 $(\sin\theta,\cos\theta)$。验证 $R^T R=I$、$|R|=1$，并求 $R(\pi/2)$ 作用于向量 $(1,0)$ 的结果。</p>
+</li>
+<li>
+<p><strong>正定矩阵</strong>：判断 <code>A = [[2, 1], [1, 2]]</code> 与 <code>B = [[1, 2], [2, 1]]</code> 是否正定，并说明理由。</p>
+</li>
+<li>
+<p><strong>LU 分解</strong>：对 <code>A = [[4, 3], [6, 3]]</code> 做 LU 分解（$L$ 为单位下三角矩阵），并利用分解结果求 $|A|$。</p>
+</li>
+<li>
+<p><strong>SVD 与图像压缩</strong>：简述用 SVD 做图像压缩的原理；用 Rust 的 nalgebra 对一个小矩阵做奇异值分解，分别保留前 $k$ 个奇异值重构，观察 $k$ 变化时误差的变化。</p>
+</li>
+<li>
+<p><strong>编程题</strong>：用 Rust 实现矩阵乘法、Hadamard 积、转置与 $2\times 2$ 矩阵求逆，并用 nalgebra 验证结果。</p>
+</li>
 </ol>
-</blockquote>
 
                     </main>
 

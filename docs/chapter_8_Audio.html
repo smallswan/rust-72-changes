@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-fc5581c7.js";
+            window.path_to_searchindex_js = "searchindex-72bc1c85.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a6286dd9.js"></script>
@@ -530,13 +530,33 @@ fn main() {
 </tbody>
 </table>
 </div>
-<h2 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h2>
+<hr>
+<h2 id="86-练习题"><a class="header" href="#86-练习题">8.6 练习题</a></h2>
 <ol>
-<li>使用 hound 库生成不同频率的正弦波，体验频率与音调的关系。</li>
-<li>使用 rodio 播放音频文件，并实现一个简单的播放器（支持暂停、继续、音量调节）。</li>
-<li>编写程序读取 WAV 文件，计算其 RMS（均方根）响度值。</li>
-<li>尝试使用 symphonia 解析 MP3 或 FLAC 文件，提取其元数据（标题、艺术家等）。</li>
-<li>对比同一首音乐的不同格式（WAV、FLAC、MP3）的文件大小，理解压缩率的差异。</li>
+<li>
+<p><strong>采样定理</strong>：人耳能听到的最高频率约为 20 kHz。根据奈奎斯特采样定理，最低采样率应是多少？CD 为什么选择 44.1 kHz，而不是刚好 40 kHz？</p>
+</li>
+<li>
+<p><strong>数据量计算</strong>：计算 3 分钟、44.1 kHz、16 bit、双声道 PCM 音频的数据量（字节数和 MB）；如果改为 24 bit，数据量会增加多少？</p>
+</li>
+<li>
+<p><strong>位深度与动态范围</strong>：16 bit 和 24 bit 音频的动态范围各约多少 dB？为什么位深度每增加 1 bit，动态范围大约增加 6 dB？</p>
+</li>
+<li>
+<p><strong>格式对比</strong>：从压缩方式、音质、文件大小和适用场景四个方面比较 WAV、FLAC、MP3、AAC。</p>
+</li>
+<li>
+<p><strong>生成正弦波</strong>：用 hound 生成 1 秒、440 Hz、44.1 kHz、16 bit 单声道的正弦波 WAV 文件，写出采样值公式和关键代码。</p>
+</li>
+<li>
+<p><strong>RMS 响度</strong>：读取一个 WAV 文件，计算 RMS 并转换为 dBFS；解释 RMS、峰值和听感响度之间的区别。</p>
+</li>
+<li>
+<p><strong>格式解析</strong>：用 symphonia 读取一个 MP3 或 FLAC 文件的采样率、声道数和元数据（标题、艺术家），并说明它与 WAV 解析的差异。</p>
+</li>
+<li>
+<p><strong>思考题</strong>：MP3、AAC 这类有损压缩为什么能大幅减小文件体积？人耳掩蔽效应在其中起什么作用？</p>
+</li>
 </ol>
 
                     </main>

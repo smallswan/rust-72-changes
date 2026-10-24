@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-fc5581c7.js";
+            window.path_to_searchindex_js = "searchindex-72bc1c85.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a6286dd9.js"></script>
@@ -714,14 +714,41 @@ fn main() {
 </table>
 </div>
 <p>函数是数学和计算机科学的核心概念。从基本的初等函数到复杂的复合函数，从连续的数学函数到离散的计算机程序，函数的思想贯穿始终。</p>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="十三练习题"><a class="header" href="#十三练习题">十三、练习题</a></h2>
 <ol>
-<li>用 Rust 实现各种初等函数的性质验证</li>
-<li>实现牛顿迭代法求方程的根</li>
-<li>用数值积分方法计算定积分</li>
+<li>
+<p><strong>奇偶性与周期性</strong>：判断 $f(x)=x\sin x$ 的奇偶性；求 $g(x)=\sin 2x+\cos 3x$ 的最小正周期。</p>
+</li>
+<li>
+<p><strong>单调性与凹凸性</strong>：设 $f(x)=x^3-3x$，求单调区间、极值，以及曲线的拐点。</p>
+</li>
+<li>
+<p><strong>反函数</strong>：求 $y=\frac{x+1}{x-1}$ 的反函数及其定义域。</p>
+</li>
+<li>
+<p><strong>复合函数</strong>：设 $f(x)=\sqrt{1-x^2}$，$g(x)=\ln x$，求 $g(f(x))$ 的定义域。</p>
+</li>
+<li>
+<p><strong>连续与可导</strong>：讨论 $f(x)=|x|$ 在 $x=0$ 处的连续性与可导性；再讨论 $f(x)=x\sin(1/x)$（$x\neq 0$）、$f(0)=0$ 在 $x=0$ 处是否连续、是否可导。</p>
+</li>
+<li>
+<p><strong>数值积分</strong>：用复合梯形法则和复合辛普森法则分别计算 $\int_0^\pi \sin x dx$，取 $n=10$ 和 $n=100$，比较误差，并解释两种方法误差阶的差异。</p>
+</li>
+<li>
+<p><strong>闭包与高阶函数</strong>：用 Rust 闭包实现函数复合 <code>compose(f, g)</code>，把 $h(x)=e^{\sin x}$ 表示为两个函数的复合，计算 $h(0)$ 与 $h(\pi/2)$；再实现 <code>repeat(f, n)</code>，把函数迭代 $n$ 次。</p>
+</li>
+<li>
+<p><strong>Sigmoid 函数</strong>：证明 $\sigma(-x)=1-\sigma(x)$ 和 $\sigma’(x)=\sigma(x)(1-\sigma(x))$，并用 Rust 在 $x=-3,-1,0,1,3$ 处数值验证。</p>
+</li>
+<li>
+<p><strong>欧拉公式与物理应用</strong>：</p>
+<ul>
+<li>由 $e^{i\theta}=\cos\theta+i\sin\theta$ 推导三倍角公式 $\cos 3\theta=4\cos^3\theta-3\cos\theta$；</li>
+<li>单摆周期 $T=2\pi\sqrt{l/g}$，取 $g=9.8$，求 $T=2$ 秒时的摆长（保留两位小数）。</li>
+</ul>
+</li>
 </ol>
-</blockquote>
 
                     </main>
 

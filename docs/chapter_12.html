@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-fc5581c7.js";
+            window.path_to_searchindex_js = "searchindex-72bc1c85.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a6286dd9.js"></script>
@@ -846,16 +846,37 @@ async fn main() {
 </tbody>
 </table>
 </div>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="七练习题"><a class="header" href="#七练习题">七、练习题</a></h2>
 <ol>
-<li>使用 <code>std::net::TcpListener</code> 和 <code>TcpStream</code> 实现一个简单的 echo 服务端（将收到的内容原样返回）</li>
-<li>使用 <code>reqwest</code> 编写程序，获取并解析一个公开 API 的 JSON 数据</li>
-<li>使用 <code>tokio</code> 实现一个支持多客户端并发聊天的 TCP 服务端</li>
-<li>对比同步和异步 TCP 服务端在大量并发连接下的性能差异</li>
-<li>使用 <code>UdpSocket</code> 实现一个简单的 ping 测试工具</li>
+<li>
+<p><strong>协议分层</strong>：把 <code>Ethernet</code>、<code>IP</code>、<code>TCP</code>、<code>TLS</code>、<code>HTTP</code> 分别归入 OSI 七层和 TCP/IP 四层模型，并说明数据封装与解封装的顺序。</p>
+</li>
+<li>
+<p><strong>IP 与子网</strong>：<code>192.168.1.0/24</code> 的网络地址、广播地址和可用主机数分别是多少？如果划分为 <code>/26</code> 子网，每个子网有多少个可用主机？</p>
+</li>
+<li>
+<p><strong>端口号</strong>：写出 SSH、DNS、HTTP、HTTPS、MySQL 的默认端口，并说明 0~1023、1024~49151、49152~65535 三类端口的用途。</p>
+</li>
+<li>
+<p><strong>三次握手与四次挥手</strong>：用文字或时序图描述 TCP 建立连接和断开连接的过程；为什么建立连接需要三次而不是两次？<code>TIME_WAIT</code> 状态有什么作用？</p>
+</li>
+<li>
+<p><strong>TCP 与 UDP 的选择</strong>：为文件下载、视频会议、DNS 查询、在线游戏分别选择 TCP 或 UDP，并说明理由。</p>
+</li>
+<li>
+<p><strong>HTTP 与 HTTPS</strong>：说明 GET 与 POST 的区别；解释 2xx、3xx、4xx、5xx 状态码的含义并各举一例；HTTPS 比 HTTP 多了哪些安全能力？</p>
+</li>
+<li>
+<p><strong>Rust TCP 编程</strong>：用 <code>std::net::TcpListener</code> 和 <code>TcpStream</code> 实现一个 echo 服务端和客户端，支持多个客户端依次处理。</p>
+</li>
+<li>
+<p><strong>异步与并发</strong>：用 tokio 实现一个支持多客户端并发聊天的 TCP 服务端，并说明同步阻塞模型在大量连接下会遇到什么瓶颈。</p>
+</li>
+<li>
+<p><strong>网络排错</strong>：服务器无法访问时，如何用 <code>ping</code>、<code>telnet</code>/<code>nc</code>、<code>curl -v</code> 逐步判断问题出在 DNS、网络、端口还是应用层？</p>
+</li>
 </ol>
-</blockquote>
 
                     </main>
 

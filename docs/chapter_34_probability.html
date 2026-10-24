@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-fc5581c7.js";
+            window.path_to_searchindex_js = "searchindex-72bc1c85.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a6286dd9.js"></script>
@@ -640,14 +640,37 @@ fn main() {
 </table>
 </div>
 <p>概率论是理解不确定性的数学工具。从日常的天气预报到机器学习的模型评估，概率论的思想无处不在。</p>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="十四练习题"><a class="header" href="#十四练习题">十四、练习题</a></h2>
 <ol>
-<li>用贝叶斯公式解决实际问题（如垃圾邮件分类）</li>
-<li>模拟大数定律和中心极限定理</li>
-<li>用蒙特卡洛方法估计概率</li>
+<li>
+<p><strong>排列组合与生日悖论</strong>：一年按 365 天计，$n$ 个人生日互不相同的概率为 $\frac{365\cdot364\cdots(365-n+1)}{365^n}$，至少两人生日相同的概率为 $P(n)=1-\frac{365!}{365^n(365-n)!}$。用 Rust 计算 $P(10)$、$P(23)$、$P(50)$，并找出使 $P(n)&gt;0.5$ 的最小 $n$。</p>
+</li>
+<li>
+<p><strong>贝叶斯公式</strong>：某疾病患病率为 1%，检测灵敏度为 99%，特异度为 99%。若某人检测结果为阳性，求他真正患病的概率，并解释为什么远低于 99%。</p>
+</li>
+<li>
+<p><strong>条件概率与三门问题</strong>：在 Monty Hall 问题中，参赛者先选一扇门，主持人打开另一扇有羊的门后，参赛者换门的中奖概率是多少？用条件概率说明，并写 Rust 程序模拟 10 万次验证。</p>
+</li>
+<li>
+<p><strong>期望与方差</strong>：设离散型随机变量 $X$ 的分布律为 $P(X=-1)=0.2$、$P(X=0)=0.3$、$P(X=2)=0.5$，求 $E[X]$、$E[X^2]$ 与 $\text{Var}(X)$。</p>
+</li>
+<li>
+<p><strong>二项分布与泊松近似</strong>：某机器次品率为 1%，抽取 200 件产品，求恰有 2 件次品的概率（二项分布）；再用 $\lambda=2$ 的泊松分布近似，比较两者结果。</p>
+</li>
+<li>
+<p><strong>连续型分布</strong>：设 $X\sim U(0,1)$，求 $E[X]$ 与 $\text{Var}(X)$；令 $Y=2X+1$，求 $E[Y]$、$\text{Var}(Y)$ 以及 $Y$ 的分布。</p>
+</li>
+<li>
+<p><strong>切比雪夫不等式与中心极限定理</strong>：掷 100 枚均匀硬币，$X$ 为正面朝上的次数。用切比雪夫不等式估计 $P(|X-50|\ge 20)$ 的上界；再用正态近似计算该概率，比较两者的松紧程度。</p>
+</li>
+<li>
+<p><strong>信息熵</strong>：分别计算公平硬币、正面概率为 0.9 的硬币、均匀六面骰子的信息熵（单位：bit），并解释为什么均匀分布的熵最大。</p>
+</li>
+<li>
+<p><strong>假设检验</strong>：某零件长度服从正态分布，历史标准差 $\sigma=0.5$ mm。现抽取 25 件，样本均值 $\bar{x}=10.2$ mm，原假设 $H_0:\mu=10$ mm，显著性水平 $\alpha=0.05$（双侧）。做 Z 检验（临界值 1.96）并给出结论。</p>
+</li>
 </ol>
-</blockquote>
 
                     </main>
 

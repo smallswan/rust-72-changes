@@ -87,7 +87,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-fc5581c7.js";
+            window.path_to_searchindex_js = "searchindex-72bc1c85.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a6286dd9.js"></script>
@@ -4626,13 +4626,33 @@ fn main() {
 </tbody>
 </table>
 </div>
-<h2 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h2>
+<hr>
+<h2 id="86-练习题"><a class="header" href="#86-练习题">8.6 练习题</a></h2>
 <ol>
-<li>使用 hound 库生成不同频率的正弦波，体验频率与音调的关系。</li>
-<li>使用 rodio 播放音频文件，并实现一个简单的播放器（支持暂停、继续、音量调节）。</li>
-<li>编写程序读取 WAV 文件，计算其 RMS（均方根）响度值。</li>
-<li>尝试使用 symphonia 解析 MP3 或 FLAC 文件，提取其元数据（标题、艺术家等）。</li>
-<li>对比同一首音乐的不同格式（WAV、FLAC、MP3）的文件大小，理解压缩率的差异。</li>
+<li>
+<p><strong>采样定理</strong>：人耳能听到的最高频率约为 20 kHz。根据奈奎斯特采样定理，最低采样率应是多少？CD 为什么选择 44.1 kHz，而不是刚好 40 kHz？</p>
+</li>
+<li>
+<p><strong>数据量计算</strong>：计算 3 分钟、44.1 kHz、16 bit、双声道 PCM 音频的数据量（字节数和 MB）；如果改为 24 bit，数据量会增加多少？</p>
+</li>
+<li>
+<p><strong>位深度与动态范围</strong>：16 bit 和 24 bit 音频的动态范围各约多少 dB？为什么位深度每增加 1 bit，动态范围大约增加 6 dB？</p>
+</li>
+<li>
+<p><strong>格式对比</strong>：从压缩方式、音质、文件大小和适用场景四个方面比较 WAV、FLAC、MP3、AAC。</p>
+</li>
+<li>
+<p><strong>生成正弦波</strong>：用 hound 生成 1 秒、440 Hz、44.1 kHz、16 bit 单声道的正弦波 WAV 文件，写出采样值公式和关键代码。</p>
+</li>
+<li>
+<p><strong>RMS 响度</strong>：读取一个 WAV 文件，计算 RMS 并转换为 dBFS；解释 RMS、峰值和听感响度之间的区别。</p>
+</li>
+<li>
+<p><strong>格式解析</strong>：用 symphonia 读取一个 MP3 或 FLAC 文件的采样率、声道数和元数据（标题、艺术家），并说明它与 WAV 解析的差异。</p>
+</li>
+<li>
+<p><strong>思考题</strong>：MP3、AAC 这类有损压缩为什么能大幅减小文件体积？人耳掩蔽效应在其中起什么作用？</p>
+</li>
 </ol>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="第九-视频"><a class="header" href="#第九-视频">第九 视频</a></h1>
@@ -4971,13 +4991,36 @@ fn main() {
 </tbody>
 </table>
 </div>
-<h2 id="练习建议-1"><a class="header" href="#练习建议-1">练习建议</a></h2>
+<hr>
+<h2 id="96-练习题"><a class="header" href="#96-练习题">9.6 练习题</a></h2>
 <ol>
-<li>使用 ffmpeg-next 编写程序，读取一个视频文件的完整元数据（分辨率、帧率、码率、编码格式、时长等）。</li>
-<li>使用 ffmpeg-next 提取视频中的每一帧，保存为 PNG 图片序列。</li>
-<li>对比同一视频分别用 H.264、H.265、AV1 编码后的文件大小和画质差异。</li>
-<li>编写程序计算视频的平均码率和峰值码率。</li>
-<li>了解 Rust 的 <a href="https://github.com/rust-av/vpx">vpx-encode</a> 或 <a href="https://github.com/rust-av/x264-rs">x264</a> 绑定，尝试进行视频编码。</li>
+<li>
+<p><strong>未压缩数据量</strong>：计算 1080p（$1920\times1080$）、RGB 24 bit、30 fps 视频的未压缩码率（MB/s 和 Gbps）。</p>
+</li>
+<li>
+<p><strong>码率与文件大小</strong>：一段 10 Mbps 的视频播放 1 小时，文件大约多大？如果降到 2 Mbps 呢？</p>
+</li>
+<li>
+<p><strong>色度采样</strong>：比较 YUV 4:4:4、4:2:2、4:2:0 三种采样方式，说明它们每个像素平均占多少字节，以及为什么 4:2:0 常用于视频编码。</p>
+</li>
+<li>
+<p><strong>I/P/B 帧与 GOP</strong>：解释 I 帧、P 帧、B 帧的区别；为什么 B 帧压缩率最高？为什么视频播放器拖动进度条时需要找关键帧？</p>
+</li>
+<li>
+<p><strong>编码格式对比</strong>：从压缩率、编码速度、专利授权、硬件支持四个方面比较 H.264、H.265、AV1。</p>
+</li>
+<li>
+<p><strong>运动估计</strong>：说明运动估计与补偿的基本思路；为什么视频可以利用时间冗余获得比单张图片更高的压缩率？</p>
+</li>
+<li>
+<p><strong>ffmpeg-next 实践</strong>：用 ffmpeg-next 读取一个视频的分辨率、帧率、码率、编码格式和时长；再提取前 10 帧保存为 PNG。</p>
+</li>
+<li>
+<p><strong>码率控制</strong>：解释 CBR、VBR、CRF 三种码率控制方式的区别和适用场景。</p>
+</li>
+<li>
+<p><strong>压缩比计算</strong>：4K（$3840\times2160$）、60 fps、RGB 24 bit 的未压缩视频，若用 H.265 以 10 Mbps 编码，压缩比大约是多少？</p>
+</li>
 </ol>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="第十章-万物皆可编码"><a class="header" href="#第十章-万物皆可编码">第十章 万物皆可编码</a></h1>
@@ -7721,16 +7764,37 @@ async fn main() {
 </tbody>
 </table>
 </div>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="七练习题"><a class="header" href="#七练习题">七、练习题</a></h2>
 <ol>
-<li>使用 <code>std::net::TcpListener</code> 和 <code>TcpStream</code> 实现一个简单的 echo 服务端（将收到的内容原样返回）</li>
-<li>使用 <code>reqwest</code> 编写程序，获取并解析一个公开 API 的 JSON 数据</li>
-<li>使用 <code>tokio</code> 实现一个支持多客户端并发聊天的 TCP 服务端</li>
-<li>对比同步和异步 TCP 服务端在大量并发连接下的性能差异</li>
-<li>使用 <code>UdpSocket</code> 实现一个简单的 ping 测试工具</li>
+<li>
+<p><strong>协议分层</strong>：把 <code>Ethernet</code>、<code>IP</code>、<code>TCP</code>、<code>TLS</code>、<code>HTTP</code> 分别归入 OSI 七层和 TCP/IP 四层模型，并说明数据封装与解封装的顺序。</p>
+</li>
+<li>
+<p><strong>IP 与子网</strong>：<code>192.168.1.0/24</code> 的网络地址、广播地址和可用主机数分别是多少？如果划分为 <code>/26</code> 子网，每个子网有多少个可用主机？</p>
+</li>
+<li>
+<p><strong>端口号</strong>：写出 SSH、DNS、HTTP、HTTPS、MySQL 的默认端口，并说明 0~1023、1024~49151、49152~65535 三类端口的用途。</p>
+</li>
+<li>
+<p><strong>三次握手与四次挥手</strong>：用文字或时序图描述 TCP 建立连接和断开连接的过程；为什么建立连接需要三次而不是两次？<code>TIME_WAIT</code> 状态有什么作用？</p>
+</li>
+<li>
+<p><strong>TCP 与 UDP 的选择</strong>：为文件下载、视频会议、DNS 查询、在线游戏分别选择 TCP 或 UDP，并说明理由。</p>
+</li>
+<li>
+<p><strong>HTTP 与 HTTPS</strong>：说明 GET 与 POST 的区别；解释 2xx、3xx、4xx、5xx 状态码的含义并各举一例；HTTPS 比 HTTP 多了哪些安全能力？</p>
+</li>
+<li>
+<p><strong>Rust TCP 编程</strong>：用 <code>std::net::TcpListener</code> 和 <code>TcpStream</code> 实现一个 echo 服务端和客户端，支持多个客户端依次处理。</p>
+</li>
+<li>
+<p><strong>异步与并发</strong>：用 tokio 实现一个支持多客户端并发聊天的 TCP 服务端，并说明同步阻塞模型在大量连接下会遇到什么瓶颈。</p>
+</li>
+<li>
+<p><strong>网络排错</strong>：服务器无法访问时，如何用 <code>ping</code>、<code>telnet</code>/<code>nc</code>、<code>curl -v</code> 逐步判断问题出在 DNS、网络、端口还是应用层？</p>
+</li>
 </ol>
-</blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="第十三-压缩"><a class="header" href="#第十三-压缩">第十三 压缩</a></h1>
 <p>数据压缩是计算机科学中一项核心技术，它通过消除数据中的冗余信息来减少存储空间或传输带宽。从节省手机存储空间的照片压缩，到加速网页传输的 Gzip，再到流式媒体的音视频编码，压缩技术无处不在。本章将介绍压缩的基本原理、经典算法以及在 Rust 中的实践。</p>
@@ -8690,6 +8754,34 @@ $$xe^x+\ln(1-x)&gt;0\iff -\ln(1-x)&lt;xe^x.$$
 <h4 id="补充三者等价无穷小-x-to-0-"><a class="header" href="#补充三者等价无穷小-x-to-0-">补充：三者等价无穷小（ $$x \to 0^+ $$）</a></h4>
 <p>$$-\ln(1-x)\sim x,\quad xe^x\sim x,\quad \frac{x}{1-x}\sim x$$
 三者是<strong>同阶等价无穷小</strong>，只是从低到高：$$-\ln(1-x)&lt;xe^x&lt;\tfrac{x}{1-x}$$。</p>
+<hr>
+<h2 id="练习题-1"><a class="header" href="#练习题-1">练习题</a></h2>
+<ol>
+<li>
+<p><strong>整数除法与取余</strong>：计算 <code>7 / 2</code>、<code>7 % 2</code>、<code>-7 / 2</code>、<code>-7 % 2</code> 在 Rust 中的结果，并解释整数除法和取余的符号规则。</p>
+</li>
+<li>
+<p><strong>模运算</strong>：利用模运算的性质计算 $2^{100}\bmod 7$，并写出每一步用到的性质。</p>
+</li>
+<li>
+<p><strong>整数溢出</strong>：在 Rust 中，<code>i8</code> 的 <code>127 + 1</code> 在 debug 和 release 模式下分别会怎样？比较 <code>checked_add</code>、<code>wrapping_add</code>、<code>saturating_add</code>、<code>overflowing_add</code> 的行为。</p>
+</li>
+<li>
+<p><strong>安全平均值</strong>：实现 <code>fn avg(a: u32, b: u32) -&gt; u32</code>，要求 <code>a + b</code> 溢出时也能得到正确结果，并说明你的写法为什么安全。</p>
+</li>
+<li>
+<p><strong>三角函数</strong>：把 $30^\circ$、$45^\circ$、$60^\circ$ 转换为弧度，用 Rust 计算 <code>sin</code>、<code>cos</code>、<code>tan</code> 并与理论值比较；解释 <code>tan(π/2)</code> 为什么不是数学意义上的无穷大。</p>
+</li>
+<li>
+<p><strong>阶乘</strong>：计算 $20!$，说明为什么 <code>u64</code> 能存下 $20!$ 而 $21!$ 会溢出；再用 <code>f64</code> 或对数估算 $100!$ 的数量级。</p>
+</li>
+<li>
+<p><strong>数值稳定性</strong>：计算 $1-\cos x$（取 $x=10^{-8}$）时，为什么直接相减会损失精度？用 $2\sin^2(x/2)$ 改写公式并比较两者的结果。</p>
+</li>
+<li>
+<p><strong>不等式证明</strong>：证明 $-\ln(1-x) &lt; xe^x &lt; \dfrac{x}{1-x}$（$0&lt;x&lt;1$），并说明这三个函数在 $x\to0^+$ 时是同阶等价无穷小。</p>
+</li>
+</ol>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="第十五-关系运算"><a class="header" href="#第十五-关系运算">第十五 关系运算</a></h1>
 <p>关系运算（Relational Operation）用于比较两个值之间的大小关系，返回一个布尔值（<code>true</code> 或 <code>false</code>）。它是条件判断和程序控制流的基础，也是排序、搜索等算法的核心操作。</p>
@@ -10718,7 +10810,7 @@ fn main() {
 </table>
 </div>
 <hr>
-<h2 id="练习题-1"><a class="header" href="#练习题-1">练习题</a></h2>
+<h2 id="练习题-2"><a class="header" href="#练习题-2">练习题</a></h2>
 <ol>
 <li>
 <p><strong>统计奇数位</strong>：给定一个 <code>u32</code>，统计其二进制中所有奇数位（第1、3、5…位）上 1 的个数。</p>
@@ -11272,7 +11364,7 @@ fn main() {
 </div>
 <p>三者关系：<code>rotate = 3 * reverse</code>，<code>reverse = n/2 * swap</code></p>
 <hr>
-<h2 id="练习题-2"><a class="header" href="#练习题-2">练习题</a></h2>
+<h2 id="练习题-3"><a class="header" href="#练习题-3">练习题</a></h2>
 <ol>
 <li>
 <p><strong>反转字符串 II</strong>（<a href="https://leetcode-cn.com/problems/reverse-string-ii/">LeetCode 541</a>）：给定一个字符串 <code>s</code> 和一个整数 <code>k</code>，从字符串开头算起，每计数至 <code>2k</code> 个字符，就反转这 <code>2k</code> 字符中的前 <code>k</code> 个字符。</p>
@@ -11971,7 +12063,7 @@ fn main() {
 </table>
 </div>
 <hr>
-<h2 id="练习题-3"><a class="header" href="#练习题-3">练习题</a></h2>
+<h2 id="练习题-4"><a class="header" href="#练习题-4">练习题</a></h2>
 <ol>
 <li>
 <p><strong>温度转换器</strong>：定义 <code>Celsius</code> 和 <code>Fahrenheit</code> 两个结构体，使用 <code>From</code>/<code>Into</code> trait 实现双向转换，并编写一个接受 <code>Into&lt;Celsius&gt;</code> 的泛型函数。</p>
@@ -15361,7 +15453,7 @@ students.sort(); // 需要实现 Ord trait
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-2"><a class="header" href="#练习建议-2">练习建议</a></h3>
+<h3 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h3>
 <ol>
 <li><strong>实现优化</strong>：为快速排序添加“三数取中“选基准和尾递归优化。</li>
 <li><strong>混合排序</strong>：实现一个排序函数，对小数组使用插入排序，对大数组使用快速排序。</li>
@@ -16381,7 +16473,7 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-3"><a class="header" href="#练习建议-3">练习建议</a></h3>
+<h3 id="练习建议-1"><a class="header" href="#练习建议-1">练习建议</a></h3>
 <ol>
 <li><strong>手动实现感知机</strong>：用 Rust 实现一个最简单的单层神经网络，完成 AND 或 OR 逻辑门的训练。</li>
 <li><strong>梯度下降可视化</strong>：编写程序记录梯度下降过程中损失值的变化，观察学习率对收敛的影响。</li>
@@ -17000,14 +17092,39 @@ fn main() {
 </table>
 </div>
 <p>算法是编程的灵魂。掌握这些基本算法思想，能够帮助我们更高效地解决各种计算问题。</p>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="八练习题"><a class="header" href="#八练习题">八、练习题</a></h2>
 <ol>
-<li>实现一个二分查找算法</li>
-<li>用动态规划解决斐波那契数列问题</li>
-<li>尝试解决 LeetCode 上的经典算法题</li>
+<li>
+<p><strong>复杂度分析</strong>：分析下面几段代码的时间复杂度：</p>
+<ul>
+<li>双重循环 <code>for i in 0..n { for j in 0..n { ... } }</code>；</li>
+<li>每轮规模减半的 <code>while n &gt; 1 { n /= 2; }</code>；</li>
+<li>归并排序的递归式 $T(n)=2T(n/2)+O(n)$。</li>
+</ul>
+</li>
+<li>
+<p><strong>枚举与筛法</strong>：分别用试除法和埃拉托斯特尼筛法求 100 以内的素数，比较两种方法的时间复杂度。</p>
+</li>
+<li>
+<p><strong>分治</strong>：实现归并排序，并说明它与快速排序在稳定性、最坏时间复杂度和空间复杂度上的差异。</p>
+</li>
+<li>
+<p><strong>动态规划</strong>：用动态规划求解 0/1 背包和最长公共子序列（LCS），写出状态定义、转移方程和边界条件。</p>
+</li>
+<li>
+<p><strong>贪心</strong>：用面值为 1、5、10、25 的硬币找零，贪心算法是否一定最优？如果把面值改成 1、3、4，找 6 元时贪心会得到什么结果？</p>
+</li>
+<li>
+<p><strong>回溯</strong>：实现八皇后问题并统计解的个数；说明如何用列数组和两条对角线数组进行剪枝。</p>
+</li>
+<li>
+<p><strong>DFS 与 BFS</strong>：给定一个迷宫，用 BFS 求从起点到终点的最短步数，并解释为什么 BFS 能得到最短路径而 DFS 不能保证。</p>
+</li>
+<li>
+<p><strong>编程题</strong>：实现 LCS 的动态规划版本，并输出一个最长公共子序列（不只是长度）。</p>
+</li>
 </ol>
-</blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="第二十七-代数algebra"><a class="header" href="#第二十七-代数algebra">第二十七 代数（Algebra）</a></h1>
 <p>代数是数学的一个基础分支，主要研究数、符号、数量关系以及运算结构。它通过用符号（如字母）代替具体数字，抽象地探讨运算规律、方程求解以及数学结构（如群、环、域等）。</p>
@@ -18159,14 +18276,40 @@ fn main() {
 </table>
 </div>
 <p>行列式是判断矩阵是否可逆的关键指标：$|A| \neq 0$ 当且仅当 $A$ 可逆。它在求解线性方程组、计算特征值、判断线性相关性等方面都有重要应用。</p>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="十练习题"><a class="header" href="#十练习题">十、练习题</a></h2>
 <ol>
-<li>实现一个通用的 $n$ 阶行列式计算函数（使用拉普拉斯展开）</li>
-<li>验证行列式的各种性质</li>
-<li>用克莱姆法则求解三元线性方程组</li>
+<li>
+<p><strong>二阶行列式</strong>：计算 $|A|$ 与 $|B|$，其中 <code>A = [[1, 2], [3, 4]]</code>、<code>B = [[2, -1], [4, 3]]</code>。</p>
+</li>
+<li>
+<p><strong>三阶行列式</strong>：计算 <code>det([[2, 0, 1], [1, 3, 2], [4, 1, 0]])</code>，可以用萨吕法则或按行展开验证结果。</p>
+</li>
+<li>
+<p><strong>排列与逆序数</strong>：求排列 $3,1,4,2$ 和 $2,4,1,3$ 的逆序数，并判断它们的奇偶性。</p>
+</li>
+<li>
+<p><strong>行列式的性质</strong>：已知三阶方阵 $A$ 满足 $|A|=3$，求 $|2A|$、$|A^T|$、$|A^{-1}|$、$|A^2|$。</p>
+</li>
+<li>
+<p><strong>代数余子式</strong>：设 <code>A = [[1, 2, 3], [0, 1, 4], [5, 6, 0]]</code>，求代数余子式 $A_{23}$ 与 $A_{31}$。</p>
+</li>
+<li>
+<p><strong>范德蒙行列式</strong>：求 $x_1=1$、$x_2=2$、$x_3=3$ 的三阶范德蒙行列式，并写出一般的展开式 $\prod_{1\le i&lt;j\le 3}(x_j-x_i)$。</p>
+</li>
+<li>
+<p><strong>克莱姆法则</strong>：用克莱姆法则解方程组 $2x+y=5$、$x-y=1$。</p>
+</li>
+<li>
+<p><strong>几何意义</strong>：求以 $(0,0)$、$(2,1)$、$(1,3)$ 为顶点的三角形面积；再判断 $(0,0)$、$(1,2)$、$(2,4)$ 三点是否共线。</p>
+</li>
+<li>
+<p><strong>反对称行列式</strong>：证明奇数阶反对称矩阵的行列式为零，并给出一个偶数阶反对称矩阵行列式不为零的例子。</p>
+</li>
+<li>
+<p><strong>编程题</strong>：用 Rust 实现递归的 $n$ 阶行列式（按第一行做拉普拉斯展开），再随机生成两个 $3\times 3$ 矩阵验证 $|AB|=|A||B|$。</p>
+</li>
 </ol>
-</blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="第三十-矩阵matrix"><a class="header" href="#第三十-矩阵matrix">第三十 矩阵（Matrix）</a></h1>
 <p>矩阵（Matrix）是线性代数的核心概念，是由 $m \times n$ 个数排成的 $m$ 行 $n$ 列的矩形数表。矩阵不仅是描述线性变换的工具，也是解决线性方程组、数据分析、机器学习等问题的基础。</p>
@@ -18266,7 +18409,83 @@ fn main() {
         // [43, 50]
     }
 }</code></pre>
-<h3 id="24-矩阵乘法的性质"><a class="header" href="#24-矩阵乘法的性质">2.4 矩阵乘法的性质</a></h3>
+<h3 id="24-hadamard-积逐元素乘法"><a class="header" href="#24-hadamard-积逐元素乘法">2.4 Hadamard 积（逐元素乘法）</a></h3>
+<p>Hadamard 积（Hadamard product）也叫 <strong>Schur 积</strong> 或 <strong>逐元素乘法</strong>，要求两个矩阵<strong>同型</strong>（行数、列数都相同），然后把对应位置的元素直接相乘：</p>
+<p>$$(A \circ B)[i,j] = A[i,j] \cdot B[i,j]$$</p>
+<p>记作 $A \circ B$，也常写作 $A \odot B$。它和普通矩阵乘法的区别：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>项目</th><th>普通乘法 $AB$</th><th>Hadamard 积 $A \circ B$</th></tr>
+</thead>
+<tbody>
+<tr><td>维度要求</td><td>$A$ 的列数等于 $B$ 的行数</td><td>$A$、$B$ 同型</td></tr>
+<tr><td>结果维度</td><td>$m \times p$</td><td>$m \times n$</td></tr>
+<tr><td>计算方式</td><td>行与列对应元素相乘后求和</td><td>对应位置元素直接相乘</td></tr>
+<tr><td>交换律</td><td>一般不满足 $AB \neq BA$</td><td>满足 $A \circ B = B \circ A$</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>性质</strong>（设 $A, B, C$ 同型，$k$ 为标量）：</p>
+<ul>
+<li>交换律：$A \circ B = B \circ A$</li>
+<li>结合律：$(A \circ B) \circ C = A \circ (B \circ C)$</li>
+<li>分配律：$A \circ (B + C) = A \circ B + A \circ C$</li>
+<li>数乘：$k(A \circ B) = (kA) \circ B = A \circ (kB)$</li>
+<li>转置：$(A \circ B)^T = A^T \circ B^T$</li>
+<li>全 1 矩阵 $J$ 是单位元：$A \circ J = A$</li>
+</ul>
+<blockquote>
+<p><strong>Schur 乘积定理：</strong> 若 $A$、$B$ 都是半正定矩阵，则 $A \circ B$ 也是半正定矩阵。</p>
+</blockquote>
+<p><strong>Rust 实现</strong>：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gaGFkYW1hcmRfcHJvZHVjdChhOiAmW1ZlYzxmNjQ+XSwgYjogJltWZWM8ZjY0Pl0pIC0+IE9wdGlvbjxWZWM8VmVjPGY2ND4+PiB7CiAgICBpZiBhLmxlbigpICE9IGIubGVuKCkgewogICAgICAgIHJldHVybiBOb25lOyAvLyDooYzmlbDkuI3lkIwKICAgIH0KCiAgICBsZXQgbXV0IHJlc3VsdCA9IFZlYzo6d2l0aF9jYXBhY2l0eShhLmxlbigpKTsKICAgIGZvciAocm93X2EsIHJvd19iKSBpbiBhLml0ZXIoKS56aXAoYikgewogICAgICAgIGlmIHJvd19hLmxlbigpICE9IHJvd19iLmxlbigpIHsKICAgICAgICAgICAgcmV0dXJuIE5vbmU7IC8vIOWIl+aVsOS4jeWQjAogICAgICAgIH0KICAgICAgICByZXN1bHQucHVzaChyb3dfYS5pdGVyKCkuemlwKHJvd19iKS5tYXAofCh4LCB5KXwgeCAqIHkpLmNvbGxlY3QoKSk7CiAgICB9CgogICAgU29tZShyZXN1bHQpCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgYSA9IHZlYyFbdmVjIVsxLjAsIDIuMF0sIHZlYyFbMy4wLCA0LjBdXTsKICAgIGxldCBiID0gdmVjIVt2ZWMhWzUuMCwgNi4wXSwgdmVjIVs3LjAsIDguMF1dOwoKICAgIGlmIGxldCBTb21lKGMpID0gaGFkYW1hcmRfcHJvZHVjdCgmYSwgJmIpIHsKICAgICAgICBwcmludGxuISgiQSDiiJggQiA9Iik7CiAgICAgICAgZm9yIHJvdyBpbiAmYyB7CiAgICAgICAgICAgIHByaW50bG4hKCIgIHs6P30iLCByb3cpOwogICAgICAgIH0KICAgICAgICAvLyBbNS4wLCAxMi4wXQogICAgICAgIC8vIFsyMS4wLCAzMi4wXQogICAgfQoKICAgIC8vIOS4jeWQjOWei+eahOefqemYteaXoOazleWBmiBIYWRhbWFyZCDnp68KICAgIGxldCBkID0gdmVjIVt2ZWMhWzEuMCwgMi4wXV07CiAgICBhc3NlcnQhKGhhZGFtYXJkX3Byb2R1Y3QoJmEsICZkKS5pc19ub25lKCkpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">fn hadamard_product(a: &amp;[Vec&lt;f64&gt;], b: &amp;[Vec&lt;f64&gt;]) -&gt; Option&lt;Vec&lt;Vec&lt;f64&gt;&gt;&gt; {
+    if a.len() != b.len() {
+        return None; // 行数不同
+    }
+
+    let mut result = Vec::with_capacity(a.len());
+    for (row_a, row_b) in a.iter().zip(b) {
+        if row_a.len() != row_b.len() {
+            return None; // 列数不同
+        }
+        result.push(row_a.iter().zip(row_b).map(|(x, y)| x * y).collect());
+    }
+
+    Some(result)
+}
+
+fn main() {
+    let a = vec![vec![1.0, 2.0], vec![3.0, 4.0]];
+    let b = vec![vec![5.0, 6.0], vec![7.0, 8.0]];
+
+    if let Some(c) = hadamard_product(&amp;a, &amp;b) {
+        println!("A ∘ B =");
+        for row in &amp;c {
+            println!("  {:?}", row);
+        }
+        // [5.0, 12.0]
+        // [21.0, 32.0]
+    }
+
+    // 不同型的矩阵无法做 Hadamard 积
+    let d = vec![vec![1.0, 2.0]];
+    assert!(hadamard_product(&amp;a, &amp;d).is_none());
+}</code></pre>
+<p>时间复杂度为 $O(mn)$，比普通矩阵乘法的 $O(mnp)$ 低。</p>
+<p><strong>应用场景</strong>：</p>
+<ul>
+<li><strong>掩码（mask）</strong>：与 0/1 矩阵做 Hadamard 积，即可保留或屏蔽指定位置的元素。</li>
+<li><strong>逐元素加权</strong>：给每个位置设置不同权重，例如图像滤镜、注意力权重。</li>
+<li><strong>神经网络</strong>：LSTM/GRU 的门控、注意力机制里大量使用逐元素乘法。</li>
+<li><strong>NumPy / MATLAB / PyTorch</strong>：NumPy 的 <code>*</code>、MATLAB 的 <code>.*</code>、PyTorch 的 <code>*</code> 默认都是 Hadamard 积；矩阵乘法分别是 <code>@</code>、<code>*</code>、<code>@</code>（或 <code>matmul</code>）。</li>
+</ul>
+<blockquote>
+<p><strong>注意区分：</strong> Hadamard 积是逐元素乘法；而 <strong>Hadamard 矩阵</strong> 是由 $+1$、$-1$ 组成、各行两两正交的方阵，两者不是一回事。</p>
+</blockquote>
+<h3 id="25-矩阵乘法的性质"><a class="header" href="#25-矩阵乘法的性质">2.5 矩阵乘法的性质</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -18281,7 +18500,7 @@ fn main() {
 </tbody>
 </table>
 </div>
-<h3 id="25-矩阵的转置"><a class="header" href="#25-矩阵的转置">2.5 矩阵的转置</a></h3>
+<h3 id="26-矩阵的转置"><a class="header" href="#26-矩阵的转置">2.6 矩阵的转置</a></h3>
 <p>将矩阵的行和列互换：</p>
 <ul>
 <li>$(A^T)[i,j] = A[j,i]$</li>
@@ -18686,6 +18905,7 @@ fn main() {
 </thead>
 <tbody>
 <tr><td>矩阵乘法</td><td>$C[i,j] = \sum_k A[i,k]B[k,j]$，不满足交换律</td></tr>
+<tr><td>Hadamard 积</td><td>$C[i,j] = A[i,j]B[i,j]$，逐元素相乘，要求同型</td></tr>
 <tr><td>转置</td><td>$(AB)^T = B^T A^T$</td></tr>
 <tr><td>逆矩阵</td><td>$A^{-1} = A^* /</td></tr>
 <tr><td>秩</td><td>非零子式的最高阶数，初等变换不变</td></tr>
@@ -18699,14 +18919,40 @@ fn main() {
 </table>
 </div>
 <p>矩阵是描述线性变换的代数工具。理解矩阵的各种运算和分解，是掌握线性代数、机器学习、计算机图形学等领域的基础。</p>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="十四练习题"><a class="header" href="#十四练习题">十四、练习题</a></h2>
 <ol>
-<li>实现矩阵乘法、转置、求逆的基本算法</li>
-<li>用特征值分解判断矩阵是否正定</li>
-<li>使用 SVD 进行图像压缩实验</li>
+<li>
+<p><strong>矩阵乘法与交换律</strong>：设 <code>A = [[1, 2], [3, 4]]</code>、<code>B = [[0, 1], [1, 0]]</code>，求 $AB$ 与 $BA$，并说明 $AB\neq BA$。</p>
+</li>
+<li>
+<p><strong>Hadamard 积</strong>：设 <code>A = [[1, 2], [3, 4]]</code>、<code>B = [[5, 6], [7, 8]]</code>，求 $A\circ B$，并验证 $(A\circ B)^T=A^T\circ B^T$。</p>
+</li>
+<li>
+<p><strong>转置、行列式与逆</strong>：设 <code>A = [[1, 2], [3, 4]]</code>，求 $A^T$、$|A|$ 与 $A^{-1}$，并验证 $AA^{-1}=I$。</p>
+</li>
+<li>
+<p><strong>矩阵的秩</strong>：设矩阵的三行分别为 <code>[1, 2, 3]</code>、<code>[2, 4, 6]</code>、<code>[1, 1, 1]</code>，求矩阵的秩，并写出一个极大线性无关组。</p>
+</li>
+<li>
+<p><strong>特征值与特征向量</strong>：设 <code>A = [[2, 1], [1, 2]]</code>，求特征值、对应的特征向量，并判断 $A$ 能否对角化。</p>
+</li>
+<li>
+<p><strong>正交矩阵与旋转</strong>：旋转矩阵 $R(\theta)$ 的第一行为 $(\cos\theta,-\sin\theta)$，第二行为 $(\sin\theta,\cos\theta)$。验证 $R^T R=I$、$|R|=1$，并求 $R(\pi/2)$ 作用于向量 $(1,0)$ 的结果。</p>
+</li>
+<li>
+<p><strong>正定矩阵</strong>：判断 <code>A = [[2, 1], [1, 2]]</code> 与 <code>B = [[1, 2], [2, 1]]</code> 是否正定，并说明理由。</p>
+</li>
+<li>
+<p><strong>LU 分解</strong>：对 <code>A = [[4, 3], [6, 3]]</code> 做 LU 分解（$L$ 为单位下三角矩阵），并利用分解结果求 $|A|$。</p>
+</li>
+<li>
+<p><strong>SVD 与图像压缩</strong>：简述用 SVD 做图像压缩的原理；用 Rust 的 nalgebra 对一个小矩阵做奇异值分解，分别保留前 $k$ 个奇异值重构，观察 $k$ 变化时误差的变化。</p>
+</li>
+<li>
+<p><strong>编程题</strong>：用 Rust 实现矩阵乘法、Hadamard 积、转置与 $2\times 2$ 矩阵求逆，并用 nalgebra 验证结果。</p>
+</li>
 </ol>
-</blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="第三十一-向量vector"><a class="header" href="#第三十一-向量vector">第三十一 向量（Vector）</a></h1>
 <p>向量（Vector）是线性代数的核心概念，也是物理学和工程学中描述方向和大小的基本工具。在计算机科学中，向量是机器学习、计算机图形学、物理模拟等领域的基础数据结构。</p>
@@ -19125,14 +19371,37 @@ fn main() {
 </table>
 </div>
 <p>向量是连接代数与几何的桥梁，也是现代计算机科学的基石。从物理中的力和速度，到机器学习中的特征向量，向量的概念无处不在。</p>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="十二练习题"><a class="header" href="#十二练习题">十二、练习题</a></h2>
 <ol>
-<li>实现向量的各种运算（加法、数乘、点积、叉积）</li>
-<li>用余弦相似度实现简单的文档相似度计算</li>
-<li>实现施密特正交化算法</li>
+<li>
+<p><strong>向量运算</strong>：设 $\vec a=(1,2,3)$、$\vec b=(4,-1,2)$，求 $\vec a+\vec b$、$2\vec a-3\vec b$、$\vec a\cdot\vec b$ 与 $\vec a\times\vec b$。</p>
+</li>
+<li>
+<p><strong>夹角与余弦相似度</strong>：求 $\vec a=(1,0)$ 与 $\vec b=(1,1)$ 的夹角和余弦相似度；再求 $\vec a=(1,2,2)$ 与 $\vec b=(2,4,4)$ 的夹角。</p>
+</li>
+<li>
+<p><strong>模与范数</strong>：求 $\vec a=(3,-4)$ 的 $L_1$、$L_2$、$L_\infty$ 范数，并把 $\vec a$ 单位化。</p>
+</li>
+<li>
+<p><strong>线性相关性</strong>：判断向量组 $(1,2,3)$、$(2,4,6)$、$(1,0,1)$ 是否线性相关，求其秩和一个极大线性无关组。</p>
+</li>
+<li>
+<p><strong>正交与投影</strong>：设 $\vec a=(1,2,2)$，求它在 $\vec b=(1,0,0)$ 上的投影向量；再写出一个与 $\vec a$ 正交的非零向量。</p>
+</li>
+<li>
+<p><strong>施密特正交化</strong>：对 $\vec v_1=(1,1,0)$、$\vec v_2=(0,1,1)$、$\vec v_3=(1,0,1)$ 做 Gram-Schmidt 正交化，并单位化。</p>
+</li>
+<li>
+<p><strong>旋转与缩放</strong>：把向量 $(1,0)$ 先逆时针旋转 $90^\circ$，再沿 $x$ 轴方向缩放 2 倍，求最终向量，并写出对应的变换矩阵。</p>
+</li>
+<li>
+<p><strong>Rust 编程</strong>：用 nalgebra 计算两个三维向量的点积、叉积、夹角和范数，并与手算结果对比。</p>
+</li>
+<li>
+<p><strong>思考题</strong>：为什么非零的正交向量组一定线性无关？余弦相似度与欧氏距离在什么情况下会给出不同的“相似”判断？</p>
+</li>
 </ol>
-</blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="第三十二-函数function"><a class="header" href="#第三十二-函数function">第三十二 函数（Function）</a></h1>
 <p>函数（Function）是数学中最核心的概念之一，描述了两个集合之间的一种对应关系：对于定义域中的每一个输入，都有唯一确定的输出与之对应。函数是微积分的研究对象，也是计算机编程的基本构建块。</p>
@@ -19623,14 +19892,41 @@ fn main() {
 </table>
 </div>
 <p>函数是数学和计算机科学的核心概念。从基本的初等函数到复杂的复合函数，从连续的数学函数到离散的计算机程序，函数的思想贯穿始终。</p>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="十三练习题"><a class="header" href="#十三练习题">十三、练习题</a></h2>
 <ol>
-<li>用 Rust 实现各种初等函数的性质验证</li>
-<li>实现牛顿迭代法求方程的根</li>
-<li>用数值积分方法计算定积分</li>
+<li>
+<p><strong>奇偶性与周期性</strong>：判断 $f(x)=x\sin x$ 的奇偶性；求 $g(x)=\sin 2x+\cos 3x$ 的最小正周期。</p>
+</li>
+<li>
+<p><strong>单调性与凹凸性</strong>：设 $f(x)=x^3-3x$，求单调区间、极值，以及曲线的拐点。</p>
+</li>
+<li>
+<p><strong>反函数</strong>：求 $y=\frac{x+1}{x-1}$ 的反函数及其定义域。</p>
+</li>
+<li>
+<p><strong>复合函数</strong>：设 $f(x)=\sqrt{1-x^2}$，$g(x)=\ln x$，求 $g(f(x))$ 的定义域。</p>
+</li>
+<li>
+<p><strong>连续与可导</strong>：讨论 $f(x)=|x|$ 在 $x=0$ 处的连续性与可导性；再讨论 $f(x)=x\sin(1/x)$（$x\neq 0$）、$f(0)=0$ 在 $x=0$ 处是否连续、是否可导。</p>
+</li>
+<li>
+<p><strong>数值积分</strong>：用复合梯形法则和复合辛普森法则分别计算 $\int_0^\pi \sin x dx$，取 $n=10$ 和 $n=100$，比较误差，并解释两种方法误差阶的差异。</p>
+</li>
+<li>
+<p><strong>闭包与高阶函数</strong>：用 Rust 闭包实现函数复合 <code>compose(f, g)</code>，把 $h(x)=e^{\sin x}$ 表示为两个函数的复合，计算 $h(0)$ 与 $h(\pi/2)$；再实现 <code>repeat(f, n)</code>，把函数迭代 $n$ 次。</p>
+</li>
+<li>
+<p><strong>Sigmoid 函数</strong>：证明 $\sigma(-x)=1-\sigma(x)$ 和 $\sigma’(x)=\sigma(x)(1-\sigma(x))$，并用 Rust 在 $x=-3,-1,0,1,3$ 处数值验证。</p>
+</li>
+<li>
+<p><strong>欧拉公式与物理应用</strong>：</p>
+<ul>
+<li>由 $e^{i\theta}=\cos\theta+i\sin\theta$ 推导三倍角公式 $\cos 3\theta=4\cos^3\theta-3\cos\theta$；</li>
+<li>单摆周期 $T=2\pi\sqrt{l/g}$，取 $g=9.8$，求 $T=2$ 秒时的摆长（保留两位小数）。</li>
+</ul>
+</li>
 </ol>
-</blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="第三十三-微积分calculus"><a class="header" href="#第三十三-微积分calculus">第三十三 微积分（Calculus）</a></h1>
 <p>微积分（Calculus）是数学中最伟大的成就之一，由牛顿和莱布尼茨在 17 世纪独立创立。它的核心思想是<strong>以直代曲、以简代繁</strong>——把复杂问题分解成无数个小的、简单的问题，然后再整合结果。</p>
@@ -19886,9 +20182,9 @@ fn main() {
 <li>对称性：$\binom{n}{k} = \binom{n}{n-k}$</li>
 <li>递推关系：$\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}$</li>
 </ul>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gYmlub21pYWwobjogdTY0LCBrOiB1NjQpIC0+IHU2NCB7CiAgICBpZiBrID4gbiB7IHJldHVybiAwOyB9CiAgICBpZiBrID4gbiAtIGsgeyBrID0gbiAtIGs7IH0gLy8g5Yip55So5a+556ew5oCn5LyY5YyWCiAgICBsZXQgbXV0IHJlc3VsdCA9IDF1NjQ7CiAgICBmb3IgaSBpbiAwLi5rIHsKICAgICAgICByZXN1bHQgPSByZXN1bHQgKiAobiAtIGkpIC8gKGkgKyAxKTsKICAgIH0KICAgIHJlc3VsdAp9CgpmbiBwcmludF9wYXNjYWwocm93czogdXNpemUpIHsKICAgIGZvciBuIGluIDAuLnJvd3MgewogICAgICAgIGZvciBrIGluIDAuLj1uIHsKICAgICAgICAgICAgcHJpbnQhKCJ7OjZ9IiwgYmlub21pYWwobiBhcyB1NjQsIGsgYXMgdTY0KSk7CiAgICAgICAgfQogICAgICAgIHByaW50bG4hKCk7CiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBwcmludF9wYXNjYWwoMTApOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gYmlub21pYWwobjogdTY0LCBtdXQgazogdTY0KSAtPiB1NjQgewogICAgaWYgayA+IG4geyByZXR1cm4gMDsgfQogICAgaWYgayA+IG4gLSBrIHsgayA9IG4gLSBrOyB9IC8vIOWIqeeUqOWvueensOaAp+S8mOWMlgogICAgbGV0IG11dCByZXN1bHQgPSAxdTY0OwogICAgZm9yIGkgaW4gMC4uayB7CiAgICAgICAgcmVzdWx0ID0gcmVzdWx0ICogKG4gLSBpKSAvIChpICsgMSk7CiAgICB9CiAgICByZXN1bHQKfQoKZm4gcHJpbnRfcGFzY2FsKHJvd3M6IHVzaXplKSB7CiAgICBpZiByb3dzID09IDAgewogICAgICAgIHJldHVybjsKICAgIH0KCiAgICAvLyDmnIDlpKfmlbDlrZflh7rnjrDlnKjmnIDlkI7kuIDooYzkuK3pl7TvvIznlKjlroPlhrPlrprmr4/kuKrmlbDlrZfnmoTliJflrr0KICAgIGxldCBtYXhfdmFsdWUgPSBiaW5vbWlhbCgocm93cyAtIDEpIGFzIHU2NCwgKChyb3dzIC0gMSkgLyAyKSBhcyB1NjQpOwogICAgbGV0IG11dCB3aWR0aCA9IG1heF92YWx1ZS50b19zdHJpbmcoKS5sZW4oKSArIDI7CiAgICBpZiB3aWR0aCAlIDIgIT0gMCB7CiAgICAgICAgd2lkdGggKz0gMTsgLy8g5YiX5a695Y+W5YG25pWw77yM5L+d6K+B5bGF5Lit5pe25bem5Y+z5a+556ewCiAgICB9CgogICAgZm9yIG4gaW4gMC4ucm93cyB7CiAgICAgICAgLy8g6KGM6aaW6KGl56m65qC877yM5L2/5omA5pyJ6KGM5Lul5ZCM5LiA5Liq5Lit5b+D5a+56b2QCiAgICAgICAgbGV0IGluZGVudCA9IChyb3dzIC0gMSAtIG4pICogd2lkdGggLyAyOwogICAgICAgIHByaW50ISgie30iLCAiICIucmVwZWF0KGluZGVudCkpOwogICAgICAgIGZvciBrIGluIDAuLj1uIHsKICAgICAgICAgICAgcHJpbnQhKCJ7Ol53aWR0aCR9IiwgYmlub21pYWwobiBhcyB1NjQsIGsgYXMgdTY0KSwgd2lkdGggPSB3aWR0aCk7CiAgICAgICAgfQogICAgICAgIHByaW50bG4hKCk7CiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBwcmludF9wYXNjYWwoMTApOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
-<pre class="playground"><code class="language-rust edition2024">fn binomial(n: u64, k: u64) -&gt; u64 {
+<pre class="playground"><code class="language-rust edition2024">fn binomial(n: u64, mut k: u64) -&gt; u64 {
     if k &gt; n { return 0; }
     if k &gt; n - k { k = n - k; } // 利用对称性优化
     let mut result = 1u64;
@@ -19899,9 +20195,23 @@ fn main() {
 }
 
 fn print_pascal(rows: usize) {
+    if rows == 0 {
+        return;
+    }
+
+    // 最大数字出现在最后一行中间，用它决定每个数字的列宽
+    let max_value = binomial((rows - 1) as u64, ((rows - 1) / 2) as u64);
+    let mut width = max_value.to_string().len() + 2;
+    if width % 2 != 0 {
+        width += 1; // 列宽取偶数，保证居中时左右对称
+    }
+
     for n in 0..rows {
+        // 行首补空格，使所有行以同一个中心对齐
+        let indent = (rows - 1 - n) * width / 2;
+        print!("{}", " ".repeat(indent));
         for k in 0..=n {
-            print!("{:6}", binomial(n as u64, k as u64));
+            print!("{:^width$}", binomial(n as u64, k as u64), width = width);
         }
         println!();
     }
@@ -19980,14 +20290,57 @@ fn main() {
 </table>
 </div>
 <p>微积分是理解连续变化的数学工具。从物理中的运动分析，到机器学习中的梯度下降，微积分的思想无处不在。</p>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="十三练习题-1"><a class="header" href="#十三练习题-1">十三、练习题</a></h2>
 <ol>
-<li>用数值方法验证泰勒公式的精度</li>
-<li>实现蒙特卡洛方法计算定积分</li>
-<li>用梯度下降法求解函数的极小值</li>
+<li>
+<p><strong>极限</strong>：求下列极限：</p>
+<ul>
+<li>$\displaystyle \lim_{x\to 0}\frac{\sin 3x}{2x}$</li>
+<li>$\displaystyle \lim_{x\to 0}\frac{1-\cos x}{x^2}$</li>
+<li>$\displaystyle \lim_{x\to \infty}\left(1+\frac{1}{x}\right)^{2x}$</li>
+</ul>
+</li>
+<li>
+<p><strong>导数与极值</strong>：设 $f(x)=x^2e^{-x}$，求 $f’(x)$、驻点、单调区间与极值。</p>
+</li>
+<li>
+<p><strong>中值定理</strong>：用拉格朗日中值定理证明：对任意实数 $a,b$，有 $|\sin a-\sin b|\le |a-b|$。</p>
+</li>
+<li>
+<p><strong>洛必达法则与泰勒公式</strong>：</p>
+<ul>
+<li>用洛必达法则求 $\displaystyle \lim_{x\to 0}\frac{e^x-1-x}{x^2}$；</li>
+<li>写出 $e^x$ 在 $x=0$ 处的 $n$ 阶泰勒展开，并估算用 5 阶展开计算 $e^{0.1}$ 时的截断误差。</li>
+</ul>
+</li>
+<li>
+<p><strong>积分</strong>：</p>
+<ul>
+<li>用分部积分法求 $\displaystyle \int xe^{-x}\mathrm{d}x$，进而计算 $\displaystyle \int_0^1 xe^{-x}\mathrm{d}x$；</li>
+<li>用换元法求 $\displaystyle \int_0^1 \frac{x}{\sqrt{1+x^2}}\mathrm{d}x$。</li>
+</ul>
+</li>
+<li>
+<p><strong>数值积分</strong>：用 Rust 分别实现梯形法、辛普森法和蒙特卡洛法，计算
+$\displaystyle \int_0^1 e^{-x^2}\mathrm{d}x$，
+比较 $N=10,10^2,10^3,10^4$ 时的误差，并解释三种方法的误差随 $N$ 变化的趋势。</p>
+</li>
+<li>
+<p><strong>偏导数与梯度</strong>：设 $f(x,y)=x^2+2xy+3y^2$。</p>
+<ul>
+<li>求 $\partial f/\partial x$、$\partial f/\partial y$ 和梯度 $\nabla f$；</li>
+<li>求驻点，并用 Hessian 矩阵判断其类型；</li>
+<li>求在点 $(1,1)$ 沿方向 $\mathbf{u}=(1,1)/\sqrt{2}$ 的方向导数。</li>
+</ul>
+</li>
+<li>
+<p><strong>梯度下降</strong>：用 Rust 实现梯度下降，求 $f(x)=x^4-3x^2+2$ 的极小值。分别取学习率 $\eta=0.01,0.1,0.5$，从 $x_0=2$ 出发迭代 100 次，记录 $x$ 与 $f(x)$ 的变化，并解释学习率过大或过小时的实验现象。</p>
+</li>
+<li>
+<p><strong>思考题</strong>：蒙特卡洛积分的误差为什么是 $O(1/\sqrt{N})$？与梯形法在光滑函数上的 $O(1/N^2)$ 相比，什么场景下仍然值得选择蒙特卡洛方法？</p>
+</li>
 </ol>
-</blockquote>
 <hr>
 <h2 id="学习资源"><a class="header" href="#学习资源">学习资源</a></h2>
 <div class="table-wrapper">
@@ -20418,14 +20771,37 @@ fn main() {
 </table>
 </div>
 <p>概率论是理解不确定性的数学工具。从日常的天气预报到机器学习的模型评估，概率论的思想无处不在。</p>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="十四练习题-1"><a class="header" href="#十四练习题-1">十四、练习题</a></h2>
 <ol>
-<li>用贝叶斯公式解决实际问题（如垃圾邮件分类）</li>
-<li>模拟大数定律和中心极限定理</li>
-<li>用蒙特卡洛方法估计概率</li>
+<li>
+<p><strong>排列组合与生日悖论</strong>：一年按 365 天计，$n$ 个人生日互不相同的概率为 $\frac{365\cdot364\cdots(365-n+1)}{365^n}$，至少两人生日相同的概率为 $P(n)=1-\frac{365!}{365^n(365-n)!}$。用 Rust 计算 $P(10)$、$P(23)$、$P(50)$，并找出使 $P(n)&gt;0.5$ 的最小 $n$。</p>
+</li>
+<li>
+<p><strong>贝叶斯公式</strong>：某疾病患病率为 1%，检测灵敏度为 99%，特异度为 99%。若某人检测结果为阳性，求他真正患病的概率，并解释为什么远低于 99%。</p>
+</li>
+<li>
+<p><strong>条件概率与三门问题</strong>：在 Monty Hall 问题中，参赛者先选一扇门，主持人打开另一扇有羊的门后，参赛者换门的中奖概率是多少？用条件概率说明，并写 Rust 程序模拟 10 万次验证。</p>
+</li>
+<li>
+<p><strong>期望与方差</strong>：设离散型随机变量 $X$ 的分布律为 $P(X=-1)=0.2$、$P(X=0)=0.3$、$P(X=2)=0.5$，求 $E[X]$、$E[X^2]$ 与 $\text{Var}(X)$。</p>
+</li>
+<li>
+<p><strong>二项分布与泊松近似</strong>：某机器次品率为 1%，抽取 200 件产品，求恰有 2 件次品的概率（二项分布）；再用 $\lambda=2$ 的泊松分布近似，比较两者结果。</p>
+</li>
+<li>
+<p><strong>连续型分布</strong>：设 $X\sim U(0,1)$，求 $E[X]$ 与 $\text{Var}(X)$；令 $Y=2X+1$，求 $E[Y]$、$\text{Var}(Y)$ 以及 $Y$ 的分布。</p>
+</li>
+<li>
+<p><strong>切比雪夫不等式与中心极限定理</strong>：掷 100 枚均匀硬币，$X$ 为正面朝上的次数。用切比雪夫不等式估计 $P(|X-50|\ge 20)$ 的上界；再用正态近似计算该概率，比较两者的松紧程度。</p>
+</li>
+<li>
+<p><strong>信息熵</strong>：分别计算公平硬币、正面概率为 0.9 的硬币、均匀六面骰子的信息熵（单位：bit），并解释为什么均匀分布的熵最大。</p>
+</li>
+<li>
+<p><strong>假设检验</strong>：某零件长度服从正态分布，历史标准差 $\sigma=0.5$ mm。现抽取 25 件，样本均值 $\bar{x}=10.2$ mm，原假设 $H_0:\mu=10$ mm，显著性水平 $\alpha=0.05$（双侧）。做 Z 检验（临界值 1.96）并给出结论。</p>
+</li>
 </ol>
-</blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="第三十五-离散数学discrete-mathematics"><a class="header" href="#第三十五-离散数学discrete-mathematics">第三十五 离散数学（Discrete Mathematics）</a></h1>
 <p>离散数学是研究离散量的结构及其相互关系的数学分支，与连续数学（如微积分）相对。它是计算机科学的理论基础，为算法设计、数据结构、数据库、编译原理、密码学等提供了核心数学工具。</p>
@@ -20910,14 +21286,58 @@ fn main() {
 </table>
 </div>
 <p>离散数学是计算机科学的数学语言。从数据结构到算法设计，从数据库到密码学，离散数学的概念无处不在。</p>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="九练习题"><a class="header" href="#九练习题">九、练习题</a></h2>
 <ol>
-<li>用 Rust 实现图的 DFS/BFS 遍历</li>
-<li>用容斥原理解决计数问题</li>
-<li>判断给定关系是否为等价关系或偏序关系</li>
+<li>
+<p><strong>集合与幂集</strong>：设 $A=\lbrace 1,2,3\rbrace$，写出 $\mathcal{P}(A)$ 并验证 $|\mathcal{P}(A)|=2^{|A|}$；设 $B=\lbrace 2,3,4\rbrace$、全集 $U=\lbrace 1,2,3,4,5\rbrace$，求 $A\cup B$、$A\cap B$、$A\setminus B$ 与 $(A\cup B)^c$。</p>
+</li>
+<li>
+<p><strong>图论</strong>：无向图 $G=(V,E)$，其中 $V=\lbrace A,B,C,D,E\rbrace$，$E=\lbrace AB,AC,BC,CD,DE\rbrace$。</p>
+<ul>
+<li>写出邻接矩阵和邻接表；</li>
+<li>从 $A$ 出发，给出 BFS 与 DFS 的遍历序列；</li>
+<li>判断图是否存在欧拉路径；若存在，写出其中一条。</li>
+</ul>
+</li>
+<li>
+<p><strong>数理逻辑</strong>：用真值表验证 $p\to q\equiv\neg p\lor q$；判断公式 $((p\to q)\land(q\to r))\to(p\to r)$ 是否为重言式。</p>
+</li>
+<li>
+<p><strong>组合计数与容斥原理</strong>：</p>
+<ul>
+<li>从 5 名男生、4 名女生中选 3 人，要求至少有 1 名女生，有多少种选法？</li>
+<li>用容斥原理计算 1~1000 中能被 2、3、5 中至少一个整除的整数个数。</li>
+</ul>
+</li>
+<li>
+<p><strong>鸽巢原理</strong>：</p>
+<ul>
+<li>证明任意 13 个人中至少有 2 个人在同一个月出生；</li>
+<li>证明从 $1,2,\ldots,2n$ 中任取 $n+1$ 个数，必有两个数存在倍数关系。</li>
+</ul>
+</li>
+<li>
+<p><strong>关系</strong>：设 $A=\lbrace 1,2,3,4\rbrace$，$R=\lbrace(1,1),(2,2),(3,3),(4,4),(1,2),(2,1),(3,4),(4,3)\rbrace$。</p>
+<ul>
+<li>判断 $R$ 是否为等价关系；若是，写出所有等价类；</li>
+<li>判断整除关系 $\mid$ 在 $\lbrace 1,2,3,6\rbrace$ 上是否为偏序关系，并画出哈斯图。</li>
+</ul>
+</li>
+<li>
+<p><strong>代数结构</strong>：判断下列结构哪些构成群，并说明理由：$(\mathbb{Z},+)$、$(\mathbb{Z},\times)$、$(\mathbb{Q}\setminus\lbrace 0\rbrace,\times)$、$(\mathbb{Z}_7\setminus\lbrace 0\rbrace,\times)$；在 $(\mathbb{Z}_7\setminus\lbrace 0\rbrace,\times)$ 中求 3 的逆元和 3 的阶。</p>
+</li>
+<li>
+<p><strong>编程题</strong>：用 Rust 实现：</p>
+<ul>
+<li>用邻接表表示图，并实现从指定起点出发的 DFS 与 BFS；</li>
+<li>用容斥原理计算 1~$N$ 中能被给定质数集合中至少一个数整除的整数个数。</li>
+</ul>
+</li>
+<li>
+<p><strong>思考题</strong>：欧拉路径存在的充要条件为什么是“奇度顶点数为 0 或 2”？举一个存在欧拉路径但不存在欧拉回路的图，并说明原因。</p>
+</li>
 </ol>
-</blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="第三十六-神经网络neural-network"><a class="header" href="#第三十六-神经网络neural-network">第三十六 神经网络（Neural Network）</a></h1>
 <p>神经网络是深度学习的核心模型，灵感来源于生物神经系统的结构与功能。从手写数字识别到大语言模型，神经网络已经成为现代人工智能的基石。本章将从生物神经元讲起，逐步构建人工神经网络的完整知识体系，并用 Rust 代码实现核心算法。</p>
@@ -21942,15 +22362,37 @@ fn main() {
 </table>
 </div>
 <p>神经网络是现代人工智能的核心技术。从简单的感知机到复杂的 Transformer，从 MNIST 手写识别到大语言模型，神经网络的发展深刻改变了技术世界。Rust 凭借其安全性和高性能，正在成为 AI 基础设施的重要选择。</p>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="十三练习题-2"><a class="header" href="#十三练习题-2">十三、练习题</a></h2>
 <ol>
-<li>从零实现一个两层 MLP，在 MNIST 子集上完成训练和推理</li>
-<li>用 Rust 实现 SGD 和 Adam 优化器，对比收敛速度</li>
-<li>使用 candle 框架加载预训练模型，完成文本分类或图像识别任务</li>
-<li>实现一个简易的自注意力模块，理解 Transformer 的核心机制</li>
+<li>
+<p><strong>感知机</strong>：用感知机实现 AND、OR、NAND 三个逻辑门；说明单层感知机为什么无法实现 XOR，两层网络又是如何解决它的。</p>
+</li>
+<li>
+<p><strong>激活函数</strong>：写出 Sigmoid、Tanh、ReLU 的公式和导数，比较它们的优缺点，并解释 ReLU 的“死亡神经元”问题。</p>
+</li>
+<li>
+<p><strong>前向传播</strong>：一个 2-2-1 网络，输入为 $(1,2)$；第一层权重（按行）为 <code>[[0.5, -0.5], [1, 0]]</code>，偏置 $b_1=(0,0.5)$，激活函数为 ReLU；第二层权重 $W_2=(1,-1)$，偏置 $b_2=0$，激活函数为 Sigmoid。手算网络的输出。</p>
+</li>
+<li>
+<p><strong>损失函数</strong>：写出均方误差和交叉熵的公式，并说明分类任务为什么通常使用交叉熵而不是均方误差。</p>
+</li>
+<li>
+<p><strong>梯度下降</strong>：对 $f(w)=w^2-4w+1$ 使用梯度下降求最小值，推导更新公式，并分析学习率过大和过小分别会出现什么现象。</p>
+</li>
+<li>
+<p><strong>反向传播</strong>：对一个单隐藏层网络（Sigmoid 激活、均方误差损失）推导 $\partial L/\partial w$ 的链式法则过程，说明误差是如何从输出层传回隐藏层的。</p>
+</li>
+<li>
+<p><strong>CNN 尺寸</strong>：输入为 $32\times32$ 的图像，使用 $5\times5$ 卷积核、步长 1、无填充，输出尺寸是多少？再接一个 $2\times2$ 最大池化层后呢？</p>
+</li>
+<li>
+<p><strong>注意力机制</strong>：写出缩放点积注意力公式 $\text{softmax}(QK^T/\sqrt{d_k})V$，解释为什么要除以 $\sqrt{d_k}$，以及 softmax 在这里的作用。</p>
+</li>
+<li>
+<p><strong>编程题</strong>：用 Rust 从零实现一个两层 MLP 训练 XOR，记录损失随迭代次数的变化，并观察隐藏层神经元数量对收敛的影响。</p>
+</li>
 </ol>
-</blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="第三十七-自然语言处理nlp-natural-language-processing"><a class="header" href="#第三十七-自然语言处理nlp-natural-language-processing">第三十七 自然语言处理（NLP, Natural Language Processing）</a></h1>
 <pre><code class="language-txt">第三十七 自然语言处理
@@ -23965,7 +24407,7 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
     │
 实例分割 ──── "每个像素属于哪个实例？"
 </code></pre>
-<h3 id="练习建议-4"><a class="header" href="#练习建议-4">练习建议</a></h3>
+<h3 id="练习建议-2"><a class="header" href="#练习建议-2">练习建议</a></h3>
 <ol>
 <li><strong>基础练习</strong>：使用 <code>image</code> crate 读取一张彩色图片，分别提取 R、G、B 三个通道并保存为灰度图。</li>
 <li><strong>卷积实现</strong>：手动实现 5x5 高斯卷积核，对灰度图像进行平滑处理，并与 <code>imageproc</code> 库的结果对比。</li>
@@ -25866,7 +26308,7 @@ impl&lt;B: burn::tensor::backend::Backend&gt; Generator&lt;B&gt; {
             ├── Sora (文生视频)
             └── DALL-E 3 (文生图)
 </code></pre>
-<h3 id="练习建议-5"><a class="header" href="#练习建议-5">练习建议</a></h3>
+<h3 id="练习建议-3"><a class="header" href="#练习建议-3">练习建议</a></h3>
 <ol>
 <li><strong>基础练习</strong>：使用 <code>candle</code> 实现一个简单的自编码器，在 MNIST 数据集上训练，观察重构效果。</li>
 <li><strong>VAE 实现</strong>：在自编码器基础上实现 VAE，比较两者的潜在空间结构（对潜在向量做插值，观察生成效果）。</li>
@@ -26702,7 +27144,7 @@ fn totp_with_lib() {
 </tbody>
 </table>
 </div>
-<h2 id="练习题-4"><a class="header" href="#练习题-4">练习题</a></h2>
+<h2 id="练习题-5"><a class="header" href="#练习题-5">练习题</a></h2>
 <ol>
 <li>
 <p><strong>安全分析</strong>：假设一个攻击者使用 GPU 集群每秒可以尝试 $10^{10}$ 次 SHA-256 哈希运算。对于一个8位纯数字密码（如生日），平均需要多长时间才能破解？如果是12位混合字符密码呢？</p>
@@ -27530,7 +27972,7 @@ fn main() {
 </table>
 </div>
 <p><a href="https://rust-random.github.io/book/intro.html">《The Rust Rand Book》</a></p>
-<h2 id="练习题-5"><a class="header" href="#练习题-5">练习题</a></h2>
+<h2 id="练习题-6"><a class="header" href="#练习题-6">练习题</a></h2>
 <h3 id="练习-1实现简单的-lcg-并验证周期"><a class="header" href="#练习-1实现简单的-lcg-并验证周期">练习 1：实现简单的 LCG 并验证周期</a></h3>
 <p>实现一个 LCG 生成器，使用参数 $a = 1664525$、$c = 1013904223$、$m = 2^{32}$（Numerical Recipes 推荐参数），验证从种子 1 开始，序列的周期是否为 $2^{32}$。</p>
 <div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8g5o+Q56S677ya5L2/55SoIEhhc2hTZXQg5qOA5rWL6YeN5aSN5YC8CnVzZSBzdGQ6OmNvbGxlY3Rpb25zOjpIYXNoU2V0OwoKc3RydWN0IExjZyB7CiAgICBzdGF0ZTogdTMyLAp9CgppbXBsIExjZyB7CiAgICBmbiBuZXcoc2VlZDogdTMyKSAtPiBTZWxmIHsKICAgICAgICBTZWxmIHsgc3RhdGU6IHNlZWQgfQogICAgfQoKICAgIGZuIG5leHQoJm11dCBzZWxmKSAtPiB1MzIgewogICAgICAgIHNlbGYuc3RhdGUgPSBzZWxmLnN0YXRlLndyYXBwaW5nX211bCgxNjY0NTI1KS53cmFwcGluZ19hZGQoMTAxMzkwNDIyMyk7CiAgICAgICAgc2VsZi5zdGF0ZQogICAgfQp9CgpmbiBtYWluKCkgewogICAgbGV0IG11dCBsY2cgPSBMY2c6Om5ldygxKTsKICAgIGxldCBtdXQgc2VlbiA9IEhhc2hTZXQ6Om5ldygpOwogICAgbGV0IG11dCBjb3VudCA9IDB1NjQ7CgogICAgbG9vcCB7CiAgICAgICAgbGV0IHZhbCA9IGxjZy5uZXh0KCk7CiAgICAgICAgaWYgIXNlZW4uaW5zZXJ0KHZhbCkgewogICAgICAgICAgICBwcmludGxuISgi5ZGo5pyf6ZW/5bqmOiB7fSIsIGNvdW50KTsKICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgfQogICAgICAgIGNvdW50ICs9IDE7CiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
@@ -28263,6 +28705,37 @@ fn sm4(){
 openssl enc -sm4-ctr -pbkdf2 -d -in bank.txt -out decode.txt -a
 openssl enc -e -sm4 -in /tmp/1.txt -out /tmp/2.txt
 </code></pre>
+<hr>
+<h2 id="练习题-7"><a class="header" href="#练习题-7">练习题</a></h2>
+<ol>
+<li>
+<p><strong>流密码与分组密码</strong>：说明两者“按位/按块”处理的区别和适用场景；为什么流密码的 nonce 绝对不能重复使用？</p>
+</li>
+<li>
+<p><strong>AEAD</strong>：ChaCha20-Poly1305 中 ChaCha20 和 Poly1305 各自负责什么？如果密文被篡改一个字节，解密时会发生什么？</p>
+</li>
+<li>
+<p><strong>分组模式</strong>：比较 ECB、CBC、CTR、GCM 四种模式的特点；为什么 ECB 不适合加密图片？CBC 的 IV 需要满足什么条件？</p>
+</li>
+<li>
+<p><strong>填充</strong>：分组长度为 16 字节，明文长度为 20 字节时，PKCS#7 需要补几个字节、补什么值？如果明文正好 16 字节呢？</p>
+</li>
+<li>
+<p><strong>AES</strong>：AES-128、AES-192、AES-256 的密钥长度和轮数分别是多少？简述 SubBytes、ShiftRows、MixColumns、AddRoundKey 四步的作用。</p>
+</li>
+<li>
+<p><strong>SM4</strong>：SM4 的分组长度、密钥长度和轮数分别是多少？与 AES 相比有哪些异同？</p>
+</li>
+<li>
+<p><strong>压缩与加密的顺序</strong>：为什么应当先压缩再加密？如果先加密再压缩会怎样？结合本章的结论解释原因。</p>
+</li>
+<li>
+<p><strong>编程题</strong>：用 Rust 的 <code>chacha20poly1305</code> 或 <code>aes-gcm</code> 实现文件加解密：随机生成 nonce 并与密文一起保存，解密时验证认证标签；修改一个密文字节，验证解密会失败。</p>
+</li>
+<li>
+<p><strong>OpenSSL 实践</strong>：用 <code>openssl enc</code> 完成一次 SM4-CTR 加解密，比较加 <code>-pbkdf2</code> 与不加的区别，并说明 <code>-a</code> 参数的作用。</p>
+</li>
+</ol>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="第三十-非对称密码算法"><a class="header" href="#第三十-非对称密码算法">第三十 非对称密码算法</a></h1>
 <p>非对称密码算法（Asymmetric Cryptography），又称公钥密码学（Public-Key Cryptography），是现代信息安全的基石。与对称密码使用同一把密钥进行加密和解密不同，非对称密码使用一对数学上关联的密钥——公钥和私钥。这一突破性的概念由Whitfield Diffie和Martin Hellman于1976年提出，彻底改变了密码学的面貌。</p>
@@ -28814,7 +29287,7 @@ hex = "0.4"
 </tbody>
 </table>
 </div>
-<h2 id="练习题-6"><a class="header" href="#练习题-6">练习题</a></h2>
+<h2 id="练习题-8"><a class="header" href="#练习题-8">练习题</a></h2>
 <p><strong>练习1：RSA密钥生成与加解密</strong></p>
 <p>使用 <code>rsa</code> crate 生成4096位RSA密钥对，加密一段中文消息，然后解密并验证。比较2048位和4096位密钥的生成时间和加解密时间。</p>
 <p><strong>练习2：ECDH密钥交换</strong></p>
@@ -31667,7 +32140,7 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-6"><a class="header" href="#练习建议-6">练习建议</a></h3>
+<h3 id="练习建议-4"><a class="header" href="#练习建议-4">练习建议</a></h3>
 <ol>
 <li>
 <p><strong>基础练习</strong>：使用 <code>rcgen</code> 生成一个自签名证书，用 OpenSSL 查看其内容，确认包含正确的 SAN 扩展。</p>
@@ -32190,7 +32663,7 @@ https://www.ssllabs.com/ssltest/
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-7"><a class="header" href="#练习建议-7">练习建议</a></h3>
+<h3 id="练习建议-5"><a class="header" href="#练习建议-5">练习建议</a></h3>
 <ol>
 <li>
 <p><strong>基础练习</strong>：使用 <code>tokio-rustls</code> 编写一个 HTTPS 客户端，访问 <code>https://httpbin.org/get</code> 并打印响应。</p>
@@ -32867,7 +33340,7 @@ serde_json = "1.0"
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-8"><a class="header" href="#练习建议-8">练习建议</a></h3>
+<h3 id="练习建议-6"><a class="header" href="#练习建议-6">练习建议</a></h3>
 <ol>
 <li>
 <p><strong>基础练习</strong>：运行上述区块链示例，调整 <code>difficulty</code> 参数观察挖矿时间变化。</p>
@@ -33367,7 +33840,7 @@ fn field_operations() {
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-9"><a class="header" href="#练习建议-9">练习建议</a></h3>
+<h3 id="练习建议-7"><a class="header" href="#练习建议-7">练习建议</a></h3>
 <ol>
 <li>
 <p><strong>基础练习</strong>：运行上述 <code>bellman</code> 乘法电路示例，尝试修改电路证明其他关系（如 x + y = z）。</p>
@@ -33693,7 +34166,7 @@ fn fhe_example() -&gt; Result&lt;(), CryptoAPIError&gt; {
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-10"><a class="header" href="#练习建议-10">练习建议</a></h3>
+<h3 id="练习建议-8"><a class="header" href="#练习建议-8">练习建议</a></h3>
 <ol>
 <li>
 <p><strong>基础练习</strong>：使用 <code>rust-paillier</code> 实现一个加密计算器，支持密文加法和数乘运算，验证同态性质。</p>
@@ -34025,7 +34498,7 @@ fn hybrid_key_exchange() {
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-11"><a class="header" href="#练习建议-11">练习建议</a></h3>
+<h3 id="练习建议-9"><a class="header" href="#练习建议-9">练习建议</a></h3>
 <ol>
 <li>
 <p><strong>基础练习</strong>：使用 <code>pqcrypto-kyber</code> 实现完整的密钥封装流程，验证封装/解封装的一致性。</p>
@@ -34599,7 +35072,7 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-12"><a class="header" href="#练习建议-12">练习建议</a></h3>
+<h3 id="练习建议-10"><a class="header" href="#练习建议-10">练习建议</a></h3>
 <ol>
 <li><strong>购物篮分析</strong>：用 Rust 实现 Apriori 算法，对一组交易数据挖掘频繁项集和关联规则，分析哪些商品经常一起被购买。</li>
 <li><strong>客户分群</strong>：生成模拟的客户数据（年龄、收入、消费金额），使用 K-Means 进行聚类，分析不同客户群体的特征。</li>
@@ -35197,7 +35670,7 @@ git push origin fix-typo
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-13"><a class="header" href="#练习建议-13">练习建议</a></h3>
+<h3 id="练习建议-11"><a class="header" href="#练习建议-11">练习建议</a></h3>
 <ol>
 <li><strong>语言对比</strong>：选择一种你熟悉的语言，分别用命令式和函数式风格实现同一个算法（如快速排序），体会范式差异。</li>
 <li><strong>Git 实战</strong>：创建一个 Git 仓库，模拟多人协作：创建分支、提交代码、合并、解决冲突。</li>
@@ -35483,7 +35956,7 @@ fn ext_gcd(a: i64, b: i64) -&gt; (i64, i64, i64) {
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-14"><a class="header" href="#练习建议-14">练习建议</a></h3>
+<h3 id="练习建议-12"><a class="header" href="#练习建议-12">练习建议</a></h3>
 <ol>
 <li><strong>素数筛法对比</strong>：分别实现埃氏筛法和线性筛法，比较求 $10^7$ 以内素数的性能。</li>
 <li><strong>RSA 模拟</strong>：选取两个较小的素数，手动完成 RSA 密钥生成、加密、解密全过程，验证欧拉定理的正确性。</li>
@@ -35963,7 +36436,7 @@ fn main() {
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-15"><a class="header" href="#练习建议-15">练习建议</a></h3>
+<h3 id="练习建议-13"><a class="header" href="#练习建议-13">练习建议</a></h3>
 <ol>
 <li><strong>图遍历</strong>：用 DFS 和 BFS 分别遍历一个给定的图，对比访问顺序，分析各自的适用场景。</li>
 <li><strong>最短路径</strong>：实现 Dijkstra 算法，求一个城市交通网中从起点到所有终点的最短距离。</li>
@@ -36358,7 +36831,7 @@ cargo audit
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-16"><a class="header" href="#练习建议-16">练习建议</a></h3>
+<h3 id="练习建议-14"><a class="header" href="#练习建议-14">练习建议</a></h3>
 <ol>
 <li><strong>缓冲区溢出分析</strong>：阅读 Heartbleed 漏洞的技术细节，理解缺少边界检查如何导致信息泄露，思考 Rust 如何在编译期避免此类问题。</li>
 <li><strong>SQL 注入修复</strong>：编写一个含 SQL 注入漏洞的查询函数，然后用参数化查询修复它。</li>
@@ -36717,7 +37190,7 @@ fn secure_server() -&gt; std::io::Result&lt;()&gt; {
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-17"><a class="header" href="#练习建议-17">练习建议</a></h3>
+<h3 id="练习建议-15"><a class="header" href="#练习建议-15">练习建议</a></h3>
 <ol>
 <li><strong>TLS 抓包分析</strong>：用 Wireshark 抓取一次 HTTPS 连接的握手过程，分析 TLS 1.2 与 1.3 握手的差异。</li>
 <li><strong>DDoS 防御</strong>：研究 Cloudflare 的 DDoS 防御架构，理解流量清洗和 Anycast 的工作原理。</li>
@@ -37178,7 +37651,7 @@ fn process_secret() {
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-18"><a class="header" href="#练习建议-18">练习建议</a></h3>
+<h3 id="练习建议-16"><a class="header" href="#练习建议-16">练习建议</a></h3>
 <ol>
 <li><strong>字段加密实践</strong>：用 Rust 实现一个用户记录结构，对手机号和邮箱进行 AES-256-GCM 加密存储，解密时验证完整性。</li>
 <li><strong>数据脱敏器</strong>：实现一个脱敏工具，支持多种脱敏策略（掩码、替换、哈希），对不同类型数据（手机号、身份证、邮箱）自动选择策略。</li>
@@ -37660,7 +38133,7 @@ fn panic(_info: &amp;PanicInfo) -&gt; ! {
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-19"><a class="header" href="#练习建议-19">练习建议</a></h3>
+<h3 id="练习建议-17"><a class="header" href="#练习建议-17">练习建议</a></h3>
 <ol>
 <li><strong>多线程累加</strong>：用 Rust 的 <code>Arc&lt;Mutex&lt;u64&gt;&gt;</code> 实现 10 个线程并发累加，观察结果并解释为什么需要互斥锁。</li>
 <li><strong>生产者-消费者</strong>：用 <code>std::sync::mpsc</code> 通道实现生产者-消费者模型，验证有界缓冲的阻塞行为。</li>
@@ -38072,7 +38545,7 @@ async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-20"><a class="header" href="#练习建议-20">练习建议</a></h3>
+<h3 id="练习建议-18"><a class="header" href="#练习建议-18">练习建议</a></h3>
 <ol>
 <li><strong>Docker 实践</strong>：把一个简单的 Rust Web 服务容器化，用 <code>docker build</code> 和 <code>docker run</code> 本地运行，并用 <code>docker ps</code> 观察。</li>
 <li><strong>Kubernetes 部署</strong>：在本地用 minikube 或 kind 部署上面的服务，编写 Deployment 和 Service YAML，实现滚动更新。</li>
@@ -38482,7 +38955,7 @@ WebSocket: 连接建立后双向实时推送
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-21"><a class="header" href="#练习建议-21">练习建议</a></h3>
+<h3 id="练习建议-19"><a class="header" href="#练习建议-19">练习建议</a></h3>
 <ol>
 <li><strong>TCP 聊天室</strong>：用 Rust 的 <code>std::net::TcpListener</code> 实现一个多客户端聊天室，处理并发连接。</li>
 <li><strong>HTTP 服务器</strong>：用 axum 实现一个 REST API（如待办事项增删改查），并区分 GET/POST/PUT/DELETE 的语义。</li>
@@ -38824,7 +39297,7 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-22"><a class="header" href="#练习建议-22">练习建议</a></h3>
+<h3 id="练习建议-20"><a class="header" href="#练习建议-20">练习建议</a></h3>
 <ol>
 <li><strong>思维链实验</strong>：给一个开源模型（如 DeepSeek、Qwen）出同一道数学题，分别用“直接回答“和“逐步思考“提示，对比准确率。</li>
 <li><strong>Agent 设计</strong>：用 Function Calling 实现一个“查天气并安排行程“的 Agent，画出规划-调用-反馈的流程图。</li>
@@ -39290,7 +39763,7 @@ fn ik_example() {
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-23"><a class="header" href="#练习建议-23">练习建议</a></h3>
+<h3 id="练习建议-21"><a class="header" href="#练习建议-21">练习建议</a></h3>
 <ol>
 <li><strong>PID 调参</strong>：写一个 PID 控制器模拟小车直线行驶，调节 kp/ki/kd 观察过冲、震荡与稳态误差。</li>
 <li><strong>逆运动学实现</strong>：用 nalgebra 为两关节平面机械臂实现逆运动学求解，画出末端轨迹。</li>
@@ -39690,7 +40163,7 @@ fn setup(
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-24"><a class="header" href="#练习建议-24">练习建议</a></h3>
+<h3 id="练习建议-22"><a class="header" href="#练习建议-22">练习建议</a></h3>
 <ol>
 <li><strong>碰撞检测</strong>：用 Rust 实现圆与圆、AABB 与 AABB 的碰撞检测，并模拟小球反弹。</li>
 <li><strong>三维变换</strong>：用 nalgebra 实现三维物体的平移、旋转、缩放矩阵变换，验证组合顺序的影响。</li>
@@ -40256,7 +40729,7 @@ fn main() {
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-25"><a class="header" href="#练习建议-25">练习建议</a></h3>
+<h3 id="练习建议-23"><a class="header" href="#练习建议-23">练习建议</a></h3>
 <ol>
 <li><strong>坐标转换工具</strong>：用 Rust 实现 WGS-84 ↔ GCJ-02 ↔ BD-09 完整转换，用北京、上海、乌鲁木齐三个城市验证偏移量差异。</li>
 <li><strong>距离计算</strong>：实现 Haversine 与 Vincenty 算法，比较两个相距 1000 公里城市的结果差异。</li>
@@ -41449,7 +41922,7 @@ fn main() {
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-26"><a class="header" href="#练习建议-26">练习建议</a></h3>
+<h3 id="练习建议-24"><a class="header" href="#练习建议-24">练习建议</a></h3>
 <ol>
 <li><strong>加语法</strong>：给第九节的迷你语言加上 <code>if</code>/<code>else</code> 与 <code>while</code>，注意在词法、AST、解析、求值四处都要动。</li>
 <li><strong>加字符串与比较</strong>：引入 <code>String</code> 与 <code>&lt;</code>、<code>==</code> 运算符，把 <code>f64</code> 值域扩展成枚举，体会“类型检查“为什么必须放在求值之前。</li>
@@ -42359,7 +42832,7 @@ rustc --target thumbv7em-none-eabihf -C panic=abort --emit=obj -o blink.o blink.
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-27"><a class="header" href="#练习建议-27">练习建议</a></h3>
+<h3 id="练习建议-25"><a class="header" href="#练习建议-25">练习建议</a></h3>
 <ol>
 <li><strong>位域驱动</strong>：为某个真实传感器（如加速度计）写一个寄存器映射模块，把“读 XYZ 轴数据“封装成 <code>read_accel() -&gt; (f32, f32, f32)</code>，并用 12/16 位补码处理符号。</li>
 <li><strong>验证 CRC 实现</strong>：用第 10.2 节的代码算出 <code>123456789</code> 的 CRC-32，确认结果是 <code>0xCBF43926</code>；再试着改成 CRC-16/CCITT，用于串口协议。</li>
@@ -42813,7 +43286,7 @@ openssl enc -e -sm4 -in /tmp/1.txt -out /tmp/2.txt
 </tbody>
 </table>
 </div>
-<h2 id="练习题-7"><a class="header" href="#练习题-7">练习题</a></h2>
+<h2 id="练习题-9"><a class="header" href="#练习题-9">练习题</a></h2>
 <ol>
 <li>
 <p><strong>历史分析</strong>：为什么纳瓦荷语密码在二战中从未被破译？这种方法在现代数字通信中还有应用价值吗？为什么？</p>
@@ -43097,7 +43570,7 @@ fn main() {
 </tbody>
 </table>
 </div>
-<h3 id="练习建议-28"><a class="header" href="#练习建议-28">练习建议</a></h3>
+<h3 id="练习建议-26"><a class="header" href="#练习建议-26">练习建议</a></h3>
 <ol>
 <li>
 <p><strong>基础回顾</strong>：绘制本书下卷所有密码学知识点的思维导图，标注各技术之间的依赖和组合关系。</p>
@@ -43579,16 +44052,17 @@ impl&lt;T&gt; Buffer&lt;T&gt; {
 <h2 id="十五学习资源"><a class="header" href="#十五学习资源">十五、学习资源</a></h2>
 <ul>
 <li><a href="https://kaisery.github.io/trpl-zh-cn/">Rust 程序设计语言</a></li>
+<li><a href="https://google.github.io/comprehensive-rust/zh-CN/index.html">Comprehensive Rust</a> Google官方Android团队Rust教程</li>
 <li><a href="https://leetcode.cn">LeetCode</a></li>
 <li><a href="https://projecteuler.net/">Project Euler</a> — 数学与编程挑战</li>
 <li><a href="https://the-algorithms.com/">The Algorithms</a> — 开源算法实现集合</li>
-<li><a href="https://github.com/smallswan/rust-by-example">rust-by-example</a></li>
+<li><a href="https://doc.rust-lang.org/stable/rust-by-example/zh/">rust-by-example</a></li>
 <li><a href="https://github.com/smallswan/leetcode-rust">leetcode-rust</a></li>
+<li><a href="https://cheats.rs/">cheats</a> rust速查表</li>
 <li><a href="https://www.mindspore.cn">MindSpore 官方文档</a></li>
 <li><a href="http://piyao.org.cn/">中国互联网联合辟谣平台</a></li>
 <li><a href="https://www.freebuf.com/">freebuf</a> 网络安全行业门户</li>
 </ul>
-<p>向量知识库</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="附录1-程序员"><a class="header" href="#附录1-程序员">附录1 程序员</a></h1>
 <blockquote>

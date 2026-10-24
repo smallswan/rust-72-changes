@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-fc5581c7.js";
+            window.path_to_searchindex_js = "searchindex-72bc1c85.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a6286dd9.js"></script>
@@ -708,14 +708,58 @@ fn main() {
 </table>
 </div>
 <p>离散数学是计算机科学的数学语言。从数据结构到算法设计，从数据库到密码学，离散数学的概念无处不在。</p>
-<blockquote>
-<p><strong>练习建议：</strong></p>
+<hr>
+<h2 id="九练习题"><a class="header" href="#九练习题">九、练习题</a></h2>
 <ol>
-<li>用 Rust 实现图的 DFS/BFS 遍历</li>
-<li>用容斥原理解决计数问题</li>
-<li>判断给定关系是否为等价关系或偏序关系</li>
+<li>
+<p><strong>集合与幂集</strong>：设 $A=\lbrace 1,2,3\rbrace$，写出 $\mathcal{P}(A)$ 并验证 $|\mathcal{P}(A)|=2^{|A|}$；设 $B=\lbrace 2,3,4\rbrace$、全集 $U=\lbrace 1,2,3,4,5\rbrace$，求 $A\cup B$、$A\cap B$、$A\setminus B$ 与 $(A\cup B)^c$。</p>
+</li>
+<li>
+<p><strong>图论</strong>：无向图 $G=(V,E)$，其中 $V=\lbrace A,B,C,D,E\rbrace$，$E=\lbrace AB,AC,BC,CD,DE\rbrace$。</p>
+<ul>
+<li>写出邻接矩阵和邻接表；</li>
+<li>从 $A$ 出发，给出 BFS 与 DFS 的遍历序列；</li>
+<li>判断图是否存在欧拉路径；若存在，写出其中一条。</li>
+</ul>
+</li>
+<li>
+<p><strong>数理逻辑</strong>：用真值表验证 $p\to q\equiv\neg p\lor q$；判断公式 $((p\to q)\land(q\to r))\to(p\to r)$ 是否为重言式。</p>
+</li>
+<li>
+<p><strong>组合计数与容斥原理</strong>：</p>
+<ul>
+<li>从 5 名男生、4 名女生中选 3 人，要求至少有 1 名女生，有多少种选法？</li>
+<li>用容斥原理计算 1~1000 中能被 2、3、5 中至少一个整除的整数个数。</li>
+</ul>
+</li>
+<li>
+<p><strong>鸽巢原理</strong>：</p>
+<ul>
+<li>证明任意 13 个人中至少有 2 个人在同一个月出生；</li>
+<li>证明从 $1,2,\ldots,2n$ 中任取 $n+1$ 个数，必有两个数存在倍数关系。</li>
+</ul>
+</li>
+<li>
+<p><strong>关系</strong>：设 $A=\lbrace 1,2,3,4\rbrace$，$R=\lbrace(1,1),(2,2),(3,3),(4,4),(1,2),(2,1),(3,4),(4,3)\rbrace$。</p>
+<ul>
+<li>判断 $R$ 是否为等价关系；若是，写出所有等价类；</li>
+<li>判断整除关系 $\mid$ 在 $\lbrace 1,2,3,6\rbrace$ 上是否为偏序关系，并画出哈斯图。</li>
+</ul>
+</li>
+<li>
+<p><strong>代数结构</strong>：判断下列结构哪些构成群，并说明理由：$(\mathbb{Z},+)$、$(\mathbb{Z},\times)$、$(\mathbb{Q}\setminus\lbrace 0\rbrace,\times)$、$(\mathbb{Z}_7\setminus\lbrace 0\rbrace,\times)$；在 $(\mathbb{Z}_7\setminus\lbrace 0\rbrace,\times)$ 中求 3 的逆元和 3 的阶。</p>
+</li>
+<li>
+<p><strong>编程题</strong>：用 Rust 实现：</p>
+<ul>
+<li>用邻接表表示图，并实现从指定起点出发的 DFS 与 BFS；</li>
+<li>用容斥原理计算 1~$N$ 中能被给定质数集合中至少一个数整除的整数个数。</li>
+</ul>
+</li>
+<li>
+<p><strong>思考题</strong>：欧拉路径存在的充要条件为什么是“奇度顶点数为 0 或 2”？举一个存在欧拉路径但不存在欧拉回路的图，并说明原因。</p>
+</li>
 </ol>
-</blockquote>
 
                     </main>
 

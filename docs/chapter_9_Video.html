@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-fc5581c7.js";
+            window.path_to_searchindex_js = "searchindex-72bc1c85.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a6286dd9.js"></script>
@@ -561,13 +561,36 @@ fn main() {
 </tbody>
 </table>
 </div>
-<h2 id="练习建议"><a class="header" href="#练习建议">练习建议</a></h2>
+<hr>
+<h2 id="96-练习题"><a class="header" href="#96-练习题">9.6 练习题</a></h2>
 <ol>
-<li>使用 ffmpeg-next 编写程序，读取一个视频文件的完整元数据（分辨率、帧率、码率、编码格式、时长等）。</li>
-<li>使用 ffmpeg-next 提取视频中的每一帧，保存为 PNG 图片序列。</li>
-<li>对比同一视频分别用 H.264、H.265、AV1 编码后的文件大小和画质差异。</li>
-<li>编写程序计算视频的平均码率和峰值码率。</li>
-<li>了解 Rust 的 <a href="https://github.com/rust-av/vpx">vpx-encode</a> 或 <a href="https://github.com/rust-av/x264-rs">x264</a> 绑定，尝试进行视频编码。</li>
+<li>
+<p><strong>未压缩数据量</strong>：计算 1080p（$1920\times1080$）、RGB 24 bit、30 fps 视频的未压缩码率（MB/s 和 Gbps）。</p>
+</li>
+<li>
+<p><strong>码率与文件大小</strong>：一段 10 Mbps 的视频播放 1 小时，文件大约多大？如果降到 2 Mbps 呢？</p>
+</li>
+<li>
+<p><strong>色度采样</strong>：比较 YUV 4:4:4、4:2:2、4:2:0 三种采样方式，说明它们每个像素平均占多少字节，以及为什么 4:2:0 常用于视频编码。</p>
+</li>
+<li>
+<p><strong>I/P/B 帧与 GOP</strong>：解释 I 帧、P 帧、B 帧的区别；为什么 B 帧压缩率最高？为什么视频播放器拖动进度条时需要找关键帧？</p>
+</li>
+<li>
+<p><strong>编码格式对比</strong>：从压缩率、编码速度、专利授权、硬件支持四个方面比较 H.264、H.265、AV1。</p>
+</li>
+<li>
+<p><strong>运动估计</strong>：说明运动估计与补偿的基本思路；为什么视频可以利用时间冗余获得比单张图片更高的压缩率？</p>
+</li>
+<li>
+<p><strong>ffmpeg-next 实践</strong>：用 ffmpeg-next 读取一个视频的分辨率、帧率、码率、编码格式和时长；再提取前 10 帧保存为 PNG。</p>
+</li>
+<li>
+<p><strong>码率控制</strong>：解释 CBR、VBR、CRF 三种码率控制方式的区别和适用场景。</p>
+</li>
+<li>
+<p><strong>压缩比计算</strong>：4K（$3840\times2160$）、60 fps、RGB 24 bit 的未压缩视频，若用 H.265 以 10 Mbps 编码，压缩比大约是多少？</p>
+</li>
 </ol>
 
                     </main>
