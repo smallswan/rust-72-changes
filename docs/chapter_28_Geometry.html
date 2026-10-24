@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-09f1c163.js";
+            window.path_to_searchindex_js = "searchindex-fc5581c7.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a6286dd9.js"></script>
@@ -451,18 +451,18 @@ fn main() {
 <p>其中 $\lambda$ 是特征值，$\vec{v}$ 是特征向量。特征值表示在该方向上的缩放倍数。</p>
 <hr>
 <h2 id="六用-rust-绘制几何图形"><a class="header" href="#六用-rust-绘制几何图形">六、用 Rust 绘制几何图形</a></h2>
-<p>使用 <code>plotters</code> 库可以在 Rust 中绘制各种几何图形。</p>
+<p>使用 <code>plotters</code> 库可以在 Rust 中绘制各种几何图形。下面的例子用 <code>SVGBackend</code> 输出矢量图：它不依赖系统字体库（例如 Linux 上的 <code>libfontconfig</code>），因此在在线 playground 中也能直接运行。</p>
 <h3 id="61-绘制抛物线"><a class="header" href="#61-绘制抛物线">6.1 绘制抛物线</a></h3>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcGxvdHRlcnMgPSAiMC4zIgoqLwp1c2UgcGxvdHRlcnM6OnByZWx1ZGU6Oio7CgpmbiBtYWluKCkgLT4gUmVzdWx0PCgpLCBCb3g8ZHluIHN0ZDo6ZXJyb3I6OkVycm9yPj4gewogICAgbGV0IHJvb3QgPSBCaXRNYXBCYWNrZW5kOjpuZXcoInBsb3QucG5nIiwgKDY0MCwgNDgwKSkuaW50b19kcmF3aW5nX2FyZWEoKTsKICAgIHJvb3QuZmlsbCgmV0hJVEUpPzsKCiAgICBsZXQgbXV0IGNoYXJ0ID0gQ2hhcnRCdWlsZGVyOjpvbigmcm9vdCkKICAgICAgICAuY2FwdGlvbigieSA9IHjCsiIsICgic2Fucy1zZXJpZiIsIDUwKS5pbnRvX2ZvbnQoKSkKICAgICAgICAubWFyZ2luKDUpCiAgICAgICAgLnhfbGFiZWxfYXJlYV9zaXplKDMwKQogICAgICAgIC55X2xhYmVsX2FyZWFfc2l6ZSgzMCkKICAgICAgICAuYnVpbGRfY2FydGVzaWFuXzJkKC0xZjMyLi4xZjMyLCAtMC4xZjMyLi4xZjMyKT87CgogICAgY2hhcnQuY29uZmlndXJlX21lc2goKS5kcmF3KCk/OwoKICAgIGNoYXJ0CiAgICAgICAgLmRyYXdfc2VyaWVzKExpbmVTZXJpZXM6Om5ldygKICAgICAgICAgICAgKC01MC4uPTUwKS5tYXAofHh8IHggYXMgZjMyIC8gNTAuMCkubWFwKHx4fCAoeCwgeCAqIHgpKSwKICAgICAgICAgICAgJlJFRCwKICAgICAgICApKT8KICAgICAgICAubGFiZWwoInkgPSB4wrIiKQogICAgICAgIC5sZWdlbmQofCh4LCB5KXwgUGF0aEVsZW1lbnQ6Om5ldyh2ZWMhWyh4LCB5KSwgKHggKyAyMCwgeSldLCAmUkVEKSk7CgogICAgY2hhcnQKICAgICAgICAuY29uZmlndXJlX3Nlcmllc19sYWJlbHMoKQogICAgICAgIC5iYWNrZ3JvdW5kX3N0eWxlKCZXSElURS5taXgoMC44KSkKICAgICAgICAuYm9yZGVyX3N0eWxlKCZCTEFDSykKICAgICAgICAuZHJhdygpPzsKCiAgICByb290LnByZXNlbnQoKT87CiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcGxvdHRlcnMgPSB7IHZlcnNpb24gPSAiMC4zIiwgZGVmYXVsdC1mZWF0dXJlcyA9IGZhbHNlLCBmZWF0dXJlcyA9IFsic3ZnX2JhY2tlbmQiLCAibGluZV9zZXJpZXMiXSB9CiovCnVzZSBwbG90dGVyczo6cHJlbHVkZTo6KjsKCmZuIG1haW4oKSAtPiBSZXN1bHQ8KCksIEJveDxkeW4gc3RkOjplcnJvcjo6RXJyb3I+PiB7CiAgICBsZXQgcm9vdCA9IFNWR0JhY2tlbmQ6Om5ldygicGxvdC5zdmciLCAoNjQwLCA0ODApKS5pbnRvX2RyYXdpbmdfYXJlYSgpOwogICAgcm9vdC5maWxsKCZXSElURSk/OwoKICAgIGxldCBtdXQgY2hhcnQgPSBDaGFydEJ1aWxkZXI6Om9uKCZyb290KQogICAgICAgIC5jYXB0aW9uKCJ5ID0geMKyIiwgKCJzYW5zLXNlcmlmIiwgNTApLmludG9fZm9udCgpKQogICAgICAgIC5tYXJnaW4oNSkKICAgICAgICAueF9sYWJlbF9hcmVhX3NpemUoMzApCiAgICAgICAgLnlfbGFiZWxfYXJlYV9zaXplKDMwKQogICAgICAgIC5idWlsZF9jYXJ0ZXNpYW5fMmQoLTFmMzIuLjFmMzIsIC0wLjFmMzIuLjFmMzIpPzsKCiAgICBjaGFydC5jb25maWd1cmVfbWVzaCgpLmRyYXcoKT87CgogICAgY2hhcnQKICAgICAgICAuZHJhd19zZXJpZXMoTGluZVNlcmllczo6bmV3KAogICAgICAgICAgICAoLTUwLi49NTApLm1hcCh8eHwgeCBhcyBmMzIgLyA1MC4wKS5tYXAofHh8ICh4LCB4ICogeCkpLAogICAgICAgICAgICAmUkVELAogICAgICAgICkpPwogICAgICAgIC5sYWJlbCgieSA9IHjCsiIpCiAgICAgICAgLmxlZ2VuZCh8KHgsIHkpfCBQYXRoRWxlbWVudDo6bmV3KHZlYyFbKHgsIHkpLCAoeCArIDIwLCB5KV0sICZSRUQpKTsKCiAgICBjaGFydAogICAgICAgIC5jb25maWd1cmVfc2VyaWVzX2xhYmVscygpCiAgICAgICAgLmJhY2tncm91bmRfc3R5bGUoJldISVRFLm1peCgwLjgpKQogICAgICAgIC5ib3JkZXJfc3R5bGUoJkJMQUNLKQogICAgICAgIC5kcmF3KCk/OwoKICAgIHJvb3QucHJlc2VudCgpPzsKICAgIE9rKCgpKQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
 <pre class="playground"><code class="language-rust edition2024">/*
 [dependencies]
-plotters = "0.3"
+plotters = { version = "0.3", default-features = false, features = ["svg_backend", "line_series"] }
 */
 use plotters::prelude::*;
 
 fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
-    let root = BitMapBackend::new("plot.png", (640, 480)).into_drawing_area();
+    let root = SVGBackend::new("plot.svg", (640, 480)).into_drawing_area();
     root.fill(&amp;WHITE)?;
 
     let mut chart = ChartBuilder::on(&amp;root)
@@ -599,22 +599,6 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
         <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
         <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
         <script>

@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-09f1c163.js";
+            window.path_to_searchindex_js = "searchindex-fc5581c7.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a6286dd9.js"></script>
@@ -418,9 +418,14 @@ $$</p>
 </tbody>
 </table>
 </div>
-<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>use lazy_static::lazy_static;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KbGF6eV9zdGF0aWMgPSAiMSIKcmVnZXggPSAiMSIKKi8KdXNlIGxhenlfc3RhdGljOjpsYXp5X3N0YXRpYzsKdXNlIHJlZ2V4OjpSZWdleDsKdXNlIHN0ZDo6Y29sbGVjdGlvbnM6Okhhc2hNYXA7CgpsYXp5X3N0YXRpYyEgewogICAgc3RhdGljIHJlZiBJREVOVElGSUVSX1JFR0VYOiBSZWdleCA9IFJlZ2V4OjpuZXcoIl4oWzAtOUFCQ0RFRkdZXXsxfSkoWzEyMzldezF9KShbMC05QUJDREVGR0hKS0xNTlBRUlRVV1hZXXs2fSkoWzAtOUFCQ0RFRkdISktMTU5QUVJUVVdYWV17OX0pKFswLTlBQkNERUZHSEpLTE1OUFFSVFVXWFldKSQiKS51bndyYXAoKTsKICAgIHN0YXRpYyByZWYgUkVHRVhfMThfSURfQ0FSRF9OTzogUmVnZXggPSBSZWdleDo6bmV3KHIiXlswLTldezE3fVswLTlYXSQiKS51bndyYXAoKTsKICAgIHN0YXRpYyByZWYgSURfQ0FSRF9QT1dFUjogVmVjPHVzaXplPiA9IHZlYyFbNywgOSwgMTAsIDUsIDgsIDQsIDIsIDEsIDYsIDMsIDcsIDksIDEwLCA1LCA4LCA0LCAyXTsKICAgIHN0YXRpYyByZWYgV0VJR0hUOiBWZWM8dXNpemU+ID0gdmVjIVsxLCAzLCA5LCAyNywgMTksIDI2LCAxNiwgMTcsIDIwLCAyOSwgMjUsIDEzLCA4LCAyNCwgMTAsIDMwLCAyOF07CiAgICBzdGF0aWMgcmVmIFZFUklGWV9DT0RFX01BUDogSGFzaE1hcDxjaGFyLHVzaXplPiA9IHsKICAgICAgICBsZXQgdmVyaWZ5X2NvZGUgPSAiMDEyMzQ1Njc4OUFCQ0RFRkdISktMTU5QUVJUVVdYWSI7CiAgICAgICAgbGV0IHZlcmlmeV9jb2RlX3ZlYyA6VmVjPGNoYXI+ID0gdmVyaWZ5X2NvZGUuY2hhcnMoKS5jb2xsZWN0KCk7CiAgICAgICAgbGV0IG11dCB2ZXJpZnlfY29kZV9tYXAgPSBIYXNoTWFwOjpuZXcoKTsKICAgICAgICBmb3IgKGksaXRlbSkgaW4gdmVyaWZ5X2NvZGVfdmVjLml0ZXIoKS5lbnVtZXJhdGUoKS50YWtlKHZlcmlmeV9jb2RlLmxlbigpKXsKICAgICAgICAgICAgdmVyaWZ5X2NvZGVfbWFwLmluc2VydCgqaXRlbSxpKTsKCiAgICAgICAgfQogICAgICAgIHByaW50bG4hKCJ7Oj99Iix2ZXJpZnlfY29kZV9tYXApOwogICAgICAgIHZlcmlmeV9jb2RlX21hcAogICAgfTsKICAgIC8vIOWFrOWPuOWQjeensOmcgOimgeaOkumZpOeahOWtl+espuS4su+8jOS4jeWMheWQq+S4reiLseaWh+aLrOWPtwogICAgc3RhdGljIHJlZiBSRUdFWF9OT1RfQ09NUEFOWV9OQU1FOiBSZWdleCA9IFJlZ2V4OjpuZXcociMjIyJbYH4hQCMkJV4mKis9fHt9Jzo7JyxcXC48PuOAiuOAiy8/fu+8gUAj77+lJeKApuKApiYq4oCU4oCUK3xcLXt9XFtcXeOAkOOAkSfvvJvvvJoiIifjgILvvIzjgIHvvJ9dIiMjIykudW53cmFwKCk7CiAgICAvLyDph5HpkrHvvIjljYPliIbkvY3vvIkKICAgIHN0YXRpYyByZWYgTU9ORVlfUkVHRVg6IFJlZ2V4ID0gUmVnZXg6Om5ldyhyIl4oLSk/XGR7MSwzfSgsXGR7M30pKiguXGQrKT8kIikudW53cmFwKCk7Cn0KCi8vLyAxOOS9jei6q+S7veivgeWPt+agoemqjApmbiBpc18xOF9pZF9jYXJkKGlkX2NhcmRfbm86ICZzdHIpIC0+IGJvb2wgewogICAgaWYgIVJFR0VYXzE4X0lEX0NBUkRfTk8uaXNfbWF0Y2goaWRfY2FyZF9ubykgewogICAgICAgIHByaW50bG4hKCJ7fSBpc24ndCBtYXRjaCByZWdleCIsIGlkX2NhcmRfbm8pOwogICAgICAgIHJldHVybiBmYWxzZTsKICAgIH0KCiAgICBsZXQgaWRfY2FyZF9ub19jaGFyczogVmVjPGNoYXI+ID0gaWRfY2FyZF9uby5jaGFycygpLmNvbGxlY3QoKTsKICAgIGxldCBtdXQgc3VtID0gMDsKICAgIGZvciBpIGluIDAuLjE3IHsKICAgICAgICBsZXQgY2ggPSBpZF9jYXJkX25vX2NoYXJzW2ldIGFzIHVzaXplIC0gNDg7CiAgICAgICAgc3VtICs9IGNoICogSURfQ0FSRF9QT1dFUltpXTsKICAgIH0KCiAgICBsZXQgY2hlY2tfY29kZSA9IG1hdGNoIHN1bSAlIDExIHsKICAgICAgICAxMCA9PiAnMicsCiAgICAgICAgOSA9PiAnMycsCiAgICAgICAgOCA9PiAnNCcsCiAgICAgICAgNyA9PiAnNScsCiAgICAgICAgNiA9PiAnNicsCiAgICAgICAgNSA9PiAnNycsCiAgICAgICAgNCA9PiAnOCcsCiAgICAgICAgMyA9PiAnOScsCiAgICAgICAgMiA9PiAnWCcsCiAgICAgICAgMSA9PiAnMCcsCiAgICAgICAgMCA9PiAnMScsCiAgICAgICAgXyA9PiAnTicsCiAgICB9OwoKICAgIGNoZWNrX2NvZGUgPT0gaWRfY2FyZF9ub19jaGFyc1sxN10KfQoKCmZuIG1haW4oKXsKICAgIGxldCBpZF9jYXJkX25vID0gIjQ1MDEwMTIwMDAxMjMxNDMyMSI7CiAgICBpZiBpc18xOF9pZF9jYXJkKGlkX2NhcmRfbm8pIHsKICAgICAgICBwcmludGxuISgie30gaXMgYSB2YWxpZCBJRCBjYXJkIG51bWJlciIsIGlkX2NhcmRfbm8pOwogICAgfSBlbHNlIHsKICAgICAgICBwcmludGxuISgie30gaXMgbm90IGEgdmFsaWQgSUQgY2FyZCBudW1iZXIiLCBpZF9jYXJkX25vKTsKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+lazy_static = "1"
+regex = "1"
+*/
+use lazy_static::lazy_static;
 use regex::Regex;
 use std::collections::HashMap;
 
@@ -479,15 +484,16 @@ fn is_18_id_card(id_card_no: &amp;str) -&gt; bool {
 }
 
 
-let id_card_no = "450101200012314321";
-if is_18_id_card(id_card_no) {
-    println!("{} is a valid ID card number", id_card_no);
-} else {
-    println!("{} is not a valid ID card number", id_card_no);
+fn main(){
+    let id_card_no = "450101200012314321";
+    if is_18_id_card(id_card_no) {
+        println!("{} is a valid ID card number", id_card_no);
+    } else {
+        println!("{} is not a valid ID card number", id_card_no);
+    }
 }
 
-
-<span class="boring">}</span></code></pre>
+</code></pre>
 <p><a href="https://gitee.com/zhiluniao/rust-by-example/blob/master/src/validators.rs">更多代码</a></p>
 <h3 id="1042-统一社会信用代码校验"><a class="header" href="#1042-统一社会信用代码校验">10.4.2 统一社会信用代码校验</a></h3>
 <p>统一社会信用代码是18位的标识代码，同样采用加权因子校验算法。上述代码中的 <code>IDENTIFIER_REGEX</code>、<code>WEIGHT</code> 和 <code>VERIFY_CODE_MAP</code> 即为统一社会信用代码校验所需的核心数据：</p>
@@ -515,11 +521,11 @@ if is_18_id_card(id_card_no) {
 </tbody>
 </table>
 </div>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKICogW2RlcGVuZGVuY2llc10KICogdXVpZCA9IHsgdmVyc2lvbiA9ICIxLjIzLjAiLCBmZWF0dXJlcyA9IFsidjQiLCAidjEiXSB9CiAqLwp1c2UgdXVpZDo6e1V1aWQsIFZlcnNpb24sIFZhcmlhbnR9OwoKZm4gbWFpbigpIHsKICAgIC8vIOeUn+aIkCB2NCBVVUlE77yI6ZqP5py677yJCiAgICBsZXQgdXVpZF92NCA9IFV1aWQ6Om5ld192NCgpOwogICAgcHJpbnRsbiEoIlVVSUQgdjQ6IHt9IiwgdXVpZF92NCk7CiAgICBwcmludGxuISgi54mI5pysOiB7Oj99IiwgdXVpZF92NC5nZXRfdmVyc2lvbigpKTsgLy8gU29tZShWZXJzaW9uOjpSYW5kb20pCiAgICBwcmludGxuISgi5Y+Y5L2TOiB7Oj99IiwgdXVpZF92NC5nZXRfdmFyaWFudCgpKTsgLy8gU29tZShWYXJpYW50OjpSRkM0MTIyKQoKICAgIC8vIOeUn+aIkCB2MSBVVUlE77yI5Z+65LqO5pe26Ze05oiz77yJCiAgICBsZXQgdXVpZF92MSA9IFV1aWQ6Om5ld192MSgmWzEsIDIsIDMsIDQsIDUsIDZdKTsKICAgIHByaW50bG4hKCJVVUlEIHYxOiB7fSIsIHV1aWRfdjEpOwoKICAgIC8vIOS7juWtl+espuS4suino+aekCBVVUlECiAgICBsZXQgcGFyc2VkID0gVXVpZDo6cGFyc2Vfc3RyKCI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiKTsKICAgIG1hdGNoIHBhcnNlZCB7CiAgICAgICAgT2sodSkgPT4gcHJpbnRsbiEoIuino+aekOaIkOWKnzoge30sIOeJiOacrDogezo/fSIsIHUsIHUuZ2V0X3ZlcnNpb24oKSksCiAgICAgICAgRXJyKGUpID0+IHByaW50bG4hKCLop6PmnpDlpLHotKU6IHt9IiwgZSksCiAgICB9CgogICAgLy8g55Sf5oiQIHY1IFVVSUTvvIjln7rkuo7lkb3lkI3nqbrpl7TlkozlkI3np7DnmoTnoa7lrprmgKdVVUlE77yJCiAgICBsZXQgbmFtZXNwYWNlID0gVXVpZDo6TkFNRVNQQUNFX0ROUzsKICAgIGxldCB1dWlkX3Y1ID0gVXVpZDo6bmV3X3Y1KG5hbWVzcGFjZSwgYiJleGFtcGxlLmNvbSIpOwogICAgcHJpbnRsbiEoIlVVSUQgdjUgKGV4YW1wbGUuY29tKToge30iLCB1dWlkX3Y1KTsKICAgIC8vIOebuOWQjOi+k+WFpeWni+e7iOS6p+eUn+ebuOWQjOe7k+aenAogICAgbGV0IHV1aWRfdjVfYWdhaW4gPSBVdWlkOjpuZXdfdjUobmFtZXNwYWNlLCBiImV4YW1wbGUuY29tIik7CiAgICBhc3NlcnRfZXEhKHV1aWRfdjUsIHV1aWRfdjVfYWdhaW4pOwogICAgcHJpbnRsbiEoIuehruWumuaAp+mqjOivgTogdjUgVVVJRCDnm7jlkIzovpPlhaXkuqfnlJ/nm7jlkIznu5Pmnpwg4pyTIik7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KdXVpZCA9IHsgdmVyc2lvbiA9ICIxLjIzLjAiLCBmZWF0dXJlcyA9IFsidjQiLCAidjEiXSB9CiAqLwp1c2UgdXVpZDo6e1V1aWQsIFZlcnNpb24sIFZhcmlhbnR9OwoKZm4gbWFpbigpIHsKICAgIC8vIOeUn+aIkCB2NCBVVUlE77yI6ZqP5py677yJCiAgICBsZXQgdXVpZF92NCA9IFV1aWQ6Om5ld192NCgpOwogICAgcHJpbnRsbiEoIlVVSUQgdjQ6IHt9IiwgdXVpZF92NCk7CiAgICBwcmludGxuISgi54mI5pysOiB7Oj99IiwgdXVpZF92NC5nZXRfdmVyc2lvbigpKTsgLy8gU29tZShWZXJzaW9uOjpSYW5kb20pCiAgICBwcmludGxuISgi5Y+Y5L2TOiB7Oj99IiwgdXVpZF92NC5nZXRfdmFyaWFudCgpKTsgLy8gU29tZShWYXJpYW50OjpSRkM0MTIyKQoKICAgIC8vIOeUn+aIkCB2MSBVVUlE77yI5Z+65LqO5pe26Ze05oiz77yJCiAgICBsZXQgdXVpZF92MSA9IFV1aWQ6Om5ld192MSgmWzEsIDIsIDMsIDQsIDUsIDZdKTsKICAgIHByaW50bG4hKCJVVUlEIHYxOiB7fSIsIHV1aWRfdjEpOwoKICAgIC8vIOS7juWtl+espuS4suino+aekCBVVUlECiAgICBsZXQgcGFyc2VkID0gVXVpZDo6cGFyc2Vfc3RyKCI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiKTsKICAgIG1hdGNoIHBhcnNlZCB7CiAgICAgICAgT2sodSkgPT4gcHJpbnRsbiEoIuino+aekOaIkOWKnzoge30sIOeJiOacrDogezo/fSIsIHUsIHUuZ2V0X3ZlcnNpb24oKSksCiAgICAgICAgRXJyKGUpID0+IHByaW50bG4hKCLop6PmnpDlpLHotKU6IHt9IiwgZSksCiAgICB9CgogICAgLy8g55Sf5oiQIHY1IFVVSUTvvIjln7rkuo7lkb3lkI3nqbrpl7TlkozlkI3np7DnmoTnoa7lrprmgKdVVUlE77yJCiAgICBsZXQgbmFtZXNwYWNlID0gVXVpZDo6TkFNRVNQQUNFX0ROUzsKICAgIGxldCB1dWlkX3Y1ID0gVXVpZDo6bmV3X3Y1KG5hbWVzcGFjZSwgYiJleGFtcGxlLmNvbSIpOwogICAgcHJpbnRsbiEoIlVVSUQgdjUgKGV4YW1wbGUuY29tKToge30iLCB1dWlkX3Y1KTsKICAgIC8vIOebuOWQjOi+k+WFpeWni+e7iOS6p+eUn+ebuOWQjOe7k+aenAogICAgbGV0IHV1aWRfdjVfYWdhaW4gPSBVdWlkOjpuZXdfdjUobmFtZXNwYWNlLCBiImV4YW1wbGUuY29tIik7CiAgICBhc3NlcnRfZXEhKHV1aWRfdjUsIHV1aWRfdjVfYWdhaW4pOwogICAgcHJpbnRsbiEoIuehruWumuaAp+mqjOivgTogdjUgVVVJRCDnm7jlkIzovpPlhaXkuqfnlJ/nm7jlkIznu5Pmnpwg4pyTIik7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
 <pre class="playground"><code class="language-rust edition2024">/*
- * [dependencies]
- * uuid = { version = "1.23.0", features = ["v4", "v1"] }
+[dependencies]
+uuid = { version = "1.23.0", features = ["v4", "v1"] }
  */
 use uuid::{Uuid, Version, Variant};
 
@@ -572,62 +578,80 @@ $$</p>
 <p>$$
 2^{41} - 1 = 2199023255551 \text{ 毫秒} \approx 69.73 \text{ 年}
 $$</p>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6c3luYzo6YXRvbWljOjp7QXRvbWljVTE2LCBPcmRlcmluZ307CnVzZSBzdGQ6OnRpbWU6OntTeXN0ZW1UaW1lLCBVTklYX0VQT0NIfTsKCi8vLyDpm6roirHnrpfms5VJROeUn+aIkOWZqApzdHJ1Y3QgU25vd2ZsYWtlIHsKICAgIG1hY2hpbmVfaWQ6IHUxNiwgICAgICAgICAgLy8g5py65ZmoSUQgKDAgfiAxMDIzKQogICAgc2VxdWVuY2U6IEF0b21pY1UxNiwgICAgICAvLyDluo/liJflj7cgKDAgfiA0MDk1KQogICAgbGFzdF90aW1lc3RhbXA6IEF0b21pY1U2NCwgLy8g5LiK5qyh55Sf5oiQSUTnmoTml7bpl7TmiLMKICAgIGVwb2NoOiB1NjQsICAgICAgICAgICAgICAgLy8g6LW35aeL5pe26Ze05oiz77yI5q+r56eS77yJCn0KCmltcGwgU25vd2ZsYWtlIHsKICAgIGZuIG5ldyhtYWNoaW5lX2lkOiB1MTYpIC0+IFNlbGYgewogICAgICAgIC8vIOiHquWumuS5iee6quWFg++8mjIwMjQtMDEtMDEgMDA6MDA6MDAgVVRDCiAgICAgICAgbGV0IGVwb2NoID0gU3lzdGVtVGltZTo6bm93KCkKICAgICAgICAgICAgLmR1cmF0aW9uX3NpbmNlKFVOSVhfRVBPQ0gpCiAgICAgICAgICAgIC51bndyYXAoKQogICAgICAgICAgICAuYXNfbWlsbGlzKCkgYXMgdTY0OwoKICAgICAgICBTbm93Zmxha2UgewogICAgICAgICAgICBtYWNoaW5lX2lkOiBtYWNoaW5lX2lkICYgMHgzRkYsIC8vIOehruS/neS4jei2hei/hzEw5L2NCiAgICAgICAgICAgIHNlcXVlbmNlOiBBdG9taWNVMTY6Om5ldygwKSwKICAgICAgICAgICAgbGFzdF90aW1lc3RhbXA6IEF0b21pY1U2NDo6bmV3KDApLAogICAgICAgICAgICBlcG9jaCwKICAgICAgICB9CiAgICB9CgogICAgZm4gbmV4dF9pZCgmc2VsZikgLT4gaTY0IHsKICAgICAgICBsZXQgY3VycmVudF90aW1lc3RhbXAgPSBTeXN0ZW1UaW1lOjpub3coKQogICAgICAgICAgICAuZHVyYXRpb25fc2luY2UoVU5JWF9FUE9DSCkKICAgICAgICAgICAgLnVud3JhcCgpCiAgICAgICAgICAgIC5hc19taWxsaXMoKSBhcyB1NjQ7CgogICAgICAgIGxldCBsYXN0ID0gc2VsZi5sYXN0X3RpbWVzdGFtcC5sb2FkKE9yZGVyaW5nOjpTZXFDc3QpOwoKICAgICAgICBpZiBjdXJyZW50X3RpbWVzdGFtcCA9PSBsYXN0IHsKICAgICAgICAgICAgLy8g5ZCM5LiA5q+r56eS5YaF77yM6YCS5aKe5bqP5YiX5Y+3CiAgICAgICAgICAgIGxldCBzZXEgPSBzZWxmLnNlcXVlbmNlLmZldGNoX2FkZCgxLCBPcmRlcmluZzo6U2VxQ3N0KTsKICAgICAgICAgICAgaWYgc2VxID49IDQwOTUgewogICAgICAgICAgICAgICAgLy8g5bqP5YiX5Y+35rqi5Ye677yM562J5b6F5LiL5LiA5q+r56eSCiAgICAgICAgICAgICAgICBwYW5pYyEoIlNlcXVlbmNlIG92ZXJmbG93OiB0b28gbWFueSBJRHMgaW4gb25lIG1pbGxpc2Vjb25kIik7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgc2VsZi5tYWtlX2lkKGxhc3QsIHNlcSkKICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAvLyDmlrDnmoTmr6vnp5LvvIzph43nva7luo/liJflj7cKICAgICAgICAgICAgc2VsZi5zZXF1ZW5jZS5zdG9yZSgwLCBPcmRlcmluZzo6U2VxQ3N0KTsKICAgICAgICAgICAgc2VsZi5sYXN0X3RpbWVzdGFtcC5zdG9yZShjdXJyZW50X3RpbWVzdGFtcCwgT3JkZXJpbmc6OlNlcUNzdCk7CiAgICAgICAgICAgIHNlbGYubWFrZV9pZChjdXJyZW50X3RpbWVzdGFtcCwgMCkKICAgICAgICB9CiAgICB9CgogICAgZm4gbWFrZV9pZCgmc2VsZiwgdGltZXN0YW1wOiB1NjQsIHNlcXVlbmNlOiB1MTYpIC0+IGk2NCB7CiAgICAgICAgLy8g5pe26Ze05oiz5bem56e7MjLkvY3vvIgxMOS9jeacuuWZqElEICsgMTLkvY3luo/liJflj7fvvIkKICAgICAgICBsZXQgdHNfcGFydCA9ICh0aW1lc3RhbXAgLSBzZWxmLmVwb2NoKSA8PCAyMjsKICAgICAgICAvLyDmnLrlmahJROW3puenuzEy5L2N77yIMTLkvY3luo/liJflj7fvvIkKICAgICAgICBsZXQgbWFjaGluZV9wYXJ0ID0gKHNlbGYubWFjaGluZV9pZCBhcyBpNjQpIDw8IDEyOwogICAgICAgIC8vIOW6j+WIl+WPtwogICAgICAgIGxldCBzZXFfcGFydCA9IHNlcXVlbmNlIGFzIGk2NDsKCiAgICAgICAgdHNfcGFydCB8IG1hY2hpbmVfcGFydCB8IHNlcV9wYXJ0CiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgc25vd2ZsYWtlID0gU25vd2ZsYWtlOjpuZXcoMSk7IC8vIOacuuWZqElE5Li6MQoKICAgIC8vIOi/nue7reeUn+aIkDEw5LiqSUQKICAgIGZvciBfIGluIDAuLjEwIHsKICAgICAgICBsZXQgaWQgPSBzbm93Zmxha2UubmV4dF9pZCgpOwogICAgICAgIHByaW50bG4hKCJTbm93Zmxha2UgSUQ6IHt9IiwgaWQpOwogICAgfQoKICAgIC8vIOino+aekElECiAgICBsZXQgaWQgPSBzbm93Zmxha2UubmV4dF9pZCgpOwogICAgbGV0IHRpbWVzdGFtcF9wYXJ0ID0gKGlkID4+IDIyKSArIHNub3dmbGFrZS5lcG9jaCBhcyBpNjQ7CiAgICBsZXQgbWFjaGluZV9wYXJ0ID0gKChpZCA+PiAxMikgJiAweDNGRikgYXMgdTE2OwogICAgbGV0IHNlcXVlbmNlX3BhcnQgPSAoaWQgJiAweEZGRikgYXMgdTE2OwogICAgcHJpbnRsbiEoIlxu6Kej5p6QIElEID0ge30iLCBpZCk7CiAgICBwcmludGxuISgiICDml7bpl7TmiLPpg6jliIY6IHt9IiwgdGltZXN0YW1wX3BhcnQpOwogICAgcHJpbnRsbiEoIiAg5py65ZmoSUQ6IHt9IiwgbWFjaGluZV9wYXJ0KTsKICAgIHByaW50bG4hKCIgIOW6j+WIl+WPtzoge30iLCBzZXF1ZW5jZV9wYXJ0KTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6c3luYzo6TXV0ZXg7CnVzZSBzdGQ6OnRpbWU6OntTeXN0ZW1UaW1lLCBVTklYX0VQT0NIfTsKCi8vLyDoh6rlrprkuYnnuqrlhYPvvJoyMDI0LTAxLTAxIDAwOjAwOjAwIFVUQ++8iOavq+enku+8iQpjb25zdCBFUE9DSDogdTY0ID0gMV83MDRfMDY3XzIwMF8wMDA7CgpmbiBub3dfbWlsbGlzKCkgLT4gdTY0IHsKICAgIFN5c3RlbVRpbWU6Om5vdygpCiAgICAgICAgLmR1cmF0aW9uX3NpbmNlKFVOSVhfRVBPQ0gpCiAgICAgICAgLmV4cGVjdCgic3lzdGVtIGNsb2NrIGlzIGJlZm9yZSBVTklYX0VQT0NIIikKICAgICAgICAuYXNfbWlsbGlzKCkgYXMgdTY0Cn0KCi8vLyDpm6roirHnrpfms5VJROeUn+aIkOWZqApzdHJ1Y3QgU25vd2ZsYWtlIHsKICAgIG1hY2hpbmVfaWQ6IHUxNiwgLy8g5py65ZmoSUQgKDAgfiAxMDIzKQogICAgZXBvY2g6IHU2NCwgICAgICAvLyDotbflp4vml7bpl7TmiLPvvIjmr6vnp5LvvIkKICAgIC8vIOOAjOivu+aXtumXtOaIsyDihpIg5a6a5bqP5YiX5Y+3IOKGkiDlhpnlm57jgI3lv4XpobvkvZzkuLrkuIDkuKrmlbTkvZPvvIzlm6DmraTnlKggTXV0ZXgg5Liy6KGM5YyWCiAgICBzdGF0ZTogTXV0ZXg8U25vd2ZsYWtlU3RhdGU+LAp9CgpzdHJ1Y3QgU25vd2ZsYWtlU3RhdGUgewogICAgbGFzdF90aW1lc3RhbXA6IHU2NCwgLy8g5LiK5qyh55Sf5oiQSUTnmoTml7bpl7TmiLMKICAgIHNlcXVlbmNlOiB1MTYsICAgICAgIC8vIOW6j+WIl+WPtyAoMCB+IDQwOTUpCn0KCmltcGwgU25vd2ZsYWtlIHsKICAgIGZuIG5ldyhtYWNoaW5lX2lkOiB1MTYpIC0+IFNlbGYgewogICAgICAgIFNub3dmbGFrZSB7CiAgICAgICAgICAgIG1hY2hpbmVfaWQ6IG1hY2hpbmVfaWQgJiAweDNGRiwgLy8g56Gu5L+d5LiN6LaF6L+HMTDkvY0KICAgICAgICAgICAgZXBvY2g6IEVQT0NILAogICAgICAgICAgICBzdGF0ZTogTXV0ZXg6Om5ldyhTbm93Zmxha2VTdGF0ZSB7CiAgICAgICAgICAgICAgICBsYXN0X3RpbWVzdGFtcDogMCwKICAgICAgICAgICAgICAgIHNlcXVlbmNlOiAwLAogICAgICAgICAgICB9KSwKICAgICAgICB9CiAgICB9CgogICAgZm4gbmV4dF9pZCgmc2VsZikgLT4gaTY0IHsKICAgICAgICBsZXQgbXV0IHN0YXRlID0gc2VsZi5zdGF0ZS5sb2NrKCkudW53cmFwKCk7CiAgICAgICAgbGV0IG11dCB0aW1lc3RhbXAgPSBub3dfbWlsbGlzKCk7CgogICAgICAgIC8vIOaXtumSn+WbnuaLqO+8muetieWIsOi/veS4iuS4iuasoeeahOaXtumXtOaIswogICAgICAgIHdoaWxlIHRpbWVzdGFtcCA8IHN0YXRlLmxhc3RfdGltZXN0YW1wIHsKICAgICAgICAgICAgc3RkOjp0aHJlYWQ6OnNsZWVwKHN0ZDo6dGltZTo6RHVyYXRpb246OmZyb21fbWlsbGlzKAogICAgICAgICAgICAgICAgc3RhdGUubGFzdF90aW1lc3RhbXAgLSB0aW1lc3RhbXAsCiAgICAgICAgICAgICkpOwogICAgICAgICAgICB0aW1lc3RhbXAgPSBub3dfbWlsbGlzKCk7CiAgICAgICAgfQoKICAgICAgICBpZiB0aW1lc3RhbXAgPT0gc3RhdGUubGFzdF90aW1lc3RhbXAgewogICAgICAgICAgICAvLyDlkIzkuIDmr6vnp5LlhoXvvIzpgJLlop7luo/liJflj7cKICAgICAgICAgICAgc3RhdGUuc2VxdWVuY2UgKz0gMTsKICAgICAgICAgICAgaWYgc3RhdGUuc2VxdWVuY2UgPiA0MDk1IHsKICAgICAgICAgICAgICAgIC8vIOi/meS4gOavq+enkueahCA0MDk2IOS4quW6j+WIl+WPt+eUqOWujOS6hu+8jOetieWIsOS4i+S4gOavq+enkgogICAgICAgICAgICAgICAgd2hpbGUgdGltZXN0YW1wIDw9IHN0YXRlLmxhc3RfdGltZXN0YW1wIHsKICAgICAgICAgICAgICAgICAgICB0aW1lc3RhbXAgPSBub3dfbWlsbGlzKCk7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBzdGF0ZS5zZXF1ZW5jZSA9IDA7CiAgICAgICAgICAgIH0KICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAvLyDmlrDnmoTmr6vnp5LvvIzluo/liJflj7fku44gMCDlvIDlp4sKICAgICAgICAgICAgc3RhdGUuc2VxdWVuY2UgPSAwOwogICAgICAgIH0KCiAgICAgICAgc3RhdGUubGFzdF90aW1lc3RhbXAgPSB0aW1lc3RhbXA7CiAgICAgICAgc2VsZi5tYWtlX2lkKHRpbWVzdGFtcCwgc3RhdGUuc2VxdWVuY2UpCiAgICB9CgogICAgZm4gbWFrZV9pZCgmc2VsZiwgdGltZXN0YW1wOiB1NjQsIHNlcXVlbmNlOiB1MTYpIC0+IGk2NCB7CiAgICAgICAgLy8g5pe26Ze05oiz5bem56e7MjLkvY3vvIgxMOS9jeacuuWZqElEICsgMTLkvY3luo/liJflj7fvvIkKICAgICAgICBsZXQgdHNfcGFydCA9ICgodGltZXN0YW1wIC0gc2VsZi5lcG9jaCkgYXMgaTY0KSA8PCAyMjsKICAgICAgICAvLyDmnLrlmahJROW3puenuzEy5L2N77yIMTLkvY3luo/liJflj7fvvIkKICAgICAgICBsZXQgbWFjaGluZV9wYXJ0ID0gKHNlbGYubWFjaGluZV9pZCBhcyBpNjQpIDw8IDEyOwogICAgICAgIC8vIOW6j+WIl+WPtwogICAgICAgIGxldCBzZXFfcGFydCA9IHNlcXVlbmNlIGFzIGk2NDsKCiAgICAgICAgdHNfcGFydCB8IG1hY2hpbmVfcGFydCB8IHNlcV9wYXJ0CiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgc25vd2ZsYWtlID0gU25vd2ZsYWtlOjpuZXcoMSk7IC8vIOacuuWZqElE5Li6MQoKICAgIC8vIOi/nue7reeUn+aIkDEw5LiqSUQKICAgIGZvciBfIGluIDAuLjEwIHsKICAgICAgICBsZXQgaWQgPSBzbm93Zmxha2UubmV4dF9pZCgpOwogICAgICAgIHByaW50bG4hKCJTbm93Zmxha2UgSUQ6IHt9IiwgaWQpOwogICAgfQoKICAgIC8vIOino+aekElECiAgICBsZXQgaWQgPSBzbm93Zmxha2UubmV4dF9pZCgpOwogICAgbGV0IHRpbWVzdGFtcF9wYXJ0ID0gKGlkID4+IDIyKSArIHNub3dmbGFrZS5lcG9jaCBhcyBpNjQ7CiAgICBsZXQgbWFjaGluZV9wYXJ0ID0gKChpZCA+PiAxMikgJiAweDNGRikgYXMgdTE2OwogICAgbGV0IHNlcXVlbmNlX3BhcnQgPSAoaWQgJiAweEZGRikgYXMgdTE2OwogICAgcHJpbnRsbiEoIlxu6Kej5p6QIElEID0ge30iLCBpZCk7CiAgICBwcmludGxuISgiICDml7bpl7TmiLPpg6jliIY6IHt9IiwgdGltZXN0YW1wX3BhcnQpOwogICAgcHJpbnRsbiEoIiAg5py65ZmoSUQ6IHt9IiwgbWFjaGluZV9wYXJ0KTsKICAgIHByaW50bG4hKCIgIOW6j+WIl+WPtzoge30iLCBzZXF1ZW5jZV9wYXJ0KTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
-<pre class="playground"><code class="language-rust edition2024">use std::sync::atomic::{AtomicU16, Ordering};
+<pre class="playground"><code class="language-rust edition2024">use std::sync::Mutex;
 use std::time::{SystemTime, UNIX_EPOCH};
+
+/// 自定义纪元：2024-01-01 00:00:00 UTC（毫秒）
+const EPOCH: u64 = 1_704_067_200_000;
+
+fn now_millis() -&gt; u64 {
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("system clock is before UNIX_EPOCH")
+        .as_millis() as u64
+}
 
 /// 雪花算法ID生成器
 struct Snowflake {
-    machine_id: u16,          // 机器ID (0 ~ 1023)
-    sequence: AtomicU16,      // 序列号 (0 ~ 4095)
-    last_timestamp: AtomicU64, // 上次生成ID的时间戳
-    epoch: u64,               // 起始时间戳（毫秒）
+    machine_id: u16, // 机器ID (0 ~ 1023)
+    epoch: u64,      // 起始时间戳（毫秒）
+    // 「读时间戳 → 定序列号 → 写回」必须作为一个整体，因此用 Mutex 串行化
+    state: Mutex&lt;SnowflakeState&gt;,
+}
+
+struct SnowflakeState {
+    last_timestamp: u64, // 上次生成ID的时间戳
+    sequence: u16,       // 序列号 (0 ~ 4095)
 }
 
 impl Snowflake {
     fn new(machine_id: u16) -&gt; Self {
-        // 自定义纪元：2024-01-01 00:00:00 UTC
-        let epoch = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
-            .as_millis() as u64;
-
         Snowflake {
             machine_id: machine_id &amp; 0x3FF, // 确保不超过10位
-            sequence: AtomicU16::new(0),
-            last_timestamp: AtomicU64::new(0),
-            epoch,
+            epoch: EPOCH,
+            state: Mutex::new(SnowflakeState {
+                last_timestamp: 0,
+                sequence: 0,
+            }),
         }
     }
 
     fn next_id(&amp;self) -&gt; i64 {
-        let current_timestamp = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
-            .as_millis() as u64;
+        let mut state = self.state.lock().unwrap();
+        let mut timestamp = now_millis();
 
-        let last = self.last_timestamp.load(Ordering::SeqCst);
-
-        if current_timestamp == last {
-            // 同一毫秒内，递增序列号
-            let seq = self.sequence.fetch_add(1, Ordering::SeqCst);
-            if seq &gt;= 4095 {
-                // 序列号溢出，等待下一毫秒
-                panic!("Sequence overflow: too many IDs in one millisecond");
-            }
-            self.make_id(last, seq)
-        } else {
-            // 新的毫秒，重置序列号
-            self.sequence.store(0, Ordering::SeqCst);
-            self.last_timestamp.store(current_timestamp, Ordering::SeqCst);
-            self.make_id(current_timestamp, 0)
+        // 时钟回拨：等到追上上次的时间戳
+        while timestamp &lt; state.last_timestamp {
+            std::thread::sleep(std::time::Duration::from_millis(
+                state.last_timestamp - timestamp,
+            ));
+            timestamp = now_millis();
         }
+
+        if timestamp == state.last_timestamp {
+            // 同一毫秒内，递增序列号
+            state.sequence += 1;
+            if state.sequence &gt; 4095 {
+                // 这一毫秒的 4096 个序列号用完了，等到下一毫秒
+                while timestamp &lt;= state.last_timestamp {
+                    timestamp = now_millis();
+                }
+                state.sequence = 0;
+            }
+        } else {
+            // 新的毫秒，序列号从 0 开始
+            state.sequence = 0;
+        }
+
+        state.last_timestamp = timestamp;
+        self.make_id(timestamp, state.sequence)
     }
 
     fn make_id(&amp;self, timestamp: u64, sequence: u16) -&gt; i64 {
         // 时间戳左移22位（10位机器ID + 12位序列号）
-        let ts_part = (timestamp - self.epoch) &lt;&lt; 22;
+        let ts_part = ((timestamp - self.epoch) as i64) &lt;&lt; 22;
         // 机器ID左移12位（12位序列号）
         let machine_part = (self.machine_id as i64) &lt;&lt; 12;
         // 序列号
@@ -1115,22 +1139,6 @@ $$</p>
         <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
         <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
         <script>

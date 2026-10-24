@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-09f1c163.js";
+            window.path_to_searchindex_js = "searchindex-fc5581c7.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a6286dd9.js"></script>
@@ -276,7 +276,11 @@ $$V = 0.615R - 0.515G - 0.100B$$</p>
 </ul>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>/// RGB 转 HSV
+</span>/*
+[dependencies]
+image = "0.25"
+*/
+/// RGB 转 HSV
 fn rgb_to_hsv(r: u8, g: u8, b: u8) -&gt; (f64, f64, f64) {
     let r = r as f64 / 255.0;
     let g = g as f64 / 255.0;
@@ -480,6 +484,161 @@ Pass 7: █ █ █ █ █ █ █ █ █   (每1行每1列)
 <img src="images/rustacean-orig-noshadow.svg" alt="Ferris" width="30%">
 <img src="images/python-logo.png" alt="Python" width="30%">
 <img src="images/motorcycle.svg" alt="Motorcycle" width="30%">
+<img src="images/elephant.png" alt="postgres" width="30%">
+<h3 id="537-mermaid用文本描述图"><a class="header" href="#537-mermaid用文本描述图">5.3.7 Mermaid：用文本描述图</a></h3>
+<p>前几节的文件结构和压缩流程，都是用字符画（ASCII art）画出来的。字符画胜在纯文本、无需额外工具，但维护成本不低：对齐靠手工，改一个方框往往要重排整块，图一复杂就很难读。</p>
+<p>Mermaid 提供了另一条路：用结构化的文本声明「有哪些节点、谁指向谁、分成几层」，由布局引擎自动计算位置，最后渲染成 <strong>SVG</strong>。可以把它理解为「图表的 Markdown」——源码可读、可 diff、可评审，产物又是矢量图。</p>
+<p><strong>它处在哪一层</strong></p>
+<p>5.3.6 的 SVG 用 XML 描述「画什么形状」；Mermaid 描述的是「图的结构」，比 SVG 更高一层。渲染流程如下：</p>
+<pre class="mermaid">flowchart LR
+    SRC["Mermaid 源码&lt;br/&gt;.mmd 或代码块"] --&gt; PARSE["Parser&lt;br/&gt;解析为语法树"]
+    PARSE --&gt; LAYOUT["Layout&lt;br/&gt;分层、布线、计算坐标"]
+    LAYOUT --&gt; DRAW["Renderer&lt;br/&gt;生成 SVG 元素"]
+    DRAW --&gt; VIEW["浏览器 / 文档&lt;br/&gt;矢量图"]
+</pre>
+
+<p>注意最后一步：Mermaid 输出的是 SVG，不是位图。所以放大不会糊，样式也能继续用 CSS 调整——正好呼应 5.3.6 里位图与矢量图的区别。</p>
+<p>Mermaid 由 Knut Sveidqvist 于 2014 年发布，采用 MIT 协议，是一个 JavaScript 库。GitHub、GitLab、Obsidian、Notion、VS Code 插件等都支持它；本书则通过 mdBook 的 <code>mdbook-mermaid</code> 预处理器接入。</p>
+<p><strong>本书中的配置</strong></p>
+<p><code>book.toml</code> 里已经配置好了，所以在 <code>src</code> 的 Markdown 中可以直接写 <code>mermaid</code> 代码块：</p>
+<pre><code class="language-toml">[preprocessor.mermaid]
+command = "mdbook-mermaid"
+
+[output.html]
+additional-js = ["mermaid.min.js", "mermaid-init.js"]
+</code></pre>
+<p>渲染分两步完成：</p>
+<ol>
+<li>构建时，<code>mdbook-mermaid</code> 把 <code>mermaid</code> 代码块替换成 <code>&lt;pre class="mermaid"&gt;</code> 容器；</li>
+<li>页面加载后，<code>mermaid-init.js</code> 调用 <code>mermaid.initialize({ startOnLoad: true })</code>，由浏览器把文本渲染成 SVG，并跟随 mdBook 的明暗主题切换配色。</li>
+</ol>
+<p>也正因为渲染依赖页面里的 JavaScript，本书的 <code>book.toml</code> 中 <code>[output.pdf]</code> 处于注释状态；若要把图放进 PDF，直接用 <code>mermaid-cli</code> 生成 SVG/PNG 再排版更稳妥。</p>
+<p><strong>示例 1：该选哪种图片格式</strong></p>
+<pre class="mermaid">flowchart TD
+    S(["准备保存一张图片"]) --&gt; Q1{是照片吗？}
+    Q1 --&gt;|是| Q2{需要透明或动画吗？}
+    Q1 --&gt;|否，是图形或截图| Q3{需要缩放不失真吗？}
+    Q2 --&gt;|需要透明| WEBP["WebP：有损 + Alpha，体积小"]
+    Q2 --&gt;|需要动画| GIF["GIF：256 色，兼容性最好"]
+    Q2 --&gt;|都不需要| JPEG["JPEG：有损，照片首选"]
+    Q3 --&gt;|是| SVG["SVG：矢量，Logo / 图标"]
+    Q3 --&gt;|否| PNG["PNG：无损，文字边缘清晰"]
+</pre>
+
+<p><strong>示例 2：JPEG 压缩流水线</strong></p>
+<p>把 5.3.2 的字符画换成 Mermaid，是这样的：</p>
+<pre class="mermaid">flowchart LR
+    IMG["原始图像&lt;br/&gt;RGB"] --&gt; YCC["颜色空间转换&lt;br/&gt;YCbCr"]
+    YCC --&gt; BLK["8×8 分块"]
+    BLK --&gt; DCT["DCT 变换"]
+    DCT --&gt; Q["量化&lt;br/&gt;除以量化表"]
+    Q --&gt; ZZ["Zigzag 扫描"]
+    ZZ --&gt; ENT["Huffman / 算术编码"]
+    ENT --&gt; OUT["JPEG 文件"]
+</pre>
+
+<p>同样的方法可以用来重画 BMP 文件头、PNG 数据块、GIF 帧结构这类分层结构。</p>
+<p><strong>示例 3：image crate 的核心类型</strong></p>
+<p>类图适合表达类型之间的关系，比如 5.5 节用到的几个核心类型：</p>
+<pre class="mermaid">classDiagram
+    class ImageReader {
+        +open(path) Reader
+        +with_guessed_format() Reader
+        +decode() DynamicImage
+    }
+    class DynamicImage {
+        +width() u32
+        +height() u32
+        +to_rgba8() RgbaImage
+        +resize(w, h, filter) DynamicImage
+        +crop(x, y, w, h) DynamicImage
+    }
+    class RgbaImage {
+        +pixels_mut()
+        +get_pixel(x, y)
+    }
+
+    ImageReader ..&gt; DynamicImage : decode()
+    DynamicImage ..&gt; RgbaImage : to_rgba8()
+</pre>
+
+<p><strong>常用图表类型</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">关键字</th><th style="text-align: left">图表</th><th style="text-align: left">适合表达</th><th style="text-align: left">本章可用的场景</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><code>flowchart</code></td><td style="text-align: left">流程图</td><td style="text-align: left">步骤、分支、决策</td><td style="text-align: left">图片格式选择、压缩流水线</td></tr>
+<tr><td style="text-align: left"><code>sequenceDiagram</code></td><td style="text-align: left">时序图</td><td style="text-align: left">参与者之间的消息顺序</td><td style="text-align: left">浏览器与服务器协商图片格式</td></tr>
+<tr><td style="text-align: left"><code>classDiagram</code></td><td style="text-align: left">类图</td><td style="text-align: left">类型、方法、关系</td><td style="text-align: left"><code>image</code> crate 的类型结构</td></tr>
+<tr><td style="text-align: left"><code>stateDiagram-v2</code></td><td style="text-align: left">状态图</td><td style="text-align: left">状态与迁移</td><td style="text-align: left">图片「读取 → 解码 → 处理 → 保存」</td></tr>
+<tr><td style="text-align: left"><code>erDiagram</code></td><td style="text-align: left">ER 图</td><td style="text-align: left">实体与关系</td><td style="text-align: left">图片元数据表设计</td></tr>
+<tr><td style="text-align: left"><code>gantt</code></td><td style="text-align: left">甘特图</td><td style="text-align: left">任务排期</td><td style="text-align: left">批量图像处理任务计划</td></tr>
+<tr><td style="text-align: left"><code>pie</code></td><td style="text-align: left">饼图</td><td style="text-align: left">占比</td><td style="text-align: left">站点上各图片格式的占比</td></tr>
+<tr><td style="text-align: left"><code>mindmap</code></td><td style="text-align: left">思维导图</td><td style="text-align: left">知识梳理</td><td style="text-align: left">图片格式知识体系</td></tr>
+<tr><td style="text-align: left"><code>timeline</code></td><td style="text-align: left">时间线</td><td style="text-align: left">事件顺序</td><td style="text-align: left">GIF → JPEG → PNG → WebP → AVIF 的发展史</td></tr>
+<tr><td style="text-align: left"><code>gitGraph</code></td><td style="text-align: left">提交图</td><td style="text-align: left">分支与合并</td><td style="text-align: left">图表源码随代码演进</td></tr>
+<tr><td style="text-align: left"><code>block-beta</code></td><td style="text-align: left">块图</td><td style="text-align: left">分层结构</td><td style="text-align: left">BMP / PNG 的文件块布局</td></tr>
+<tr><td style="text-align: left"><code>architecture-beta</code></td><td style="text-align: left">架构图</td><td style="text-align: left">服务与依赖</td><td style="text-align: left">图片处理服务的部署结构</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>与其它文本绘图工具对比</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">工具</th><th style="text-align: left">语法风格</th><th style="text-align: left">渲染方式</th><th style="text-align: left">优势</th><th style="text-align: left">不足</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">Mermaid</td><td style="text-align: left">Markdown 风格 DSL</td><td style="text-align: left">浏览器端 JS / CLI</td><td style="text-align: left">文档平台内置，上手快</td><td style="text-align: left">布局控制较弱</td></tr>
+<tr><td style="text-align: left">Graphviz (DOT)</td><td style="text-align: left">声明式</td><td style="text-align: left">本地命令行</td><td style="text-align: left">自动布局成熟，适合大规模有向图</td><td style="text-align: left">样式偏老派，交互性差</td></tr>
+<tr><td style="text-align: left">PlantUML</td><td style="text-align: left">专用 DSL</td><td style="text-align: left">JVM</td><td style="text-align: left">UML 图种齐全</td><td style="text-align: left">依赖 Java，语法庞大</td></tr>
+<tr><td style="text-align: left">D2</td><td style="text-align: left">现代声明式</td><td style="text-align: left">本地 CLI</td><td style="text-align: left">布局引擎多，可读性好</td><td style="text-align: left">生态较新</td></tr>
+<tr><td style="text-align: left">TikZ</td><td style="text-align: left">LaTeX 宏</td><td style="text-align: left">LaTeX</td><td style="text-align: left">版式控制精细</td><td style="text-align: left">学习曲线陡，编译慢</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>局限与注意事项</strong></p>
+<ul>
+<li>自动布局意味着节点位置只能间接影响（<code>direction</code>、<code>subgraph</code>、<code>rank</code>），追求精确版式仍应使用 Inkscape、Figma 或手写 SVG。</li>
+<li>标签中出现括号、冒号、引号等字符时，用双引号包住整个标签，例如 <code>A["(x, y)"]</code>，否则可能解析失败。</li>
+<li>标签内换行用 <code>&lt;br/&gt;</code>；中文没有空格，长标签容易被撑宽，必要时手动断行。</li>
+<li>渲染效果与 Mermaid 版本、字体有关，跨平台可能有细微差异。</li>
+<li>它擅长「关系图」，不擅长插画、图标和照片——那些仍然属于位图或手绘矢量图的领域。</li>
+<li>图表源码也是代码：建议与正文一起进版本库，改动时同步维护，避免图和文字脱节。</li>
+</ul>
+<p><strong>在 Rust 中生成与渲染</strong></p>
+<p>Rust 生态里还没有成熟的、与 mermaid.js 功能对等的渲染器。工程上的常见组合是：Rust 负责生成图表源码，再调用 Node 生态的 <code>mermaid-cli</code>（命令 <code>mmdc</code>）输出 SVG/PNG；如果目标是网页，就把源码交给前端 mermaid.js 渲染。</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/*
+[dependencies]
+image = "0.25"
+*/
+use std::fs;
+use std::process::Command;
+
+/// 把 Mermaid 源码写成 .mmd，再调用 mermaid-cli 渲染成 SVG
+fn render_mermaid(source: &amp;str, output: &amp;str) -&gt; std::io::Result&lt;()&gt; {
+    let mmd = "diagram.mmd";
+    fs::write(mmd, source)?;
+
+    let status = Command::new("mmdc")
+        .args(["-i", mmd, "-o", output, "-b", "transparent"])
+        .status()?;
+
+    if !status.success() {
+        return Err(std::io::Error::other("mmdc 渲染失败"));
+    }
+    Ok(())
+}
+
+// 用法：生成一张最简流程图
+// let src = "flowchart LR\n    A[原始图像] --&gt; B[压缩] --&gt; C[文件]";
+// render_mermaid(src, "pipeline.svg")?;
+<span class="boring">}</span></code></pre>
+<p>安装 CLI：<code>npm install -g @mermaid-js/mermaid-cli</code>。输出的 SVG 是矢量图；确实需要位图时，可以用 5.7 节提到的 <code>resvg</code> 把 SVG 栅格化为 PNG。</p>
 <h2 id="54-exif-信息"><a class="header" href="#54-exif-信息">5.4 EXIF 信息</a></h2>
 <p>EXIF（Exchangeable Image File Format）是嵌入在 JPEG、TIFF 等图像文件中的元数据标准，最初由日本电子工业发展协会（JEIDA）制定。</p>
 <p>EXIF 记录了拍摄时的各种参数：</p>
@@ -506,13 +665,13 @@ image = "0.25"
 </code></pre>
 <p><code>image</code> crate 是 Rust 生态中最流行的图像处理库，支持 BMP、JPEG、PNG、GIF、WebP、TIFF、AVIF 等多种格式的编解码。</p>
 <h3 id="552-读取与写入各种格式"><a class="header" href="#552-读取与写入各种格式">5.5.2 读取与写入各种格式</a></h3>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaW1hZ2UgPSAiMC4yNSIKKi8KdXNlIGltYWdlOjp7RHluYW1pY0ltYWdlLCBJbWFnZUZvcm1hdCwgaW86OlJlYWRlciBhcyBJbWFnZVJlYWRlcn07CnVzZSBzdGQ6OmZzOjpGaWxlOwoKZm4gbWFpbigpIC0+IFJlc3VsdDwoKSwgQm94PGR5biBzdGQ6OmVycm9yOjpFcnJvcj4+IHsKICAgIC8vIOivu+WPluWbvueJh++8iOiHquWKqOivhuWIq+agvOW8j++8iQogICAgbGV0IGltZyA9IEltYWdlUmVhZGVyOjpvcGVuKCJpbnB1dC5qcGciKT8KICAgICAgICAud2l0aF9ndWVzc2VkX2Zvcm1hdCgpPwogICAgICAgIC5kZWNvZGUoKT87CgogICAgcHJpbnRsbiEoIuWbvueJh+WwuuWvuDoge314e30iLCBpbWcud2lkdGgoKSwgaW1nLmhlaWdodCgpKTsKICAgIHByaW50bG4hKCLlm77niYfpopzoibLnsbvlnos6IHs6P30iLCBpbWcuY29sb3IoKSk7CgogICAgLy8g5L+d5a2Y5Li65LiN5ZCM5qC85byPCiAgICBpbWcuc2F2ZSgib3V0cHV0LnBuZyIpPzsgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIOagueaNruaJqeWxleWQjeiHquWKqOmAieaLqeagvOW8jwogICAgaW1nLnNhdmVfd2l0aF9mb3JtYXQoIm91dHB1dC5ibXAiLCBJbWFnZUZvcm1hdDo6Qm1wKT87CiAgICBpbWcuc2F2ZV93aXRoX2Zvcm1hdCgib3V0cHV0LndlYnAiLCBJbWFnZUZvcm1hdDo6V2ViUCk/OwoKICAgIC8vIOaJi+WKqOaMh+WumuagvOW8j+WGmeWFpQogICAgbGV0IG11dCBvdXRwdXQgPSBGaWxlOjpjcmVhdGUoIm91dHB1dC5qcGciKT87CiAgICBpbWcud3JpdGVfdG8oJm11dCBvdXRwdXQsIEltYWdlRm9ybWF0OjpKcGVnKT87CgogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaW1hZ2UgPSAiMC4yNSIKKi8KdXNlIGltYWdlOjp7SW1hZ2VGb3JtYXQsIEltYWdlUmVhZGVyfTsKdXNlIHN0ZDo6ZnM6OkZpbGU7CgpmbiBtYWluKCkgLT4gUmVzdWx0PCgpLCBCb3g8ZHluIHN0ZDo6ZXJyb3I6OkVycm9yPj4gewogICAgLy8g6K+75Y+W5Zu+54mH77yI6Ieq5Yqo6K+G5Yir5qC85byP77yJCiAgICBsZXQgaW1nID0gSW1hZ2VSZWFkZXI6Om9wZW4oImlucHV0LmpwZyIpPwogICAgICAgIC53aXRoX2d1ZXNzZWRfZm9ybWF0KCk/CiAgICAgICAgLmRlY29kZSgpPzsKCiAgICBwcmludGxuISgi5Zu+54mH5bC65a+4OiB7fXh7fSIsIGltZy53aWR0aCgpLCBpbWcuaGVpZ2h0KCkpOwogICAgcHJpbnRsbiEoIuWbvueJh+minOiJsuexu+Weizogezo/fSIsIGltZy5jb2xvcigpKTsKCiAgICAvLyDkv53lrZjkuLrkuI3lkIzmoLzlvI8KICAgIGltZy5zYXZlKCJvdXRwdXQucG5nIik/OyAgICAgICAgICAgICAgICAgICAgICAgICAgLy8g5qC55o2u5omp5bGV5ZCN6Ieq5Yqo6YCJ5oup5qC85byPCiAgICBpbWcuc2F2ZV93aXRoX2Zvcm1hdCgib3V0cHV0LmJtcCIsIEltYWdlRm9ybWF0OjpCbXApPzsKICAgIGltZy5zYXZlX3dpdGhfZm9ybWF0KCJvdXRwdXQud2VicCIsIEltYWdlRm9ybWF0OjpXZWJQKT87CgogICAgLy8g5omL5Yqo5oyH5a6a5qC85byP5YaZ5YWlCiAgICBsZXQgbXV0IG91dHB1dCA9IEZpbGU6OmNyZWF0ZSgib3V0cHV0LmpwZyIpPzsKICAgIGltZy53cml0ZV90bygmbXV0IG91dHB1dCwgSW1hZ2VGb3JtYXQ6OkpwZWcpPzsKCiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
 <pre class="playground"><code class="language-rust edition2024">/*
 [dependencies]
 image = "0.25"
 */
-use image::{DynamicImage, ImageFormat, io::Reader as ImageReader};
+use image::{ImageFormat, ImageReader};
 use std::fs::File;
 
 fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
@@ -538,10 +697,14 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 <h3 id="553-图片裁剪"><a class="header" href="#553-图片裁剪">5.5.3 图片裁剪</a></h3>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>use image::GenericImageView;
+</span>/*
+[dependencies]
+image = "0.25"
+*/
+use image::GenericImageView;
 
 fn crop_example() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
-    let img = image::open("input.jpg")?;
+    let mut img = image::open("input.jpg")?;
     let (width, height) = img.dimensions();
 
     // 裁剪上半部分
@@ -565,7 +728,12 @@ fn crop_example() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 <h3 id="554-图片缩放与缩略图生成"><a class="header" href="#554-图片缩放与缩略图生成">5.5.4 图片缩放与缩略图生成</a></h3>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>use image::{imageops::FilterType, GenericImageView};
+</span>/*
+[dependencies]
+image = "0.25"
+*/
+use image::{imageops::FilterType, ImageFormat};
+use std::fs::File;
 use std::time::Instant;
 
 fn resize_example() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
@@ -620,14 +788,18 @@ fn resize_example() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 <p>$$Gray = 0.299 \times R + 0.587 \times G + 0.114 \times B$$</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>use image::{DynamicImage, Rgba};
+</span>/*
+[dependencies]
+image = "0.25"
+*/
+use image::{DynamicImage, Rgba};
 
 fn to_grayscale(img: &amp;DynamicImage) -&gt; DynamicImage {
     let rgba_img = img.to_rgba8();
     let mut output = rgba_img.clone();
 
     for pixel in output.pixels_mut() {
-        let Rgba([r, g, b, a]) = *pixel else { continue };
+        let Rgba([r, g, b, a]) = *pixel;
         let gray = (0.299 * r as f64 + 0.587 * g as f64 + 0.114 * b as f64) as u8;
         *pixel = Rgba([gray, gray, gray, a]);
     }
@@ -639,7 +811,11 @@ fn to_grayscale(img: &amp;DynamicImage) -&gt; DynamicImage {
 <p>将灰度图像转换为黑白图像（只有 0 和 255 两个值）：</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>use image::{DynamicImage, Rgba, GenericImage};
+</span>/*
+[dependencies]
+image = "0.25"
+*/
+use image::{DynamicImage, GenericImageView};
 
 fn to_binary(img: &amp;DynamicImage, threshold: u8) -&gt; DynamicImage {
     let gray_img = to_grayscale(img);
@@ -660,14 +836,18 @@ fn to_binary(img: &amp;DynamicImage, threshold: u8) -&gt; DynamicImage {
 <p><strong>颜色反转（底片效果）</strong></p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>use image::{DynamicImage, Rgba};
+</span>/*
+[dependencies]
+image = "0.25"
+*/
+use image::{DynamicImage, Rgba};
 
 fn invert_colors(img: &amp;DynamicImage) -&gt; DynamicImage {
     let rgba_img = img.to_rgba8();
     let mut output = rgba_img.clone();
 
     for pixel in output.pixels_mut() {
-        let Rgba([r, g, b, a]) = *pixel else { continue };
+        let Rgba([r, g, b, a]) = *pixel;
         *pixel = Rgba([255 - r, 255 - g, 255 - b, a]);
     }
 
@@ -677,7 +857,11 @@ fn invert_colors(img: &amp;DynamicImage) -&gt; DynamicImage {
 <p><strong>亮度与对比度调整</strong></p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>use image::{DynamicImage, Rgba};
+</span>/*
+[dependencies]
+image = "0.25"
+*/
+use image::{DynamicImage, Rgba};
 
 fn adjust_brightness_contrast(
     img: &amp;DynamicImage,
@@ -690,7 +874,7 @@ fn adjust_brightness_contrast(
     let factor = (259.0 * (contrast + 255.0)) / (255.0 * (259.0 - contrast));
 
     for pixel in output.pixels_mut() {
-        let Rgba([r, g, b, a]) = *pixel else { continue };
+        let Rgba([r, g, b, a]) = *pixel;
         let adjust = |c: u8| -&gt; u8 {
             let val = factor * (c as f32 - 128.0) + 128.0 + brightness as f32;
             val.clamp(0.0, 255.0) as u8
@@ -702,13 +886,13 @@ fn adjust_brightness_contrast(
 }
 <span class="boring">}</span></code></pre>
 <h3 id="556-格式转换"><a class="header" href="#556-格式转换">5.5.6 格式转换</a></h3>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaW1hZ2UgPSAiMC4yNSIKKi8KdXNlIGltYWdlOjp7aW86OlJlYWRlciBhcyBJbWFnZVJlYWRlciwgSW1hZ2VGb3JtYXR9Owp1c2Ugc3RkOjpwYXRoOjpQYXRoOwoKLy8vIOaJuemHj+i9rOaNouWbvueJh+agvOW8jwpmbiBjb252ZXJ0X2Zvcm1hdChpbnB1dDogJlBhdGgsIG91dHB1dDogJlBhdGgsIGZvcm1hdDogSW1hZ2VGb3JtYXQpIC0+IFJlc3VsdDwoKSwgQm94PGR5biBzdGQ6OmVycm9yOjpFcnJvcj4+IHsKICAgIGxldCBpbWcgPSBJbWFnZVJlYWRlcjo6b3BlbihpbnB1dCk/CiAgICAgICAgLndpdGhfZ3Vlc3NlZF9mb3JtYXQoKT8KICAgICAgICAuZGVjb2RlKCk/OwoKICAgIGxldCBtdXQgZmlsZSA9IHN0ZDo6ZnM6OkZpbGU6OmNyZWF0ZShvdXRwdXQpPzsKICAgIGltZy53cml0ZV90bygmbXV0IGZpbGUsIGZvcm1hdCk/OwogICAgcHJpbnRsbiEoIuW3sui9rOaNojoge30gLT4ge30iLCBpbnB1dC5kaXNwbGF5KCksIG91dHB1dC5kaXNwbGF5KCkpOwogICAgT2soKCkpCn0KCmZuIG1haW4oKSAtPiBSZXN1bHQ8KCksIEJveDxkeW4gc3RkOjplcnJvcjo6RXJyb3I+PiB7CiAgICAvLyBKUEVHIOi9rCBQTkcKICAgIGNvbnZlcnRfZm9ybWF0KAogICAgICAgIHN0ZDo6cGF0aDo6UGF0aDo6bmV3KCJwaG90by5qcGciKSwKICAgICAgICBzdGQ6OnBhdGg6OlBhdGg6Om5ldygicGhvdG8ucG5nIiksCiAgICAgICAgSW1hZ2VGb3JtYXQ6OlBuZywKICAgICk/OwoKICAgIC8vIFBORyDovawgV2ViUAogICAgY29udmVydF9mb3JtYXQoCiAgICAgICAgc3RkOjpwYXRoOjpQYXRoOjpuZXcoInBob3RvLnBuZyIpLAogICAgICAgIHN0ZDo6cGF0aDo6UGF0aDo6bmV3KCJwaG90by53ZWJwIiksCiAgICAgICAgSW1hZ2VGb3JtYXQ6OldlYlAsCiAgICApPzsKCiAgICBPaygoKSkKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KaW1hZ2UgPSAiMC4yNSIKKi8KdXNlIGltYWdlOjp7SW1hZ2VGb3JtYXQsIEltYWdlUmVhZGVyfTsKdXNlIHN0ZDo6cGF0aDo6UGF0aDsKCi8vLyDmibnph4/ovazmjaLlm77niYfmoLzlvI8KZm4gY29udmVydF9mb3JtYXQoaW5wdXQ6ICZQYXRoLCBvdXRwdXQ6ICZQYXRoLCBmb3JtYXQ6IEltYWdlRm9ybWF0KSAtPiBSZXN1bHQ8KCksIEJveDxkeW4gc3RkOjplcnJvcjo6RXJyb3I+PiB7CiAgICBsZXQgaW1nID0gSW1hZ2VSZWFkZXI6Om9wZW4oaW5wdXQpPwogICAgICAgIC53aXRoX2d1ZXNzZWRfZm9ybWF0KCk/CiAgICAgICAgLmRlY29kZSgpPzsKCiAgICBsZXQgbXV0IGZpbGUgPSBzdGQ6OmZzOjpGaWxlOjpjcmVhdGUob3V0cHV0KT87CiAgICBpbWcud3JpdGVfdG8oJm11dCBmaWxlLCBmb3JtYXQpPzsKICAgIHByaW50bG4hKCLlt7LovazmjaI6IHt9IC0+IHt9IiwgaW5wdXQuZGlzcGxheSgpLCBvdXRwdXQuZGlzcGxheSgpKTsKICAgIE9rKCgpKQp9CgpmbiBtYWluKCkgLT4gUmVzdWx0PCgpLCBCb3g8ZHluIHN0ZDo6ZXJyb3I6OkVycm9yPj4gewogICAgLy8gSlBFRyDovawgUE5HCiAgICBjb252ZXJ0X2Zvcm1hdCgKICAgICAgICBzdGQ6OnBhdGg6OlBhdGg6Om5ldygicGhvdG8uanBnIiksCiAgICAgICAgc3RkOjpwYXRoOjpQYXRoOjpuZXcoInBob3RvLnBuZyIpLAogICAgICAgIEltYWdlRm9ybWF0OjpQbmcsCiAgICApPzsKCiAgICAvLyBQTkcg6L2sIFdlYlAKICAgIGNvbnZlcnRfZm9ybWF0KAogICAgICAgIHN0ZDo6cGF0aDo6UGF0aDo6bmV3KCJwaG90by5wbmciKSwKICAgICAgICBzdGQ6OnBhdGg6OlBhdGg6Om5ldygicGhvdG8ud2VicCIpLAogICAgICAgIEltYWdlRm9ybWF0OjpXZWJQLAogICAgKT87CgogICAgT2soKCkpCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
 <pre class="playground"><code class="language-rust edition2024">/*
 [dependencies]
 image = "0.25"
 */
-use image::{io::Reader as ImageReader, ImageFormat};
+use image::{ImageFormat, ImageReader};
 use std::path::Path;
 
 /// 批量转换图片格式
@@ -743,12 +927,30 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 <h3 id="557-图片水印"><a class="header" href="#557-图片水印">5.5.7 图片水印</a></h3>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>use image::{DynamicImage, GenericImage, imageops::overlay};
+</span>/*
+[dependencies]
+image = "0.25"
+*/
+use image::{
+    imageops::{self, overlay},
+    DynamicImage, GenericImageView,
+};
 
 fn add_watermark(base_img: &amp;DynamicImage, watermark: &amp;DynamicImage, opacity: f32) -&gt; DynamicImage {
     let mut base = base_img.clone();
     let (bw, bh) = base.dimensions();
-    let wm = watermark.resize(bw / 4, bh / 4, imageops::FilterType::Lanczos3);
+
+    // 先把水印缩放到原图 1/4，并统一成 RGBA
+    let mut wm = watermark
+        .resize(bw / 4, bh / 4, imageops::FilterType::Lanczos3)
+        .to_rgba8();
+
+    // 按 opacity 缩放 Alpha 通道：0.0 全透明，1.0 不透明
+    let alpha = opacity.clamp(0.0, 1.0);
+    for pixel in wm.pixels_mut() {
+        pixel.0[3] = (pixel.0[3] as f32 * alpha) as u8;
+    }
+
     let (ww, wh) = wm.dimensions();
 
     // 将水印放在右下角
@@ -805,6 +1007,7 @@ fn add_watermark(base_img: &amp;DynamicImage, watermark: &amp;DynamicImage, opac
 <tr><td style="text-align: left">image</td><td style="text-align: left">Rust 最流行的图像处理库，支持多种格式编解码</td><td style="text-align: left"><a href="https://github.com/image-rs/image">GitHub</a></td></tr>
 <tr><td style="text-align: left">imageproc</td><td style="text-align: left">基于image的图像处理算法库（边缘检测、形态学等）</td><td style="text-align: left"><a href="https://github.com/image-rs/imageproc">GitHub</a></td></tr>
 <tr><td style="text-align: left">resvg</td><td style="text-align: left">高性能 SVG 渲染库</td><td style="text-align: left"><a href="https://github.com/RazrFalcon/resvg">GitHub</a></td></tr>
+<tr><td style="text-align: left">mdbook-mermaid</td><td style="text-align: left">mdBook 的 Mermaid 预处理器（把 mermaid 代码块转成图表）</td><td style="text-align: left"><a href="https://github.com/badboy/mdbook-mermaid">GitHub</a></td></tr>
 <tr><td style="text-align: left">oxipng</td><td style="text-align: left">PNG 无损优化工具</td><td style="text-align: left"><a href="https://github.com/shssoichern/oxipng">GitHub</a></td></tr>
 <tr><td style="text-align: left">mozjpeg-sys</td><td style="text-align: left">Mozilla 的 JPEG 编码器 Rust 绑定</td><td style="text-align: left"><a href="https://crates.io/crates/mozjpeg-sys">crates.io</a></td></tr>
 <tr><td style="text-align: left">libwebp-sys</td><td style="text-align: left">Google WebP 编解码库 Rust 绑定</td><td style="text-align: left"><a href="https://crates.io/crates/libwebp-sys">crates.io</a></td></tr>
@@ -871,6 +1074,9 @@ fn add_watermark(base_img: &amp;DynamicImage, watermark: &amp;DynamicImage, opac
 <li>
 <p><strong>思考题</strong>：为什么 JPEG 不适合存储文字截图？如果需要压缩文字截图，应该选择什么格式？为什么？</p>
 </li>
+<li>
+<p><strong>Mermaid 绘图</strong>：用 Mermaid 的 <code>block-beta</code> 或 <code>flowchart</code> 重画 BMP 文件结构（5.3.1）或 PNG 数据块结构（5.3.3），并与本章的字符画对比修改成本与可读性。</p>
+</li>
 </ol>
 
                     </main>
@@ -908,22 +1114,6 @@ fn add_watermark(base_img: &amp;DynamicImage, watermark: &amp;DynamicImage, opac
         <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
         <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
         <script>

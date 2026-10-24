@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-09f1c163.js";
+            window.path_to_searchindex_js = "searchindex-fc5581c7.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a6286dd9.js"></script>
@@ -308,9 +308,9 @@
 </table>
 </div>
 <h3 id="23-rust-中的进程与线程"><a class="header" href="#23-rust-中的进程与线程">2.3 Rust 中的进程与线程</a></h3>
-<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>use std::process::Command;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6cHJvY2Vzczo6Q29tbWFuZDsKCi8vIOWIm+W7uuWtkOi/m+eoiwpmbiBzcGF3bl9wcm9jZXNzKCkgewogICAgbGV0IG91dHB1dCA9IENvbW1hbmQ6Om5ldygibHMiKQogICAgICAgIC5hcmcoIi1sIikKICAgICAgICAub3V0cHV0KCkKICAgICAgICAuZXhwZWN0KCJmYWlsZWQgdG8gZXhlY3V0ZSIpOwogICAgcHJpbnRsbiEoInN0ZG91dDoge30iLCBTdHJpbmc6OmZyb21fdXRmOF9sb3NzeSgmb3V0cHV0LnN0ZG91dCkpOwp9CgovLyDliJvlu7rnur/nqIsKZm4gc3Bhd25fdGhyZWFkKCkgewogICAgbGV0IGhhbmRsZSA9IHN0ZDo6dGhyZWFkOjpzcGF3bih8fCB7CiAgICAgICAgZm9yIGkgaW4gMC4uMTAgewogICAgICAgICAgICBwcmludGxuISgi5a2Q57q/56iLOiB7aX0iKTsKICAgICAgICB9CiAgICB9KTsKICAgIGhhbmRsZS5qb2luKCkudW53cmFwKCk7IC8vIOetieW+hee6v+eoi+e7k+adnwp9CgpmbiBtYWluKCl7CiAgICBzcGF3bl9wcm9jZXNzKCk7CiAgICBzcGF3bl90aHJlYWQoKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">use std::process::Command;
 
 // 创建子进程
 fn spawn_process() {
@@ -330,7 +330,11 @@ fn spawn_thread() {
     });
     handle.join().unwrap(); // 等待线程结束
 }
-<span class="boring">}</span></code></pre>
+
+fn main(){
+    spawn_process();
+    spawn_thread();
+}</code></pre>
 <hr>
 <h2 id="三进程调度"><a class="header" href="#三进程调度">三、进程调度</a></h2>
 <h3 id="31-调度算法"><a class="header" href="#31-调度算法">3.1 调度算法</a></h3>
@@ -379,9 +383,9 @@ A A A A | B B B B | C C | A A A A
             信号量（互斥保护）
 </code></pre>
 <h3 id="42-rust-中的线程同步"><a class="header" href="#42-rust-中的线程同步">4.2 Rust 中的线程同步</a></h3>
-<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>use std::sync::{Arc, Mutex};
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6c3luYzo6e0FyYywgTXV0ZXh9Owp1c2Ugc3RkOjp0aHJlYWQ7CgpmbiBtdXRleF9leGFtcGxlKCkgewogICAgbGV0IGNvdW50ZXIgPSBBcmM6Om5ldyhNdXRleDo6bmV3KDApKTsKICAgIGxldCBtdXQgaGFuZGxlcyA9IHZlYyFbXTsKCiAgICBmb3IgXyBpbiAwLi4xMCB7CiAgICAgICAgbGV0IGNvdW50ZXIgPSBBcmM6OmNsb25lKCZjb3VudGVyKTsKICAgICAgICBoYW5kbGVzLnB1c2godGhyZWFkOjpzcGF3bihtb3ZlIHx8IHsKICAgICAgICAgICAgbGV0IG11dCBudW0gPSBjb3VudGVyLmxvY2soKS51bndyYXAoKTsKICAgICAgICAgICAgKm51bSArPSAxOwogICAgICAgIH0pKTsKICAgIH0KCiAgICBmb3IgaCBpbiBoYW5kbGVzIHsKICAgICAgICBoLmpvaW4oKS51bndyYXAoKTsKICAgIH0KICAgIHByaW50bG4hKCJjb3VudCA9IHt9IiwgKmNvdW50ZXIubG9jaygpLnVud3JhcCgpKTsgLy8gY291bnQgPSAxMAp9CgpmbiBtYWluKCl7CiAgICBtdXRleF9leGFtcGxlKCk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">use std::sync::{Arc, Mutex};
 use std::thread;
 
 fn mutex_example() {
@@ -401,7 +405,10 @@ fn mutex_example() {
     }
     println!("count = {}", *counter.lock().unwrap()); // count = 10
 }
-<span class="boring">}</span></code></pre>
+
+fn main(){
+    mutex_example();
+}</code></pre>
 <hr>
 <h2 id="五同步与互斥"><a class="header" href="#五同步与互斥">五、同步与互斥</a></h2>
 <h3 id="51-临界区与竞态条件"><a class="header" href="#51-临界区与竞态条件">5.1 临界区与竞态条件</a></h3>
@@ -601,9 +608,9 @@ CPU 保存现场（寄存器、PC）
 │  read() write() │ &lt;────────── │  文件/网络/内存  │
 └─────────────────┘  返回结果    └─────────────────┘
 </code></pre>
-<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>use std::fs::File;
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6ZnM6OkZpbGU7CnVzZSBzdGQ6OmlvOjpSZWFkOwoKLy8gc3RkOjpmczo6RmlsZTo6b3BlbiDlupXlsYLosIPnlKggb3BlbigyKSDns7vnu5/osIPnlKgKZm4gc3lzY2FsbF9leGFtcGxlKCkgewogICAgbGV0IG11dCBmID0gRmlsZTo6b3BlbigiL2V0Yy9ob3N0bmFtZSIpLnVud3JhcCgpOwogICAgbGV0IG11dCBidWYgPSBTdHJpbmc6Om5ldygpOwogICAgZi5yZWFkX3RvX3N0cmluZygmbXV0IGJ1ZikudW53cmFwKCk7CiAgICBwcmludGxuISgiaG9zdG5hbWU6IHtidWZ9Iik7Cn0KCmZuIG1haW4oKXsKICAgIHN5c2NhbGxfZXhhbXBsZSgpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">use std::fs::File;
 use std::io::Read;
 
 // std::fs::File::open 底层调用 open(2) 系统调用
@@ -613,7 +620,10 @@ fn syscall_example() {
     f.read_to_string(&amp;mut buf).unwrap();
     println!("hostname: {buf}");
 }
-<span class="boring">}</span></code></pre>
+
+fn main(){
+    syscall_example();
+}</code></pre>
 <hr>
 <h2 id="十rust-操作系统生态"><a class="header" href="#十rust-操作系统生态">十、Rust 操作系统生态</a></h2>
 <div class="table-wrapper">
@@ -732,22 +742,6 @@ fn panic(_info: &amp;PanicInfo) -&gt; ! {
         <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
         <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
         <script>
