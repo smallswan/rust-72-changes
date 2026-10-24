@@ -58,11 +58,11 @@
 **方式一：使用任意 HTTP 服务器（推荐）**
 ```bash
 # 使用 Python 启动本地服务器
-cd book
+cd docs
 python -m http.server 8080
 
 # 或使用 miniserve
-cd book
+cd docs
 miniserve .
 ```
 
