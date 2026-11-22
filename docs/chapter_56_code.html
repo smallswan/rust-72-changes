@@ -86,10 +86,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a5f292c5.js";
+            window.path_to_searchindex_js = "searchindex-99c235c8.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-a6286dd9.js"></script>
+        <script src="toc-5040a75a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -352,9 +352,9 @@ fn process(data: &amp;[i32]) -&gt; Vec&lt;i32&gt; {
 </div>
 <h4 id="rust-的核心优势"><a class="header" href="#rust-的核心优势">Rust 的核心优势</a></h4>
 <p>Rust 通过**所有权系统（Ownership）**在编译期保证内存安全，无需垃圾回收（GC）：</p>
-<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>fn ownership_demo() {
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gb3duZXJzaGlwX2RlbW8oKSB7CiAgICBsZXQgczEgPSBTdHJpbmc6OmZyb20oImhlbGxvIik7CiAgICBsZXQgczIgPSBzMTsgLy8gczEg55qE5omA5pyJ5p2D6L2s56e75YiwIHMy77yMczEg5LiN5YaN5Y+v55SoCiAgICAvLyBwcmludGxuISgie30iLCBzMSk7IC8vIOe8luivkemUmeivr++8gXMxIOW3suiiq+enu+WKqAogICAgcHJpbnRsbiEoInt9IiwgczIpOyAvLyDmraPluLjvvJpzMiDmi6XmnInmiYDmnInmnYMKfQoKZm4gYm9ycm93X2RlbW8oKSB7CiAgICBsZXQgcyA9IFN0cmluZzo6ZnJvbSgiaGVsbG8iKTsKICAgIGxldCByMSA9ICZzOyAgICAgIC8vIOS4jeWPr+WPmOWAn+eUqO+8muWPquivuwogICAgbGV0IHIyID0gJnM7ICAgICAgLy8g5Y+v5Lul5ZCM5pe25pyJ5aSa5Liq5LiN5Y+v5Y+Y5YCf55SoCiAgICBwcmludGxuISgie30sIHt9IiwgcjEsIHIyKTsKICAgIC8vIGxldCByMyA9ICZtdXQgczsgLy8g57yW6K+R6ZSZ6K+v77yB5a2Y5Zyo5LiN5Y+v5Y+Y5YCf55So5pe25LiN6IO95Y+v5Y+Y5YCf55SoCn0KCmZuIG1haW4oKXsKICAgIG93bmVyc2hpcF9kZW1vKCk7CiAgICBib3Jyb3dfZGVtbygpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">fn ownership_demo() {
     let s1 = String::from("hello");
     let s2 = s1; // s1 的所有权转移到 s2，s1 不再可用
     // println!("{}", s1); // 编译错误！s1 已被移动
@@ -368,7 +368,11 @@ fn borrow_demo() {
     println!("{}, {}", r1, r2);
     // let r3 = &amp;mut s; // 编译错误！存在不可变借用时不能可变借用
 }
-<span class="boring">}</span></code></pre>
+
+fn main(){
+    ownership_demo();
+    borrow_demo();
+}</code></pre>
 <h3 id="32-应用级语言"><a class="header" href="#32-应用级语言">3.2 应用级语言</a></h3>
 <div class="table-wrapper">
 <table>

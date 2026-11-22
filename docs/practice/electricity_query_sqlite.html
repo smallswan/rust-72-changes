@@ -1047,7 +1047,8 @@ function drawChart() {
         option = {
             title: {
                 text: room + '  累计应交 & 已交电费',
-                left: 'center',
+                left: 16,
+                top: 6,
                 textStyle: { fontSize: 16, fontWeight: 'bold', color: '#1a6fc4' }
             },
             tooltip: {
@@ -1061,9 +1062,9 @@ function drawChart() {
                     return s;
                 }
             },
-            legend: { data: ['累计应交', '累计已交'], top: 36 },
+            legend: { data: ['累计应交', '累计已交'], top: 34, left: 'center' },
             toolbox: {
-                show: true, right: 20,
+                show: true, right: 16, top: 2,
                 feature: {
                     saveAsImage: { title: '保存图片' },
                     restore: { title: '还原' },
@@ -1071,7 +1072,7 @@ function drawChart() {
                     magicType: { type: ['line', 'bar'], title: { line: '折线图', bar: '柱状图' } }
                 }
             },
-            grid: { top: 80, right: 40, bottom: 80, left: 80 },
+            grid: { top: 76, right: 32, bottom: 88, left: 72 },
             xAxis: {
                 type: 'category', data: dates,
                 axisLabel: { rotate: 45, fontSize: 11 },
@@ -1079,6 +1080,7 @@ function drawChart() {
             },
             yAxis: {
                 type: 'value', name: '金额（元）',
+                nameLocation: 'middle', nameGap: 52, nameRotate: 90,
                 splitLine: { lineStyle: { type: 'dashed' } }
             },
             dataZoom: [
@@ -1111,7 +1113,8 @@ function drawChart() {
         option = {
             title: {
                 text: room + '  每月应交 & 已交电费',
-                left: 'center',
+                left: 16,
+                top: 6,
                 textStyle: { fontSize: 16, fontWeight: 'bold', color: '#1a6fc4' }
             },
             tooltip: {
@@ -1125,9 +1128,9 @@ function drawChart() {
                     return s;
                 }
             },
-            legend: { data: ['应交', '已交'], top: 36 },
+            legend: { data: ['应交', '已交'], top: 34, left: 'center' },
             toolbox: {
-                show: true, right: 20,
+                show: true, right: 16, top: 2,
                 feature: {
                     saveAsImage: { title: '保存图片' },
                     restore: { title: '还原' },
@@ -1135,10 +1138,11 @@ function drawChart() {
                     magicType: { type: ['line', 'bar'], title: { line: '折线图', bar: '柱状图' } }
                 }
             },
-            grid: { top: 80, right: 40, bottom: 80, left: 80 },
+            grid: { top: 76, right: 32, bottom: 88, left: 72 },
             xAxis: { type: 'category', data: mdates, axisLabel: { rotate: 45, fontSize: 11 } },
             yAxis: {
                 type: 'value', name: '金额（元）',
+                nameLocation: 'middle', nameGap: 52, nameRotate: 90,
                 splitLine: { lineStyle: { type: 'dashed' } }
             },
             dataZoom: [

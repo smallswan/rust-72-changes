@@ -86,10 +86,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a5f292c5.js";
+            window.path_to_searchindex_js = "searchindex-99c235c8.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-a6286dd9.js"></script>
+        <script src="toc-5040a75a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -581,9 +581,21 @@ fn detect_anomalies_zscore(data: &amp;[f64], threshold: f64) -&gt; Vec&lt;(usize
 </tbody>
 </table>
 </div>
-<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>/// Min-Max 归一化
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOiuoeeul+Wdh+WAvApmbiBtZWFuKGRhdGE6ICZbZjY0XSkgLT4gZjY0IHsKICAgIGRhdGEuaXRlcigpLnN1bTo6PGY2ND4oKSAvIGRhdGEubGVuKCkgYXMgZjY0Cn0KCi8vLyDorqHnrpfmoIflh4blt64KZm4gc3RkX2RldihkYXRhOiAmW2Y2NF0pIC0+IGY2NCB7CiAgICBsZXQgbSA9IG1lYW4oZGF0YSk7CiAgICBsZXQgdmFyaWFuY2UgPSBkYXRhLml0ZXIoKS5tYXAofHh8ICh4IC0gbSkucG93aSgyKSkuc3VtOjo8ZjY0PigpIC8gZGF0YS5sZW4oKSBhcyBmNjQ7CiAgICB2YXJpYW5jZS5zcXJ0KCkKfQoKLy8vIE1pbi1NYXgg5b2S5LiA5YyWCmZuIG1pbl9tYXhfbm9ybWFsaXplKGRhdGE6ICZbZjY0XSkgLT4gVmVjPGY2ND4gewogICAgbGV0IG1pbiA9IGRhdGEuaXRlcigpLmNsb25lZCgpLmZvbGQoZjY0OjpJTkZJTklUWSwgZjY0OjptaW4pOwogICAgbGV0IG1heCA9IGRhdGEuaXRlcigpLmNsb25lZCgpLmZvbGQoZjY0OjpORUdfSU5GSU5JVFksIGY2NDo6bWF4KTsKICAgIGxldCByYW5nZSA9IG1heCAtIG1pbjsKICAgIGlmIHJhbmdlID09IDAuMCB7CiAgICAgICAgcmV0dXJuIHZlYyFbMC4wOyBkYXRhLmxlbigpXTsKICAgIH0KICAgIGRhdGEuaXRlcigpLm1hcCh8eHwgKHggLSBtaW4pIC8gcmFuZ2UpLmNvbGxlY3QoKQp9CgovLy8gWi1TY29yZSDmoIflh4bljJYKZm4genNjb3JlX3N0YW5kYXJkaXplKGRhdGE6ICZbZjY0XSkgLT4gVmVjPGY2ND4gewogICAgbGV0IG0gPSBtZWFuKGRhdGEpOwogICAgbGV0IHMgPSBzdGRfZGV2KGRhdGEpOwogICAgaWYgcyA9PSAwLjAgewogICAgICAgIHJldHVybiB2ZWMhWzAuMDsgZGF0YS5sZW4oKV07CiAgICB9CiAgICBkYXRhLml0ZXIoKS5tYXAofHh8ICh4IC0gbSkgLyBzKS5jb2xsZWN0KCkKfQoKZm4gbWFpbigpewogICAgdXNlIHN0ZDo6ZjY0Ojpjb25zdHM6OntQSSxFLEZSQUNfUElfMixGUkFDX1BJXzR9OwogICAgbGV0IGRhdGEgPSBbUEksRSxGUkFDX1BJXzIsRlJBQ19QSV80LC0yLjBfZjY0XTsKICAgIHByaW50bG4hKCJ7Oj99IixtaW5fbWF4X25vcm1hbGl6ZSgmZGF0YSkpOwogICAgcHJpbnRsbiEoIns6P30iLHpzY29yZV9zdGFuZGFyZGl6ZSgmZGF0YSkpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/// 计算均值
+fn mean(data: &amp;[f64]) -&gt; f64 {
+    data.iter().sum::&lt;f64&gt;() / data.len() as f64
+}
+
+/// 计算标准差
+fn std_dev(data: &amp;[f64]) -&gt; f64 {
+    let m = mean(data);
+    let variance = data.iter().map(|x| (x - m).powi(2)).sum::&lt;f64&gt;() / data.len() as f64;
+    variance.sqrt()
+}
+
+/// Min-Max 归一化
 fn min_max_normalize(data: &amp;[f64]) -&gt; Vec&lt;f64&gt; {
     let min = data.iter().cloned().fold(f64::INFINITY, f64::min);
     let max = data.iter().cloned().fold(f64::NEG_INFINITY, f64::max);
@@ -603,7 +615,13 @@ fn zscore_standardize(data: &amp;[f64]) -&gt; Vec&lt;f64&gt; {
     }
     data.iter().map(|x| (x - m) / s).collect()
 }
-<span class="boring">}</span></code></pre>
+
+fn main(){
+    use std::f64::consts::{PI,E,FRAC_PI_2,FRAC_PI_4};
+    let data = [PI,E,FRAC_PI_2,FRAC_PI_4,-2.0_f64];
+    println!("{:?}",min_max_normalize(&amp;data));
+    println!("{:?}",zscore_standardize(&amp;data));
+}</code></pre>
 <h3 id="43-特征工程"><a class="header" href="#43-特征工程">4.3 特征工程</a></h3>
 <p>特征工程是数据挖掘中最关键的环节之一，好的特征往往比好的算法更重要。</p>
 <div class="table-wrapper">

@@ -1,0 +1,707 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>附录8 Agent、技能与 MCP - Rust七十二变（Rust 72 Changes）</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });">
+        </script>
+        
+        <!-- Rust Explorer「一键运行」按钮的样式。按钮本身由预处理器 tools/mdbook-rustexplorer.rs 插入。
+             mdBook 0.5 不再链接自定义的 custom.css，所以这里用 <style> 直接内联。 -->
+        <style>
+        .rustexplorer {
+            /* 按钮在代码块上方，靠右对齐，像给代码块配的"运行"角标 */
+            margin: 0 0 0.35em;
+            text-align: right;
+            line-height: 1.4;
+        }
+        
+        .rustexplorer > a {
+            display: inline-block;
+            padding: 0.22em 0.8em;
+            border: 1px solid var(--links);
+            border-radius: 999px;
+            color: var(--links);
+            font-size: 0.8em;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        
+        .rustexplorer > a:hover,
+        .rustexplorer > a:focus-visible {
+            background-color: var(--links);
+            color: var(--bg);
+            opacity: 1;
+        }
+        
+        /* 打印时不需要这个按钮 */
+        @media print {
+            .rustexplorer {
+                display: none;
+            }
+        }
+        </style>
+
+        <meta name="description" content="以Rust编程语言为主，介绍计算机领域知识">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-99c235c8.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-5040a75a.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust七十二变（Rust 72 Changes）</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="附录8-agent技能与-mcp"><a class="header" href="#附录8-agent技能与-mcp">附录8 Agent、技能与 MCP</a></h1>
+<blockquote>
+<p>给我一个撬棍，我能撬动一块石头；给我一个 USB-C 口，我能撬动整个生态。</p>
+<p>Agent 负责「决定做什么」，Skill 负责「知道怎么做」，MCP 负责「连得上、够得着」。三者叠在一起，才是一个能干活的智能体。</p>
+</blockquote>
+<hr>
+<h2 id="一先看一场翻车"><a class="header" href="#一先看一场翻车">一、先看一场「翻车」</a></h2>
+<p>你对 AI 说：<strong>「帮我把 <code>invoice.pdf</code> 里的表格填好，再整理成一页周报发给我。」</strong></p>
+<p>三种 AI，三种下场：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>AI 形态</th><th>会发生什么</th><th>缺的是什么</th></tr>
+</thead>
+<tbody>
+<tr><td>纯聊天模型</td><td>把它臆想出来的表格内容用文字打印给你，文件名、数字全靠猜</td><td>看不见文件，动不了手</td></tr>
+<tr><td>给了工具的大模型</td><td>找到 PDF，但把「填表」理解成「在文件末尾追加一段文字」，格式全乱</td><td>不知道这个领域的正确流程</td></tr>
+<tr><td>配齐三件套的智能体</td><td>调用 PDF 工具读出表单字段，按团队模板逐项填好，生成周报</td><td>——</td></tr>
+</tbody>
+</table>
+</div>
+<p>差别不在模型聪明程度，而在三样东西是否就位。这一附录就讲清它们：</p>
+<ul>
+<li><strong>Agent（智能体）</strong>：那个「一直转下去」的循环——观察、思考、调用工具、再看结果，直到活干完。</li>
+<li><strong>Skill（技能）</strong>：一份「岗位操作手册」，把某个领域的流程和经验打包成文件，用到时才翻开。</li>
+<li><strong>MCP（模型上下文协议）</strong>：一个「标准插座」，让智能体用同一套接口连上任意外部工具和数据源。</li>
+</ul>
+<p>一张图先建立整体印象：</p>
+<pre class="mermaid">flowchart TB
+    U[用户一句话需求] --&gt; A
+
+    subgraph A[Agent 智能体 · 决策循环]
+        L[LLM 思考: 下一步做什么]
+        O[观察工具返回结果]
+        L --&gt; O --&gt; L
+    end
+
+    A --&gt;|"按需加载 操作手册"| S[Skill 技能&lt;br/&gt;SKILL.md + 脚本 + 参考文档]
+    A --&gt;|"标准协议 调用工具"| C[MCP Client]
+
+    C --&gt;|JSON-RPC| M1[MCP Server: 文件系统]
+    C --&gt;|JSON-RPC| M2[MCP Server: 数据库]
+    C --&gt;|JSON-RPC| M3[MCP Server: 第三方 API]
+
+    S -.-&gt;|"手册里写着 该调哪个工具"| A
+</pre>
+
+<p>三者不是一个递进关系，而是<strong>三个正交的维度</strong>：Agent 提供「意愿与循环」，Skill 提供「知识与方法」，MCP 提供「连接与动作」。少任何一个，都会退化成上表里的前两种翻车现场。</p>
+<hr>
+<h2 id="二agent一个停不下来的循环"><a class="header" href="#二agent一个停不下来的循环">二、Agent：一个停不下来的循环</a></h2>
+<h3 id="21-剥掉营销术语后剩下什么"><a class="header" href="#21-剥掉营销术语后剩下什么">2.1 剥掉营销术语后剩下什么</a></h3>
+<p>把 Agent 拆到最小，它只是一个 <code>while</code> 循环：</p>
+<pre><code>把用户目标放进上下文 → 让模型输出「下一步动作」 → 执行动作拿到结果
+→ 把结果塞回上下文 → 再问模型「下一步」 → …… → 模型说「完成了」→ 退出
+</code></pre>
+<p>这里有三个关键点，比任何框架名字都重要：</p>
+<ol>
+<li><strong>上下文窗口就是它的全部记忆</strong>。模型没有跨回合的「大脑」，每一次思考都只看得见窗口里现有的 token。工具结果、技能文档、历史对话，全都要塞进去才「存在」。</li>
+<li><strong>工具是它唯一的手脚</strong>。模型自己只能输出文字；要读写文件、查数据库、发请求，必须调用一个外部函数，并把结果读回来。</li>
+<li><strong>循环由模型自己决定何时结束</strong>。不是你写 <code>for i in 0..10</code>，而是模型每轮判断「目标达成了吗」。判断错了，就会像选项二那样瞎忙。</li>
+</ol>
+<p>值得注意的一个转向：Anthropic 在复盘里把这件事概括成 <strong>「code is all you need」</strong>——Claude Code 表面是编程助手，本质是一个「恰好通过代码干活」的通用智能体。Bash 加文件系统，就是它的手脚（这也正是本仓库 <a href="./SKILL.html"><code>src/SKILL.md</code></a> 里那个 Rust Playground 技能的工作方式）。</p>
+<h3 id="22-用零依赖-rust-写一个玩具-agent"><a class="header" href="#22-用零依赖-rust-写一个玩具-agent">2.2 用零依赖 Rust 写一个「玩具 Agent」</a></h3>
+<p>真正的 Agent 里，「思考」由大模型完成。为了看清循环本身，我们用一个确定性的 <code>decide</code> 函数冒充模型——它根据观察到的数字决定下一步动作。这段代码不依赖任何第三方 crate，可以直接丢进 <a href="https://play.rust-lang.org/">Rust Playground</a> 运行。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#I1tkZXJpdmUoRGVidWcpXQplbnVtIEFjdGlvbiB7CiAgICBDYWxsKFN0cmluZyksIC8vIOiwg+eUqOS4gOS4quW3peWFtwogICAgRG9uZShTdHJpbmcpLCAvLyDku7vliqHlrozmiJAKfQoKLy8g5YaS5YWFIExMTe+8muecn+WunuWunueOsOmHjO+8jOi/memHjOaYr+S4gOasoeaooeWei+aOqOeQhgpmbiBkZWNpZGUoZ29hbDogaTMyLCBvYnNlcnZlZDogaTMyKSAtPiBBY3Rpb24gewogICAgaWYgb2JzZXJ2ZWQgPj0gZ29hbCB7CiAgICAgICAgQWN0aW9uOjpEb25lKGZvcm1hdCEoIui+vuagh++8mntvYnNlcnZlZH0g4omlIHtnb2FsfSIpKQogICAgfSBlbHNlIHsKICAgICAgICBBY3Rpb246OkNhbGwoIisxIi50b19zdHJpbmcoKSkKICAgIH0KfQoKLy8g5YaS5YWF5bel5YW377ya55yf5a6e5a6e546w6YeM77yM6L+Z6YeM5Y+v6IO95piv6K+75YaZ5paH5Lu244CB5p+l5pWw5o2u5bqT44CB5Y+RIEhUVFAg6K+35rGCCmZuIGNhbGxfdG9vbChuYW1lOiAmc3RyLCB2YWx1ZTogaTMyKSAtPiBpMzIgewogICAgbWF0Y2ggbmFtZSB7CiAgICAgICAgIisxIiA9PiB2YWx1ZSArIDEsCiAgICAgICAgXyA9PiB2YWx1ZSwKICAgIH0KfQoKZm4gYWdlbnRfbG9vcChnb2FsOiBpMzIpIC0+IFN0cmluZyB7CiAgICBsZXQgbXV0IG9ic2VydmVkID0gMDsgLy8g5LiK5LiL5paH56qX5Y+j6YeM55qE44CM5b2T5YmN54q25oCB44CNCiAgICBmb3IgdHVybiBpbiAxLi49MTAwIHsKICAgICAgICAvLyAxLiDmgJ3ogIPvvJrmiornm67moIfkuI7op4Llr5/nu5PmnpzkuqTnu5nmqKHlnovvvIzlvpfliLDkuIvkuIDmraXliqjkvZwKICAgICAgICBsZXQgYWN0aW9uID0gZGVjaWRlKGdvYWwsIG9ic2VydmVkKTsKICAgICAgICBwcmludGxuISgi56ysIHt0dXJuOjJ9IOi9riB8IOinguWvnyA9IHtvYnNlcnZlZDoyfSB8IOWKqOS9nCA9IHthY3Rpb246P30iKTsKCiAgICAgICAgLy8gMi4g6KGM5YqoIG9yIOe7k+adnwogICAgICAgIG1hdGNoIGFjdGlvbiB7CiAgICAgICAgICAgIEFjdGlvbjo6Q2FsbCh0b29sKSA9PiB7CiAgICAgICAgICAgICAgICAvLyAzLiDmiorlt6Xlhbfnu5PmnpzloZ7lm57kuIrkuIvmlofvvIzov5vlhaXkuIvkuIDova4KICAgICAgICAgICAgICAgIG9ic2VydmVkID0gY2FsbF90b29sKCZ0b29sLCBvYnNlcnZlZCk7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgQWN0aW9uOjpEb25lKG1zZykgPT4gcmV0dXJuIG1zZywKICAgICAgICB9CiAgICB9CiAgICAi6LaF6L+H5pyA5aSn6L2u5qyh77yM5Yik5a6a5aSx6LSlIi50b19zdHJpbmcoKQp9CgpmbiBtYWluKCkgewogICAgcHJpbnRsbiEoInt9IiwgYWdlbnRfbG9vcCg1KSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">#[derive(Debug)]
+enum Action {
+    Call(String), // 调用一个工具
+    Done(String), // 任务完成
+}
+
+// 冒充 LLM：真实实现里，这里是一次模型推理
+fn decide(goal: i32, observed: i32) -&gt; Action {
+    if observed &gt;= goal {
+        Action::Done(format!("达标：{observed} ≥ {goal}"))
+    } else {
+        Action::Call("+1".to_string())
+    }
+}
+
+// 冒充工具：真实实现里，这里可能是读写文件、查数据库、发 HTTP 请求
+fn call_tool(name: &amp;str, value: i32) -&gt; i32 {
+    match name {
+        "+1" =&gt; value + 1,
+        _ =&gt; value,
+    }
+}
+
+fn agent_loop(goal: i32) -&gt; String {
+    let mut observed = 0; // 上下文窗口里的「当前状态」
+    for turn in 1..=100 {
+        // 1. 思考：把目标与观察结果交给模型，得到下一步动作
+        let action = decide(goal, observed);
+        println!("第 {turn:2} 轮 | 观察 = {observed:2} | 动作 = {action:?}");
+
+        // 2. 行动 or 结束
+        match action {
+            Action::Call(tool) =&gt; {
+                // 3. 把工具结果塞回上下文，进入下一轮
+                observed = call_tool(&amp;tool, observed);
+            }
+            Action::Done(msg) =&gt; return msg,
+        }
+    }
+    "超过最大轮次，判定失败".to_string()
+}
+
+fn main() {
+    println!("{}", agent_loop(5));
+}</code></pre>
+<p>把 <code>decide</code> 换成一次真正的模型调用、把 <code>call_tool</code> 换成 MCP 客户端，这段玩具代码就变成了生产级 Agent 的骨架。<strong>框架会换，这个循环不会。</strong></p>
+<h3 id="23-循环的三个常见故障"><a class="header" href="#23-循环的三个常见故障">2.3 循环的三个常见故障</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>问题</th><th>原因</th><th>修复方式</th></tr>
+</thead>
+<tbody>
+<tr><td>原地打转，反复调同一个工具</td><td>工具结果没写进上下文，模型每轮都以为「还没做」</td><td>把完整结果（含错误）回灌上下文；记录已尝试动作</td></tr>
+<tr><td>越跑越慢、后面开始忘事</td><td>上下文被工具输出撑爆，早期信息被截断</td><td>压缩历史、只保留摘要；把大块数据留在工具侧（见 Skill 的脚本）</td></tr>
+<tr><td>提前宣布完成</td><td>模型对「完成」的判断没有依据</td><td>用可执行校验（测试、断言、文件比对）代替模型自评</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="三skill给-agent-看的岗位手册"><a class="header" href="#三skill给-agent-看的岗位手册">三、Skill：给 Agent 看的「岗位手册」</a></h2>
+<h3 id="31-一个技能就是一个文件夹"><a class="header" href="#31-一个技能就是一个文件夹">3.1 一个技能就是一个文件夹</a></h3>
+<p>Skill 的格式刻意做得极简——一个目录，核心是一个带 YAML 头部的 <code>SKILL.md</code>：</p>
+<pre><code>my-skill/
+├── SKILL.md          # 必需：元数据 + 操作指令
+├── scripts/          # 可选：可执行代码（确定性、不占上下文）
+├── references/       # 可选：详细文档，用到才读
+└── assets/           # 可选：模板、素材
+</code></pre>
+<p><code>SKILL.md</code> 开头是这样一段元数据（这就是本仓库 <a href="./SKILL.html"><code>src/SKILL.md</code></a> 的真实写法）：</p>
+<pre><code class="language-yaml">---
+name: rust-playground
+description: 将Rust代码发送到Rust Playground进行评估并返回执行结果
+---
+</code></pre>
+<p><code>name</code> 和 <code>description</code> 是必填的。<strong><code>description</code> 是整个技能最关键的字段</strong>——Agent 在启动时只能看到它，靠它判断「这个任务要不要翻这本手册」。描述写得太笼统，技能就永远不会被触发；写得足够具体（包含触发场景和关键词），才会被正确选中。</p>
+<h3 id="32-渐进式披露省上下文的核心机关"><a class="header" href="#32-渐进式披露省上下文的核心机关">3.2 渐进式披露：省上下文的核心机关</a></h3>
+<p>如果有几十个技能，把它们的全部内容一开局就塞进上下文，窗口立刻爆掉。Skill 的解法是<strong>渐进式披露（progressive disclosure）</strong>，分三层加载：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>层级</th><th>加载时机</th><th>内容</th><th>大致体积</th></tr>
+</thead>
+<tbody>
+<tr><td>第一层：发现</td><td>启动时，常驻</td><td>每个技能的 <code>name</code> + <code>description</code></td><td>~50 token / 个</td></tr>
+<tr><td>第二层：激活</td><td>任务匹配时</td><td>完整 <code>SKILL.md</code> 正文</td><td>~500 token / 个</td></tr>
+<tr><td>第三层：执行</td><td>真正需要时</td><td><code>references/</code> 文档、<code>scripts/</code> 脚本</td><td>数千 token，或干脆不进上下文</td></tr>
+</tbody>
+</table>
+</div>
+<p>这像一本组织良好的手册：先看目录（元数据），翻到相关章节（SKILL.md），必要时才去查附录（参考文档）。好处是<strong>可挂载的技能数量几乎不受上下文限制</strong>，而且技能之间可以自由组合。</p>
+<p>脚本这一层尤其巧妙：「把列表排序」用模型逐 token 生成，又贵又不可靠；直接跑一段排序代码，又快又确定。训练和文档可以进上下文，可执行代码只需被调用——这也解释了为什么 Skill 适合装「流程 + 脚本」，而不是装一大段背景知识。</p>
+<h3 id="33-技能到底是哪种知识"><a class="header" href="#33-技能到底是哪种知识">3.3 技能到底是哪种「知识」</a></h3>
+<p>有四种容易混淆的东西，官方给过一个很实用的区分：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>形态</th><th>回答的问题</th><th>特性</th><th>类比</th></tr>
+</thead>
+<tbody>
+<tr><td>Prompt</td><td>「这次临时注意什么」</td><td>即时、一次性、被动</td><td>口头交代一句</td></tr>
+<tr><td>Project 知识库</td><td>「关于这个主题该知道什么」</td><td>静态、始终加载</td><td>放在工位上的资料夹</td></tr>
+<tr><td><strong>Skill</strong></td><td>「这类活该怎么干」</td><td>程序性、按需激活、跨会话持久</td><td>员工培训手册</td></tr>
+<tr><td>Subagent</td><td>「谁能独立把这件事做完」</td><td>有自己的上下文和工具权限</td><td>一个专职同事</td></tr>
+</tbody>
+</table>
+</div>
+<p>一句话记忆：<strong>Project 说「这是你需要知道的」，Skill 说「这是做事的步骤」。</strong> 而且它们可以叠加：一个专职 Subagent 完全可以调用 Skill 来获得某个领域的规范做法。</p>
+<p>Agent Skills 最初由 Anthropic 开发，2025 年末作为开放标准发布（规范在 <code>github.com/agentskills/agentskills</code>），随后被 OpenAI Codex、Cursor、GitHub Copilot、Gemini CLI 等一大批产品采纳。<code>SKILL.md</code> 这个格式本身，成了跨产品通用的「技能普通话」。</p>
+<hr>
+<h2 id="四mcpai-应用的-usb-c"><a class="header" href="#四mcpai-应用的-usb-c">四、MCP：AI 应用的 USB-C</a></h2>
+<h3 id="41-它解决的到底是什么问题"><a class="header" href="#41-它解决的到底是什么问题">4.1 它解决的到底是什么问题</a></h3>
+<p>假设有 M 个 AI 应用、N 个外部系统。没有标准协议时，每家都要为每家写适配，工作量是 <strong>M × N</strong>：</p>
+<pre class="mermaid">flowchart LR
+    subgraph B[没有 MCP：M × N 条专线]
+        direction LR
+        A1[App 1] --- D1[数据源 1]
+        A1 --- D2[数据源 2]
+        A2[App 2] --- D1
+        A2 --- D2
+        A3[App 3] --- D1
+        A3 --- D2
+    end
+</pre>
+
+<p>MCP 把这个乘法变成加法 <strong>M + N</strong>：每个应用实现一个客户端，每个系统实现一个服务端，中间用统一协议对话。官方的类比是 <strong>USB-C</strong>——接口统一后，设备随便插。</p>
+<pre class="mermaid">flowchart LR
+    subgraph C[有了 MCP：M + N 个插头]
+        direction LR
+        B1[App 1] --- H((MCP))
+        B2[App 2] --- H
+        B3[App 3] --- H
+        H --- E1[数据源 1]
+        H --- E2[数据源 2]
+    end
+</pre>
+
+<h3 id="42-三方角色hostclientserver"><a class="header" href="#42-三方角色hostclientserver">4.2 三方角色：Host、Client、Server</a></h3>
+<p>MCP 采用客户端—服务端架构，但要区分三个角色，这是最容易搞混的地方：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>角色</th><th>是谁</th><th>职责</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Host（宿主）</strong></td><td>AI 应用本身，如 Claude Code、VS Code</td><td>协调全局，为<strong>每个</strong>服务端创建一个客户端</td></tr>
+<tr><td><strong>Client（客户端）</strong></td><td>Host 内部的组件</td><td>与某个服务端维持一条专用连接，把上下文取回来</td></tr>
+<tr><td><strong>Server（服务端）</strong></td><td>提供上下文的程序</td><td>暴露工具、资源、提示词；可本地可远程</td></tr>
+</tbody>
+</table>
+</div>
+<p>关键点：<strong>Server 指的是「提供上下文的那个程序」，与它运行在哪里无关。</strong> 用 stdio 传输时它跑在本机（本地服务器），用 Streamable HTTP 时它跑在远端（远程服务器）。VS Code 连 Sentry 和本地文件系统，就是两个客户端对两个服务端。</p>
+<h3 id="43-两层协议json-rpc--传输"><a class="header" href="#43-两层协议json-rpc--传输">4.3 两层协议：JSON-RPC + 传输</a></h3>
+<p>MCP 分两层，理解这个分层，就不会被「它到底用 HTTP 还是 stdio」绕晕：</p>
+<ul>
+<li><strong>数据层（内层）</strong>：基于 <strong>JSON-RPC 2.0</strong>，定义消息结构和语义——能力发现、工具/资源/提示词、通知等。这层与传输无关。</li>
+<li><strong>传输层（外层）</strong>：定义消息怎么送。目前两种：
+<ul>
+<li><strong>stdio</strong>：本地进程的标准输入输出，无网络开销，通常一对一；</li>
+<li><strong>Streamable HTTP</strong>：单个 HTTP 端点收 POST，可用 SSE 流式回传，支持远程和一对多，推荐用 OAuth 认证。</li>
+</ul>
+</li>
+</ul>
+<p>数据层给服务端定义了三个核心「原语」（客户端用它来发现和执行）：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>原语</th><th>是什么</th><th>谁控制</th><th>例子</th></tr>
+</thead>
+<tbody>
+<tr><td>Tools 工具</td><td>可被模型调用执行动作的函数</td><td>模型决定调用</td><td>读写文件、查库、发请求</td></tr>
+<tr><td>Resources 资源</td><td>提供上下文数据的数据源</td><td>应用决定加载</td><td>文件内容、数据库记录</td></tr>
+<tr><td>Prompts 提示词</td><td>可复用的交互模板</td><td>用户决定使用</td><td>系统提示、少样本示例</td></tr>
+</tbody>
+</table>
+</div>
+<p>每个原语都有对应的发现方法（<code>tools/list</code>、<code>resources/list</code>……），执行用 <code>tools/call</code>。这个「先列表、后调用」的设计让工具清单可以是动态的。客户端还可以反向提供 <code>elicitation</code>（向用户追问信息）等能力。</p>
+<p>一个最小的 <code>tools/list</code> 请求与响应长这样（就是纯 JSON-RPC 2.0）：</p>
+<pre><code class="language-json">// 请求
+{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}
+
+// 响应
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "tools": [{
+      "name": "add",
+      "description": "两数相加",
+      "inputSchema": {"type":"object",
+        "properties":{"a":{"type":"number"},"b":{"type":"number"}}}
+    }]
+  }
+}
+</code></pre>
+<h3 id="44-版本演进这条协议还在快速长大"><a class="header" href="#44-版本演进这条协议还在快速长大">4.4 版本演进：这条协议还在快速长大</a></h3>
+<p>MCP 由 Anthropic 于 2024 年 11 月开源，主要版本节点：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>版本</th><th>关键变化</th></tr>
+</thead>
+<tbody>
+<tr><td>2024-11-05</td><td>初版，远程传输用 HTTP + SSE</td></tr>
+<tr><td>2025-03-26</td><td>引入 <strong>Streamable HTTP</strong> 取代 HTTP + SSE；加入工具注解等</td></tr>
+<tr><td>2026-07-28</td><td>Streamable HTTP 移除 GET 流端点与协议层会话；引入多轮往返请求（MRTR）；<code>sampling</code> 弃用，建议直接对接模型 API</td></tr>
+</tbody>
+</table>
+</div>
+<p>顺带两句安全现实：服务端<strong>必须校验 <code>Origin</code> 头</strong>以防 DNS 重绑定攻击，本地运行应只绑定 <code>127.0.0.1</code>；MCP 只管「上下文怎么交换」，不管「应用怎么用模型」——把鉴权、权限、审计留给了实现者。这也是为什么「给智能体接一个来路不明的 MCP 服务器」在今天就相当于「给陌生人一把家门钥匙」。</p>
+<h3 id="45-零依赖-rust手搓一个玩具-mcp-服务端"><a class="header" href="#45-零依赖-rust手搓一个玩具-mcp-服务端">4.5 零依赖 Rust：手搓一个玩具 MCP 服务端</a></h3>
+<p>真实的 MCP 开发请用官方 SDK。但为了看懂协议本质，下面只用标准库，手动拼 JSON 字符串，实现一个能回应 <code>initialize</code> 和 <code>tools/list</code> 的 stdio 服务端骨架。Playground 可直接运行——它演示的是<strong>协议形状</strong>，不是生产实现。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6aW86OntzZWxmLCBCdWZSZWFkLCBXcml0ZX07CgovLyDmnIDnroDlrp7njrDvvJrnnJ/pobnnm67or7fnlKggc2VyZGUgKyDlrpjmlrkgU0RL77yM5Yir5omL5ou8IEpTT04KZm4gaGFuZGxlKGxpbmU6ICZzdHIpIC0+IFN0cmluZyB7CiAgICAvLyDlj6rnnIvmlrnms5XlkI3vvIzlv73nlaXlhbbkvZnlrZfmrrXvvIjnjqnlhbfniYjvvIkKICAgIGlmIGxpbmUuY29udGFpbnMoIlwidG9vbHMvbGlzdFwiIikgewogICAgICAgIHIjInsianNvbnJwYyI6IjIuMCIsImlkIjoxLCJyZXN1bHQiOnsidG9vbHMiOlsKICAgICAgICAgICAgeyJuYW1lIjoiYWRkIiwiZGVzY3JpcHRpb24iOiLkuKTmlbDnm7jliqAiLCJpbnB1dFNjaGVtYSI6eyJ0eXBlIjoib2JqZWN0In19CiAgICAgICAgXX19IiMKICAgICAgICAudG9fc3RyaW5nKCkKICAgIH0gZWxzZSBpZiBsaW5lLmNvbnRhaW5zKCJcImluaXRpYWxpemVcIiIpIHsKICAgICAgICByIyJ7Impzb25ycGMiOiIyLjAiLCJpZCI6MSwicmVzdWx0Ijp7CiAgICAgICAgICAgICJwcm90b2NvbFZlcnNpb24iOiIyMDI2LTA3LTI4IiwKICAgICAgICAgICAgImNhcGFiaWxpdGllcyI6eyJ0b29scyI6e319LAogICAgICAgICAgICAic2VydmVySW5mbyI6eyJuYW1lIjoidG95LW1jcCIsInZlcnNpb24iOiIwLjEuMCJ9CiAgICAgICAgfX0iIwogICAgICAgIC50b19zdHJpbmcoKQogICAgfSBlbHNlIHsKICAgICAgICByIyJ7Impzb25ycGMiOiIyLjAiLCJpZCI6MSwiZXJyb3IiOnsiY29kZSI6LTMyNjAxLCJtZXNzYWdlIjoiTWV0aG9kIG5vdCBmb3VuZCJ9fSIjCiAgICAgICAgICAgIC50b19zdHJpbmcoKQogICAgfQp9CgpmbiBtYWluKCkgewogICAgbGV0IHN0ZGluID0gaW86OnN0ZGluKCk7CiAgICBsZXQgc3Rkb3V0ID0gaW86OnN0ZG91dCgpOwogICAgbGV0IG11dCBvdXQgPSBzdGRvdXQubG9jaygpOwoKICAgIC8vIHN0ZGlvIOS8oOi+k++8muS4gOihjOS4gOS4qiBKU09OLVJQQyDmtojmga8KICAgIGZvciBsaW5lIGluIHN0ZGluLmxvY2soKS5saW5lcygpIHsKICAgICAgICBsZXQgcmVxdWVzdCA9IGxpbmUudW53cmFwX29yX2RlZmF1bHQoKTsKICAgICAgICBpZiByZXF1ZXN0LnRyaW0oKS5pc19lbXB0eSgpIHsKICAgICAgICAgICAgY29udGludWU7CiAgICAgICAgfQogICAgICAgIGxldCByZXNwb25zZSA9IGhhbmRsZSgmcmVxdWVzdCk7CiAgICAgICAgd3JpdGVsbiEob3V0LCAie3Jlc3BvbnNlfSIpLmV4cGVjdCgi5YaZ5ZON5bqU5aSx6LSlIik7CiAgICAgICAgb3V0LmZsdXNoKCkuZXhwZWN0KCLliLfmlrDlpLHotKUiKTsKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">use std::io::{self, BufRead, Write};
+
+// 最简实现：真项目请用 serde + 官方 SDK，别手拼 JSON
+fn handle(line: &amp;str) -&gt; String {
+    // 只看方法名，忽略其余字段（玩具版）
+    if line.contains("\"tools/list\"") {
+        r#"{"jsonrpc":"2.0","id":1,"result":{"tools":[
+            {"name":"add","description":"两数相加","inputSchema":{"type":"object"}}
+        ]}}"#
+        .to_string()
+    } else if line.contains("\"initialize\"") {
+        r#"{"jsonrpc":"2.0","id":1,"result":{
+            "protocolVersion":"2026-07-28",
+            "capabilities":{"tools":{}},
+            "serverInfo":{"name":"toy-mcp","version":"0.1.0"}
+        }}"#
+        .to_string()
+    } else {
+        r#"{"jsonrpc":"2.0","id":1,"error":{"code":-32601,"message":"Method not found"}}"#
+            .to_string()
+    }
+}
+
+fn main() {
+    let stdin = io::stdin();
+    let stdout = io::stdout();
+    let mut out = stdout.lock();
+
+    // stdio 传输：一行一个 JSON-RPC 消息
+    for line in stdin.lock().lines() {
+        let request = line.unwrap_or_default();
+        if request.trim().is_empty() {
+            continue;
+        }
+        let response = handle(&amp;request);
+        writeln!(out, "{response}").expect("写响应失败");
+        out.flush().expect("刷新失败");
+    }
+}</code></pre>
+<pre><code class="language-shell"># 手测：把两行 JSON 喂给程序，看它怎么回
+printf '%s\n' \
+  '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
+  '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
+  | cargo run --quiet
+</code></pre>
+<p>Host 启动时正是这样拉起服务端、握手、列工具，然后把工具清单交给模型——接下来就轮到 Agent 的循环上场了。</p>
+<hr>
+<h2 id="五串起来一句话需求是怎么被完成的"><a class="header" href="#五串起来一句话需求是怎么被完成的">五、串起来：一句话需求是怎么被完成的</a></h2>
+<p>回到开头那个「填 PDF + 写周报」。三件套协同的完整时序是：</p>
+<pre class="mermaid">sequenceDiagram
+    participant U as 用户
+    participant A as Agent（LLM + 循环）
+    participant S as Skill（填表手册）
+    participant M as MCP Client→Server
+
+    U-&gt;&gt;A: 填好 invoice.pdf 并整理周报
+    A-&gt;&gt;A: 扫描技能元数据，命中「PDF 表单」技能
+    A-&gt;&gt;S: 读取 SKILL.md（第二层）
+    S--&gt;&gt;A: 流程：读字段→逐项填→校验→套模板
+    Note over A,S: 需要表单细节时，再读 references/forms.md（第三层）
+    A-&gt;&gt;M: tools/list 发现可用工具
+    M--&gt;&gt;A: 工具清单（读 PDF、写文件、发邮件…）
+    loop Agent 循环
+        A-&gt;&gt;M: tools/call 读表单字段
+        M--&gt;&gt;A: 字段列表
+        A-&gt;&gt;A: 按手册填写、校验
+    end
+    A-&gt;&gt;M: tools/call 写出周报文件
+    M--&gt;&gt;A: 写入成功
+    A--&gt;&gt;U: 完成，文件在 ./weekly.md
+</pre>
+
+<p>注意三条线各司其职：</p>
+<ul>
+<li><strong>Skill 那条线</strong>给的是<strong>方法</strong>——「填表要先读字段再套模板」；</li>
+<li><strong>MCP 那条线</strong>给的是<strong>能力</strong>——「这里有读 PDF、写文件这些工具」；</li>
+<li><strong>Agent 那条线</strong>把它们<strong>编排</strong>成循环——「现在该读手册了」「现在该调工具了」「校验通过，收工」。</li>
+</ul>
+<p>这也是三者最容易被误解的地方：<strong>MCP 不替你思考，Skill 不替你动手，Agent 不凭空知道行业知识。</strong> 它们拼起来才是一个完整的「员工」。</p>
+<h3 id="一张对照表收尾"><a class="header" href="#一张对照表收尾">一张对照表收尾</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>维度</th><th>Agent</th><th>Skill</th><th>MCP</th></tr>
+</thead>
+<tbody>
+<tr><td>本质</td><td>决策循环</td><td>操作手册（文件）</td><td>通信协议</td></tr>
+<tr><td>回答什么</td><td>下一步做什么</td><td>这类活怎么干</td><td>怎么连上外部系统</td></tr>
+<tr><td>存活形态</td><td>运行中的进程</td><td>磁盘上的文件夹</td><td>规范 + SDK + 服务端</td></tr>
+<tr><td>上下文开销</td><td>循环本身占窗口</td><td>分层按需加载</td><td>工具清单进窗口</td></tr>
+<tr><td>换掉它，会怎样</td><td>没人做决策</td><td>有工具但乱用</td><td>有脑子但没手脚</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="六踩坑指南"><a class="header" href="#六踩坑指南">六、踩坑指南</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>问题</th><th>原因</th><th>修复方式</th></tr>
+</thead>
+<tbody>
+<tr><td>技能写好了却从不被触发</td><td><code>description</code> 太抽象，Agent 匹配不上</td><td>在描述里写清触发场景、关键词和「何时不该用」</td></tr>
+<tr><td>挂了很多技能后变笨变慢</td><td>第一层元数据过多，或一上来就加载全部正文</td><td>遵循三层披露；正文只放流程，细节移入 <code>references/</code></td></tr>
+<tr><td>接了 MCP 后工具太多，模型选错</td><td>一堆功能相近的工具同时出现在上下文</td><td>收敛工具数量、写清描述；用 <code>tools/list</code> 动态暴露子集</td></tr>
+<tr><td>Agent 反复调用同一个工具</td><td>工具报错信息没回灌，模型以为没执行</td><td>把结构化错误写回上下文，并设置最大轮次与去重</td></tr>
+<tr><td>安全隐患：数据外泄或误操作</td><td>来路不明的 MCP 服务端、权限过大、无人在环</td><td>只接可信服务端；最小权限；敏感动作走 <code>elicitation</code> 让用户确认</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="七结语"><a class="header" href="#七结语">七、结语</a></h2>
+<p>这一附录想留下的，不是三个名词，而是一个拆解问题的框架：</p>
+<blockquote>
+<p>当智能体干不好活时，先别急着换模型。问三句——<strong>它有没有一个会收敛的循环（Agent）？有没有正确的做事方法（Skill）？有没有够得着工具的手脚（MCP）？</strong></p>
+</blockquote>
+<p>工程上绝大多数「AI 不够聪明」的抱怨，拆开来看，都是这三样里某一件没到位。而这三样恰好都不是模型问题——它们是可以被设计、被审查、被版本管理的<strong>工程问题</strong>。</p>
+<p>从这个角度看，2025—2026 年真正的变化，不是模型突然更聪明了，而是我们终于学会了怎么给聪明模型配上<strong>手册</strong>和<strong>插座</strong>。</p>
+<hr>
+<h2 id="八延伸阅读"><a class="header" href="#八延伸阅读">八、延伸阅读</a></h2>
+<ul>
+<li><a href="https://modelcontextprotocol.io/">Model Context Protocol 官方文档</a>——架构、快速上手、安全实践</li>
+<li><a href="https://modelcontextprotocol.io/docs/draft/learn/architecture">MCP 架构总览</a>——Host / Client / Server 与数据层、传输层的权威定义</li>
+<li><a href="https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http">MCP 规范 2026-07-28：Streamable HTTP</a>——最新的传输层行为与向后兼容</li>
+<li><a href="https://skill.md/">Agent Skills 概览</a>——渐进式披露三层机制的开放标准</li>
+<li><a href="https://claude.com/blog/building-agents-with-skills-equipping-agents-for-specialized-work">Anthropic：Building agents with Skills</a>——「为什么我们不再造专用智能体，而是造技能」</li>
+<li><a href="https://claude.com/resources/articles/skills-explained">Skills explained: vs prompts, Projects, MCP, subagents</a>——五者关系的官方对照</li>
+<li><a href="https://github.com/agentskills/agentskills">Agent Skills 规范仓库</a>——<code>SKILL.md</code> 格式的开放标准</li>
+<li>本仓库 <a href="./SKILL.html"><code>src/SKILL.md</code></a>——一个真实的最小技能示例（Rust Playground 评估）</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_80_RustRewrite.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_80_RustRewrite.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid-eefea253.min.js"></script>
+        <script src="mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

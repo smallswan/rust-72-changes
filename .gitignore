@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# 工具缓存
+.zvec-grep/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# 系统/编辑器
+.DS_Store
+Thumbs.db
+*.swp

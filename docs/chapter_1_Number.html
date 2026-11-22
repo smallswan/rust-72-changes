@@ -86,10 +86,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a5f292c5.js";
+            window.path_to_searchindex_js = "searchindex-99c235c8.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-a6286dd9.js"></script>
+        <script src="toc-5040a75a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -309,6 +309,10 @@ println!("0b{:08b}", -2i8);
 println!("0b{:08b}", 17u8);
 println!("0o{:08o}", 17u8);
 println!("0x{:08x}", 17u8);
+
+println!("{}", 1e9_f64);
+println!("f32::EPSILON ≈ {:e}", f32::EPSILON); // 约 1.19e-7
+println!("f64::EPSILON ≈ {:e}", f64::EPSILON); // 约 2.22e-16
 <span class="boring">}</span></code></pre>
 <h2 id="12-进制转换"><a class="header" href="#12-进制转换">1.2 进制转换</a></h2>
 <h3 id="121-进制转换概述"><a class="header" href="#121-进制转换概述">1.2.1 进制转换概述</a></h3>
@@ -457,6 +461,184 @@ fn main() {
     println!("{:032b}", n);
     println!("{:032b}", complement);
 }</code></pre>
+<h3 id="132-实战数字金额转中文大写"><a class="header" href="#132-实战数字金额转中文大写">1.3.2 实战：数字金额转中文大写</a></h3>
+<p>财务系统中经常需要把 <code>12345.67</code> 转成“壹万贰仟叁佰肆拾伍元陆角柒分“。这个问题有两个坑：</p>
+<ol>
+<li><strong>精度坑</strong>：如果用 <code>f64</code> 存金额，<code>0.1 + 0.2 != 0.3</code> 的精度问题会直接毁掉角分计算（见 1.5.2 节）。正确做法是把金额当<strong>字符串</strong>解析，全程用整数运算。</li>
+<li><strong>“零“的坑</strong>：中文大写最难的不是数字映射，而是“零“的插入规则——<code>105000</code> 是“壹拾万<strong>零</strong>伍仟”，<code>12345000</code> 却是“壹仟贰佰叁拾肆万伍仟“，中间没有零。</li>
+</ol>
+<p><strong>转换规则</strong>：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">规则</th><th style="text-align: left">示例</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">每 4 位一组，组单位依次为：无、万、亿、万亿</td><td style="text-align: left"><code>1234567890123456</code> → 4 组</td></tr>
+<tr><td style="text-align: left">组内零连续出现只写一个“零“，末尾零省略</td><td style="text-align: left"><code>1001</code> → 壹仟<strong>零</strong>壹（不写壹仟零佰零壹）</td></tr>
+<tr><td style="text-align: left">组间补零：低位组缺千位、或高位组末位为 0、或中间整组为 0 时补“零“</td><td style="text-align: left"><code>105000</code> → 壹拾万零伍仟</td></tr>
+<tr><td style="text-align: left">角分：分位为 0 补“整“，无元直接写角/分</td><td style="text-align: left"><code>100.50</code> → 壹佰元伍角整；<code>0.05</code> → 伍分</td></tr>
+</tbody>
+</table>
+</div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Y29uc3QgRElHSVRTOiBbJnN0cjsgMTBdID0gWyLpm7YiLCAi5aO5IiwgIui0sCIsICLlj4EiLCAi6IKGIiwgIuS8jSIsICLpmYYiLCAi5p+SIiwgIuaNjCIsICLnjpYiXTsKY29uc3QgU01BTExfVU5JVFM6IFsmc3RyOyA0XSA9IFsi5LufIiwgIuS9sCIsICLmi74iLCAiIl07CmNvbnN0IEdST1VQX1VOSVRTOiBbJnN0cjsgNF0gPSBbIiIsICLkuIciLCAi5Lq/IiwgIuS4h+S6vyJdOwoKLy8vIOWwhiAwLi49OTk5OSDnmoTmlbTmlbDovazmjaLkuLrkuK3mloflpKflhpnvvIjkuI3lkKvnu4TljZXkvY3vvIkKZm4gZm91cl9kaWdpdHMobjogdTMyKSAtPiBTdHJpbmcgewogICAgbGV0IGQgPSBbCiAgICAgICAgKG4gLyAxMDAwKSBhcyB1c2l6ZSwKICAgICAgICAobiAvIDEwMCAlIDEwKSBhcyB1c2l6ZSwKICAgICAgICAobiAvIDEwICUgMTApIGFzIHVzaXplLAogICAgICAgIChuICUgMTApIGFzIHVzaXplLAogICAgXTsKICAgIGxldCBtdXQgcyA9IFN0cmluZzo6bmV3KCk7CiAgICBsZXQgbXV0IHBlbmRpbmdfemVybyA9IGZhbHNlOwogICAgZm9yIGkgaW4gMC4uNCB7CiAgICAgICAgaWYgZFtpXSA9PSAwIHsKICAgICAgICAgICAgcGVuZGluZ196ZXJvID0gdHJ1ZTsgLy8g6K6w5L2PIuasoOS4gOS4qumbtiLvvIzpgYfliLDkuIvkuIDkuKrpnZ7pm7bmlbDlrZflho3ov5gKICAgICAgICB9IGVsc2UgewogICAgICAgICAgICBpZiBwZW5kaW5nX3plcm8gJiYgIXMuaXNfZW1wdHkoKSB7CiAgICAgICAgICAgICAgICBzLnB1c2goJ+mbticpOwogICAgICAgICAgICB9CiAgICAgICAgICAgIHBlbmRpbmdfemVybyA9IGZhbHNlOwogICAgICAgICAgICBzLnB1c2hfc3RyKERJR0lUU1tkW2ldXSk7CiAgICAgICAgICAgIHMucHVzaF9zdHIoU01BTExfVU5JVFNbaV0pOwogICAgICAgIH0KICAgIH0KICAgIHMKfQoKLy8vIOi+k+WFpeaVsOWtl+mHkemineWtl+espuS4su+8iOWmgiAiLTEyMzQ1LjY3Iu+8ie+8jOi/lOWbnuS4reaWh+Wkp+WGmemHkeminQpmbiB0b19jbl9hbW91bnQoaW5wdXQ6ICZzdHIpIC0+IFJlc3VsdDxTdHJpbmcsIFN0cmluZz4gewogICAgbGV0IHMgPSBpbnB1dC50cmltKCk7CiAgICBpZiBzLmlzX2VtcHR5KCkgewogICAgICAgIHJldHVybiBFcnIoIumHkemineS4jeiDveS4uuepuiIudG9fc3RyaW5nKCkpOwogICAgfQogICAgbGV0IChuZWcsIHMpID0gbWF0Y2ggcy5zdHJpcF9wcmVmaXgoJy0nKSB7CiAgICAgICAgU29tZShyZXN0KSA9PiAodHJ1ZSwgcmVzdCksCiAgICAgICAgTm9uZSA9PiAoZmFsc2UsIHMuc3RyaXBfcHJlZml4KCcrJykudW53cmFwX29yKHMpKSwKICAgIH07CiAgICBpZiAhcy5jaGFycygpLmFsbCh8Y3wgYy5pc19hc2NpaV9kaWdpdCgpIHx8IGMgPT0gJy4nKSB7CiAgICAgICAgcmV0dXJuIEVycihmb3JtYXQhKCLpnZ7ms5Xph5Hpop06IHtpbnB1dH0iKSk7CiAgICB9CiAgICBsZXQgKGludF9wYXJ0LCBmcmFjX3BhcnQpID0gcy5zcGxpdF9vbmNlKCcuJykudW53cmFwX29yKChzLCAiIikpOwogICAgaWYgaW50X3BhcnQuaXNfZW1wdHkoKSB7CiAgICAgICAgcmV0dXJuIEVycihmb3JtYXQhKCLpnZ7ms5Xph5Hpop06IHtpbnB1dH0iKSk7CiAgICB9CiAgICBpZiBmcmFjX3BhcnQubGVuKCkgPiAzIHsKICAgICAgICByZXR1cm4gRXJyKCLmnIDlpJrmlK/mjIEgMyDkvY3lsI/mlbAiLnRvX3N0cmluZygpKTsKICAgIH0KICAgIGlmIGludF9wYXJ0LmxlbigpID4gMTYKICAgICAgICB8fCBpbnRfcGFydC5wYXJzZTo6PHU2ND4oKS5tYXAofHZ8IHYgPj0gMTBfMDAwMF8wMDAwXzAwMDBfMDAwMCkudW53cmFwX29yKHRydWUpCiAgICB7CiAgICAgICAgcmV0dXJuIEVycigi6YeR6aKd6LaF5Ye66IyD5Zu077yI5pyA5aSn5pSv5oyB5LiH5Lq/57qn77yJIi50b19zdHJpbmcoKSk7CiAgICB9CgogICAgLy8g5bCP5pWw6YOo5YiG5Zub6IiN5LqU5YWl5YiwIDIg5L2N77yI5YiG77yJ77yM5LuF55So5a2X56ym5Liy5ZKM5pW05pWw77yM5LiN57uP6L+H5rWu54K55pWwCiAgICBsZXQgbXV0IGZlbjogdTY0ID0gbWF0Y2ggZnJhY19wYXJ0LmxlbigpIHsKICAgICAgICAwID0+IDAsCiAgICAgICAgMSA9PiBmcmFjX3BhcnQucGFyc2U6Ojx1NjQ+KCkudW53cmFwKCkgKiAxMCwKICAgICAgICBfID0+IGZyYWNfcGFydFsuLjJdLnBhcnNlOjo8dTY0PigpLnVud3JhcCgpLAogICAgfTsKICAgIGlmIGxldCBTb21lKCZjKSA9IGZyYWNfcGFydC5hc19ieXRlcygpLmdldCgyKSB7CiAgICAgICAgaWYgYyA+PSBiJzUnIHsKICAgICAgICAgICAgZmVuICs9IDE7IC8vIOesrOS4ieS9jeWwj+aVsCDiiaUgNSDliJnov5vkvY0KICAgICAgICB9CiAgICB9CiAgICBsZXQgeXVhbjogdTY0ID0gaW50X3BhcnQucGFyc2U6Ojx1NjQ+KCkudW53cmFwKCkgKyBmZW4gLyAxMDA7IC8vIOi/m+S9jeWPr+iDveWHkea7oSAxMDAg5YiGCiAgICBsZXQgKGppYW8sIGZlbikgPSAoKGZlbiAvIDEwICUgMTApIGFzIHVzaXplLCAoZmVuICUgMTApIGFzIHVzaXplKTsKCiAgICAvLyDmlbTmlbDpg6jliIbmjIkgNCDkvY3kuIDnu4TliJLliIbvvIzkvY7kvY3nu4TlnKjliY0KICAgIGxldCBtdXQgZ3JvdXBzOiBWZWM8dTMyPiA9IFZlYzo6bmV3KCk7CiAgICBsZXQgbXV0IHJlc3QgPSB5dWFuOwogICAgbG9vcCB7CiAgICAgICAgZ3JvdXBzLnB1c2goKHJlc3QgJSAxMDAwMCkgYXMgdTMyKTsKICAgICAgICByZXN0IC89IDEwMDAwOwogICAgICAgIGlmIHJlc3QgPT0gMCB7CiAgICAgICAgICAgIGJyZWFrOwogICAgICAgIH0KICAgIH0KCiAgICBsZXQgbXV0IG91dCA9IFN0cmluZzo6bmV3KCk7CiAgICBpZiBuZWcgJiYgKHl1YW4gPiAwIHx8IGppYW8gPiAwIHx8IGZlbiA+IDApIHsKICAgICAgICBvdXQucHVzaCgn6LSfJyk7CiAgICB9CgogICAgbGV0IG11dCBuZWVkX3plcm8gPSBmYWxzZTsgICAgICAvLyDkuYvliY3lh7rnjrDov4fmlbTnu4TkuLogMAogICAgbGV0IG11dCBwcmV2X2VuZHNfemVybyA9IGZhbHNlOyAvLyDkuIrkuIDnu4TnmoTmnKvkvY3vvIjkuIfkvY3vvInkuLogMAogICAgbGV0IG11dCBoYXNfZ3JvdXAgPSBmYWxzZTsgICAgICAvLyDmmK/lkKblt7LovpPlh7rov4fmlbDlrZfnu4TvvIjkuI7otJ/lj7fml6DlhbPvvIkKICAgIGZvciAocCwgJmcpIGluIGdyb3Vwcy5pdGVyKCkuZW51bWVyYXRlKCkucmV2KCkgewogICAgICAgIGlmIGcgPT0gMCB7CiAgICAgICAgICAgIG5lZWRfemVybyA9IHRydWU7CiAgICAgICAgICAgIGNvbnRpbnVlOwogICAgICAgIH0KICAgICAgICBpZiBoYXNfZ3JvdXAgJiYgKG5lZWRfemVybyB8fCBwcmV2X2VuZHNfemVybyB8fCBnIDwgMTAwMCkgewogICAgICAgICAgICBvdXQucHVzaCgn6Zu2Jyk7CiAgICAgICAgfQogICAgICAgIG5lZWRfemVybyA9IGZhbHNlOwogICAgICAgIGhhc19ncm91cCA9IHRydWU7CiAgICAgICAgb3V0LnB1c2hfc3RyKCZmb3VyX2RpZ2l0cyhnKSk7CiAgICAgICAgb3V0LnB1c2hfc3RyKEdST1VQX1VOSVRTW3BdKTsKICAgICAgICBwcmV2X2VuZHNfemVybyA9IGcgJSAxMCA9PSAwOwogICAgfQoKICAgIC8vIOWFg+OAgeinkuOAgeWIhgogICAgaWYgaGFzX2dyb3VwIHsKICAgICAgICBvdXQucHVzaCgn5YWDJyk7CiAgICB9CiAgICBtYXRjaCAoamlhbywgZmVuKSB7CiAgICAgICAgKDAsIDApID0+IHsKICAgICAgICAgICAgaWYgIWhhc19ncm91cCB7CiAgICAgICAgICAgICAgICBvdXQuY2xlYXIoKTsKICAgICAgICAgICAgICAgIGlmIG5lZyB7CiAgICAgICAgICAgICAgICAgICAgb3V0LnB1c2goJ+i0nycpOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgb3V0LnB1c2hfc3RyKCLpm7blhYPmlbQiKTsKICAgICAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgICAgIG91dC5wdXNoKCfmlbQnKTsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICAoaiwgMCkgPT4gewogICAgICAgICAgICBvdXQucHVzaF9zdHIoRElHSVRTW2pdKTsKICAgICAgICAgICAgb3V0LnB1c2goJ+inkicpOwogICAgICAgICAgICBvdXQucHVzaCgn5pW0Jyk7CiAgICAgICAgfQogICAgICAgICgwLCBmKSA9PiB7CiAgICAgICAgICAgIGlmIGhhc19ncm91cCB7CiAgICAgICAgICAgICAgICBvdXQucHVzaCgn6Zu2Jyk7IC8vIOWjueWFg+mbtui0sOWIhgogICAgICAgICAgICB9CiAgICAgICAgICAgIG91dC5wdXNoX3N0cihESUdJVFNbZl0pOwogICAgICAgICAgICBvdXQucHVzaCgn5YiGJyk7CiAgICAgICAgfQogICAgICAgIChqLCBmKSA9PiB7CiAgICAgICAgICAgIG91dC5wdXNoX3N0cihESUdJVFNbal0pOwogICAgICAgICAgICBvdXQucHVzaCgn6KeSJyk7CiAgICAgICAgICAgIG91dC5wdXNoX3N0cihESUdJVFNbZl0pOwogICAgICAgICAgICBvdXQucHVzaCgn5YiGJyk7CiAgICAgICAgfQogICAgfQogICAgT2sob3V0KQp9CgpmbiBtYWluKCkgewogICAgbGV0IGNhc2VzID0gWwogICAgICAgICIwIiwgIjEiLCAiMTAiLCAiMTEwIiwgIjEyMzQiLCAiMTAwMDAiLCAiMTA1MDAwIiwgIjEwMDA1MDAwIiwKICAgICAgICAiMTAwMDAwMDAxIiwgIjEyMzQ1MDY3ODkiLCAiMTIzNDU2Nzg5MDEyMzQ1NiIsCiAgICAgICAgIjAuNSIsICIwLjA1IiwgIjEuMDIiLCAiMTAwLjUwIiwgIjEyMzQ1LjY3IiwgIjEuMDA1IiwgIjAuOTk5IiwKICAgICAgICAiLTg4Ljg4IiwKICAgIF07CiAgICBmb3IgYyBpbiBjYXNlcyB7CiAgICAgICAgcHJpbnRsbiEoIntjOj4yMH0gPT4ge30iLCB0b19jbl9hbW91bnQoYykudW53cmFwKCkpOwogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">const DIGITS: [&amp;str; 10] = ["零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖"];
+const SMALL_UNITS: [&amp;str; 4] = ["仟", "佰", "拾", ""];
+const GROUP_UNITS: [&amp;str; 4] = ["", "万", "亿", "万亿"];
+
+/// 将 0..=9999 的整数转换为中文大写（不含组单位）
+fn four_digits(n: u32) -&gt; String {
+    let d = [
+        (n / 1000) as usize,
+        (n / 100 % 10) as usize,
+        (n / 10 % 10) as usize,
+        (n % 10) as usize,
+    ];
+    let mut s = String::new();
+    let mut pending_zero = false;
+    for i in 0..4 {
+        if d[i] == 0 {
+            pending_zero = true; // 记住"欠一个零"，遇到下一个非零数字再还
+        } else {
+            if pending_zero &amp;&amp; !s.is_empty() {
+                s.push('零');
+            }
+            pending_zero = false;
+            s.push_str(DIGITS[d[i]]);
+            s.push_str(SMALL_UNITS[i]);
+        }
+    }
+    s
+}
+
+/// 输入数字金额字符串（如 "-12345.67"），返回中文大写金额
+fn to_cn_amount(input: &amp;str) -&gt; Result&lt;String, String&gt; {
+    let s = input.trim();
+    if s.is_empty() {
+        return Err("金额不能为空".to_string());
+    }
+    let (neg, s) = match s.strip_prefix('-') {
+        Some(rest) =&gt; (true, rest),
+        None =&gt; (false, s.strip_prefix('+').unwrap_or(s)),
+    };
+    if !s.chars().all(|c| c.is_ascii_digit() || c == '.') {
+        return Err(format!("非法金额: {input}"));
+    }
+    let (int_part, frac_part) = s.split_once('.').unwrap_or((s, ""));
+    if int_part.is_empty() {
+        return Err(format!("非法金额: {input}"));
+    }
+    if frac_part.len() &gt; 3 {
+        return Err("最多支持 3 位小数".to_string());
+    }
+    if int_part.len() &gt; 16
+        || int_part.parse::&lt;u64&gt;().map(|v| v &gt;= 10_0000_0000_0000_0000).unwrap_or(true)
+    {
+        return Err("金额超出范围（最大支持万亿级）".to_string());
+    }
+
+    // 小数部分四舍五入到 2 位（分），仅用字符串和整数，不经过浮点数
+    let mut fen: u64 = match frac_part.len() {
+        0 =&gt; 0,
+        1 =&gt; frac_part.parse::&lt;u64&gt;().unwrap() * 10,
+        _ =&gt; frac_part[..2].parse::&lt;u64&gt;().unwrap(),
+    };
+    if let Some(&amp;c) = frac_part.as_bytes().get(2) {
+        if c &gt;= b'5' {
+            fen += 1; // 第三位小数 ≥ 5 则进位
+        }
+    }
+    let yuan: u64 = int_part.parse::&lt;u64&gt;().unwrap() + fen / 100; // 进位可能凑满 100 分
+    let (jiao, fen) = ((fen / 10 % 10) as usize, (fen % 10) as usize);
+
+    // 整数部分按 4 位一组划分，低位组在前
+    let mut groups: Vec&lt;u32&gt; = Vec::new();
+    let mut rest = yuan;
+    loop {
+        groups.push((rest % 10000) as u32);
+        rest /= 10000;
+        if rest == 0 {
+            break;
+        }
+    }
+
+    let mut out = String::new();
+    if neg &amp;&amp; (yuan &gt; 0 || jiao &gt; 0 || fen &gt; 0) {
+        out.push('负');
+    }
+
+    let mut need_zero = false;      // 之前出现过整组为 0
+    let mut prev_ends_zero = false; // 上一组的末位（万位）为 0
+    let mut has_group = false;      // 是否已输出过数字组（与负号无关）
+    for (p, &amp;g) in groups.iter().enumerate().rev() {
+        if g == 0 {
+            need_zero = true;
+            continue;
+        }
+        if has_group &amp;&amp; (need_zero || prev_ends_zero || g &lt; 1000) {
+            out.push('零');
+        }
+        need_zero = false;
+        has_group = true;
+        out.push_str(&amp;four_digits(g));
+        out.push_str(GROUP_UNITS[p]);
+        prev_ends_zero = g % 10 == 0;
+    }
+
+    // 元、角、分
+    if has_group {
+        out.push('元');
+    }
+    match (jiao, fen) {
+        (0, 0) =&gt; {
+            if !has_group {
+                out.clear();
+                if neg {
+                    out.push('负');
+                }
+                out.push_str("零元整");
+            } else {
+                out.push('整');
+            }
+        }
+        (j, 0) =&gt; {
+            out.push_str(DIGITS[j]);
+            out.push('角');
+            out.push('整');
+        }
+        (0, f) =&gt; {
+            if has_group {
+                out.push('零'); // 壹元零贰分
+            }
+            out.push_str(DIGITS[f]);
+            out.push('分');
+        }
+        (j, f) =&gt; {
+            out.push_str(DIGITS[j]);
+            out.push('角');
+            out.push_str(DIGITS[f]);
+            out.push('分');
+        }
+    }
+    Ok(out)
+}
+
+fn main() {
+    let cases = [
+        "0", "1", "10", "110", "1234", "10000", "105000", "10005000",
+        "100000001", "1234506789", "1234567890123456",
+        "0.5", "0.05", "1.02", "100.50", "12345.67", "1.005", "0.999",
+        "-88.88",
+    ];
+    for c in cases {
+        println!("{c:&gt;20} =&gt; {}", to_cn_amount(c).unwrap());
+    }
+}</code></pre>
+<p>注意 <code>0.999</code> 的输出是“壹元整“：第三位小数 <code>9 ≥ 5</code>，角分进位成 100 分，凑满 1 元——这正是银行家们要求“四舍五入到分“的语义。</p>
+<blockquote>
+<p><strong>为什么不用 <code>f64</code>？</strong> 如果 <code>let amount: f64 = 12345.67;</code>，它在二进制里实际存的是 <code>12345.66999999999...</code>，取小数部分乘 100 再取整，分位可能变成 66。字符串解析 + 整数运算是金额类计算的通用范式。</p>
+</blockquote>
 <h2 id="14-大数运算"><a class="header" href="#14-大数运算">1.4 大数运算</a></h2>
 <h3 id="141-大整型概述"><a class="header" href="#141-大整型概述">1.4.1 大整型概述</a></h3>
 <p>数值多大才能称得上天文数字呢？天文数字又有何用呢？在现代密码学、科学计算和数论研究中，大数运算是不可或缺的。Rust 的标准整数类型有固定的位数限制，对于超出范围的计算，需要使用专门的大数库。</p>
@@ -529,7 +711,7 @@ fn main(){
 </table>
 </div>
 <h3 id="152-浮点数的精度问题"><a class="header" href="#152-浮点数的精度问题">1.5.2 浮点数的精度问题</a></h3>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOm7mOiupOaYryBmNjQKICAgIGxldCBhOiBmNjQgPSAwLjE7CiAgICBsZXQgYjogZjY0ID0gMC4yOwoKICAgIC8vIOS9v+eUqCBmMzIg57K+5bqm5pu05L2OCiAgICBsZXQgYzogZjMyID0gMC4xOwogICAgbGV0IGQ6IGYzMiA9IDAuMjsKCiAgICBwcmludGxuISgiZjY0OiB7fSIsIGEgKyBiKTsgIC8vIDAuMzAwMDAwMDAwMDAwMDAwMDQKICAgIHByaW50bG4hKCJmMzI6IHt9IiwgYyArIGQpOyAgLy8gMC4zCgogICAgLy8g5q+U6L6D5rWu54K55pWw77yI5LiN5o6o6I2Q55u05o6l5L2/55SoID0977yJCiAgICBsZXQgeDogZjY0ID0gMC4xICsgMC4yOwogICAgbGV0IHk6IGY2NCA9IDAuMzsKICAgIHByaW50bG4hKCLnm7TmjqXmr5TovoM6IHt9IiwgeCA9PSB5KTsgIC8vIGZhbHNlCgogICAgLy8g5L2/55So5a655beu5q+U6L6DCiAgICBsZXQgZXBzID0gMWUtMTA7CiAgICBwcmludGxuISgi5a655beu5q+U6L6DOiB7fSIsICh4IC0geSkuYWJzKCkgPCBlcHMpOyAgLy8gdHJ1ZQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOm7mOiupOaYryBmNjQKICAgIGxldCBhOiBmNjQgPSAwLjE7CiAgICBsZXQgYjogZjY0ID0gMC4yOwoKICAgIC8vIOS9v+eUqCBmMzIg57K+5bqm5pu05L2OCiAgICBsZXQgYzogZjMyID0gMC4xOwogICAgbGV0IGQ6IGYzMiA9IDAuMjsKCiAgICBwcmludGxuISgiZjY0IOeahCAwLjEgPSB7Oi4yMH0iLCBhKTsKICAgIHByaW50bG4hKCJmNjQg55qEIDAuMiA9IHs6LjIwfSIsIGIpOwogICAgcHJpbnRsbiEoImY2NDoge30iLCBhICsgYik7ICAvLyAwLjMwMDAwMDAwMDAwMDAwMDA0CiAgICBwcmludGxuISgiZjY0OiB7fSIsIGEgKiBiKTsKICAgIHByaW50bG4hKCJmNjQ6IHt9IiwgMTAuNTQgKyAwLjM0KTsKICAgIHByaW50bG4hKCJmMzI6IHt9IiwgYyArIGQpOyAgLy8gMC4zCiAgICBwcmludGxuISgiZjY0OiB7fSIsIDM2MC4wMCAvIDYxLjApOwoKCiAgICAvLyDmr5TovoPmta7ngrnmlbDvvIjkuI3mjqjojZDnm7TmjqXkvb/nlKggPT3vvIkKICAgIGxldCB4OiBmNjQgPSAwLjEgKyAwLjI7CiAgICBsZXQgeTogZjY0ID0gMC4zOwogICAgcHJpbnRsbiEoIuebtOaOpeavlOi+gzoge30iLCB4ID09IHkpOyAgLy8gZmFsc2UKCiAgICAvLyDkvb/nlKjlrrnlt67mr5TovoMKICAgIGxldCBlcHMgPSAxZS0xMDsKICAgIHByaW50bG4hKCLlrrnlt67mr5TovoM6IHt9IiwgKHggLSB5KS5hYnMoKSA8IGVwcyk7ICAvLyB0cnVlCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 默认是 f64
@@ -540,8 +722,14 @@ fn main(){
     let c: f32 = 0.1;
     let d: f32 = 0.2;
 
+    println!("f64 的 0.1 = {:.20}", a);
+    println!("f64 的 0.2 = {:.20}", b);
     println!("f64: {}", a + b);  // 0.30000000000000004
+    println!("f64: {}", a * b);
+    println!("f64: {}", 10.54 + 0.34);
     println!("f32: {}", c + d);  // 0.3
+    println!("f64: {}", 360.00 / 61.0);
+
 
     // 比较浮点数（不推荐直接使用 ==）
     let x: f64 = 0.1 + 0.2;
@@ -563,6 +751,19 @@ fn main(){
 <li>方案一：<code>rust_decimal</code> — 高性能金融计算首选</li>
 <li>方案二：<code>bigdecimal</code> — 任意精度的“瑞士军刀”</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcnVzdF9kZWNpbWFsID0ge3ZlcnNpb249IjEuMzkiLGZlYXR1cmVzPVsibWFjcm9zIl19CiovCnVzZSBydXN0X2RlY2ltYWw6OnByZWx1ZGU6Oio7CmZuIG1haW4oKSB7CiAgICBwcmludGxuISgicnVzdF9kZWNpbWFsOiB7fSIsIGRlYyEoMC4xKSArIGRlYyEoMC4yKSk7CiAgICBwcmludGxuISgicnVzdF9kZWNpbWFsOiB7fSIsIGRlYyEoMC4xKSAqIGRlYyEoMC45KSk7CiAgICBwcmludGxuISgicnVzdF9kZWNpbWFsOiB7fSIsIGRlYyEoOTkpICogZGVjISgwLjEzKSk7CiAgICBwcmludGxuISgicnVzdF9kZWNpbWFsOiB7fSIsIGRlYyEoMTAuNTQpICsgZGVjISgwLjM0KSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rust_decimal = {version="1.39",features=["macros"]}
+*/
+use rust_decimal::prelude::*;
+fn main() {
+    println!("rust_decimal: {}", dec!(0.1) + dec!(0.2));
+    println!("rust_decimal: {}", dec!(0.1) * dec!(0.9));
+    println!("rust_decimal: {}", dec!(99) * dec!(0.13));
+    println!("rust_decimal: {}", dec!(10.54) + dec!(0.34));
+}</code></pre>
 <h2 id="16-特殊数"><a class="header" href="#16-特殊数">1.6 特殊数</a></h2>
 <h3 id="161-数的分类概述"><a class="header" href="#161-数的分类概述">1.6.1 数的分类概述</a></h3>
 <p>数可以按照多种方式进行分类：整数（奇数、偶数）、浮点数、复数、质数、合数、完美数等。本节介绍两种有趣的特殊数——勾股数和的士数。</p>
@@ -637,6 +838,7 @@ $$7^2 + 24^2 = 25^2$$</p>
 <tr><td style="text-align: left">反码</td><td style="text-align: left">负数逐位取反，存在正负零问题</td></tr>
 <tr><td style="text-align: left">补码</td><td style="text-align: left">负数反码加 1，计算机中统一使用，无正负零</td></tr>
 <tr><td style="text-align: left">进制转换</td><td style="text-align: left">$N = \sum d_i \times b^i$，Excel 列名为特殊 26 进制</td></tr>
+<tr><td style="text-align: left">金额转中文大写</td><td style="text-align: left">字符串解析避开浮点精度坑，按 4 位分组 + “零“补位规则</td></tr>
 <tr><td style="text-align: left">阶乘末尾零</td><td style="text-align: left">$Z(n!) = \sum \lfloor n/5^k \rfloor$</td></tr>
 <tr><td style="text-align: left">IEEE 754</td><td style="text-align: left">$(-1)^{sign} \times (1 + mantissa) \times 2^{exponent - bias}$</td></tr>
 <tr><td style="text-align: left">勾股数</td><td style="text-align: left">$a^2 + b^2 = c^2$，欧几里得公式可生成</td></tr>

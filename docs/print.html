@@ -87,10 +87,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a5f292c5.js";
+            window.path_to_searchindex_js = "searchindex-99c235c8.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-a6286dd9.js"></script>
+        <script src="toc-5040a75a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -683,6 +683,10 @@ println!("0b{:08b}", -2i8);
 println!("0b{:08b}", 17u8);
 println!("0o{:08o}", 17u8);
 println!("0x{:08x}", 17u8);
+
+println!("{}", 1e9_f64);
+println!("f32::EPSILON ≈ {:e}", f32::EPSILON); // 约 1.19e-7
+println!("f64::EPSILON ≈ {:e}", f64::EPSILON); // 约 2.22e-16
 <span class="boring">}</span></code></pre>
 <h2 id="12-进制转换"><a class="header" href="#12-进制转换">1.2 进制转换</a></h2>
 <h3 id="121-进制转换概述"><a class="header" href="#121-进制转换概述">1.2.1 进制转换概述</a></h3>
@@ -831,6 +835,184 @@ fn main() {
     println!("{:032b}", n);
     println!("{:032b}", complement);
 }</code></pre>
+<h3 id="132-实战数字金额转中文大写"><a class="header" href="#132-实战数字金额转中文大写">1.3.2 实战：数字金额转中文大写</a></h3>
+<p>财务系统中经常需要把 <code>12345.67</code> 转成“壹万贰仟叁佰肆拾伍元陆角柒分“。这个问题有两个坑：</p>
+<ol>
+<li><strong>精度坑</strong>：如果用 <code>f64</code> 存金额，<code>0.1 + 0.2 != 0.3</code> 的精度问题会直接毁掉角分计算（见 1.5.2 节）。正确做法是把金额当<strong>字符串</strong>解析，全程用整数运算。</li>
+<li><strong>“零“的坑</strong>：中文大写最难的不是数字映射，而是“零“的插入规则——<code>105000</code> 是“壹拾万<strong>零</strong>伍仟”，<code>12345000</code> 却是“壹仟贰佰叁拾肆万伍仟“，中间没有零。</li>
+</ol>
+<p><strong>转换规则</strong>：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">规则</th><th style="text-align: left">示例</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">每 4 位一组，组单位依次为：无、万、亿、万亿</td><td style="text-align: left"><code>1234567890123456</code> → 4 组</td></tr>
+<tr><td style="text-align: left">组内零连续出现只写一个“零“，末尾零省略</td><td style="text-align: left"><code>1001</code> → 壹仟<strong>零</strong>壹（不写壹仟零佰零壹）</td></tr>
+<tr><td style="text-align: left">组间补零：低位组缺千位、或高位组末位为 0、或中间整组为 0 时补“零“</td><td style="text-align: left"><code>105000</code> → 壹拾万零伍仟</td></tr>
+<tr><td style="text-align: left">角分：分位为 0 补“整“，无元直接写角/分</td><td style="text-align: left"><code>100.50</code> → 壹佰元伍角整；<code>0.05</code> → 伍分</td></tr>
+</tbody>
+</table>
+</div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Y29uc3QgRElHSVRTOiBbJnN0cjsgMTBdID0gWyLpm7YiLCAi5aO5IiwgIui0sCIsICLlj4EiLCAi6IKGIiwgIuS8jSIsICLpmYYiLCAi5p+SIiwgIuaNjCIsICLnjpYiXTsKY29uc3QgU01BTExfVU5JVFM6IFsmc3RyOyA0XSA9IFsi5LufIiwgIuS9sCIsICLmi74iLCAiIl07CmNvbnN0IEdST1VQX1VOSVRTOiBbJnN0cjsgNF0gPSBbIiIsICLkuIciLCAi5Lq/IiwgIuS4h+S6vyJdOwoKLy8vIOWwhiAwLi49OTk5OSDnmoTmlbTmlbDovazmjaLkuLrkuK3mloflpKflhpnvvIjkuI3lkKvnu4TljZXkvY3vvIkKZm4gZm91cl9kaWdpdHMobjogdTMyKSAtPiBTdHJpbmcgewogICAgbGV0IGQgPSBbCiAgICAgICAgKG4gLyAxMDAwKSBhcyB1c2l6ZSwKICAgICAgICAobiAvIDEwMCAlIDEwKSBhcyB1c2l6ZSwKICAgICAgICAobiAvIDEwICUgMTApIGFzIHVzaXplLAogICAgICAgIChuICUgMTApIGFzIHVzaXplLAogICAgXTsKICAgIGxldCBtdXQgcyA9IFN0cmluZzo6bmV3KCk7CiAgICBsZXQgbXV0IHBlbmRpbmdfemVybyA9IGZhbHNlOwogICAgZm9yIGkgaW4gMC4uNCB7CiAgICAgICAgaWYgZFtpXSA9PSAwIHsKICAgICAgICAgICAgcGVuZGluZ196ZXJvID0gdHJ1ZTsgLy8g6K6w5L2PIuasoOS4gOS4qumbtiLvvIzpgYfliLDkuIvkuIDkuKrpnZ7pm7bmlbDlrZflho3ov5gKICAgICAgICB9IGVsc2UgewogICAgICAgICAgICBpZiBwZW5kaW5nX3plcm8gJiYgIXMuaXNfZW1wdHkoKSB7CiAgICAgICAgICAgICAgICBzLnB1c2goJ+mbticpOwogICAgICAgICAgICB9CiAgICAgICAgICAgIHBlbmRpbmdfemVybyA9IGZhbHNlOwogICAgICAgICAgICBzLnB1c2hfc3RyKERJR0lUU1tkW2ldXSk7CiAgICAgICAgICAgIHMucHVzaF9zdHIoU01BTExfVU5JVFNbaV0pOwogICAgICAgIH0KICAgIH0KICAgIHMKfQoKLy8vIOi+k+WFpeaVsOWtl+mHkemineWtl+espuS4su+8iOWmgiAiLTEyMzQ1LjY3Iu+8ie+8jOi/lOWbnuS4reaWh+Wkp+WGmemHkeminQpmbiB0b19jbl9hbW91bnQoaW5wdXQ6ICZzdHIpIC0+IFJlc3VsdDxTdHJpbmcsIFN0cmluZz4gewogICAgbGV0IHMgPSBpbnB1dC50cmltKCk7CiAgICBpZiBzLmlzX2VtcHR5KCkgewogICAgICAgIHJldHVybiBFcnIoIumHkemineS4jeiDveS4uuepuiIudG9fc3RyaW5nKCkpOwogICAgfQogICAgbGV0IChuZWcsIHMpID0gbWF0Y2ggcy5zdHJpcF9wcmVmaXgoJy0nKSB7CiAgICAgICAgU29tZShyZXN0KSA9PiAodHJ1ZSwgcmVzdCksCiAgICAgICAgTm9uZSA9PiAoZmFsc2UsIHMuc3RyaXBfcHJlZml4KCcrJykudW53cmFwX29yKHMpKSwKICAgIH07CiAgICBpZiAhcy5jaGFycygpLmFsbCh8Y3wgYy5pc19hc2NpaV9kaWdpdCgpIHx8IGMgPT0gJy4nKSB7CiAgICAgICAgcmV0dXJuIEVycihmb3JtYXQhKCLpnZ7ms5Xph5Hpop06IHtpbnB1dH0iKSk7CiAgICB9CiAgICBsZXQgKGludF9wYXJ0LCBmcmFjX3BhcnQpID0gcy5zcGxpdF9vbmNlKCcuJykudW53cmFwX29yKChzLCAiIikpOwogICAgaWYgaW50X3BhcnQuaXNfZW1wdHkoKSB7CiAgICAgICAgcmV0dXJuIEVycihmb3JtYXQhKCLpnZ7ms5Xph5Hpop06IHtpbnB1dH0iKSk7CiAgICB9CiAgICBpZiBmcmFjX3BhcnQubGVuKCkgPiAzIHsKICAgICAgICByZXR1cm4gRXJyKCLmnIDlpJrmlK/mjIEgMyDkvY3lsI/mlbAiLnRvX3N0cmluZygpKTsKICAgIH0KICAgIGlmIGludF9wYXJ0LmxlbigpID4gMTYKICAgICAgICB8fCBpbnRfcGFydC5wYXJzZTo6PHU2ND4oKS5tYXAofHZ8IHYgPj0gMTBfMDAwMF8wMDAwXzAwMDBfMDAwMCkudW53cmFwX29yKHRydWUpCiAgICB7CiAgICAgICAgcmV0dXJuIEVycigi6YeR6aKd6LaF5Ye66IyD5Zu077yI5pyA5aSn5pSv5oyB5LiH5Lq/57qn77yJIi50b19zdHJpbmcoKSk7CiAgICB9CgogICAgLy8g5bCP5pWw6YOo5YiG5Zub6IiN5LqU5YWl5YiwIDIg5L2N77yI5YiG77yJ77yM5LuF55So5a2X56ym5Liy5ZKM5pW05pWw77yM5LiN57uP6L+H5rWu54K55pWwCiAgICBsZXQgbXV0IGZlbjogdTY0ID0gbWF0Y2ggZnJhY19wYXJ0LmxlbigpIHsKICAgICAgICAwID0+IDAsCiAgICAgICAgMSA9PiBmcmFjX3BhcnQucGFyc2U6Ojx1NjQ+KCkudW53cmFwKCkgKiAxMCwKICAgICAgICBfID0+IGZyYWNfcGFydFsuLjJdLnBhcnNlOjo8dTY0PigpLnVud3JhcCgpLAogICAgfTsKICAgIGlmIGxldCBTb21lKCZjKSA9IGZyYWNfcGFydC5hc19ieXRlcygpLmdldCgyKSB7CiAgICAgICAgaWYgYyA+PSBiJzUnIHsKICAgICAgICAgICAgZmVuICs9IDE7IC8vIOesrOS4ieS9jeWwj+aVsCDiiaUgNSDliJnov5vkvY0KICAgICAgICB9CiAgICB9CiAgICBsZXQgeXVhbjogdTY0ID0gaW50X3BhcnQucGFyc2U6Ojx1NjQ+KCkudW53cmFwKCkgKyBmZW4gLyAxMDA7IC8vIOi/m+S9jeWPr+iDveWHkea7oSAxMDAg5YiGCiAgICBsZXQgKGppYW8sIGZlbikgPSAoKGZlbiAvIDEwICUgMTApIGFzIHVzaXplLCAoZmVuICUgMTApIGFzIHVzaXplKTsKCiAgICAvLyDmlbTmlbDpg6jliIbmjIkgNCDkvY3kuIDnu4TliJLliIbvvIzkvY7kvY3nu4TlnKjliY0KICAgIGxldCBtdXQgZ3JvdXBzOiBWZWM8dTMyPiA9IFZlYzo6bmV3KCk7CiAgICBsZXQgbXV0IHJlc3QgPSB5dWFuOwogICAgbG9vcCB7CiAgICAgICAgZ3JvdXBzLnB1c2goKHJlc3QgJSAxMDAwMCkgYXMgdTMyKTsKICAgICAgICByZXN0IC89IDEwMDAwOwogICAgICAgIGlmIHJlc3QgPT0gMCB7CiAgICAgICAgICAgIGJyZWFrOwogICAgICAgIH0KICAgIH0KCiAgICBsZXQgbXV0IG91dCA9IFN0cmluZzo6bmV3KCk7CiAgICBpZiBuZWcgJiYgKHl1YW4gPiAwIHx8IGppYW8gPiAwIHx8IGZlbiA+IDApIHsKICAgICAgICBvdXQucHVzaCgn6LSfJyk7CiAgICB9CgogICAgbGV0IG11dCBuZWVkX3plcm8gPSBmYWxzZTsgICAgICAvLyDkuYvliY3lh7rnjrDov4fmlbTnu4TkuLogMAogICAgbGV0IG11dCBwcmV2X2VuZHNfemVybyA9IGZhbHNlOyAvLyDkuIrkuIDnu4TnmoTmnKvkvY3vvIjkuIfkvY3vvInkuLogMAogICAgbGV0IG11dCBoYXNfZ3JvdXAgPSBmYWxzZTsgICAgICAvLyDmmK/lkKblt7LovpPlh7rov4fmlbDlrZfnu4TvvIjkuI7otJ/lj7fml6DlhbPvvIkKICAgIGZvciAocCwgJmcpIGluIGdyb3Vwcy5pdGVyKCkuZW51bWVyYXRlKCkucmV2KCkgewogICAgICAgIGlmIGcgPT0gMCB7CiAgICAgICAgICAgIG5lZWRfemVybyA9IHRydWU7CiAgICAgICAgICAgIGNvbnRpbnVlOwogICAgICAgIH0KICAgICAgICBpZiBoYXNfZ3JvdXAgJiYgKG5lZWRfemVybyB8fCBwcmV2X2VuZHNfemVybyB8fCBnIDwgMTAwMCkgewogICAgICAgICAgICBvdXQucHVzaCgn6Zu2Jyk7CiAgICAgICAgfQogICAgICAgIG5lZWRfemVybyA9IGZhbHNlOwogICAgICAgIGhhc19ncm91cCA9IHRydWU7CiAgICAgICAgb3V0LnB1c2hfc3RyKCZmb3VyX2RpZ2l0cyhnKSk7CiAgICAgICAgb3V0LnB1c2hfc3RyKEdST1VQX1VOSVRTW3BdKTsKICAgICAgICBwcmV2X2VuZHNfemVybyA9IGcgJSAxMCA9PSAwOwogICAgfQoKICAgIC8vIOWFg+OAgeinkuOAgeWIhgogICAgaWYgaGFzX2dyb3VwIHsKICAgICAgICBvdXQucHVzaCgn5YWDJyk7CiAgICB9CiAgICBtYXRjaCAoamlhbywgZmVuKSB7CiAgICAgICAgKDAsIDApID0+IHsKICAgICAgICAgICAgaWYgIWhhc19ncm91cCB7CiAgICAgICAgICAgICAgICBvdXQuY2xlYXIoKTsKICAgICAgICAgICAgICAgIGlmIG5lZyB7CiAgICAgICAgICAgICAgICAgICAgb3V0LnB1c2goJ+i0nycpOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgb3V0LnB1c2hfc3RyKCLpm7blhYPmlbQiKTsKICAgICAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgICAgIG91dC5wdXNoKCfmlbQnKTsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICAoaiwgMCkgPT4gewogICAgICAgICAgICBvdXQucHVzaF9zdHIoRElHSVRTW2pdKTsKICAgICAgICAgICAgb3V0LnB1c2goJ+inkicpOwogICAgICAgICAgICBvdXQucHVzaCgn5pW0Jyk7CiAgICAgICAgfQogICAgICAgICgwLCBmKSA9PiB7CiAgICAgICAgICAgIGlmIGhhc19ncm91cCB7CiAgICAgICAgICAgICAgICBvdXQucHVzaCgn6Zu2Jyk7IC8vIOWjueWFg+mbtui0sOWIhgogICAgICAgICAgICB9CiAgICAgICAgICAgIG91dC5wdXNoX3N0cihESUdJVFNbZl0pOwogICAgICAgICAgICBvdXQucHVzaCgn5YiGJyk7CiAgICAgICAgfQogICAgICAgIChqLCBmKSA9PiB7CiAgICAgICAgICAgIG91dC5wdXNoX3N0cihESUdJVFNbal0pOwogICAgICAgICAgICBvdXQucHVzaCgn6KeSJyk7CiAgICAgICAgICAgIG91dC5wdXNoX3N0cihESUdJVFNbZl0pOwogICAgICAgICAgICBvdXQucHVzaCgn5YiGJyk7CiAgICAgICAgfQogICAgfQogICAgT2sob3V0KQp9CgpmbiBtYWluKCkgewogICAgbGV0IGNhc2VzID0gWwogICAgICAgICIwIiwgIjEiLCAiMTAiLCAiMTEwIiwgIjEyMzQiLCAiMTAwMDAiLCAiMTA1MDAwIiwgIjEwMDA1MDAwIiwKICAgICAgICAiMTAwMDAwMDAxIiwgIjEyMzQ1MDY3ODkiLCAiMTIzNDU2Nzg5MDEyMzQ1NiIsCiAgICAgICAgIjAuNSIsICIwLjA1IiwgIjEuMDIiLCAiMTAwLjUwIiwgIjEyMzQ1LjY3IiwgIjEuMDA1IiwgIjAuOTk5IiwKICAgICAgICAiLTg4Ljg4IiwKICAgIF07CiAgICBmb3IgYyBpbiBjYXNlcyB7CiAgICAgICAgcHJpbnRsbiEoIntjOj4yMH0gPT4ge30iLCB0b19jbl9hbW91bnQoYykudW53cmFwKCkpOwogICAgfQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">const DIGITS: [&amp;str; 10] = ["零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖"];
+const SMALL_UNITS: [&amp;str; 4] = ["仟", "佰", "拾", ""];
+const GROUP_UNITS: [&amp;str; 4] = ["", "万", "亿", "万亿"];
+
+/// 将 0..=9999 的整数转换为中文大写（不含组单位）
+fn four_digits(n: u32) -&gt; String {
+    let d = [
+        (n / 1000) as usize,
+        (n / 100 % 10) as usize,
+        (n / 10 % 10) as usize,
+        (n % 10) as usize,
+    ];
+    let mut s = String::new();
+    let mut pending_zero = false;
+    for i in 0..4 {
+        if d[i] == 0 {
+            pending_zero = true; // 记住"欠一个零"，遇到下一个非零数字再还
+        } else {
+            if pending_zero &amp;&amp; !s.is_empty() {
+                s.push('零');
+            }
+            pending_zero = false;
+            s.push_str(DIGITS[d[i]]);
+            s.push_str(SMALL_UNITS[i]);
+        }
+    }
+    s
+}
+
+/// 输入数字金额字符串（如 "-12345.67"），返回中文大写金额
+fn to_cn_amount(input: &amp;str) -&gt; Result&lt;String, String&gt; {
+    let s = input.trim();
+    if s.is_empty() {
+        return Err("金额不能为空".to_string());
+    }
+    let (neg, s) = match s.strip_prefix('-') {
+        Some(rest) =&gt; (true, rest),
+        None =&gt; (false, s.strip_prefix('+').unwrap_or(s)),
+    };
+    if !s.chars().all(|c| c.is_ascii_digit() || c == '.') {
+        return Err(format!("非法金额: {input}"));
+    }
+    let (int_part, frac_part) = s.split_once('.').unwrap_or((s, ""));
+    if int_part.is_empty() {
+        return Err(format!("非法金额: {input}"));
+    }
+    if frac_part.len() &gt; 3 {
+        return Err("最多支持 3 位小数".to_string());
+    }
+    if int_part.len() &gt; 16
+        || int_part.parse::&lt;u64&gt;().map(|v| v &gt;= 10_0000_0000_0000_0000).unwrap_or(true)
+    {
+        return Err("金额超出范围（最大支持万亿级）".to_string());
+    }
+
+    // 小数部分四舍五入到 2 位（分），仅用字符串和整数，不经过浮点数
+    let mut fen: u64 = match frac_part.len() {
+        0 =&gt; 0,
+        1 =&gt; frac_part.parse::&lt;u64&gt;().unwrap() * 10,
+        _ =&gt; frac_part[..2].parse::&lt;u64&gt;().unwrap(),
+    };
+    if let Some(&amp;c) = frac_part.as_bytes().get(2) {
+        if c &gt;= b'5' {
+            fen += 1; // 第三位小数 ≥ 5 则进位
+        }
+    }
+    let yuan: u64 = int_part.parse::&lt;u64&gt;().unwrap() + fen / 100; // 进位可能凑满 100 分
+    let (jiao, fen) = ((fen / 10 % 10) as usize, (fen % 10) as usize);
+
+    // 整数部分按 4 位一组划分，低位组在前
+    let mut groups: Vec&lt;u32&gt; = Vec::new();
+    let mut rest = yuan;
+    loop {
+        groups.push((rest % 10000) as u32);
+        rest /= 10000;
+        if rest == 0 {
+            break;
+        }
+    }
+
+    let mut out = String::new();
+    if neg &amp;&amp; (yuan &gt; 0 || jiao &gt; 0 || fen &gt; 0) {
+        out.push('负');
+    }
+
+    let mut need_zero = false;      // 之前出现过整组为 0
+    let mut prev_ends_zero = false; // 上一组的末位（万位）为 0
+    let mut has_group = false;      // 是否已输出过数字组（与负号无关）
+    for (p, &amp;g) in groups.iter().enumerate().rev() {
+        if g == 0 {
+            need_zero = true;
+            continue;
+        }
+        if has_group &amp;&amp; (need_zero || prev_ends_zero || g &lt; 1000) {
+            out.push('零');
+        }
+        need_zero = false;
+        has_group = true;
+        out.push_str(&amp;four_digits(g));
+        out.push_str(GROUP_UNITS[p]);
+        prev_ends_zero = g % 10 == 0;
+    }
+
+    // 元、角、分
+    if has_group {
+        out.push('元');
+    }
+    match (jiao, fen) {
+        (0, 0) =&gt; {
+            if !has_group {
+                out.clear();
+                if neg {
+                    out.push('负');
+                }
+                out.push_str("零元整");
+            } else {
+                out.push('整');
+            }
+        }
+        (j, 0) =&gt; {
+            out.push_str(DIGITS[j]);
+            out.push('角');
+            out.push('整');
+        }
+        (0, f) =&gt; {
+            if has_group {
+                out.push('零'); // 壹元零贰分
+            }
+            out.push_str(DIGITS[f]);
+            out.push('分');
+        }
+        (j, f) =&gt; {
+            out.push_str(DIGITS[j]);
+            out.push('角');
+            out.push_str(DIGITS[f]);
+            out.push('分');
+        }
+    }
+    Ok(out)
+}
+
+fn main() {
+    let cases = [
+        "0", "1", "10", "110", "1234", "10000", "105000", "10005000",
+        "100000001", "1234506789", "1234567890123456",
+        "0.5", "0.05", "1.02", "100.50", "12345.67", "1.005", "0.999",
+        "-88.88",
+    ];
+    for c in cases {
+        println!("{c:&gt;20} =&gt; {}", to_cn_amount(c).unwrap());
+    }
+}</code></pre>
+<p>注意 <code>0.999</code> 的输出是“壹元整“：第三位小数 <code>9 ≥ 5</code>，角分进位成 100 分，凑满 1 元——这正是银行家们要求“四舍五入到分“的语义。</p>
+<blockquote>
+<p><strong>为什么不用 <code>f64</code>？</strong> 如果 <code>let amount: f64 = 12345.67;</code>，它在二进制里实际存的是 <code>12345.66999999999...</code>，取小数部分乘 100 再取整，分位可能变成 66。字符串解析 + 整数运算是金额类计算的通用范式。</p>
+</blockquote>
 <h2 id="14-大数运算"><a class="header" href="#14-大数运算">1.4 大数运算</a></h2>
 <h3 id="141-大整型概述"><a class="header" href="#141-大整型概述">1.4.1 大整型概述</a></h3>
 <p>数值多大才能称得上天文数字呢？天文数字又有何用呢？在现代密码学、科学计算和数论研究中，大数运算是不可或缺的。Rust 的标准整数类型有固定的位数限制，对于超出范围的计算，需要使用专门的大数库。</p>
@@ -903,7 +1085,7 @@ fn main(){
 </table>
 </div>
 <h3 id="152-浮点数的精度问题"><a class="header" href="#152-浮点数的精度问题">1.5.2 浮点数的精度问题</a></h3>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOm7mOiupOaYryBmNjQKICAgIGxldCBhOiBmNjQgPSAwLjE7CiAgICBsZXQgYjogZjY0ID0gMC4yOwoKICAgIC8vIOS9v+eUqCBmMzIg57K+5bqm5pu05L2OCiAgICBsZXQgYzogZjMyID0gMC4xOwogICAgbGV0IGQ6IGYzMiA9IDAuMjsKCiAgICBwcmludGxuISgiZjY0OiB7fSIsIGEgKyBiKTsgIC8vIDAuMzAwMDAwMDAwMDAwMDAwMDQKICAgIHByaW50bG4hKCJmMzI6IHt9IiwgYyArIGQpOyAgLy8gMC4zCgogICAgLy8g5q+U6L6D5rWu54K55pWw77yI5LiN5o6o6I2Q55u05o6l5L2/55SoID0977yJCiAgICBsZXQgeDogZjY0ID0gMC4xICsgMC4yOwogICAgbGV0IHk6IGY2NCA9IDAuMzsKICAgIHByaW50bG4hKCLnm7TmjqXmr5TovoM6IHt9IiwgeCA9PSB5KTsgIC8vIGZhbHNlCgogICAgLy8g5L2/55So5a655beu5q+U6L6DCiAgICBsZXQgZXBzID0gMWUtMTA7CiAgICBwcmludGxuISgi5a655beu5q+U6L6DOiB7fSIsICh4IC0geSkuYWJzKCkgPCBlcHMpOyAgLy8gdHJ1ZQp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIC8vIOm7mOiupOaYryBmNjQKICAgIGxldCBhOiBmNjQgPSAwLjE7CiAgICBsZXQgYjogZjY0ID0gMC4yOwoKICAgIC8vIOS9v+eUqCBmMzIg57K+5bqm5pu05L2OCiAgICBsZXQgYzogZjMyID0gMC4xOwogICAgbGV0IGQ6IGYzMiA9IDAuMjsKCiAgICBwcmludGxuISgiZjY0IOeahCAwLjEgPSB7Oi4yMH0iLCBhKTsKICAgIHByaW50bG4hKCJmNjQg55qEIDAuMiA9IHs6LjIwfSIsIGIpOwogICAgcHJpbnRsbiEoImY2NDoge30iLCBhICsgYik7ICAvLyAwLjMwMDAwMDAwMDAwMDAwMDA0CiAgICBwcmludGxuISgiZjY0OiB7fSIsIGEgKiBiKTsKICAgIHByaW50bG4hKCJmNjQ6IHt9IiwgMTAuNTQgKyAwLjM0KTsKICAgIHByaW50bG4hKCJmMzI6IHt9IiwgYyArIGQpOyAgLy8gMC4zCiAgICBwcmludGxuISgiZjY0OiB7fSIsIDM2MC4wMCAvIDYxLjApOwoKCiAgICAvLyDmr5TovoPmta7ngrnmlbDvvIjkuI3mjqjojZDnm7TmjqXkvb/nlKggPT3vvIkKICAgIGxldCB4OiBmNjQgPSAwLjEgKyAwLjI7CiAgICBsZXQgeTogZjY0ID0gMC4zOwogICAgcHJpbnRsbiEoIuebtOaOpeavlOi+gzoge30iLCB4ID09IHkpOyAgLy8gZmFsc2UKCiAgICAvLyDkvb/nlKjlrrnlt67mr5TovoMKICAgIGxldCBlcHMgPSAxZS0xMDsKICAgIHByaW50bG4hKCLlrrnlt67mr5TovoM6IHt9IiwgKHggLSB5KS5hYnMoKSA8IGVwcyk7ICAvLyB0cnVlCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // 默认是 f64
@@ -914,8 +1096,14 @@ fn main(){
     let c: f32 = 0.1;
     let d: f32 = 0.2;
 
+    println!("f64 的 0.1 = {:.20}", a);
+    println!("f64 的 0.2 = {:.20}", b);
     println!("f64: {}", a + b);  // 0.30000000000000004
+    println!("f64: {}", a * b);
+    println!("f64: {}", 10.54 + 0.34);
     println!("f32: {}", c + d);  // 0.3
+    println!("f64: {}", 360.00 / 61.0);
+
 
     // 比较浮点数（不推荐直接使用 ==）
     let x: f64 = 0.1 + 0.2;
@@ -937,6 +1125,19 @@ fn main(){
 <li>方案一：<code>rust_decimal</code> — 高性能金融计算首选</li>
 <li>方案二：<code>bigdecimal</code> — 任意精度的“瑞士军刀”</li>
 </ul>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcnVzdF9kZWNpbWFsID0ge3ZlcnNpb249IjEuMzkiLGZlYXR1cmVzPVsibWFjcm9zIl19CiovCnVzZSBydXN0X2RlY2ltYWw6OnByZWx1ZGU6Oio7CmZuIG1haW4oKSB7CiAgICBwcmludGxuISgicnVzdF9kZWNpbWFsOiB7fSIsIGRlYyEoMC4xKSArIGRlYyEoMC4yKSk7CiAgICBwcmludGxuISgicnVzdF9kZWNpbWFsOiB7fSIsIGRlYyEoMC4xKSAqIGRlYyEoMC45KSk7CiAgICBwcmludGxuISgicnVzdF9kZWNpbWFsOiB7fSIsIGRlYyEoOTkpICogZGVjISgwLjEzKSk7CiAgICBwcmludGxuISgicnVzdF9kZWNpbWFsOiB7fSIsIGRlYyEoMTAuNTQpICsgZGVjISgwLjM0KSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rust_decimal = {version="1.39",features=["macros"]}
+*/
+use rust_decimal::prelude::*;
+fn main() {
+    println!("rust_decimal: {}", dec!(0.1) + dec!(0.2));
+    println!("rust_decimal: {}", dec!(0.1) * dec!(0.9));
+    println!("rust_decimal: {}", dec!(99) * dec!(0.13));
+    println!("rust_decimal: {}", dec!(10.54) + dec!(0.34));
+}</code></pre>
 <h2 id="16-特殊数"><a class="header" href="#16-特殊数">1.6 特殊数</a></h2>
 <h3 id="161-数的分类概述"><a class="header" href="#161-数的分类概述">1.6.1 数的分类概述</a></h3>
 <p>数可以按照多种方式进行分类：整数（奇数、偶数）、浮点数、复数、质数、合数、完美数等。本节介绍两种有趣的特殊数——勾股数和的士数。</p>
@@ -1011,6 +1212,7 @@ $$7^2 + 24^2 = 25^2$$</p>
 <tr><td style="text-align: left">反码</td><td style="text-align: left">负数逐位取反，存在正负零问题</td></tr>
 <tr><td style="text-align: left">补码</td><td style="text-align: left">负数反码加 1，计算机中统一使用，无正负零</td></tr>
 <tr><td style="text-align: left">进制转换</td><td style="text-align: left">$N = \sum d_i \times b^i$，Excel 列名为特殊 26 进制</td></tr>
+<tr><td style="text-align: left">金额转中文大写</td><td style="text-align: left">字符串解析避开浮点精度坑，按 4 位分组 + “零“补位规则</td></tr>
 <tr><td style="text-align: left">阶乘末尾零</td><td style="text-align: left">$Z(n!) = \sum \lfloor n/5^k \rfloor$</td></tr>
 <tr><td style="text-align: left">IEEE 754</td><td style="text-align: left">$(-1)^{sign} \times (1 + mantissa) \times 2^{exponent - bias}$</td></tr>
 <tr><td style="text-align: left">勾股数</td><td style="text-align: left">$a^2 + b^2 = c^2$，欧几里得公式可生成</td></tr>
@@ -20555,9 +20757,19 @@ fn main() {
 <p>$$f(x) = \binom{n}{x} \cdot p^x \cdot (1-p)^{n-x}$$</p>
 <p><strong>期望：</strong> $E[X] = np$</p>
 <p><strong>方差：</strong> $\text{Var}(X) = np(1-p)$</p>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gYmlub21pYWxfcG1mKHg6IHUzMiwgbjogdTMyLCBwOiBmNjQpIC0+IGY2NCB7CiAgICBjb21iaW5hdGlvbihuIGFzIHU2NCwgeCBhcyB1NjQpIGFzIGY2NCAqIHAucG93aSh4IGFzIGkzMikgKiAoMS4wIC0gcCkucG93aShuIGFzIGkzMiAtIHggYXMgaTMyKQp9CgpmbiBtYWluKCkgewogICAgLy8g5LiJ5Y+R5a+85by577yM5ZG95Lit546HIDcwJQogICAgbGV0IG4gPSAzOwogICAgbGV0IHAgPSAwLjc7CgogICAgcHJpbnRsbiEoIuS4ieWPkeWFqOS4rTogICAgIHs6LjR9IiwgYmlub21pYWxfcG1mKDMsIG4sIHApKTsgIC8vIDAuMzQzCiAgICBwcmludGxuISgi5ZG95Lit5Lik5Y+ROiAgICAgezouNH0iLCBiaW5vbWlhbF9wbWYoMiwgbiwgcCkpOyAgLy8gMC40NDEKICAgIHByaW50bG4hKCLlkb3kuK3kuIDlj5E6ICAgICB7Oi40fSIsIGJpbm9taWFsX3BtZigxLCBuLCBwKSk7ICAvLyAwLjE4OQogICAgcHJpbnRsbiEoIuWFqOS4jeWRveS4rTogICAgIHs6LjR9IiwgYmlub21pYWxfcG1mKDAsIG4sIHApKTsgIC8vIDAuMDI3Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gY29tYmluYXRpb24objogdTY0LCBtOiB1NjQpIC0+IHU2NCB7CiAgICBpZiBtID4gbiB7IHJldHVybiAwOyB9CiAgICBpZiBtID4gbiAtIG0geyByZXR1cm4gY29tYmluYXRpb24obiwgbiAtIG0pOyB9CiAgICBsZXQgbXV0IHJlc3VsdCA9IDF1NjQ7CiAgICBmb3IgaSBpbiAwLi5tIHsKICAgICAgICByZXN1bHQgPSByZXN1bHQgKiAobiAtIGkpIC8gKGkgKyAxKTsKICAgIH0KICAgIHJlc3VsdAp9CgpmbiBiaW5vbWlhbF9wbWYoeDogdTMyLCBuOiB1MzIsIHA6IGY2NCkgLT4gZjY0IHsKICAgIGNvbWJpbmF0aW9uKG4gYXMgdTY0LCB4IGFzIHU2NCkgYXMgZjY0ICogcC5wb3dpKHggYXMgaTMyKSAqICgxLjAgLSBwKS5wb3dpKG4gYXMgaTMyIC0geCBhcyBpMzIpCn0KCmZuIG1haW4oKSB7CiAgICAvLyDkuInlj5Hlr7zlvLnvvIzlkb3kuK3njocgNzAlCiAgICBsZXQgbiA9IDM7CiAgICBsZXQgcCA9IDAuNzsKCiAgICBwcmludGxuISgi5LiJ5Y+R5YWo5LitOiAgICAgezouNH0iLCBiaW5vbWlhbF9wbWYoMywgbiwgcCkpOyAgLy8gMC4zNDMKICAgIHByaW50bG4hKCLlkb3kuK3kuKTlj5E6ICAgICB7Oi40fSIsIGJpbm9taWFsX3BtZigyLCBuLCBwKSk7ICAvLyAwLjQ0MQogICAgcHJpbnRsbiEoIuWRveS4reS4gOWPkTogICAgIHs6LjR9IiwgYmlub21pYWxfcG1mKDEsIG4sIHApKTsgIC8vIDAuMTg5CiAgICBwcmludGxuISgi5YWo5LiN5ZG95LitOiAgICAgezouNH0iLCBiaW5vbWlhbF9wbWYoMCwgbiwgcCkpOyAgLy8gMC4wMjcKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
-<pre class="playground"><code class="language-rust edition2024">fn binomial_pmf(x: u32, n: u32, p: f64) -&gt; f64 {
+<pre class="playground"><code class="language-rust edition2024">fn combination(n: u64, m: u64) -&gt; u64 {
+    if m &gt; n { return 0; }
+    if m &gt; n - m { return combination(n, n - m); }
+    let mut result = 1u64;
+    for i in 0..m {
+        result = result * (n - i) / (i + 1);
+    }
+    result
+}
+
+fn binomial_pmf(x: u32, n: u32, p: f64) -&gt; f64 {
     combination(n as u64, x as u64) as f64 * p.powi(x as i32) * (1.0 - p).powi(n as i32 - x as i32)
 }
 
@@ -20578,9 +20790,13 @@ fn main() {
 <blockquote>
 <p><strong>适用场景：</strong> 电话呼叫次数、交通事故数、错别字数、服务器请求量等“稀有事件“。</p>
 </blockquote>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gcG9pc3Nvbl9wbWYoeDogdTMyLCBsYW1iZGE6IGY2NCkgLT4gZjY0IHsKICAgIGxhbWJkYS5wb3dpKHggYXMgaTMyKSAqICgtbGFtYmRhKS5leHAoKSAvIGZhY3RvcmlhbCh4IGFzIHU2NCkgYXMgZjY0Cn0KCmZuIG1haW4oKSB7CiAgICAvLyDmn5DnvZHnq5nlubPlnYfmr4/lsI/ml7YgNSDmrKHorr/pl64KICAgIGxldCBsYW1iZGEgPSA1LjA7CiAgICBmb3IgeCBpbiAwLi49MTAgewogICAgICAgIHByaW50bG4hKCJQKFg9e30pID0gezouNn0iLCB4LCBwb2lzc29uX3BtZih4LCBsYW1iZGEpKTsKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gZmFjdG9yaWFsKG46IHU2NCkgLT4gdTY0IHsKICAgICgxLi49bikucHJvZHVjdCgpCn0KCmZuIHBvaXNzb25fcG1mKHg6IHUzMiwgbGFtYmRhOiBmNjQpIC0+IGY2NCB7CiAgICBsYW1iZGEucG93aSh4IGFzIGkzMikgKiAoLWxhbWJkYSkuZXhwKCkgLyBmYWN0b3JpYWwoeCBhcyB1NjQpIGFzIGY2NAp9CgpmbiBtYWluKCkgewogICAgLy8g5p+Q572R56uZ5bmz5Z2H5q+P5bCP5pe2IDUg5qyh6K6/6ZeuCiAgICBsZXQgbGFtYmRhID0gNS4wOwogICAgZm9yIHggaW4gMC4uPTEwIHsKICAgICAgICBwcmludGxuISgiUChYPXt9KSA9IHs6LjZ9IiwgeCwgcG9pc3Nvbl9wbWYoeCwgbGFtYmRhKSk7CiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
-<pre class="playground"><code class="language-rust edition2024">fn poisson_pmf(x: u32, lambda: f64) -&gt; f64 {
+<pre class="playground"><code class="language-rust edition2024">fn factorial(n: u64) -&gt; u64 {
+    (1..=n).product()
+}
+
+fn poisson_pmf(x: u32, lambda: f64) -&gt; f64 {
     lambda.powi(x as i32) * (-lambda).exp() / factorial(x as u64) as f64
 }
 
@@ -20716,7 +20932,7 @@ fn main() {
 <h2 id="十二经典题目"><a class="header" href="#十二经典题目">十二、经典题目</a></h2>
 <h3 id="题目1生日悖论"><a class="header" href="#题目1生日悖论">题目1：生日悖论</a></h3>
 <p>一个班有 100 人，至少两人生日相同的概率是多少？</p>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gYmlydGhkYXlfcHJvYmFiaWxpdHkobjogdTMyKSAtPiBmNjQgewogICAgbGV0IG11dCBwX25vX21hdGNoID0gMS4wOwogICAgZm9yIGkgaW4gMC4ubiB7CiAgICAgICAgcF9ub19tYXRjaCAqPSAoMzY1LjAgLSBpIGFzIGY2NCkgLyAzNjUuMDsKICAgIH0KICAgIDEuMCAtIHBfbm9fbWF0Y2gKfQoKZm4gbWFpbigpIHsKICAgIGZvciAmbiBpbiAmWzIzLCAzMCwgNTAsIDcwLCAxMDBdIHsKICAgICAgICBwcmludGxuISgie30g5Lq65Lit6Iez5bCR5Lik5Lq655Sf5pel55u45ZCMOiB7Oi40fSIsIG4sIGJpcnRoZGF5X3Byb2JhYmlsaXR5KG4pKTsKICAgIH0KICAgIC8vIDIzIOS6ujogMC41MDcz77yI6LaF6L+HIDUwJe+8ge+8iQogICAgLy8gMTAwIOS6ujogMC45OTk5OTk377yI5Yeg5LmO5b+F54S277yJCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gYmlydGhkYXlfcHJvYmFiaWxpdHkobjogdTMyKSAtPiBmNjQgewogICAgbGV0IG11dCBwX25vX21hdGNoID0gMS4wOwogICAgZm9yIGkgaW4gMC4ubiB7CiAgICAgICAgcF9ub19tYXRjaCAqPSAoMzY1LjAgLSBpIGFzIGY2NCkgLyAzNjUuMDsKICAgIH0KICAgIDEuMCAtIHBfbm9fbWF0Y2gKfQoKZm4gbWFpbigpIHsKICAgIGZvciAmbiBpbiAmWzIzLCAzMCwgNTAsIDcwLCAxMDBdIHsKICAgICAgICBwcmludGxuISgiezo+M30g5Lq65Lit6Iez5bCR5Lik5Lq655Sf5pel55u45ZCMOiB7Oi40fSIsIG4sIGJpcnRoZGF5X3Byb2JhYmlsaXR5KG4pKTsKICAgIH0KICAgIC8vIDIzIOS6ujogMC41MDcz77yI6LaF6L+HIDUwJe+8ge+8iQogICAgLy8gMTAwIOS6ujogMC45OTk5OTk377yI5Yeg5LmO5b+F54S277yJCn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
 <pre class="playground"><code class="language-rust edition2024">fn birthday_probability(n: u32) -&gt; f64 {
     let mut p_no_match = 1.0;
@@ -20728,16 +20944,26 @@ fn main() {
 
 fn main() {
     for &amp;n in &amp;[23, 30, 50, 70, 100] {
-        println!("{} 人中至少两人生日相同: {:.4}", n, birthday_probability(n));
+        println!("{:&gt;3} 人中至少两人生日相同: {:.4}", n, birthday_probability(n));
     }
     // 23 人: 0.5073（超过 50%！）
     // 100 人: 0.9999997（几乎必然）
 }</code></pre>
 <h3 id="题目2炸金花概率"><a class="header" href="#题目2炸金花概率">题目2：炸金花概率</a></h3>
 <p>52 张牌中抽 3 张，求同花顺和豹子的概率。</p>
-<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gbWFpbigpIHsKICAgIGxldCB0b3RhbCA9IGNvbWJpbmF0aW9uKDUyLCAzKSBhcyBmNjQ7ICAvLyAyMjEwMAoKICAgIC8vIOWQjOiKsemhuu+8mjTnp43oirHoibIgw5cgMTLnp43luo/liJfvvIhBMjMsIDIzNCwgLi4uLCBRS0HvvIkKICAgIGxldCBzdHJhaWdodF9mbHVzaCA9IDQuMCAqIDEyLjA7CiAgICBwcmludGxuISgi5ZCM6Iqx6aG65qaC546HOiB7Oi42fSAoezouNH0lKSIsIHN0cmFpZ2h0X2ZsdXNoIC8gdG90YWwsIHN0cmFpZ2h0X2ZsdXNoIC8gdG90YWwgKiAxMDAuMCk7CgogICAgLy8g6LG55a2Q77yaMTPnp43ngrnmlbAgw5cgNOenjeiKseiJsuWPljPnp40KICAgIGxldCB0aHJlZV9vZl9raW5kID0gMTMuMCAqIGNvbWJpbmF0aW9uKDQsIDMpIGFzIGY2NDsKICAgIHByaW50bG4hKCLosbnlrZDmpoLnjoc6ICAgezouNn0gKHs6LjR9JSkiLCB0aHJlZV9vZl9raW5kIC8gdG90YWwsIHRocmVlX29mX2tpbmQgLyB0b3RhbCAqIDEwMC4wKTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gY29tYmluYXRpb24objogdTY0LCBtOiB1NjQpIC0+IHU2NCB7CiAgICBpZiBtID4gbiB7IHJldHVybiAwOyB9CiAgICBpZiBtID4gbiAtIG0geyByZXR1cm4gY29tYmluYXRpb24obiwgbiAtIG0pOyB9CiAgICBsZXQgbXV0IHJlc3VsdCA9IDF1NjQ7CiAgICBmb3IgaSBpbiAwLi5tIHsKICAgICAgICByZXN1bHQgPSByZXN1bHQgKiAobiAtIGkpIC8gKGkgKyAxKTsKICAgIH0KICAgIHJlc3VsdAp9CgpmbiBtYWluKCkgewogICAgbGV0IHRvdGFsID0gY29tYmluYXRpb24oNTIsIDMpIGFzIGY2NDsgIC8vIDIyMTAwCgogICAgLy8g5ZCM6Iqx6aG677yaNOenjeiKseiJsiDDlyAxMuenjeW6j+WIl++8iEEyMywgMjM0LCAuLi4sIFFLQe+8iQogICAgbGV0IHN0cmFpZ2h0X2ZsdXNoID0gNC4wICogMTIuMDsKICAgIHByaW50bG4hKCLlkIzoirHpobrmpoLnjoc6IHs6LjZ9ICh7Oi40fSUpIiwgc3RyYWlnaHRfZmx1c2ggLyB0b3RhbCwgc3RyYWlnaHRfZmx1c2ggLyB0b3RhbCAqIDEwMC4wKTsKCiAgICAvLyDosbnlrZDvvJoxM+enjeeCueaVsCDDlyA056eN6Iqx6Imy5Y+WM+enjQogICAgbGV0IHRocmVlX29mX2tpbmQgPSAxMy4wICogY29tYmluYXRpb24oNCwgMykgYXMgZjY0OwogICAgcHJpbnRsbiEoIuixueWtkOamgueOhzogICB7Oi42fSAoezouNH0lKSIsIHRocmVlX29mX2tpbmQgLyB0b3RhbCwgdGhyZWVfb2Zfa2luZCAvIHRvdGFsICogMTAwLjApOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
-<pre class="playground"><code class="language-rust edition2024">fn main() {
+<pre class="playground"><code class="language-rust edition2024">fn combination(n: u64, m: u64) -&gt; u64 {
+    if m &gt; n { return 0; }
+    if m &gt; n - m { return combination(n, n - m); }
+    let mut result = 1u64;
+    for i in 0..m {
+        result = result * (n - i) / (i + 1);
+    }
+    result
+}
+
+fn main() {
     let total = combination(52, 3) as f64;  // 22100
 
     // 同花顺：4种花色 × 12种序列（A23, 234, ..., QKA）
@@ -34875,9 +35101,21 @@ fn detect_anomalies_zscore(data: &amp;[f64], threshold: f64) -&gt; Vec&lt;(usize
 </tbody>
 </table>
 </div>
-<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>/// Min-Max 归一化
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOiuoeeul+Wdh+WAvApmbiBtZWFuKGRhdGE6ICZbZjY0XSkgLT4gZjY0IHsKICAgIGRhdGEuaXRlcigpLnN1bTo6PGY2ND4oKSAvIGRhdGEubGVuKCkgYXMgZjY0Cn0KCi8vLyDorqHnrpfmoIflh4blt64KZm4gc3RkX2RldihkYXRhOiAmW2Y2NF0pIC0+IGY2NCB7CiAgICBsZXQgbSA9IG1lYW4oZGF0YSk7CiAgICBsZXQgdmFyaWFuY2UgPSBkYXRhLml0ZXIoKS5tYXAofHh8ICh4IC0gbSkucG93aSgyKSkuc3VtOjo8ZjY0PigpIC8gZGF0YS5sZW4oKSBhcyBmNjQ7CiAgICB2YXJpYW5jZS5zcXJ0KCkKfQoKLy8vIE1pbi1NYXgg5b2S5LiA5YyWCmZuIG1pbl9tYXhfbm9ybWFsaXplKGRhdGE6ICZbZjY0XSkgLT4gVmVjPGY2ND4gewogICAgbGV0IG1pbiA9IGRhdGEuaXRlcigpLmNsb25lZCgpLmZvbGQoZjY0OjpJTkZJTklUWSwgZjY0OjptaW4pOwogICAgbGV0IG1heCA9IGRhdGEuaXRlcigpLmNsb25lZCgpLmZvbGQoZjY0OjpORUdfSU5GSU5JVFksIGY2NDo6bWF4KTsKICAgIGxldCByYW5nZSA9IG1heCAtIG1pbjsKICAgIGlmIHJhbmdlID09IDAuMCB7CiAgICAgICAgcmV0dXJuIHZlYyFbMC4wOyBkYXRhLmxlbigpXTsKICAgIH0KICAgIGRhdGEuaXRlcigpLm1hcCh8eHwgKHggLSBtaW4pIC8gcmFuZ2UpLmNvbGxlY3QoKQp9CgovLy8gWi1TY29yZSDmoIflh4bljJYKZm4genNjb3JlX3N0YW5kYXJkaXplKGRhdGE6ICZbZjY0XSkgLT4gVmVjPGY2ND4gewogICAgbGV0IG0gPSBtZWFuKGRhdGEpOwogICAgbGV0IHMgPSBzdGRfZGV2KGRhdGEpOwogICAgaWYgcyA9PSAwLjAgewogICAgICAgIHJldHVybiB2ZWMhWzAuMDsgZGF0YS5sZW4oKV07CiAgICB9CiAgICBkYXRhLml0ZXIoKS5tYXAofHh8ICh4IC0gbSkgLyBzKS5jb2xsZWN0KCkKfQoKZm4gbWFpbigpewogICAgdXNlIHN0ZDo6ZjY0Ojpjb25zdHM6OntQSSxFLEZSQUNfUElfMixGUkFDX1BJXzR9OwogICAgbGV0IGRhdGEgPSBbUEksRSxGUkFDX1BJXzIsRlJBQ19QSV80LC0yLjBfZjY0XTsKICAgIHByaW50bG4hKCJ7Oj99IixtaW5fbWF4X25vcm1hbGl6ZSgmZGF0YSkpOwogICAgcHJpbnRsbiEoIns6P30iLHpzY29yZV9zdGFuZGFyZGl6ZSgmZGF0YSkpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/// 计算均值
+fn mean(data: &amp;[f64]) -&gt; f64 {
+    data.iter().sum::&lt;f64&gt;() / data.len() as f64
+}
+
+/// 计算标准差
+fn std_dev(data: &amp;[f64]) -&gt; f64 {
+    let m = mean(data);
+    let variance = data.iter().map(|x| (x - m).powi(2)).sum::&lt;f64&gt;() / data.len() as f64;
+    variance.sqrt()
+}
+
+/// Min-Max 归一化
 fn min_max_normalize(data: &amp;[f64]) -&gt; Vec&lt;f64&gt; {
     let min = data.iter().cloned().fold(f64::INFINITY, f64::min);
     let max = data.iter().cloned().fold(f64::NEG_INFINITY, f64::max);
@@ -34897,7 +35135,13 @@ fn zscore_standardize(data: &amp;[f64]) -&gt; Vec&lt;f64&gt; {
     }
     data.iter().map(|x| (x - m) / s).collect()
 }
-<span class="boring">}</span></code></pre>
+
+fn main(){
+    use std::f64::consts::{PI,E,FRAC_PI_2,FRAC_PI_4};
+    let data = [PI,E,FRAC_PI_2,FRAC_PI_4,-2.0_f64];
+    println!("{:?}",min_max_normalize(&amp;data));
+    println!("{:?}",zscore_standardize(&amp;data));
+}</code></pre>
 <h3 id="43-特征工程"><a class="header" href="#43-特征工程">4.3 特征工程</a></h3>
 <p>特征工程是数据挖掘中最关键的环节之一，好的特征往往比好的算法更重要。</p>
 <div class="table-wrapper">
@@ -35214,9 +35458,9 @@ fn process(data: &amp;[i32]) -&gt; Vec&lt;i32&gt; {
 </div>
 <h4 id="rust-的核心优势"><a class="header" href="#rust-的核心优势">Rust 的核心优势</a></h4>
 <p>Rust 通过**所有权系统（Ownership）**在编译期保证内存安全，无需垃圾回收（GC）：</p>
-<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>fn ownership_demo() {
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Zm4gb3duZXJzaGlwX2RlbW8oKSB7CiAgICBsZXQgczEgPSBTdHJpbmc6OmZyb20oImhlbGxvIik7CiAgICBsZXQgczIgPSBzMTsgLy8gczEg55qE5omA5pyJ5p2D6L2s56e75YiwIHMy77yMczEg5LiN5YaN5Y+v55SoCiAgICAvLyBwcmludGxuISgie30iLCBzMSk7IC8vIOe8luivkemUmeivr++8gXMxIOW3suiiq+enu+WKqAogICAgcHJpbnRsbiEoInt9IiwgczIpOyAvLyDmraPluLjvvJpzMiDmi6XmnInmiYDmnInmnYMKfQoKZm4gYm9ycm93X2RlbW8oKSB7CiAgICBsZXQgcyA9IFN0cmluZzo6ZnJvbSgiaGVsbG8iKTsKICAgIGxldCByMSA9ICZzOyAgICAgIC8vIOS4jeWPr+WPmOWAn+eUqO+8muWPquivuwogICAgbGV0IHIyID0gJnM7ICAgICAgLy8g5Y+v5Lul5ZCM5pe25pyJ5aSa5Liq5LiN5Y+v5Y+Y5YCf55SoCiAgICBwcmludGxuISgie30sIHt9IiwgcjEsIHIyKTsKICAgIC8vIGxldCByMyA9ICZtdXQgczsgLy8g57yW6K+R6ZSZ6K+v77yB5a2Y5Zyo5LiN5Y+v5Y+Y5YCf55So5pe25LiN6IO95Y+v5Y+Y5YCf55SoCn0KCmZuIG1haW4oKXsKICAgIG93bmVyc2hpcF9kZW1vKCk7CiAgICBib3Jyb3dfZGVtbygpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">fn ownership_demo() {
     let s1 = String::from("hello");
     let s2 = s1; // s1 的所有权转移到 s2，s1 不再可用
     // println!("{}", s1); // 编译错误！s1 已被移动
@@ -35230,7 +35474,11 @@ fn borrow_demo() {
     println!("{}, {}", r1, r2);
     // let r3 = &amp;mut s; // 编译错误！存在不可变借用时不能可变借用
 }
-<span class="boring">}</span></code></pre>
+
+fn main(){
+    ownership_demo();
+    borrow_demo();
+}</code></pre>
 <h3 id="32-应用级语言"><a class="header" href="#32-应用级语言">3.2 应用级语言</a></h3>
 <div class="table-wrapper">
 <table>
@@ -44902,6 +45150,71 @@ curl -X POST https://play.rust-lang.org/evaluate.json \
 </div>
 <p>成千上万的科学家实现 0→1 的发现，数以千万的工程师创造、集成大量的工具，数以亿计的普通人利用工具。</p>
 <p>一个伟大的工具，能够深入和广泛应用在各行各业，一个重要的前提是<strong>成本足够低、效率足够高</strong>。</p>
+<hr>
+<h2 id="十二ai所有人可用的强大工具"><a class="header" href="#十二ai所有人可用的强大工具">十二、AI：所有人可用的强大工具</a></h2>
+<blockquote>
+<p>过去电脑花了二十年才改变工作方式，而 AI 用自然语言交互，主动适应人类，无需人们重新学习操作逻辑。</p>
+<p>工具的历史，就是不断降低使用门槛的历史。当门槛低到「会说话就会用」，工具便不再是少数人的专利。</p>
+</blockquote>
+<p>第十一节说到人机交互从 GUI 到 CLI 再到代码——每一次演进，都在效率与门槛之间做取舍。AI 带来的自然语言交互，第一次同时把两头都占了：<strong>像 CLI 一样精确，像 GUI 一样无需背诵</strong>。</p>
+<h3 id="121-从学工具到说需求"><a class="header" href="#121-从学工具到说需求">12.1 从「学工具」到「说需求」</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>交互方式</th><th>使用门槛</th><th>效率</th><th>主要受众</th><th>你把精力花在哪</th></tr>
+</thead>
+<tbody>
+<tr><td>GUI 图形界面</td><td>低</td><td>中</td><td>所有人</td><td>找按钮、记位置</td></tr>
+<tr><td>CLI 命令行</td><td>中</td><td>高</td><td>运维、开发者</td><td>背命令、记参数</td></tr>
+<tr><td>代码</td><td>高</td><td>最高</td><td>程序员</td><td>学语法、调 BUG</td></tr>
+<tr><td><strong>自然语言 / AI</strong></td><td>极低</td><td>高</td><td><strong>所有人</strong></td><td><strong>把需求说清楚</strong></td></tr>
+</tbody>
+</table>
+</div>
+<p>前三种方式里，人是主动去适应机器的：你得先学会它的语言，它才肯替你干活。AI 把这个方向倒了过来——<strong>机器来适应人</strong>。你说「不要太甜、尽快送到」，它理解为「少糖、最近门店」；你说重庆话，它也听得懂。门槛从「掌握语法」降到了「表达意图」。</p>
+<p>这是一次性质的变化：过去的工具放大的是<strong>操作能力</strong>，AI 放大的开始是<strong>意图本身</strong>。</p>
+<h3 id="122-三个降到为什么是现在"><a class="header" href="#122-三个降到为什么是现在">12.2 三个「降到」：为什么是现在</a></h3>
+<p>AI 不是今天才聪明，而是今天才<strong>用得起、够得着、能干活</strong>。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>维度</th><th>变化</th><th>佐证</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>成本降到</strong></td><td>同等推理水平的调用成本，两年间降至约 <strong>1/280</strong></td><td>斯坦福《2025 年人工智能指数报告》；GPT-4 同等性能从 2022 年底约 20 美元/百万 token，降至 2025 年底约 0.40 美元</td></tr>
+<tr><td><strong>门槛降到</strong></td><td>从「你问我答」进化到「理解目标→拆解任务→调用工具→自主执行」</td><td>2026 年春节，中老年人通过健康 AI 应用、语音控家电等场景大规模接入，方言识别成为标配</td></tr>
+<tr><td><strong>能力升到</strong></td><td>从「会聊天」转向「能干活」：推理（Reasoning）+ 行动（Action）双循环</td><td>新一代模型可自主规划、调用工具、反思修正；这正是附录8 里 Agent / Skill / MCP 三件套解决的问题</td></tr>
+</tbody>
+</table>
+</div>
+<p>成本下降与用户增长互为因果：2026 年初 ChatGPT 周活跃用户约 9 亿；同期豆包、千问、深度求索的国内月活分别约 3.4 亿、1.7 亿、1.3 亿。价格走低让个人开发者和中小企业都用得起，用户规模又摊薄了成本。这个正循环，把 AI 从实验室推成了日常服务。</p>
+<h3 id="123-智能正在水电化"><a class="header" href="#123-智能正在水电化">12.3 智能正在「水电化」</a></h3>
+<p>当一样东西便宜到按量计费、随处可取，它就从「产品」变成了「基础设施」。</p>
+<ul>
+<li><strong>可计量</strong>：词元（token）成为智能的最小计费单位。智能第一次像电力一样，可以被计量、定价和交易——电价按千瓦时，智能按词元。</li>
+<li><strong>可及</strong>：算力与数据基础设施「水电化」，按需付费。开源模型与闭源模型的性能差距缩小，本地运行一个够用的模型，一条命令即可。</li>
+<li><strong>可组装</strong>：一个人 + AI，就能完成过去需要一个跨职能团队才能做的事——写脚本、做视觉、调代码、出分析报告。于是有了「超级个体」：传统生产力 = 人力 + 资本 + 土地，而新的生产力 = 个体创造力 + AI 算力 + 数据 + 数字基础设施。</li>
+</ul>
+<p>回到本章开头的话：<strong>「工具思维」认为计算机是最重要的工程应用工具</strong>。今天这句话可以往前推一步——AI 正在成为那个「最重要的工具」的下一形态：它不只是被使用，还能替你把别的工具串起来用。</p>
+<h3 id="124-也别把它神化"><a class="header" href="#124-也别把它神化">12.4 也别把它神化</a></h3>
+<p>普及的广度和应用的深度之间，仍有距离。麦肯锡 2025 年的全球调查显示，多数企业已在至少一项业务中使用 AI，但真正实现规模化应用的仍是少数。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>问题</th><th>原因</th><th>应对</th></tr>
+</thead>
+<tbody>
+<tr><td>用了，却没真正用透</td><td>停留在单点功能，各类工具彼此「聋哑」</td><td>打通场景与协议，让 AI 成为连接中枢，而非孤岛应用</td></tr>
+<tr><td>错误信息被当成答案</td><td>生成内容流畅但可能失真，老年人等群体甄别能力偏弱</td><td>关键结论交叉验证；保留人在环（human-in-the-loop）</td></tr>
+<tr><td>隐私与数据主权</td><td>免费服务往往以数据作为交换</td><td>敏感信息用本地或私有部署；明确数据边界</td></tr>
+<tr><td>把「会说」当成「会做」</td><td>自然语言掩盖了能力的真实边界</td><td>用可执行的结果验收，而非模型自评（见附录8 的踩坑指南）</td></tr>
+</tbody>
+</table>
+</div>
+<p>第十节那句语录在这里依然成立：<strong>「科学技术是一把双刃剑，既可以造福人类，也可以伤害人类，关键是掌握在谁的手中，用它来干什么。」</strong> AI 放大的是人的意图——包括好的和坏的。工具越强，使用者的判断力越重要。</p>
+<blockquote>
+<p>一个伟大的工具，前提是成本足够低、效率足够高；而一个真正普惠的工具，还要让每个人都能<strong>用好</strong>它。AI 正在从「可用」走向「人人可用」，剩下的那一半，是教育、是规范，也是每个使用者自己的判断力。</p>
+</blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="附录4-实战"><a class="header" href="#附录4-实战">附录4 实战</a></h1>
 <blockquote>
@@ -47164,6 +47477,417 @@ hyperfine --warmup 3 '/tmp/wc big.log' 'wc big.log'
 <li><a href="https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/">Joel Spolsky：Things You Should Never Do</a>——重写的经典劝退文</li>
 <li><a href="https://github.com/BurntSushi/ripgrep">ripgrep</a>、<a href="https://github.com/sharkdp/fd">fd</a>、<a href="https://github.com/sharkdp/bat">bat</a>、<a href="https://github.com/eza-community/eza">eza</a>——日常命令的 Rust 替代</li>
 <li><a href="https://github.com/rustls/rustls">rustls</a>——Rust 的 TLS 实现</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="附录8-agent技能与-mcp"><a class="header" href="#附录8-agent技能与-mcp">附录8 Agent、技能与 MCP</a></h1>
+<blockquote>
+<p>给我一个撬棍，我能撬动一块石头；给我一个 USB-C 口，我能撬动整个生态。</p>
+<p>Agent 负责「决定做什么」，Skill 负责「知道怎么做」，MCP 负责「连得上、够得着」。三者叠在一起，才是一个能干活的智能体。</p>
+</blockquote>
+<hr>
+<h2 id="一先看一场翻车"><a class="header" href="#一先看一场翻车">一、先看一场「翻车」</a></h2>
+<p>你对 AI 说：<strong>「帮我把 <code>invoice.pdf</code> 里的表格填好，再整理成一页周报发给我。」</strong></p>
+<p>三种 AI，三种下场：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>AI 形态</th><th>会发生什么</th><th>缺的是什么</th></tr>
+</thead>
+<tbody>
+<tr><td>纯聊天模型</td><td>把它臆想出来的表格内容用文字打印给你，文件名、数字全靠猜</td><td>看不见文件，动不了手</td></tr>
+<tr><td>给了工具的大模型</td><td>找到 PDF，但把「填表」理解成「在文件末尾追加一段文字」，格式全乱</td><td>不知道这个领域的正确流程</td></tr>
+<tr><td>配齐三件套的智能体</td><td>调用 PDF 工具读出表单字段，按团队模板逐项填好，生成周报</td><td>——</td></tr>
+</tbody>
+</table>
+</div>
+<p>差别不在模型聪明程度，而在三样东西是否就位。这一附录就讲清它们：</p>
+<ul>
+<li><strong>Agent（智能体）</strong>：那个「一直转下去」的循环——观察、思考、调用工具、再看结果，直到活干完。</li>
+<li><strong>Skill（技能）</strong>：一份「岗位操作手册」，把某个领域的流程和经验打包成文件，用到时才翻开。</li>
+<li><strong>MCP（模型上下文协议）</strong>：一个「标准插座」，让智能体用同一套接口连上任意外部工具和数据源。</li>
+</ul>
+<p>一张图先建立整体印象：</p>
+<pre class="mermaid">flowchart TB
+    U[用户一句话需求] --&gt; A
+
+    subgraph A[Agent 智能体 · 决策循环]
+        L[LLM 思考: 下一步做什么]
+        O[观察工具返回结果]
+        L --&gt; O --&gt; L
+    end
+
+    A --&gt;|"按需加载 操作手册"| S[Skill 技能&lt;br/&gt;SKILL.md + 脚本 + 参考文档]
+    A --&gt;|"标准协议 调用工具"| C[MCP Client]
+
+    C --&gt;|JSON-RPC| M1[MCP Server: 文件系统]
+    C --&gt;|JSON-RPC| M2[MCP Server: 数据库]
+    C --&gt;|JSON-RPC| M3[MCP Server: 第三方 API]
+
+    S -.-&gt;|"手册里写着 该调哪个工具"| A
+</pre>
+
+<p>三者不是一个递进关系，而是<strong>三个正交的维度</strong>：Agent 提供「意愿与循环」，Skill 提供「知识与方法」，MCP 提供「连接与动作」。少任何一个，都会退化成上表里的前两种翻车现场。</p>
+<hr>
+<h2 id="二agent一个停不下来的循环"><a class="header" href="#二agent一个停不下来的循环">二、Agent：一个停不下来的循环</a></h2>
+<h3 id="21-剥掉营销术语后剩下什么"><a class="header" href="#21-剥掉营销术语后剩下什么">2.1 剥掉营销术语后剩下什么</a></h3>
+<p>把 Agent 拆到最小，它只是一个 <code>while</code> 循环：</p>
+<pre><code>把用户目标放进上下文 → 让模型输出「下一步动作」 → 执行动作拿到结果
+→ 把结果塞回上下文 → 再问模型「下一步」 → …… → 模型说「完成了」→ 退出
+</code></pre>
+<p>这里有三个关键点，比任何框架名字都重要：</p>
+<ol>
+<li><strong>上下文窗口就是它的全部记忆</strong>。模型没有跨回合的「大脑」，每一次思考都只看得见窗口里现有的 token。工具结果、技能文档、历史对话，全都要塞进去才「存在」。</li>
+<li><strong>工具是它唯一的手脚</strong>。模型自己只能输出文字；要读写文件、查数据库、发请求，必须调用一个外部函数，并把结果读回来。</li>
+<li><strong>循环由模型自己决定何时结束</strong>。不是你写 <code>for i in 0..10</code>，而是模型每轮判断「目标达成了吗」。判断错了，就会像选项二那样瞎忙。</li>
+</ol>
+<p>值得注意的一个转向：Anthropic 在复盘里把这件事概括成 <strong>「code is all you need」</strong>——Claude Code 表面是编程助手，本质是一个「恰好通过代码干活」的通用智能体。Bash 加文件系统，就是它的手脚（这也正是本仓库 <a href="SKILL.html"><code>src/SKILL.md</code></a> 里那个 Rust Playground 技能的工作方式）。</p>
+<h3 id="22-用零依赖-rust-写一个玩具-agent"><a class="header" href="#22-用零依赖-rust-写一个玩具-agent">2.2 用零依赖 Rust 写一个「玩具 Agent」</a></h3>
+<p>真正的 Agent 里，「思考」由大模型完成。为了看清循环本身，我们用一个确定性的 <code>decide</code> 函数冒充模型——它根据观察到的数字决定下一步动作。这段代码不依赖任何第三方 crate，可以直接丢进 <a href="https://play.rust-lang.org/">Rust Playground</a> 运行。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#I1tkZXJpdmUoRGVidWcpXQplbnVtIEFjdGlvbiB7CiAgICBDYWxsKFN0cmluZyksIC8vIOiwg+eUqOS4gOS4quW3peWFtwogICAgRG9uZShTdHJpbmcpLCAvLyDku7vliqHlrozmiJAKfQoKLy8g5YaS5YWFIExMTe+8muecn+WunuWunueOsOmHjO+8jOi/memHjOaYr+S4gOasoeaooeWei+aOqOeQhgpmbiBkZWNpZGUoZ29hbDogaTMyLCBvYnNlcnZlZDogaTMyKSAtPiBBY3Rpb24gewogICAgaWYgb2JzZXJ2ZWQgPj0gZ29hbCB7CiAgICAgICAgQWN0aW9uOjpEb25lKGZvcm1hdCEoIui+vuagh++8mntvYnNlcnZlZH0g4omlIHtnb2FsfSIpKQogICAgfSBlbHNlIHsKICAgICAgICBBY3Rpb246OkNhbGwoIisxIi50b19zdHJpbmcoKSkKICAgIH0KfQoKLy8g5YaS5YWF5bel5YW377ya55yf5a6e5a6e546w6YeM77yM6L+Z6YeM5Y+v6IO95piv6K+75YaZ5paH5Lu244CB5p+l5pWw5o2u5bqT44CB5Y+RIEhUVFAg6K+35rGCCmZuIGNhbGxfdG9vbChuYW1lOiAmc3RyLCB2YWx1ZTogaTMyKSAtPiBpMzIgewogICAgbWF0Y2ggbmFtZSB7CiAgICAgICAgIisxIiA9PiB2YWx1ZSArIDEsCiAgICAgICAgXyA9PiB2YWx1ZSwKICAgIH0KfQoKZm4gYWdlbnRfbG9vcChnb2FsOiBpMzIpIC0+IFN0cmluZyB7CiAgICBsZXQgbXV0IG9ic2VydmVkID0gMDsgLy8g5LiK5LiL5paH56qX5Y+j6YeM55qE44CM5b2T5YmN54q25oCB44CNCiAgICBmb3IgdHVybiBpbiAxLi49MTAwIHsKICAgICAgICAvLyAxLiDmgJ3ogIPvvJrmiornm67moIfkuI7op4Llr5/nu5PmnpzkuqTnu5nmqKHlnovvvIzlvpfliLDkuIvkuIDmraXliqjkvZwKICAgICAgICBsZXQgYWN0aW9uID0gZGVjaWRlKGdvYWwsIG9ic2VydmVkKTsKICAgICAgICBwcmludGxuISgi56ysIHt0dXJuOjJ9IOi9riB8IOinguWvnyA9IHtvYnNlcnZlZDoyfSB8IOWKqOS9nCA9IHthY3Rpb246P30iKTsKCiAgICAgICAgLy8gMi4g6KGM5YqoIG9yIOe7k+adnwogICAgICAgIG1hdGNoIGFjdGlvbiB7CiAgICAgICAgICAgIEFjdGlvbjo6Q2FsbCh0b29sKSA9PiB7CiAgICAgICAgICAgICAgICAvLyAzLiDmiorlt6Xlhbfnu5PmnpzloZ7lm57kuIrkuIvmlofvvIzov5vlhaXkuIvkuIDova4KICAgICAgICAgICAgICAgIG9ic2VydmVkID0gY2FsbF90b29sKCZ0b29sLCBvYnNlcnZlZCk7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgQWN0aW9uOjpEb25lKG1zZykgPT4gcmV0dXJuIG1zZywKICAgICAgICB9CiAgICB9CiAgICAi6LaF6L+H5pyA5aSn6L2u5qyh77yM5Yik5a6a5aSx6LSlIi50b19zdHJpbmcoKQp9CgpmbiBtYWluKCkgewogICAgcHJpbnRsbiEoInt9IiwgYWdlbnRfbG9vcCg1KSk7Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">#[derive(Debug)]
+enum Action {
+    Call(String), // 调用一个工具
+    Done(String), // 任务完成
+}
+
+// 冒充 LLM：真实实现里，这里是一次模型推理
+fn decide(goal: i32, observed: i32) -&gt; Action {
+    if observed &gt;= goal {
+        Action::Done(format!("达标：{observed} ≥ {goal}"))
+    } else {
+        Action::Call("+1".to_string())
+    }
+}
+
+// 冒充工具：真实实现里，这里可能是读写文件、查数据库、发 HTTP 请求
+fn call_tool(name: &amp;str, value: i32) -&gt; i32 {
+    match name {
+        "+1" =&gt; value + 1,
+        _ =&gt; value,
+    }
+}
+
+fn agent_loop(goal: i32) -&gt; String {
+    let mut observed = 0; // 上下文窗口里的「当前状态」
+    for turn in 1..=100 {
+        // 1. 思考：把目标与观察结果交给模型，得到下一步动作
+        let action = decide(goal, observed);
+        println!("第 {turn:2} 轮 | 观察 = {observed:2} | 动作 = {action:?}");
+
+        // 2. 行动 or 结束
+        match action {
+            Action::Call(tool) =&gt; {
+                // 3. 把工具结果塞回上下文，进入下一轮
+                observed = call_tool(&amp;tool, observed);
+            }
+            Action::Done(msg) =&gt; return msg,
+        }
+    }
+    "超过最大轮次，判定失败".to_string()
+}
+
+fn main() {
+    println!("{}", agent_loop(5));
+}</code></pre>
+<p>把 <code>decide</code> 换成一次真正的模型调用、把 <code>call_tool</code> 换成 MCP 客户端，这段玩具代码就变成了生产级 Agent 的骨架。<strong>框架会换，这个循环不会。</strong></p>
+<h3 id="23-循环的三个常见故障"><a class="header" href="#23-循环的三个常见故障">2.3 循环的三个常见故障</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>问题</th><th>原因</th><th>修复方式</th></tr>
+</thead>
+<tbody>
+<tr><td>原地打转，反复调同一个工具</td><td>工具结果没写进上下文，模型每轮都以为「还没做」</td><td>把完整结果（含错误）回灌上下文；记录已尝试动作</td></tr>
+<tr><td>越跑越慢、后面开始忘事</td><td>上下文被工具输出撑爆，早期信息被截断</td><td>压缩历史、只保留摘要；把大块数据留在工具侧（见 Skill 的脚本）</td></tr>
+<tr><td>提前宣布完成</td><td>模型对「完成」的判断没有依据</td><td>用可执行校验（测试、断言、文件比对）代替模型自评</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="三skill给-agent-看的岗位手册"><a class="header" href="#三skill给-agent-看的岗位手册">三、Skill：给 Agent 看的「岗位手册」</a></h2>
+<h3 id="31-一个技能就是一个文件夹"><a class="header" href="#31-一个技能就是一个文件夹">3.1 一个技能就是一个文件夹</a></h3>
+<p>Skill 的格式刻意做得极简——一个目录，核心是一个带 YAML 头部的 <code>SKILL.md</code>：</p>
+<pre><code>my-skill/
+├── SKILL.md          # 必需：元数据 + 操作指令
+├── scripts/          # 可选：可执行代码（确定性、不占上下文）
+├── references/       # 可选：详细文档，用到才读
+└── assets/           # 可选：模板、素材
+</code></pre>
+<p><code>SKILL.md</code> 开头是这样一段元数据（这就是本仓库 <a href="SKILL.html"><code>src/SKILL.md</code></a> 的真实写法）：</p>
+<pre><code class="language-yaml">---
+name: rust-playground
+description: 将Rust代码发送到Rust Playground进行评估并返回执行结果
+---
+</code></pre>
+<p><code>name</code> 和 <code>description</code> 是必填的。<strong><code>description</code> 是整个技能最关键的字段</strong>——Agent 在启动时只能看到它，靠它判断「这个任务要不要翻这本手册」。描述写得太笼统，技能就永远不会被触发；写得足够具体（包含触发场景和关键词），才会被正确选中。</p>
+<h3 id="32-渐进式披露省上下文的核心机关"><a class="header" href="#32-渐进式披露省上下文的核心机关">3.2 渐进式披露：省上下文的核心机关</a></h3>
+<p>如果有几十个技能，把它们的全部内容一开局就塞进上下文，窗口立刻爆掉。Skill 的解法是<strong>渐进式披露（progressive disclosure）</strong>，分三层加载：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>层级</th><th>加载时机</th><th>内容</th><th>大致体积</th></tr>
+</thead>
+<tbody>
+<tr><td>第一层：发现</td><td>启动时，常驻</td><td>每个技能的 <code>name</code> + <code>description</code></td><td>~50 token / 个</td></tr>
+<tr><td>第二层：激活</td><td>任务匹配时</td><td>完整 <code>SKILL.md</code> 正文</td><td>~500 token / 个</td></tr>
+<tr><td>第三层：执行</td><td>真正需要时</td><td><code>references/</code> 文档、<code>scripts/</code> 脚本</td><td>数千 token，或干脆不进上下文</td></tr>
+</tbody>
+</table>
+</div>
+<p>这像一本组织良好的手册：先看目录（元数据），翻到相关章节（SKILL.md），必要时才去查附录（参考文档）。好处是<strong>可挂载的技能数量几乎不受上下文限制</strong>，而且技能之间可以自由组合。</p>
+<p>脚本这一层尤其巧妙：「把列表排序」用模型逐 token 生成，又贵又不可靠；直接跑一段排序代码，又快又确定。训练和文档可以进上下文，可执行代码只需被调用——这也解释了为什么 Skill 适合装「流程 + 脚本」，而不是装一大段背景知识。</p>
+<h3 id="33-技能到底是哪种知识"><a class="header" href="#33-技能到底是哪种知识">3.3 技能到底是哪种「知识」</a></h3>
+<p>有四种容易混淆的东西，官方给过一个很实用的区分：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>形态</th><th>回答的问题</th><th>特性</th><th>类比</th></tr>
+</thead>
+<tbody>
+<tr><td>Prompt</td><td>「这次临时注意什么」</td><td>即时、一次性、被动</td><td>口头交代一句</td></tr>
+<tr><td>Project 知识库</td><td>「关于这个主题该知道什么」</td><td>静态、始终加载</td><td>放在工位上的资料夹</td></tr>
+<tr><td><strong>Skill</strong></td><td>「这类活该怎么干」</td><td>程序性、按需激活、跨会话持久</td><td>员工培训手册</td></tr>
+<tr><td>Subagent</td><td>「谁能独立把这件事做完」</td><td>有自己的上下文和工具权限</td><td>一个专职同事</td></tr>
+</tbody>
+</table>
+</div>
+<p>一句话记忆：<strong>Project 说「这是你需要知道的」，Skill 说「这是做事的步骤」。</strong> 而且它们可以叠加：一个专职 Subagent 完全可以调用 Skill 来获得某个领域的规范做法。</p>
+<p>Agent Skills 最初由 Anthropic 开发，2025 年末作为开放标准发布（规范在 <code>github.com/agentskills/agentskills</code>），随后被 OpenAI Codex、Cursor、GitHub Copilot、Gemini CLI 等一大批产品采纳。<code>SKILL.md</code> 这个格式本身，成了跨产品通用的「技能普通话」。</p>
+<hr>
+<h2 id="四mcpai-应用的-usb-c"><a class="header" href="#四mcpai-应用的-usb-c">四、MCP：AI 应用的 USB-C</a></h2>
+<h3 id="41-它解决的到底是什么问题"><a class="header" href="#41-它解决的到底是什么问题">4.1 它解决的到底是什么问题</a></h3>
+<p>假设有 M 个 AI 应用、N 个外部系统。没有标准协议时，每家都要为每家写适配，工作量是 <strong>M × N</strong>：</p>
+<pre class="mermaid">flowchart LR
+    subgraph B[没有 MCP：M × N 条专线]
+        direction LR
+        A1[App 1] --- D1[数据源 1]
+        A1 --- D2[数据源 2]
+        A2[App 2] --- D1
+        A2 --- D2
+        A3[App 3] --- D1
+        A3 --- D2
+    end
+</pre>
+
+<p>MCP 把这个乘法变成加法 <strong>M + N</strong>：每个应用实现一个客户端，每个系统实现一个服务端，中间用统一协议对话。官方的类比是 <strong>USB-C</strong>——接口统一后，设备随便插。</p>
+<pre class="mermaid">flowchart LR
+    subgraph C[有了 MCP：M + N 个插头]
+        direction LR
+        B1[App 1] --- H((MCP))
+        B2[App 2] --- H
+        B3[App 3] --- H
+        H --- E1[数据源 1]
+        H --- E2[数据源 2]
+    end
+</pre>
+
+<h3 id="42-三方角色hostclientserver"><a class="header" href="#42-三方角色hostclientserver">4.2 三方角色：Host、Client、Server</a></h3>
+<p>MCP 采用客户端—服务端架构，但要区分三个角色，这是最容易搞混的地方：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>角色</th><th>是谁</th><th>职责</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Host（宿主）</strong></td><td>AI 应用本身，如 Claude Code、VS Code</td><td>协调全局，为<strong>每个</strong>服务端创建一个客户端</td></tr>
+<tr><td><strong>Client（客户端）</strong></td><td>Host 内部的组件</td><td>与某个服务端维持一条专用连接，把上下文取回来</td></tr>
+<tr><td><strong>Server（服务端）</strong></td><td>提供上下文的程序</td><td>暴露工具、资源、提示词；可本地可远程</td></tr>
+</tbody>
+</table>
+</div>
+<p>关键点：<strong>Server 指的是「提供上下文的那个程序」，与它运行在哪里无关。</strong> 用 stdio 传输时它跑在本机（本地服务器），用 Streamable HTTP 时它跑在远端（远程服务器）。VS Code 连 Sentry 和本地文件系统，就是两个客户端对两个服务端。</p>
+<h3 id="43-两层协议json-rpc--传输"><a class="header" href="#43-两层协议json-rpc--传输">4.3 两层协议：JSON-RPC + 传输</a></h3>
+<p>MCP 分两层，理解这个分层，就不会被「它到底用 HTTP 还是 stdio」绕晕：</p>
+<ul>
+<li><strong>数据层（内层）</strong>：基于 <strong>JSON-RPC 2.0</strong>，定义消息结构和语义——能力发现、工具/资源/提示词、通知等。这层与传输无关。</li>
+<li><strong>传输层（外层）</strong>：定义消息怎么送。目前两种：
+<ul>
+<li><strong>stdio</strong>：本地进程的标准输入输出，无网络开销，通常一对一；</li>
+<li><strong>Streamable HTTP</strong>：单个 HTTP 端点收 POST，可用 SSE 流式回传，支持远程和一对多，推荐用 OAuth 认证。</li>
+</ul>
+</li>
+</ul>
+<p>数据层给服务端定义了三个核心「原语」（客户端用它来发现和执行）：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>原语</th><th>是什么</th><th>谁控制</th><th>例子</th></tr>
+</thead>
+<tbody>
+<tr><td>Tools 工具</td><td>可被模型调用执行动作的函数</td><td>模型决定调用</td><td>读写文件、查库、发请求</td></tr>
+<tr><td>Resources 资源</td><td>提供上下文数据的数据源</td><td>应用决定加载</td><td>文件内容、数据库记录</td></tr>
+<tr><td>Prompts 提示词</td><td>可复用的交互模板</td><td>用户决定使用</td><td>系统提示、少样本示例</td></tr>
+</tbody>
+</table>
+</div>
+<p>每个原语都有对应的发现方法（<code>tools/list</code>、<code>resources/list</code>……），执行用 <code>tools/call</code>。这个「先列表、后调用」的设计让工具清单可以是动态的。客户端还可以反向提供 <code>elicitation</code>（向用户追问信息）等能力。</p>
+<p>一个最小的 <code>tools/list</code> 请求与响应长这样（就是纯 JSON-RPC 2.0）：</p>
+<pre><code class="language-json">// 请求
+{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}
+
+// 响应
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "tools": [{
+      "name": "add",
+      "description": "两数相加",
+      "inputSchema": {"type":"object",
+        "properties":{"a":{"type":"number"},"b":{"type":"number"}}}
+    }]
+  }
+}
+</code></pre>
+<h3 id="44-版本演进这条协议还在快速长大"><a class="header" href="#44-版本演进这条协议还在快速长大">4.4 版本演进：这条协议还在快速长大</a></h3>
+<p>MCP 由 Anthropic 于 2024 年 11 月开源，主要版本节点：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>版本</th><th>关键变化</th></tr>
+</thead>
+<tbody>
+<tr><td>2024-11-05</td><td>初版，远程传输用 HTTP + SSE</td></tr>
+<tr><td>2025-03-26</td><td>引入 <strong>Streamable HTTP</strong> 取代 HTTP + SSE；加入工具注解等</td></tr>
+<tr><td>2026-07-28</td><td>Streamable HTTP 移除 GET 流端点与协议层会话；引入多轮往返请求（MRTR）；<code>sampling</code> 弃用，建议直接对接模型 API</td></tr>
+</tbody>
+</table>
+</div>
+<p>顺带两句安全现实：服务端<strong>必须校验 <code>Origin</code> 头</strong>以防 DNS 重绑定攻击，本地运行应只绑定 <code>127.0.0.1</code>；MCP 只管「上下文怎么交换」，不管「应用怎么用模型」——把鉴权、权限、审计留给了实现者。这也是为什么「给智能体接一个来路不明的 MCP 服务器」在今天就相当于「给陌生人一把家门钥匙」。</p>
+<h3 id="45-零依赖-rust手搓一个玩具-mcp-服务端"><a class="header" href="#45-零依赖-rust手搓一个玩具-mcp-服务端">4.5 零依赖 Rust：手搓一个玩具 MCP 服务端</a></h3>
+<p>真实的 MCP 开发请用官方 SDK。但为了看懂协议本质，下面只用标准库，手动拼 JSON 字符串，实现一个能回应 <code>initialize</code> 和 <code>tools/list</code> 的 stdio 服务端骨架。Playground 可直接运行——它演示的是<strong>协议形状</strong>，不是生产实现。</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#dXNlIHN0ZDo6aW86OntzZWxmLCBCdWZSZWFkLCBXcml0ZX07CgovLyDmnIDnroDlrp7njrDvvJrnnJ/pobnnm67or7fnlKggc2VyZGUgKyDlrpjmlrkgU0RL77yM5Yir5omL5ou8IEpTT04KZm4gaGFuZGxlKGxpbmU6ICZzdHIpIC0+IFN0cmluZyB7CiAgICAvLyDlj6rnnIvmlrnms5XlkI3vvIzlv73nlaXlhbbkvZnlrZfmrrXvvIjnjqnlhbfniYjvvIkKICAgIGlmIGxpbmUuY29udGFpbnMoIlwidG9vbHMvbGlzdFwiIikgewogICAgICAgIHIjInsianNvbnJwYyI6IjIuMCIsImlkIjoxLCJyZXN1bHQiOnsidG9vbHMiOlsKICAgICAgICAgICAgeyJuYW1lIjoiYWRkIiwiZGVzY3JpcHRpb24iOiLkuKTmlbDnm7jliqAiLCJpbnB1dFNjaGVtYSI6eyJ0eXBlIjoib2JqZWN0In19CiAgICAgICAgXX19IiMKICAgICAgICAudG9fc3RyaW5nKCkKICAgIH0gZWxzZSBpZiBsaW5lLmNvbnRhaW5zKCJcImluaXRpYWxpemVcIiIpIHsKICAgICAgICByIyJ7Impzb25ycGMiOiIyLjAiLCJpZCI6MSwicmVzdWx0Ijp7CiAgICAgICAgICAgICJwcm90b2NvbFZlcnNpb24iOiIyMDI2LTA3LTI4IiwKICAgICAgICAgICAgImNhcGFiaWxpdGllcyI6eyJ0b29scyI6e319LAogICAgICAgICAgICAic2VydmVySW5mbyI6eyJuYW1lIjoidG95LW1jcCIsInZlcnNpb24iOiIwLjEuMCJ9CiAgICAgICAgfX0iIwogICAgICAgIC50b19zdHJpbmcoKQogICAgfSBlbHNlIHsKICAgICAgICByIyJ7Impzb25ycGMiOiIyLjAiLCJpZCI6MSwiZXJyb3IiOnsiY29kZSI6LTMyNjAxLCJtZXNzYWdlIjoiTWV0aG9kIG5vdCBmb3VuZCJ9fSIjCiAgICAgICAgICAgIC50b19zdHJpbmcoKQogICAgfQp9CgpmbiBtYWluKCkgewogICAgbGV0IHN0ZGluID0gaW86OnN0ZGluKCk7CiAgICBsZXQgc3Rkb3V0ID0gaW86OnN0ZG91dCgpOwogICAgbGV0IG11dCBvdXQgPSBzdGRvdXQubG9jaygpOwoKICAgIC8vIHN0ZGlvIOS8oOi+k++8muS4gOihjOS4gOS4qiBKU09OLVJQQyDmtojmga8KICAgIGZvciBsaW5lIGluIHN0ZGluLmxvY2soKS5saW5lcygpIHsKICAgICAgICBsZXQgcmVxdWVzdCA9IGxpbmUudW53cmFwX29yX2RlZmF1bHQoKTsKICAgICAgICBpZiByZXF1ZXN0LnRyaW0oKS5pc19lbXB0eSgpIHsKICAgICAgICAgICAgY29udGludWU7CiAgICAgICAgfQogICAgICAgIGxldCByZXNwb25zZSA9IGhhbmRsZSgmcmVxdWVzdCk7CiAgICAgICAgd3JpdGVsbiEob3V0LCAie3Jlc3BvbnNlfSIpLmV4cGVjdCgi5YaZ5ZON5bqU5aSx6LSlIik7CiAgICAgICAgb3V0LmZsdXNoKCkuZXhwZWN0KCLliLfmlrDlpLHotKUiKTsKICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">use std::io::{self, BufRead, Write};
+
+// 最简实现：真项目请用 serde + 官方 SDK，别手拼 JSON
+fn handle(line: &amp;str) -&gt; String {
+    // 只看方法名，忽略其余字段（玩具版）
+    if line.contains("\"tools/list\"") {
+        r#"{"jsonrpc":"2.0","id":1,"result":{"tools":[
+            {"name":"add","description":"两数相加","inputSchema":{"type":"object"}}
+        ]}}"#
+        .to_string()
+    } else if line.contains("\"initialize\"") {
+        r#"{"jsonrpc":"2.0","id":1,"result":{
+            "protocolVersion":"2026-07-28",
+            "capabilities":{"tools":{}},
+            "serverInfo":{"name":"toy-mcp","version":"0.1.0"}
+        }}"#
+        .to_string()
+    } else {
+        r#"{"jsonrpc":"2.0","id":1,"error":{"code":-32601,"message":"Method not found"}}"#
+            .to_string()
+    }
+}
+
+fn main() {
+    let stdin = io::stdin();
+    let stdout = io::stdout();
+    let mut out = stdout.lock();
+
+    // stdio 传输：一行一个 JSON-RPC 消息
+    for line in stdin.lock().lines() {
+        let request = line.unwrap_or_default();
+        if request.trim().is_empty() {
+            continue;
+        }
+        let response = handle(&amp;request);
+        writeln!(out, "{response}").expect("写响应失败");
+        out.flush().expect("刷新失败");
+    }
+}</code></pre>
+<pre><code class="language-shell"># 手测：把两行 JSON 喂给程序，看它怎么回
+printf '%s\n' \
+  '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
+  '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
+  | cargo run --quiet
+</code></pre>
+<p>Host 启动时正是这样拉起服务端、握手、列工具，然后把工具清单交给模型——接下来就轮到 Agent 的循环上场了。</p>
+<hr>
+<h2 id="五串起来一句话需求是怎么被完成的"><a class="header" href="#五串起来一句话需求是怎么被完成的">五、串起来：一句话需求是怎么被完成的</a></h2>
+<p>回到开头那个「填 PDF + 写周报」。三件套协同的完整时序是：</p>
+<pre class="mermaid">sequenceDiagram
+    participant U as 用户
+    participant A as Agent（LLM + 循环）
+    participant S as Skill（填表手册）
+    participant M as MCP Client→Server
+
+    U-&gt;&gt;A: 填好 invoice.pdf 并整理周报
+    A-&gt;&gt;A: 扫描技能元数据，命中「PDF 表单」技能
+    A-&gt;&gt;S: 读取 SKILL.md（第二层）
+    S--&gt;&gt;A: 流程：读字段→逐项填→校验→套模板
+    Note over A,S: 需要表单细节时，再读 references/forms.md（第三层）
+    A-&gt;&gt;M: tools/list 发现可用工具
+    M--&gt;&gt;A: 工具清单（读 PDF、写文件、发邮件…）
+    loop Agent 循环
+        A-&gt;&gt;M: tools/call 读表单字段
+        M--&gt;&gt;A: 字段列表
+        A-&gt;&gt;A: 按手册填写、校验
+    end
+    A-&gt;&gt;M: tools/call 写出周报文件
+    M--&gt;&gt;A: 写入成功
+    A--&gt;&gt;U: 完成，文件在 ./weekly.md
+</pre>
+
+<p>注意三条线各司其职：</p>
+<ul>
+<li><strong>Skill 那条线</strong>给的是<strong>方法</strong>——「填表要先读字段再套模板」；</li>
+<li><strong>MCP 那条线</strong>给的是<strong>能力</strong>——「这里有读 PDF、写文件这些工具」；</li>
+<li><strong>Agent 那条线</strong>把它们<strong>编排</strong>成循环——「现在该读手册了」「现在该调工具了」「校验通过，收工」。</li>
+</ul>
+<p>这也是三者最容易被误解的地方：<strong>MCP 不替你思考，Skill 不替你动手，Agent 不凭空知道行业知识。</strong> 它们拼起来才是一个完整的「员工」。</p>
+<h3 id="一张对照表收尾"><a class="header" href="#一张对照表收尾">一张对照表收尾</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>维度</th><th>Agent</th><th>Skill</th><th>MCP</th></tr>
+</thead>
+<tbody>
+<tr><td>本质</td><td>决策循环</td><td>操作手册（文件）</td><td>通信协议</td></tr>
+<tr><td>回答什么</td><td>下一步做什么</td><td>这类活怎么干</td><td>怎么连上外部系统</td></tr>
+<tr><td>存活形态</td><td>运行中的进程</td><td>磁盘上的文件夹</td><td>规范 + SDK + 服务端</td></tr>
+<tr><td>上下文开销</td><td>循环本身占窗口</td><td>分层按需加载</td><td>工具清单进窗口</td></tr>
+<tr><td>换掉它，会怎样</td><td>没人做决策</td><td>有工具但乱用</td><td>有脑子但没手脚</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="六踩坑指南"><a class="header" href="#六踩坑指南">六、踩坑指南</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>问题</th><th>原因</th><th>修复方式</th></tr>
+</thead>
+<tbody>
+<tr><td>技能写好了却从不被触发</td><td><code>description</code> 太抽象，Agent 匹配不上</td><td>在描述里写清触发场景、关键词和「何时不该用」</td></tr>
+<tr><td>挂了很多技能后变笨变慢</td><td>第一层元数据过多，或一上来就加载全部正文</td><td>遵循三层披露；正文只放流程，细节移入 <code>references/</code></td></tr>
+<tr><td>接了 MCP 后工具太多，模型选错</td><td>一堆功能相近的工具同时出现在上下文</td><td>收敛工具数量、写清描述；用 <code>tools/list</code> 动态暴露子集</td></tr>
+<tr><td>Agent 反复调用同一个工具</td><td>工具报错信息没回灌，模型以为没执行</td><td>把结构化错误写回上下文，并设置最大轮次与去重</td></tr>
+<tr><td>安全隐患：数据外泄或误操作</td><td>来路不明的 MCP 服务端、权限过大、无人在环</td><td>只接可信服务端；最小权限；敏感动作走 <code>elicitation</code> 让用户确认</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="七结语"><a class="header" href="#七结语">七、结语</a></h2>
+<p>这一附录想留下的，不是三个名词，而是一个拆解问题的框架：</p>
+<blockquote>
+<p>当智能体干不好活时，先别急着换模型。问三句——<strong>它有没有一个会收敛的循环（Agent）？有没有正确的做事方法（Skill）？有没有够得着工具的手脚（MCP）？</strong></p>
+</blockquote>
+<p>工程上绝大多数「AI 不够聪明」的抱怨，拆开来看，都是这三样里某一件没到位。而这三样恰好都不是模型问题——它们是可以被设计、被审查、被版本管理的<strong>工程问题</strong>。</p>
+<p>从这个角度看，2025—2026 年真正的变化，不是模型突然更聪明了，而是我们终于学会了怎么给聪明模型配上<strong>手册</strong>和<strong>插座</strong>。</p>
+<hr>
+<h2 id="八延伸阅读"><a class="header" href="#八延伸阅读">八、延伸阅读</a></h2>
+<ul>
+<li><a href="https://modelcontextprotocol.io/">Model Context Protocol 官方文档</a>——架构、快速上手、安全实践</li>
+<li><a href="https://modelcontextprotocol.io/docs/draft/learn/architecture">MCP 架构总览</a>——Host / Client / Server 与数据层、传输层的权威定义</li>
+<li><a href="https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http">MCP 规范 2026-07-28：Streamable HTTP</a>——最新的传输层行为与向后兼容</li>
+<li><a href="https://skill.md/">Agent Skills 概览</a>——渐进式披露三层机制的开放标准</li>
+<li><a href="https://claude.com/blog/building-agents-with-skills-equipping-agents-for-specialized-work">Anthropic：Building agents with Skills</a>——「为什么我们不再造专用智能体，而是造技能」</li>
+<li><a href="https://claude.com/resources/articles/skills-explained">Skills explained: vs prompts, Projects, MCP, subagents</a>——五者关系的官方对照</li>
+<li><a href="https://github.com/agentskills/agentskills">Agent Skills 规范仓库</a>——<code>SKILL.md</code> 格式的开放标准</li>
+<li>本仓库 <a href="SKILL.html"><code>src/SKILL.md</code></a>——一个真实的最小技能示例（Rust Playground 评估）</li>
 </ul>
 
                     </main>

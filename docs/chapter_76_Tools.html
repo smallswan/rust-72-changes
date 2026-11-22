@@ -86,10 +86,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a5f292c5.js";
+            window.path_to_searchindex_js = "searchindex-99c235c8.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-a6286dd9.js"></script>
+        <script src="toc-5040a75a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -712,6 +712,71 @@ curl -X POST https://play.rust-lang.org/evaluate.json \
 </div>
 <p>成千上万的科学家实现 0→1 的发现，数以千万的工程师创造、集成大量的工具，数以亿计的普通人利用工具。</p>
 <p>一个伟大的工具，能够深入和广泛应用在各行各业，一个重要的前提是<strong>成本足够低、效率足够高</strong>。</p>
+<hr>
+<h2 id="十二ai所有人可用的强大工具"><a class="header" href="#十二ai所有人可用的强大工具">十二、AI：所有人可用的强大工具</a></h2>
+<blockquote>
+<p>过去电脑花了二十年才改变工作方式，而 AI 用自然语言交互，主动适应人类，无需人们重新学习操作逻辑。</p>
+<p>工具的历史，就是不断降低使用门槛的历史。当门槛低到「会说话就会用」，工具便不再是少数人的专利。</p>
+</blockquote>
+<p>第十一节说到人机交互从 GUI 到 CLI 再到代码——每一次演进，都在效率与门槛之间做取舍。AI 带来的自然语言交互，第一次同时把两头都占了：<strong>像 CLI 一样精确，像 GUI 一样无需背诵</strong>。</p>
+<h3 id="121-从学工具到说需求"><a class="header" href="#121-从学工具到说需求">12.1 从「学工具」到「说需求」</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>交互方式</th><th>使用门槛</th><th>效率</th><th>主要受众</th><th>你把精力花在哪</th></tr>
+</thead>
+<tbody>
+<tr><td>GUI 图形界面</td><td>低</td><td>中</td><td>所有人</td><td>找按钮、记位置</td></tr>
+<tr><td>CLI 命令行</td><td>中</td><td>高</td><td>运维、开发者</td><td>背命令、记参数</td></tr>
+<tr><td>代码</td><td>高</td><td>最高</td><td>程序员</td><td>学语法、调 BUG</td></tr>
+<tr><td><strong>自然语言 / AI</strong></td><td>极低</td><td>高</td><td><strong>所有人</strong></td><td><strong>把需求说清楚</strong></td></tr>
+</tbody>
+</table>
+</div>
+<p>前三种方式里，人是主动去适应机器的：你得先学会它的语言，它才肯替你干活。AI 把这个方向倒了过来——<strong>机器来适应人</strong>。你说「不要太甜、尽快送到」，它理解为「少糖、最近门店」；你说重庆话，它也听得懂。门槛从「掌握语法」降到了「表达意图」。</p>
+<p>这是一次性质的变化：过去的工具放大的是<strong>操作能力</strong>，AI 放大的开始是<strong>意图本身</strong>。</p>
+<h3 id="122-三个降到为什么是现在"><a class="header" href="#122-三个降到为什么是现在">12.2 三个「降到」：为什么是现在</a></h3>
+<p>AI 不是今天才聪明，而是今天才<strong>用得起、够得着、能干活</strong>。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>维度</th><th>变化</th><th>佐证</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>成本降到</strong></td><td>同等推理水平的调用成本，两年间降至约 <strong>1/280</strong></td><td>斯坦福《2025 年人工智能指数报告》；GPT-4 同等性能从 2022 年底约 20 美元/百万 token，降至 2025 年底约 0.40 美元</td></tr>
+<tr><td><strong>门槛降到</strong></td><td>从「你问我答」进化到「理解目标→拆解任务→调用工具→自主执行」</td><td>2026 年春节，中老年人通过健康 AI 应用、语音控家电等场景大规模接入，方言识别成为标配</td></tr>
+<tr><td><strong>能力升到</strong></td><td>从「会聊天」转向「能干活」：推理（Reasoning）+ 行动（Action）双循环</td><td>新一代模型可自主规划、调用工具、反思修正；这正是附录8 里 Agent / Skill / MCP 三件套解决的问题</td></tr>
+</tbody>
+</table>
+</div>
+<p>成本下降与用户增长互为因果：2026 年初 ChatGPT 周活跃用户约 9 亿；同期豆包、千问、深度求索的国内月活分别约 3.4 亿、1.7 亿、1.3 亿。价格走低让个人开发者和中小企业都用得起，用户规模又摊薄了成本。这个正循环，把 AI 从实验室推成了日常服务。</p>
+<h3 id="123-智能正在水电化"><a class="header" href="#123-智能正在水电化">12.3 智能正在「水电化」</a></h3>
+<p>当一样东西便宜到按量计费、随处可取，它就从「产品」变成了「基础设施」。</p>
+<ul>
+<li><strong>可计量</strong>：词元（token）成为智能的最小计费单位。智能第一次像电力一样，可以被计量、定价和交易——电价按千瓦时，智能按词元。</li>
+<li><strong>可及</strong>：算力与数据基础设施「水电化」，按需付费。开源模型与闭源模型的性能差距缩小，本地运行一个够用的模型，一条命令即可。</li>
+<li><strong>可组装</strong>：一个人 + AI，就能完成过去需要一个跨职能团队才能做的事——写脚本、做视觉、调代码、出分析报告。于是有了「超级个体」：传统生产力 = 人力 + 资本 + 土地，而新的生产力 = 个体创造力 + AI 算力 + 数据 + 数字基础设施。</li>
+</ul>
+<p>回到本章开头的话：<strong>「工具思维」认为计算机是最重要的工程应用工具</strong>。今天这句话可以往前推一步——AI 正在成为那个「最重要的工具」的下一形态：它不只是被使用，还能替你把别的工具串起来用。</p>
+<h3 id="124-也别把它神化"><a class="header" href="#124-也别把它神化">12.4 也别把它神化</a></h3>
+<p>普及的广度和应用的深度之间，仍有距离。麦肯锡 2025 年的全球调查显示，多数企业已在至少一项业务中使用 AI，但真正实现规模化应用的仍是少数。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>问题</th><th>原因</th><th>应对</th></tr>
+</thead>
+<tbody>
+<tr><td>用了，却没真正用透</td><td>停留在单点功能，各类工具彼此「聋哑」</td><td>打通场景与协议，让 AI 成为连接中枢，而非孤岛应用</td></tr>
+<tr><td>错误信息被当成答案</td><td>生成内容流畅但可能失真，老年人等群体甄别能力偏弱</td><td>关键结论交叉验证；保留人在环（human-in-the-loop）</td></tr>
+<tr><td>隐私与数据主权</td><td>免费服务往往以数据作为交换</td><td>敏感信息用本地或私有部署；明确数据边界</td></tr>
+<tr><td>把「会说」当成「会做」</td><td>自然语言掩盖了能力的真实边界</td><td>用可执行的结果验收，而非模型自评（见附录8 的踩坑指南）</td></tr>
+</tbody>
+</table>
+</div>
+<p>第十节那句语录在这里依然成立：<strong>「科学技术是一把双刃剑，既可以造福人类，也可以伤害人类，关键是掌握在谁的手中，用它来干什么。」</strong> AI 放大的是人的意图——包括好的和坏的。工具越强，使用者的判断力越重要。</p>
+<blockquote>
+<p>一个伟大的工具，前提是成本足够低、效率足够高；而一个真正普惠的工具，还要让每个人都能<strong>用好</strong>它。AI 正在从「可用」走向「人人可用」，剩下的那一半，是教育、是规范，也是每个使用者自己的判断力。</p>
+</blockquote>
 
                     </main>
 
