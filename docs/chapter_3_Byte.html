@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-99c235c8.js";
+            window.path_to_searchindex_js = "searchindex-73006c21.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-5040a75a.js"></script>
@@ -414,10 +414,23 @@ jm5n77yJ55Sf5rS75LKc5LKc77yIecOoIHnDqO+8ieWBpeW6t/Cjiqvwo4qr77yI
 bGnDuSBsacO577yJ6LSi6L+Q8Kiwu/CosLvvvIhix45vIGLHjm/vvIkK" | openssl enc -base64 -d
 </code></pre>
 <h3 id="334-rust-实现"><a class="header" href="#334-rust-实现">3.3.4 Rust 实现</a></h3>
-<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>#[test]
-fn base64_demo() {
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KYmFzZTY0ID0gIjAuMjIiCiovCnVzZSBiYXNlNjQ6OnsKICAgIGFscGhhYmV0LAogICAgZW5naW5lOjp7c2VsZiwgZ2VuZXJhbF9wdXJwb3NlfSwKICAgIEVuZ2luZSBhcyBfLAp9Owp1c2Ugc3RkOjpmczo6e3NlbGYsIEZpbGV9Owp1c2Ugc3RkOjppbzo6e0J1ZldyaXRlciwgV3JpdGV9OwoKZm4gbWFpbigpIHsKICAgIHByaW50bG4hKCJiYXNlNjRfZGVtbyIpOwoKICAgIGxldCBoZWxsbyA9IGIiaGVsbG8gcnVzdGFjZWFuczAwIjsKICAgIGxldCBlbmNvZGVkID0gZ2VuZXJhbF9wdXJwb3NlOjpTVEFOREFSRC5lbmNvZGUoaGVsbG8pOwogICAgbGV0IGRlY29kZWQgPSBnZW5lcmFsX3B1cnBvc2U6OlNUQU5EQVJELmRlY29kZSgmZW5jb2RlZCkudW53cmFwKCk7CgogICAgcHJpbnRsbiEoIm9yaWdpbjoge30iLCBzdHI6OmZyb21fdXRmOChoZWxsbykudW53cmFwKCkpOwogICAgcHJpbnRsbiEoImJhc2U2NCBlbmNvZGVkOiB7fSIsIGVuY29kZWQpOwogICAgcHJpbnRsbiEoImJhY2sgdG8gb3JpZ2luOiB7fSIsIHN0cjo6ZnJvbV91dGY4KCZkZWNvZGVkKS51bndyYXAoKSk7CgogICAgLy8gJlt1ODtUXS9TdHJpbmcgPD0gVmVjPHU4PiA9PiBCYXNlNjQgU3RyaW5nCiAgICBsZXQgY29tbW9uX2Jhc2U2NF9zdHIgPSBnZW5lcmFsX3B1cnBvc2U6OlNUQU5EQVJELmVuY29kZSgi5Lit5paHQDEyMyYiKTsKICAgIHByaW50bG4hKCJjb21tb24gYmFzZTY0IHN0cmluZzoge30iLCBjb21tb25fYmFzZTY0X3N0cik7CiAgICBsZXQgY29tbW9uX3ZlY3U4ID0gZ2VuZXJhbF9wdXJwb3NlOjpTVEFOREFSRAogICAgICAgIC5kZWNvZGUoJmNvbW1vbl9iYXNlNjRfc3RyKQogICAgICAgIC51bndyYXAoKTsKICAgIHByaW50bG4hKCJjb21tb24gc3RyaW5nOiB7fSIsIHN0cjo6ZnJvbV91dGY4KCZjb21tb25fdmVjdTgpLnVud3JhcCgpKTsKCiAgICBwcmludGxuISgi6YGT6Lev5a6J5YWo5Y2D5LiH5p2h77yM5a6J5YWo56ys5LiA5p2hIik7CgogICAgbGV0IHJlZm9ybSA9ICLllYbpnoXlj5jms5XjgIHmiIrmiIzlj5jms5XjgIHmlLnpnanlvIDmlL4iOwogICAgbGV0IGI2NCA9IGdlbmVyYWxfcHVycG9zZTo6U1RBTkRBUkQuZW5jb2RlKHJlZm9ybS5hc19ieXRlcygpKTsKICAgIHByaW50bG4hKCJ7fSIsIGI2NCk7CgogICAgY29uc3QgQ1VTVE9NX0VOR0lORTogZW5naW5lOjpHZW5lcmFsUHVycG9zZSA9CiAgICAgICAgZW5naW5lOjpHZW5lcmFsUHVycG9zZTo6bmV3KCZhbHBoYWJldDo6VVJMX1NBRkUsIGdlbmVyYWxfcHVycG9zZTo6Tk9fUEFEKTsKCiAgICBsZXQgYjY0X3VybCA9IENVU1RPTV9FTkdJTkUuZW5jb2RlKGIiaGVsbG8gaW50ZXJuZXR+Iik7CiAgICBwcmludGxuISgie30iLCBiNjRfdXJsKTsKCiAgICBsZXQgdXJsID0gU3RyaW5nOjpmcm9tKCLlv5jorrDov4fljrvkuI3kvYbmhI/lkbPnnYDog4zlj5vvvIzmhI/lkbPnnYDlsIbmnaXlj6/og73ov5jopoHph43mnaUiKTsKICAgIGxldCBsZXNzb24gPSBnZW5lcmFsX3B1cnBvc2U6OlVSTF9TQUZFLmVuY29kZSh1cmwuYXNfYnl0ZXMoKSk7CiAgICBwcmludGxuISgie30iLCBsZXNzb24pOwoKICAgIC8vIOWbvueJhyBCYXNlNjQKICAgIGxldCByZWFkX3Jlc3VsdCA9IGZzOjpyZWFkKCJleGFtcGxlcy9maWxlL1NlYU9STV9iYW5uZXIucG5nIik7CiAgICBpZiBsZXQgU29tZShwaWN0dXJlX2J5dGVzKSA9IHJlYWRfcmVzdWx0Lm9rKCkgewogICAgICAgIGxldCBiNjQgPSBnZW5lcmFsX3B1cnBvc2U6OlNUQU5EQVJELmVuY29kZSgmcGljdHVyZV9ieXRlcyk7CiAgICAgICAgcHJpbnRsbiEoCiAgICAgICAgICAgICJwaWN0dXJlX2J5dGVzIGxlbjp7fSAsYmFzZTY0IGxlbjp7fSIsCiAgICAgICAgICAgIHBpY3R1cmVfYnl0ZXMubGVuKCksCiAgICAgICAgICAgIGI2NC5sZW4oKQogICAgICAgICk7CiAgICAgICAgLy8g6L6T5Ye65LiA6KGM5a2X56ym5LiyCiAgICAgICAgZnM6OndyaXRlKCJleGFtcGxlcy9maWxlL1NlYU9STV9iYW5uZXIuYmFzZTY0LnR4dCIsIGI2NC5hc19ieXRlcygpKS51bndyYXAoKTsKCiAgICAgICAgLy8gNzYg5Liq5a2X56ym5re75Yqg5LiA5Liq5o2i6KGM56ym77yIQmFzZTY0IOaYryBBU0NJSe+8jOaMieWtl+iKguWIhuWdl+WNs+WPr++8iQogICAgICAgIC8vIHNoZWxsOiBmb2xkIC13IDc2IFNlYU9STV9iYW5uZXIuYmFzZTY0LnR4dCA+IFNlYU9STV9iYW5uZXIuYmFzZTY0LjMudHh0CiAgICAgICAgaWYgbGV0IE9rKGZpbGUpID0gRmlsZTo6Y3JlYXRlKCJleGFtcGxlcy9maWxlL1NlYU9STV9iYW5uZXIuYmFzZTY0LjMudHh0IikgewogICAgICAgICAgICBsZXQgbXV0IHdyaXRlciA9IEJ1ZldyaXRlcjo6bmV3KGZpbGUpOwogICAgICAgICAgICBmb3IgY2h1bmsgaW4gYjY0LmFzX2J5dGVzKCkuY2h1bmtzKDc2KSB7CiAgICAgICAgICAgICAgICB3cml0ZXIud3JpdGVfYWxsKGNodW5rKS51bndyYXAoKTsKICAgICAgICAgICAgICAgIHdyaXRlci53cml0ZV9hbGwoYiJcbiIpLnVud3JhcCgpOwogICAgICAgICAgICB9CiAgICAgICAgICAgIHdyaXRlci5mbHVzaCgpLnVud3JhcCgpOwogICAgICAgIH0KICAgIH0KfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+base64 = "0.22"
+*/
+use base64::{
+    alphabet,
+    engine::{self, general_purpose},
+    Engine as _,
+};
+use std::fs::{self, File};
+use std::io::{BufWriter, Write};
+
+fn main() {
+    println!("base64_demo");
+
     let hello = b"hello rustaceans00";
     let encoded = general_purpose::STANDARD.encode(hello);
     let decoded = general_purpose::STANDARD.decode(&amp;encoded).unwrap();
@@ -435,12 +448,6 @@ fn base64_demo() {
     println!("common string: {}", str::from_utf8(&amp;common_vecu8).unwrap());
 
     println!("道路安全千万条，安全第一条");
-
-    use base64::{
-        alphabet,
-        engine::{self, general_purpose},
-        Engine as _,
-    };
 
     let reform = "商鞅变法、戊戌变法、改革开放";
     let b64 = general_purpose::STANDARD.encode(reform.as_bytes());
@@ -466,28 +473,21 @@ fn base64_demo() {
             b64.len()
         );
         // 输出一行字符串
-        fs::write("examples/file/SeaORM_banner.base64.txt", b64.as_bytes());
+        fs::write("examples/file/SeaORM_banner.base64.txt", b64.as_bytes()).unwrap();
 
-        // 76 个字符添加一个换行符
+        // 76 个字符添加一个换行符（Base64 是 ASCII，按字节分块即可）
         // shell: fold -w 76 SeaORM_banner.base64.txt &gt; SeaORM_banner.base64.3.txt
         if let Ok(file) = File::create("examples/file/SeaORM_banner.base64.3.txt") {
             let mut writer = BufWriter::new(file);
-            let mut chars = b64.chars();
-            for line in &amp;chars.chunks(76usize) {
-                // println!("{}",line.collect::&lt;String&gt;());
-                // fs::write("examples/file/SeaORM_banner.base64.3.txt",line.collect::&lt;String&gt;());
-                let mut bytes = line.collect::&lt;String&gt;();
-
-                bytes.push_str("\n");
-                let count = writer.write(bytes.as_bytes());
-                //writer.write(b"\n");
+            for chunk in b64.as_bytes().chunks(76) {
+                writer.write_all(chunk).unwrap();
+                writer.write_all(b"\n").unwrap();
             }
-
-            writer.flush();
+            writer.flush().unwrap();
         }
     }
 }
-<span class="boring">}</span></code></pre>
+</code></pre>
 <h2 id="34-hex-编码"><a class="header" href="#34-hex-编码">3.4 Hex 编码</a></h2>
 <h3 id="341-编码原理"><a class="header" href="#341-编码原理">3.4.1 编码原理</a></h3>
 <p>Hex（Hexadecimal，十六进制）编码是将二进制数据转换为十六进制字符串表示的方法。每个字节（8 位）恰好对应两个十六进制字符：</p>

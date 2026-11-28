@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-99c235c8.js";
+            window.path_to_searchindex_js = "searchindex-73006c21.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-5040a75a.js"></script>
@@ -353,7 +353,96 @@ cargo run --example search_errors .\tests\
 mdbook serve --open
 </code></pre>
 <hr>
-<h2 id="六思维工具"><a class="header" href="#六思维工具">六、思维工具</a></h2>
+<h2 id="六程序员必备技能"><a class="header" href="#六程序员必备技能">六、程序员必备技能</a></h2>
+<p>会写代码只是起点，能稳定交付、协作和维护才算入门。技能可以分成三类：<strong>硬技能</strong>决定你能不能把需求变成可运行的代码，<strong>工程实践</strong>决定这些代码能不能长期活下去，<strong>软技能</strong>决定团队愿不愿意和你一起干。</p>
+<h3 id="硬技能"><a class="header" href="#硬技能">硬技能</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>技能</th><th>关键内容</th><th>检验方式</th></tr>
+</thead>
+<tbody>
+<tr><td>一门主力语言</td><td>语法、标准库、内存模型、并发模型</td><td>不看教程写出完整小项目</td></tr>
+<tr><td>数据结构与算法</td><td>数组、树、图、哈希、排序、复杂度分析</td><td>能说清选型的时间与空间代价</td></tr>
+<tr><td>Git</td><td>分支、合并、变基、冲突解决、回滚</td><td>多人协作不出事故</td></tr>
+<tr><td>调试与排错</td><td>日志、断点、最小复现、二分定位</td><td>能从现象追到根因</td></tr>
+<tr><td>测试</td><td>单元测试、集成测试、边界用例</td><td>改完代码敢放心重构</td></tr>
+<tr><td>数据库与 SQL</td><td>建模、索引、事务、慢查询分析</td><td>写得对，也查得快</td></tr>
+<tr><td>网络与操作系统</td><td>HTTP/TCP、进程线程、内存、权限</td><td>能定位问题出在哪一层</td></tr>
+<tr><td>阅读代码</td><td>官方文档、开源项目、他人实现</td><td>快速定位并安全复用</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="工程实践"><a class="header" href="#工程实践">工程实践</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>实践</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>显式错误处理</td><td>失败路径要处理，不静默吞错、不随便unwrap</td></tr>
+<tr><td>命名与模块边界</td><td>名字即文档，一个模块只做一件事</td></tr>
+<tr><td>小步重构</td><td>每次只改一件事，有测试兜底</td></tr>
+<tr><td>先测量后优化</td><td>不为猜测引入复杂度</td></tr>
+<tr><td>依赖与安全</td><td>锁定版本、及时更新、最小权限</td></tr>
+<tr><td>自动化</td><td>CI 跑构建和测试，减少手工步骤</td></tr>
+<tr><td>注释写“为什么“</td><td>“做了什么“交给代码本身表达</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="软技能"><a class="header" href="#软技能">软技能</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>技能</th><th>说明</th></tr>
+</thead>
+<tbody>
+<tr><td>清楚表达</td><td>把技术问题写成别人读得懂的 issue 和 PR</td></tr>
+<tr><td>会提问</td><td>给出最小复现、期望与实际、已尝试的方案</td></tr>
+<tr><td>任务拆分与估算</td><td>拆到可验证的粒度，主动暴露风险</td></tr>
+<tr><td>复盘与持续学习</td><td>定期回顾踩过的坑，形成自己的检查清单</td></tr>
+<tr><td>费曼式输出</td><td>讲不明白，就是还没真正懂（呼应下面的思维工具）</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="用-rust-练手错误处理与测试"><a class="header" href="#用-rust-练手错误处理与测试">用 Rust 练手：错误处理与测试</a></h3>
+<p>错误处理和测试最适合日常刻意练习——用 <code>Result</code> 让失败可见，用测试让改动可控。下面这段代码只依赖标准库，可直接放进 Rust Playground 运行：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#Ly8vIOeUqCBSZXN1bHQg5pi+5byP6KGo6L6+5aSx6LSl77yM6ICM5LiN5piv6L+U5Zue6buY6K6k5YC85oiW6Z2Z6buY5ZCe6ZSZCmZuIHBhcnNlX2FnZShpbnB1dDogJnN0cikgLT4gUmVzdWx0PHU4LCBTdHJpbmc+IHsKICAgIGxldCBhZ2UgPSBpbnB1dC50cmltKCkucGFyc2U6Ojx1OD4oKQogICAgICAgIC5tYXBfZXJyKHxffCBmb3JtYXQhKCLpnZ7ms5XlubTpvoQ6IHs6P30iLCBpbnB1dCkpPzsKICAgIGlmIGFnZSA+IDE1MCB7CiAgICAgICAgcmV0dXJuIEVycihmb3JtYXQhKCLlubTpvoTotoXlh7rlkIjnkIbojIPlm7Q6IHt9IiwgYWdlKSk7CiAgICB9CiAgICBPayhhZ2UpCn0KCiNbY2ZnKHRlc3QpXQptb2QgdGVzdHMgewogICAgdXNlIHN1cGVyOjpwYXJzZV9hZ2U7CgogICAgI1t0ZXN0XQogICAgZm4gYWNjZXB0c192YWxpZF9hZ2UoKSB7CiAgICAgICAgYXNzZXJ0X2VxIShwYXJzZV9hZ2UoIiA0MiAiKS51bndyYXAoKSwgNDIpOwogICAgfQoKICAgICNbdGVzdF0KICAgIGZuIHJlamVjdHNfaW52YWxpZF9pbnB1dCgpIHsKICAgICAgICBhc3NlcnQhKHBhcnNlX2FnZSgiYWJjIikuaXNfZXJyKCkpOwogICAgICAgIGFzc2VydCEocGFyc2VfYWdlKCIyMDAiKS5pc19lcnIoKSk7CiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBtYXRjaCBwYXJzZV9hZ2UoIiA0MiAiKSB7CiAgICAgICAgT2soYWdlKSA9PiBwcmludGxuISgi5bm06b6EOiB7fSIsIGFnZSksCiAgICAgICAgRXJyKGUpID0+IHByaW50bG4hKCLplJnor686IHt9IiwgZSksCiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/// 用 Result 显式表达失败，而不是返回默认值或静默吞错
+fn parse_age(input: &amp;str) -&gt; Result&lt;u8, String&gt; {
+    let age = input.trim().parse::&lt;u8&gt;()
+        .map_err(|_| format!("非法年龄: {:?}", input))?;
+    if age &gt; 150 {
+        return Err(format!("年龄超出合理范围: {}", age));
+    }
+    Ok(age)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::parse_age;
+
+    #[test]
+    fn accepts_valid_age() {
+        assert_eq!(parse_age(" 42 ").unwrap(), 42);
+    }
+
+    #[test]
+    fn rejects_invalid_input() {
+        assert!(parse_age("abc").is_err());
+        assert!(parse_age("200").is_err());
+    }
+}
+
+fn main() {
+    match parse_age(" 42 ") {
+        Ok(age) =&gt; println!("年龄: {}", age),
+        Err(e) =&gt; println!("错误: {}", e),
+    }
+}</code></pre>
+<hr>
+<h2 id="七思维工具"><a class="header" href="#七思维工具">七、思维工具</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -368,7 +457,7 @@ mdbook serve --open
 </table>
 </div>
 <hr>
-<h2 id="七参考资源"><a class="header" href="#七参考资源">七、参考资源</a></h2>
+<h2 id="八参考资源"><a class="header" href="#八参考资源">八、参考资源</a></h2>
 <ul>
 <li><a href="https://support.microsoft.com/en-us/office/excel-functions-by-category-5f91f4e9-7b42-46d2-9bd1-63f26a86c0eb">Excel functions (by category)</a></li>
 <li><a href="https://thenewstack.io/microsofts-programming-language-czar-anders-hejlsberg-the-interview/">Microsoft’s Programming Language Czar Anders Hejlsberg: The Interview</a></li>

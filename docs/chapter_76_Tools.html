@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-99c235c8.js";
+            window.path_to_searchindex_js = "searchindex-73006c21.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-5040a75a.js"></script>
@@ -680,13 +680,394 @@
 </table>
 </div>
 <hr>
-<h2 id="九rust-playground-运行原理"><a class="header" href="#九rust-playground-运行原理">九、Rust Playground 运行原理</a></h2>
+<h2 id="九rust-playground-运行原理与预置-crates"><a class="header" href="#九rust-playground-运行原理与预置-crates">九、Rust Playground 运行原理与预置 crates</a></h2>
 <pre><code class="language-shell"># 将 markdown 中的代码块发送到 Rust Playground API
 curl -X POST https://play.rust-lang.org/evaluate.json \
   -H "Content-Type: application/json" \
   -d @rust_code.json
 </code></pre>
-<p>Rust Playground 预置了下载量排名前 100 的 crates、Rust Cookbook 中的 crates，以及它们的所有依赖项。你可以直接使用它们，无需任何额外配置。</p>
+<p>Playground 会把代码发到远端沙箱编译运行，<strong>无需本地安装 Rust 工具链</strong>。它预置了大量常用 crate 及其全部依赖，在代码顶部用注释声明即可使用：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KcmFuZCA9ICIwLjEwIgoqLwpmbiBtYWluKCkgewogICAgcHJpbnRsbiEoInt9IiwgcmFuZDo6cmFuZG9tOjo8dTg+KCkpOwp9" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+rand = "0.10"
+*/
+fn main() {
+    println!("{}", rand::random::&lt;u8&gt;());
+}</code></pre>
+<blockquote>
+<p><strong>局限</strong>：版本由 Playground 统一预置，不能随意指定；依赖系统原生库（如 OpenSSL）的 crate 一般不可用。适合算法验证、语法实验和小型数学计算。</p>
+</blockquote>
+<h3 id="91-查询当前支持的-crates"><a class="header" href="#91-查询当前支持的-crates">9.1 查询当前支持的 crates</a></h3>
+<p>预置清单会随 Playground 更新而变化。用下面命令获取<strong>实时</strong>数据（返回 JSON）：</p>
+<pre><code class="language-shell">curl -sS https://play.rust-lang.org/meta/crates
+</code></pre>
+<p>每个元素形如 <code>{"name":"serde","version":"1.0.229","id":"serde"}</code>。统计总数：</p>
+<pre><code class="language-shell">curl -sS https://play.rust-lang.org/meta/crates | python -c "import json,sys; d=json.load(sys.stdin)['crates']; print('记录数:',len(d),'去重后:',len({c['name'] for c in d}))"
+</code></pre>
+<p>本次查询（2026-11-28）结果：<strong>534 条记录、488 个不同的 crate</strong>。下面按用途列出常用库及其预置版本。</p>
+<h3 id="92-常用-crates-分类速查"><a class="header" href="#92-常用-crates-分类速查">9.2 常用 crates 分类速查</a></h3>
+<p><strong>数学与科学计算</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">crate</th><th style="text-align: left">版本</th><th style="text-align: left">用途</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://docs.rs/nalgebra">nalgebra</a></td><td style="text-align: left">0.35.0</td><td style="text-align: left">线性代数、数组计算、大数/复数/有理数</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/ndarray">ndarray</a></td><td style="text-align: left">0.17.2</td><td style="text-align: left">线性代数、数组计算、大数/复数/有理数</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/num">num</a></td><td style="text-align: left">0.4.3</td><td style="text-align: left">线性代数、数组计算、大数/复数/有理数</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/num-bigint">num-bigint</a></td><td style="text-align: left">0.4.8</td><td style="text-align: left">线性代数、数组计算、大数/复数/有理数</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/num-complex">num-complex</a></td><td style="text-align: left">0.4.6</td><td style="text-align: left">线性代数、数组计算、大数/复数/有理数</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/num-rational">num-rational</a></td><td style="text-align: left">0.4.2</td><td style="text-align: left">线性代数、数组计算、大数/复数/有理数</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/num-integer">num-integer</a></td><td style="text-align: left">0.1.47</td><td style="text-align: left">线性代数、数组计算、大数/复数/有理数</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/num-traits">num-traits</a></td><td style="text-align: left">0.2.19</td><td style="text-align: left">线性代数、数组计算、大数/复数/有理数</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/num-conv">num-conv</a></td><td style="text-align: left">0.2.2</td><td style="text-align: left">线性代数、数组计算、大数/复数/有理数</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/approx">approx</a></td><td style="text-align: left">0.5.1</td><td style="text-align: left">线性代数、数组计算、大数/复数/有理数</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/matrixmultiply">matrixmultiply</a></td><td style="text-align: left">0.3.11</td><td style="text-align: left">线性代数、数组计算、大数/复数/有理数</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/simba">simba</a></td><td style="text-align: left">0.10.2</td><td style="text-align: left">线性代数、数组计算、大数/复数/有理数</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/libm">libm</a></td><td style="text-align: left">0.2.16</td><td style="text-align: left">线性代数、数组计算、大数/复数/有理数</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/half">half</a></td><td style="text-align: left">2.7.1</td><td style="text-align: left">线性代数、数组计算、大数/复数/有理数</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/ordered-float">ordered-float</a></td><td style="text-align: left">2.10.1</td><td style="text-align: left">线性代数、数组计算、大数/复数/有理数</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>随机数</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">crate</th><th style="text-align: left">版本</th><th style="text-align: left">用途</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://docs.rs/rand">rand</a></td><td style="text-align: left">0.10.3</td><td style="text-align: left">随机数生成、概率分布采样</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/rand_distr">rand_distr</a></td><td style="text-align: left">0.6.0</td><td style="text-align: left">随机数生成、概率分布采样</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/rand_chacha">rand_chacha</a></td><td style="text-align: left">0.10.0</td><td style="text-align: left">随机数生成、概率分布采样</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/rand_core">rand_core</a></td><td style="text-align: left">0.10.1</td><td style="text-align: left">随机数生成、概率分布采样</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/fastrand">fastrand</a></td><td style="text-align: left">2.5.0</td><td style="text-align: left">随机数生成、概率分布采样</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/getrandom">getrandom</a></td><td style="text-align: left">0.4.3</td><td style="text-align: left">随机数生成、概率分布采样</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>算法与数据结构</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">crate</th><th style="text-align: left">版本</th><th style="text-align: left">用途</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://docs.rs/itertools">itertools</a></td><td style="text-align: left">0.15.0</td><td style="text-align: left">迭代器工具、图论、哈希表与紧凑容器</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/petgraph">petgraph</a></td><td style="text-align: left">0.8.3</td><td style="text-align: left">迭代器工具、图论、哈希表与紧凑容器</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/hashbrown">hashbrown</a></td><td style="text-align: left">0.17.1</td><td style="text-align: left">迭代器工具、图论、哈希表与紧凑容器</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/indexmap">indexmap</a></td><td style="text-align: left">2.14.2</td><td style="text-align: left">迭代器工具、图论、哈希表与紧凑容器</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/either">either</a></td><td style="text-align: left">1.19.0</td><td style="text-align: left">迭代器工具、图论、哈希表与紧凑容器</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/arrayvec">arrayvec</a></td><td style="text-align: left">0.7.8</td><td style="text-align: left">迭代器工具、图论、哈希表与紧凑容器</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/smallvec">smallvec</a></td><td style="text-align: left">1.16.5</td><td style="text-align: left">迭代器工具、图论、哈希表与紧凑容器</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/heapless">heapless</a></td><td style="text-align: left">0.8.0</td><td style="text-align: left">迭代器工具、图论、哈希表与紧凑容器</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/dlv-list">dlv-list</a></td><td style="text-align: left">0.5.2</td><td style="text-align: left">迭代器工具、图论、哈希表与紧凑容器</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/arraydeque">arraydeque</a></td><td style="text-align: left">0.5.1</td><td style="text-align: left">迭代器工具、图论、哈希表与紧凑容器</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/borsh">borsh</a></td><td style="text-align: left">1.8.1</td><td style="text-align: left">迭代器工具、图论、哈希表与紧凑容器</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>序列化与数据格式</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">crate</th><th style="text-align: left">版本</th><th style="text-align: left">用途</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://docs.rs/serde">serde</a></td><td style="text-align: left">1.0.229</td><td style="text-align: left">JSON / YAML / TOML / CSV 等数据交换</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/serde_json">serde_json</a></td><td style="text-align: left">1.0.154</td><td style="text-align: left">JSON / YAML / TOML / CSV 等数据交换</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/serde_yaml">serde_yaml</a></td><td style="text-align: left">0.9.34+deprecated</td><td style="text-align: left">JSON / YAML / TOML / CSV 等数据交换</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/toml">toml</a></td><td style="text-align: left">1.2.1+spec-1.1.0</td><td style="text-align: left">JSON / YAML / TOML / CSV 等数据交换</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/ron">ron</a></td><td style="text-align: left">0.12.3</td><td style="text-align: left">JSON / YAML / TOML / CSV 等数据交换</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/csv">csv</a></td><td style="text-align: left">1.4.0</td><td style="text-align: left">JSON / YAML / TOML / CSV 等数据交换</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/json5">json5</a></td><td style="text-align: left">1.3.7</td><td style="text-align: left">JSON / YAML / TOML / CSV 等数据交换</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/rkyv">rkyv</a></td><td style="text-align: left">0.8.18</td><td style="text-align: left">JSON / YAML / TOML / CSV 等数据交换</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/serde-value">serde-value</a></td><td style="text-align: left">0.7.0</td><td style="text-align: left">JSON / YAML / TOML / CSV 等数据交换</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>日期与时间</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">crate</th><th style="text-align: left">版本</th><th style="text-align: left">用途</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://docs.rs/chrono">chrono</a></td><td style="text-align: left">0.4.45</td><td style="text-align: left">日期时间、时区、时间格式化</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/time">time</a></td><td style="text-align: left">0.3.55</td><td style="text-align: left">日期时间、时区、时间格式化</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/jiff">jiff</a></td><td style="text-align: left">0.2.43</td><td style="text-align: left">日期时间、时区、时间格式化</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/humantime">humantime</a></td><td style="text-align: left">2.4.0</td><td style="text-align: left">日期时间、时区、时间格式化</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>文本解析与匹配</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">crate</th><th style="text-align: left">版本</th><th style="text-align: left">用途</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://docs.rs/regex">regex</a></td><td style="text-align: left">1.13.1</td><td style="text-align: left">正则、解析器组合子、Unicode 文本处理</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/regex-automata">regex-automata</a></td><td style="text-align: left">0.4.18</td><td style="text-align: left">正则、解析器组合子、Unicode 文本处理</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/regex-syntax">regex-syntax</a></td><td style="text-align: left">0.8.11</td><td style="text-align: left">正则、解析器组合子、Unicode 文本处理</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/pest">pest</a></td><td style="text-align: left">2.9.6</td><td style="text-align: left">正则、解析器组合子、Unicode 文本处理</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/pest_derive">pest_derive</a></td><td style="text-align: left">2.9.6</td><td style="text-align: left">正则、解析器组合子、Unicode 文本处理</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/nom">nom</a></td><td style="text-align: left">8.0.0</td><td style="text-align: left">正则、解析器组合子、Unicode 文本处理</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/winnow">winnow</a></td><td style="text-align: left">1.0.5</td><td style="text-align: left">正则、解析器组合子、Unicode 文本处理</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/aho-corasick">aho-corasick</a></td><td style="text-align: left">1.1.5</td><td style="text-align: left">正则、解析器组合子、Unicode 文本处理</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/unicode-segmentation">unicode-segmentation</a></td><td style="text-align: left">1.13.3</td><td style="text-align: left">正则、解析器组合子、Unicode 文本处理</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/unicode-normalization">unicode-normalization</a></td><td style="text-align: left">0.1.26</td><td style="text-align: left">正则、解析器组合子、Unicode 文本处理</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/strsim">strsim</a></td><td style="text-align: left">0.11.1</td><td style="text-align: left">正则、解析器组合子、Unicode 文本处理</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/heck">heck</a></td><td style="text-align: left">0.5.0</td><td style="text-align: left">正则、解析器组合子、Unicode 文本处理</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/convert_case">convert_case</a></td><td style="text-align: left">0.10.0</td><td style="text-align: left">正则、解析器组合子、Unicode 文本处理</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>并发与异步</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">crate</th><th style="text-align: left">版本</th><th style="text-align: left">用途</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://docs.rs/rayon">rayon</a></td><td style="text-align: left">1.12.0</td><td style="text-align: left">并行迭代、通道、异步运行时与锁</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/crossbeam">crossbeam</a></td><td style="text-align: left">0.8.5</td><td style="text-align: left">并行迭代、通道、异步运行时与锁</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/crossbeam-channel">crossbeam-channel</a></td><td style="text-align: left">0.5.17</td><td style="text-align: left">并行迭代、通道、异步运行时与锁</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/crossbeam-deque">crossbeam-deque</a></td><td style="text-align: left">0.8.8</td><td style="text-align: left">并行迭代、通道、异步运行时与锁</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/tokio">tokio</a></td><td style="text-align: left">1.54.1</td><td style="text-align: left">并行迭代、通道、异步运行时与锁</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/futures">futures</a></td><td style="text-align: left">0.3.34</td><td style="text-align: left">并行迭代、通道、异步运行时与锁</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/async-trait">async-trait</a></td><td style="text-align: left">0.1.92</td><td style="text-align: left">并行迭代、通道、异步运行时与锁</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/parking_lot">parking_lot</a></td><td style="text-align: left">0.13.0</td><td style="text-align: left">并行迭代、通道、异步运行时与锁</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/once_cell">once_cell</a></td><td style="text-align: left">1.21.4</td><td style="text-align: left">并行迭代、通道、异步运行时与锁</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/thread_local">thread_local</a></td><td style="text-align: left">1.1.10</td><td style="text-align: left">并行迭代、通道、异步运行时与锁</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/mio">mio</a></td><td style="text-align: left">1.2.4</td><td style="text-align: left">并行迭代、通道、异步运行时与锁</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/async-compression">async-compression</a></td><td style="text-align: left">0.4.52</td><td style="text-align: left">并行迭代、通道、异步运行时与锁</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>日志与错误处理</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">crate</th><th style="text-align: left">版本</th><th style="text-align: left">用途</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://docs.rs/anyhow">anyhow</a></td><td style="text-align: left">1.0.104</td><td style="text-align: left">错误传播、结构化日志与链路追踪</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/thiserror">thiserror</a></td><td style="text-align: left">2.0.21</td><td style="text-align: left">错误传播、结构化日志与链路追踪</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/log">log</a></td><td style="text-align: left">0.4.35</td><td style="text-align: left">错误传播、结构化日志与链路追踪</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/env_logger">env_logger</a></td><td style="text-align: left">0.11.11</td><td style="text-align: left">错误传播、结构化日志与链路追踪</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/log4rs">log4rs</a></td><td style="text-align: left">1.4.0</td><td style="text-align: left">错误传播、结构化日志与链路追踪</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/tracing">tracing</a></td><td style="text-align: left">0.1.44</td><td style="text-align: left">错误传播、结构化日志与链路追踪</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/tracing-subscriber">tracing-subscriber</a></td><td style="text-align: left">0.3.23</td><td style="text-align: left">错误传播、结构化日志与链路追踪</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/syslog">syslog</a></td><td style="text-align: left">7.0.0</td><td style="text-align: left">错误传播、结构化日志与链路追踪</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>命令行与配置</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">crate</th><th style="text-align: left">版本</th><th style="text-align: left">用途</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://docs.rs/clap">clap</a></td><td style="text-align: left">4.6.7</td><td style="text-align: left">CLI 参数解析、配置文件读取</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/config">config</a></td><td style="text-align: left">0.15.27</td><td style="text-align: left">CLI 参数解析、配置文件读取</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/figment">figment</a></td><td style="text-align: left">0.10.19</td><td style="text-align: left">CLI 参数解析、配置文件读取</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/confy">confy</a></td><td style="text-align: left">2.0.0</td><td style="text-align: left">CLI 参数解析、配置文件读取</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/getopts">getopts</a></td><td style="text-align: left">0.2.24</td><td style="text-align: left">CLI 参数解析、配置文件读取</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Web 与网络</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">crate</th><th style="text-align: left">版本</th><th style="text-align: left">用途</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://docs.rs/reqwest">reqwest</a></td><td style="text-align: left">0.13.5</td><td style="text-align: left">HTTP 客户端/服务端、URL、HTML 抓取</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/hyper">hyper</a></td><td style="text-align: left">1.12.0</td><td style="text-align: left">HTTP 客户端/服务端、URL、HTML 抓取</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/http">http</a></td><td style="text-align: left">1.5.0</td><td style="text-align: left">HTTP 客户端/服务端、URL、HTML 抓取</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/url">url</a></td><td style="text-align: left">2.5.8</td><td style="text-align: left">HTTP 客户端/服务端、URL、HTML 抓取</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/scraper">scraper</a></td><td style="text-align: left">0.20.0</td><td style="text-align: left">HTTP 客户端/服务端、URL、HTML 抓取</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/tower">tower</a></td><td style="text-align: left">0.5.3</td><td style="text-align: left">HTTP 客户端/服务端、URL、HTML 抓取</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/tower-http">tower-http</a></td><td style="text-align: left">0.6.11</td><td style="text-align: left">HTTP 客户端/服务端、URL、HTML 抓取</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/tower-service">tower-service</a></td><td style="text-align: left">0.3.3</td><td style="text-align: left">HTTP 客户端/服务端、URL、HTML 抓取</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/percent-encoding">percent-encoding</a></td><td style="text-align: left">2.3.2</td><td style="text-align: left">HTTP 客户端/服务端、URL、HTML 抓取</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/mime">mime</a></td><td style="text-align: left">0.3.18</td><td style="text-align: left">HTTP 客户端/服务端、URL、HTML 抓取</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/mime_guess">mime_guess</a></td><td style="text-align: left">2.0.5</td><td style="text-align: left">HTTP 客户端/服务端、URL、HTML 抓取</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/http-body-util">http-body-util</a></td><td style="text-align: left">0.1.5</td><td style="text-align: left">HTTP 客户端/服务端、URL、HTML 抓取</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/cookie">cookie</a></td><td style="text-align: left">0.18.2</td><td style="text-align: left">HTTP 客户端/服务端、URL、HTML 抓取</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/cookie_store">cookie_store</a></td><td style="text-align: left">0.22.1</td><td style="text-align: left">HTTP 客户端/服务端、URL、HTML 抓取</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>密码学与安全</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">crate</th><th style="text-align: left">版本</th><th style="text-align: left">用途</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://docs.rs/sha2">sha2</a></td><td style="text-align: left">0.11.1</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/sha1_smol">sha1_smol</a></td><td style="text-align: left">1.0.1</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/md-5">md-5</a></td><td style="text-align: left">0.11.0</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/blake2">blake2</a></td><td style="text-align: left">0.11.0</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/hmac">hmac</a></td><td style="text-align: left">0.13.0</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/pbkdf2">pbkdf2</a></td><td style="text-align: left">0.13.0</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/argon2">argon2</a></td><td style="text-align: left">0.6.0</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/chacha20">chacha20</a></td><td style="text-align: left">0.10.2</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/digest">digest</a></td><td style="text-align: left">0.11.3</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/ring">ring</a></td><td style="text-align: left">0.17.14</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/rustls">rustls</a></td><td style="text-align: left">0.23.46</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/rustls-webpki">rustls-webpki</a></td><td style="text-align: left">0.103.16</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/zeroize">zeroize</a></td><td style="text-align: left">1.9.1</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/password-hash">password-hash</a></td><td style="text-align: left">0.6.1</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/base64">base64</a></td><td style="text-align: left">0.23.1</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/base64ct">base64ct</a></td><td style="text-align: left">1.8.3</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/tiny-keccak">tiny-keccak</a></td><td style="text-align: left">2.0.2</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/uuid">uuid</a></td><td style="text-align: left">1.29.2</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/const-oid">const-oid</a></td><td style="text-align: left">0.10.3</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/subtle">subtle</a></td><td style="text-align: left">2.6.1</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/aws-lc-rs">aws-lc-rs</a></td><td style="text-align: left">1.19.0</td><td style="text-align: left">哈希、消息认证、加密、TLS、凭据保护</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>数据库</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">crate</th><th style="text-align: left">版本</th><th style="text-align: left">用途</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://docs.rs/rusqlite">rusqlite</a></td><td style="text-align: left">0.42.0</td><td style="text-align: left">SQLite / PostgreSQL 驱动</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/postgres">postgres</a></td><td style="text-align: left">0.19.14</td><td style="text-align: left">SQLite / PostgreSQL 驱动</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/tokio-postgres">tokio-postgres</a></td><td style="text-align: left">0.7.18</td><td style="text-align: left">SQLite / PostgreSQL 驱动</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>图像与多媒体</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">crate</th><th style="text-align: left">版本</th><th style="text-align: left">用途</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://docs.rs/image">image</a></td><td style="text-align: left">0.25.10</td><td style="text-align: left">图像编解码、视频编码</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/png">png</a></td><td style="text-align: left">0.18.1</td><td style="text-align: left">图像编解码、视频编码</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/gif">gif</a></td><td style="text-align: left">0.14.2</td><td style="text-align: left">图像编解码、视频编码</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/tiff">tiff</a></td><td style="text-align: left">0.11.3</td><td style="text-align: left">图像编解码、视频编码</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/exr">exr</a></td><td style="text-align: left">1.74.3</td><td style="text-align: left">图像编解码、视频编码</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/rav1e">rav1e</a></td><td style="text-align: left">0.8.1</td><td style="text-align: left">图像编解码、视频编码</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/ravif">ravif</a></td><td style="text-align: left">0.13.0</td><td style="text-align: left">图像编解码、视频编码</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/qoi">qoi</a></td><td style="text-align: left">0.4.1</td><td style="text-align: left">图像编解码、视频编码</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/zune-jpeg">zune-jpeg</a></td><td style="text-align: left">0.5.15</td><td style="text-align: left">图像编解码、视频编码</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/image-webp">image-webp</a></td><td style="text-align: left">0.2.4</td><td style="text-align: left">图像编解码、视频编码</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>压缩与归档</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">crate</th><th style="text-align: left">版本</th><th style="text-align: left">用途</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://docs.rs/flate2">flate2</a></td><td style="text-align: left">1.1.11</td><td style="text-align: left">gzip、brotli、zstd、tar 打包压缩</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/brotli">brotli</a></td><td style="text-align: left">9.1.1</td><td style="text-align: left">gzip、brotli、zstd、tar 打包压缩</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/zstd">zstd</a></td><td style="text-align: left">0.14.4</td><td style="text-align: left">gzip、brotli、zstd、tar 打包压缩</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/bzip2">bzip2</a></td><td style="text-align: left">0.6.1</td><td style="text-align: left">gzip、brotli、zstd、tar 打包压缩</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/miniz_oxide">miniz_oxide</a></td><td style="text-align: left">0.9.1</td><td style="text-align: left">gzip、brotli、zstd、tar 打包压缩</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/tar">tar</a></td><td style="text-align: left">0.4.46</td><td style="text-align: left">gzip、brotli、zstd、tar 打包压缩</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>文件系统与路径</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">crate</th><th style="text-align: left">版本</th><th style="text-align: left">用途</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://docs.rs/glob">glob</a></td><td style="text-align: left">0.3.4</td><td style="text-align: left">目录遍历、临时文件、路径规范化</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/walkdir">walkdir</a></td><td style="text-align: left">2.5.0</td><td style="text-align: left">目录遍历、临时文件、路径规范化</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/tempfile">tempfile</a></td><td style="text-align: left">3.27.0</td><td style="text-align: left">目录遍历、临时文件、路径规范化</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/which">which</a></td><td style="text-align: left">8.0.6</td><td style="text-align: left">目录遍历、临时文件、路径规范化</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/dunce">dunce</a></td><td style="text-align: left">1.0.5</td><td style="text-align: left">目录遍历、临时文件、路径规范化</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/pathdiff">pathdiff</a></td><td style="text-align: left">0.2.3</td><td style="text-align: left">目录遍历、临时文件、路径规范化</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/home">home</a></td><td style="text-align: left">0.5.12</td><td style="text-align: left">目录遍历、临时文件、路径规范化</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/filetime">filetime</a></td><td style="text-align: left">0.2.29</td><td style="text-align: left">目录遍历、临时文件、路径规范化</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/memmap2">memmap2</a></td><td style="text-align: left">0.9.12</td><td style="text-align: left">目录遍历、临时文件、路径规范化</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>WebAssembly</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">crate</th><th style="text-align: left">版本</th><th style="text-align: left">用途</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://docs.rs/wasm-bindgen">wasm-bindgen</a></td><td style="text-align: left">0.2.130</td><td style="text-align: left">Rust 与 JavaScript 互操作</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>宏与元编程</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">crate</th><th style="text-align: left">版本</th><th style="text-align: left">用途</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><a href="https://docs.rs/syn">syn</a></td><td style="text-align: left">3.0.10</td><td style="text-align: left">过程宏基础设施、声明宏增强</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/quote">quote</a></td><td style="text-align: left">1.0.47</td><td style="text-align: left">过程宏基础设施、声明宏增强</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/proc-macro2">proc-macro2</a></td><td style="text-align: left">1.0.107</td><td style="text-align: left">过程宏基础设施、声明宏增强</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/lazy_static">lazy_static</a></td><td style="text-align: left">1.5.1</td><td style="text-align: left">过程宏基础设施、声明宏增强</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/paste">paste</a></td><td style="text-align: left">1.0.15</td><td style="text-align: left">过程宏基础设施、声明宏增强</td></tr>
+<tr><td style="text-align: left"><a href="https://docs.rs/derive_more">derive_more</a></td><td style="text-align: left">2.1.1</td><td style="text-align: left">过程宏基础设施、声明宏增强</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="93-完整清单按首字母分组"><a class="header" href="#93-完整清单按首字母分组">9.3 完整清单（按首字母分组）</a></h3>
+<p>点开链接可查看 docs.rs 文档；同一 crate 存在多个版本时此处只列一个。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">首字母</th><th style="text-align: left">库名</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center"><strong>A</strong>（33）</td><td style="text-align: left"><a href="https://docs.rs/addr2line">addr2line</a>, <a href="https://docs.rs/adler2">adler2</a>, <a href="https://docs.rs/ahash">ahash</a>, <a href="https://docs.rs/aho-corasick">aho-corasick</a>, <a href="https://docs.rs/aligned">aligned</a>, <a href="https://docs.rs/aligned-vec">aligned-vec</a>, <a href="https://docs.rs/alloc-no-stdlib">alloc-no-stdlib</a>, <a href="https://docs.rs/alloc-stdlib">alloc-stdlib</a>, <a href="https://docs.rs/allocator-api2">allocator-api2</a>, <a href="https://docs.rs/anstream">anstream</a>, <a href="https://docs.rs/anstyle">anstyle</a>, <a href="https://docs.rs/anstyle-parse">anstyle-parse</a>, <a href="https://docs.rs/anstyle-query">anstyle-query</a>, <a href="https://docs.rs/anyhow">anyhow</a>, <a href="https://docs.rs/approx">approx</a>, <a href="https://docs.rs/ar_archive_writer">ar_archive_writer</a>, <a href="https://docs.rs/arbitrary">arbitrary</a>, <a href="https://docs.rs/arc-swap">arc-swap</a>, <a href="https://docs.rs/arg_enum_proc_macro">arg_enum_proc_macro</a>, <a href="https://docs.rs/argon2">argon2</a>, <a href="https://docs.rs/arraydeque">arraydeque</a>, <a href="https://docs.rs/arrayvec">arrayvec</a>, <a href="https://docs.rs/as-slice">as-slice</a>, <a href="https://docs.rs/async-compression">async-compression</a>, <a href="https://docs.rs/async-trait">async-trait</a>, <a href="https://docs.rs/atomic">atomic</a>, <a href="https://docs.rs/atomic-waker">atomic-waker</a>, <a href="https://docs.rs/autocfg">autocfg</a>, <a href="https://docs.rs/av-scenechange">av-scenechange</a>, <a href="https://docs.rs/av1-grain">av1-grain</a>, <a href="https://docs.rs/avif-serialize">avif-serialize</a>, <a href="https://docs.rs/aws-lc-rs">aws-lc-rs</a>, <a href="https://docs.rs/aws-lc-sys">aws-lc-sys</a></td></tr>
+<tr><td style="text-align: center"><strong>B</strong>（22）</td><td style="text-align: left"><a href="https://docs.rs/backtrace">backtrace</a>, <a href="https://docs.rs/base64">base64</a>, <a href="https://docs.rs/base64ct">base64ct</a>, <a href="https://docs.rs/bit_field">bit_field</a>, <a href="https://docs.rs/bitflags">bitflags</a>, <a href="https://docs.rs/bitstream-io">bitstream-io</a>, <a href="https://docs.rs/bitvec">bitvec</a>, <a href="https://docs.rs/blake2">blake2</a>, <a href="https://docs.rs/block-buffer">block-buffer</a>, <a href="https://docs.rs/borsh">borsh</a>, <a href="https://docs.rs/brotli">brotli</a>, <a href="https://docs.rs/brotli-decompressor">brotli-decompressor</a>, <a href="https://docs.rs/built">built</a>, <a href="https://docs.rs/bumpalo">bumpalo</a>, <a href="https://docs.rs/bytecheck">bytecheck</a>, <a href="https://docs.rs/bytecheck_derive">bytecheck_derive</a>, <a href="https://docs.rs/bytemuck">bytemuck</a>, <a href="https://docs.rs/bytemuck_derive">bytemuck_derive</a>, <a href="https://docs.rs/byteorder">byteorder</a>, <a href="https://docs.rs/byteorder-lite">byteorder-lite</a>, <a href="https://docs.rs/bytes">bytes</a>, <a href="https://docs.rs/bzip2">bzip2</a></td></tr>
+<tr><td style="text-align: center"><strong>C</strong>（40）</td><td style="text-align: left"><a href="https://docs.rs/cc">cc</a>, <a href="https://docs.rs/cfg-if">cfg-if</a>, <a href="https://docs.rs/cfg_aliases">cfg_aliases</a>, <a href="https://docs.rs/chacha20">chacha20</a>, <a href="https://docs.rs/chrono">chrono</a>, <a href="https://docs.rs/clap">clap</a>, <a href="https://docs.rs/clap_builder">clap_builder</a>, <a href="https://docs.rs/clap_derive">clap_derive</a>, <a href="https://docs.rs/clap_lex">clap_lex</a>, <a href="https://docs.rs/cmake">cmake</a>, <a href="https://docs.rs/cmov">cmov</a>, <a href="https://docs.rs/color_quant">color_quant</a>, <a href="https://docs.rs/colorchoice">colorchoice</a>, <a href="https://docs.rs/compression-codecs">compression-codecs</a>, <a href="https://docs.rs/compression-core">compression-core</a>, <a href="https://docs.rs/config">config</a>, <a href="https://docs.rs/confy">confy</a>, <a href="https://docs.rs/const-default">const-default</a>, <a href="https://docs.rs/const-oid">const-oid</a>, <a href="https://docs.rs/const-random">const-random</a>, <a href="https://docs.rs/const-random-macro">const-random-macro</a>, <a href="https://docs.rs/convert_case">convert_case</a>, <a href="https://docs.rs/cookie">cookie</a>, <a href="https://docs.rs/cookie_store">cookie_store</a>, <a href="https://docs.rs/core_detect">core_detect</a>, <a href="https://docs.rs/cpufeatures">cpufeatures</a>, <a href="https://docs.rs/crc32fast">crc32fast</a>, <a href="https://docs.rs/crossbeam">crossbeam</a>, <a href="https://docs.rs/crossbeam-channel">crossbeam-channel</a>, <a href="https://docs.rs/crossbeam-deque">crossbeam-deque</a>, <a href="https://docs.rs/crossbeam-epoch">crossbeam-epoch</a>, <a href="https://docs.rs/crossbeam-queue">crossbeam-queue</a>, <a href="https://docs.rs/crossbeam-utils">crossbeam-utils</a>, <a href="https://docs.rs/crunchy">crunchy</a>, <a href="https://docs.rs/crypto-common">crypto-common</a>, <a href="https://docs.rs/cssparser">cssparser</a>, <a href="https://docs.rs/cssparser-macros">cssparser-macros</a>, <a href="https://docs.rs/csv">csv</a>, <a href="https://docs.rs/csv-core">csv-core</a>, <a href="https://docs.rs/ctutils">ctutils</a></td></tr>
+<tr><td style="text-align: center"><strong>D</strong>（13）</td><td style="text-align: left"><a href="https://docs.rs/data-encoding">data-encoding</a>, <a href="https://docs.rs/deranged">deranged</a>, <a href="https://docs.rs/derive_more">derive_more</a>, <a href="https://docs.rs/derive_more-impl">derive_more-impl</a>, <a href="https://docs.rs/destructure_traitobject">destructure_traitobject</a>, <a href="https://docs.rs/digest">digest</a>, <a href="https://docs.rs/displaydoc">displaydoc</a>, <a href="https://docs.rs/dlv-list">dlv-list</a>, <a href="https://docs.rs/document-features">document-features</a>, <a href="https://docs.rs/dtoa">dtoa</a>, <a href="https://docs.rs/dtoa-short">dtoa-short</a>, <a href="https://docs.rs/dunce">dunce</a>, <a href="https://docs.rs/dyn-clone">dyn-clone</a></td></tr>
+<tr><td style="text-align: center"><strong>E</strong>（12）</td><td style="text-align: left"><a href="https://docs.rs/ego-tree">ego-tree</a>, <a href="https://docs.rs/either">either</a>, <a href="https://docs.rs/encoding_rs">encoding_rs</a>, <a href="https://docs.rs/env_filter">env_filter</a>, <a href="https://docs.rs/env_logger">env_logger</a>, <a href="https://docs.rs/equator">equator</a>, <a href="https://docs.rs/equator-macro">equator-macro</a>, <a href="https://docs.rs/equivalent">equivalent</a>, <a href="https://docs.rs/erased-serde">erased-serde</a>, <a href="https://docs.rs/errno">errno</a>, <a href="https://docs.rs/etcetera">etcetera</a>, <a href="https://docs.rs/exr">exr</a></td></tr>
+<tr><td style="text-align: center"><strong>F</strong>（27）</td><td style="text-align: left"><a href="https://docs.rs/fallible-iterator">fallible-iterator</a>, <a href="https://docs.rs/fallible-streaming-iterator">fallible-streaming-iterator</a>, <a href="https://docs.rs/faster-hex">faster-hex</a>, <a href="https://docs.rs/fastrand">fastrand</a>, <a href="https://docs.rs/fax">fax</a>, <a href="https://docs.rs/fdeflate">fdeflate</a>, <a href="https://docs.rs/figment">figment</a>, <a href="https://docs.rs/filetime">filetime</a>, <a href="https://docs.rs/find-msvc-tools">find-msvc-tools</a>, <a href="https://docs.rs/fixedbitset">fixedbitset</a>, <a href="https://docs.rs/flate2">flate2</a>, <a href="https://docs.rs/fnv">fnv</a>, <a href="https://docs.rs/foldhash">foldhash</a>, <a href="https://docs.rs/form_urlencoded">form_urlencoded</a>, <a href="https://docs.rs/fs_extra">fs_extra</a>, <a href="https://docs.rs/funty">funty</a>, <a href="https://docs.rs/futf">futf</a>, <a href="https://docs.rs/futures">futures</a>, <a href="https://docs.rs/futures-channel">futures-channel</a>, <a href="https://docs.rs/futures-core">futures-core</a>, <a href="https://docs.rs/futures-executor">futures-executor</a>, <a href="https://docs.rs/futures-io">futures-io</a>, <a href="https://docs.rs/futures-macro">futures-macro</a>, <a href="https://docs.rs/futures-sink">futures-sink</a>, <a href="https://docs.rs/futures-task">futures-task</a>, <a href="https://docs.rs/futures-util">futures-util</a>, <a href="https://docs.rs/fxhash">fxhash</a></td></tr>
+<tr><td style="text-align: center"><strong>G</strong>（6）</td><td style="text-align: left"><a href="https://docs.rs/generic-array">generic-array</a>, <a href="https://docs.rs/getopts">getopts</a>, <a href="https://docs.rs/getrandom">getrandom</a>, <a href="https://docs.rs/gif">gif</a>, <a href="https://docs.rs/gimli">gimli</a>, <a href="https://docs.rs/glob">glob</a></td></tr>
+<tr><td style="text-align: center"><strong>H</strong>（23）</td><td style="text-align: left"><a href="https://docs.rs/h2">h2</a>, <a href="https://docs.rs/half">half</a>, <a href="https://docs.rs/hash32">hash32</a>, <a href="https://docs.rs/hashbrown">hashbrown</a>, <a href="https://docs.rs/hashlink">hashlink</a>, <a href="https://docs.rs/hdrhistogram">hdrhistogram</a>, <a href="https://docs.rs/heapless">heapless</a>, <a href="https://docs.rs/heck">heck</a>, <a href="https://docs.rs/hmac">hmac</a>, <a href="https://docs.rs/home">home</a>, <a href="https://docs.rs/hostname">hostname</a>, <a href="https://docs.rs/html5ever">html5ever</a>, <a href="https://docs.rs/http">http</a>, <a href="https://docs.rs/http-body">http-body</a>, <a href="https://docs.rs/http-body-util">http-body-util</a>, <a href="https://docs.rs/http-range-header">http-range-header</a>, <a href="https://docs.rs/httparse">httparse</a>, <a href="https://docs.rs/httpdate">httpdate</a>, <a href="https://docs.rs/humantime">humantime</a>, <a href="https://docs.rs/hybrid-array">hybrid-array</a>, <a href="https://docs.rs/hyper">hyper</a>, <a href="https://docs.rs/hyper-rustls">hyper-rustls</a>, <a href="https://docs.rs/hyper-util">hyper-util</a></td></tr>
+<tr><td style="text-align: center"><strong>I</strong>（19）</td><td style="text-align: left"><a href="https://docs.rs/iana-time-zone">iana-time-zone</a>, <a href="https://docs.rs/icu_collections">icu_collections</a>, <a href="https://docs.rs/icu_locale_core">icu_locale_core</a>, <a href="https://docs.rs/icu_normalizer">icu_normalizer</a>, <a href="https://docs.rs/icu_normalizer_data">icu_normalizer_data</a>, <a href="https://docs.rs/icu_properties">icu_properties</a>, <a href="https://docs.rs/icu_properties_data">icu_properties_data</a>, <a href="https://docs.rs/icu_provider">icu_provider</a>, <a href="https://docs.rs/idna">idna</a>, <a href="https://docs.rs/idna_adapter">idna_adapter</a>, <a href="https://docs.rs/image">image</a>, <a href="https://docs.rs/image-webp">image-webp</a>, <a href="https://docs.rs/imgref">imgref</a>, <a href="https://docs.rs/indexmap">indexmap</a>, <a href="https://docs.rs/iovec">iovec</a>, <a href="https://docs.rs/ipnet">ipnet</a>, <a href="https://docs.rs/is_terminal_polyfill">is_terminal_polyfill</a>, <a href="https://docs.rs/itertools">itertools</a>, <a href="https://docs.rs/itoa">itoa</a></td></tr>
+<tr><td style="text-align: center"><strong>J</strong>（6）</td><td style="text-align: left"><a href="https://docs.rs/jiff">jiff</a>, <a href="https://docs.rs/jiff-core">jiff-core</a>, <a href="https://docs.rs/jiff-static">jiff-static</a>, <a href="https://docs.rs/jiff-tzdb">jiff-tzdb</a>, <a href="https://docs.rs/jobserver">jobserver</a>, <a href="https://docs.rs/json5">json5</a></td></tr>
+<tr><td style="text-align: center"><strong>K</strong>（1）</td><td style="text-align: left"><a href="https://docs.rs/kamadak-exif">kamadak-exif</a></td></tr>
+<tr><td style="text-align: center"><strong>L</strong>（14）</td><td style="text-align: left"><a href="https://docs.rs/lazy_static">lazy_static</a>, <a href="https://docs.rs/lebe">lebe</a>, <a href="https://docs.rs/libbz2-rs-sys">libbz2-rs-sys</a>, <a href="https://docs.rs/libc">libc</a>, <a href="https://docs.rs/libm">libm</a>, <a href="https://docs.rs/libsqlite3-sys">libsqlite3-sys</a>, <a href="https://docs.rs/linux-raw-sys">linux-raw-sys</a>, <a href="https://docs.rs/litemap">litemap</a>, <a href="https://docs.rs/litrs">litrs</a>, <a href="https://docs.rs/lock_api">lock_api</a>, <a href="https://docs.rs/log">log</a>, <a href="https://docs.rs/log-mdc">log-mdc</a>, <a href="https://docs.rs/log4rs">log4rs</a>, <a href="https://docs.rs/loop9">loop9</a></td></tr>
+<tr><td style="text-align: center"><strong>M</strong>（19）</td><td style="text-align: left"><a href="https://docs.rs/mac">mac</a>, <a href="https://docs.rs/markup5ever">markup5ever</a>, <a href="https://docs.rs/matrixmultiply">matrixmultiply</a>, <a href="https://docs.rs/maybe-rayon">maybe-rayon</a>, <a href="https://docs.rs/md-5">md-5</a>, <a href="https://docs.rs/memchr">memchr</a>, <a href="https://docs.rs/memmap2">memmap2</a>, <a href="https://docs.rs/mime">mime</a>, <a href="https://docs.rs/mime_guess">mime_guess</a>, <a href="https://docs.rs/miniz_oxide">miniz_oxide</a>, <a href="https://docs.rs/mio">mio</a>, <a href="https://docs.rs/mock_instant">mock_instant</a>, <a href="https://docs.rs/moxcms">moxcms</a>, <a href="https://docs.rs/multiversion">multiversion</a>, <a href="https://docs.rs/multiversion-macros">multiversion-macros</a>, <a href="https://docs.rs/multiversion_no_op">multiversion_no_op</a>, <a href="https://docs.rs/munge">munge</a>, <a href="https://docs.rs/munge_macro">munge_macro</a>, <a href="https://docs.rs/mutate_once">mutate_once</a></td></tr>
+<tr><td style="text-align: center"><strong>N</strong>（19）</td><td style="text-align: left"><a href="https://docs.rs/nalgebra">nalgebra</a>, <a href="https://docs.rs/nalgebra-macros">nalgebra-macros</a>, <a href="https://docs.rs/ndarray">ndarray</a>, <a href="https://docs.rs/new_debug_unreachable">new_debug_unreachable</a>, <a href="https://docs.rs/no_std_io2">no_std_io2</a>, <a href="https://docs.rs/nom">nom</a>, <a href="https://docs.rs/noop_proc_macro">noop_proc_macro</a>, <a href="https://docs.rs/nu-ansi-term">nu-ansi-term</a>, <a href="https://docs.rs/num">num</a>, <a href="https://docs.rs/num-bigint">num-bigint</a>, <a href="https://docs.rs/num-complex">num-complex</a>, <a href="https://docs.rs/num-conv">num-conv</a>, <a href="https://docs.rs/num-derive">num-derive</a>, <a href="https://docs.rs/num-integer">num-integer</a>, <a href="https://docs.rs/num-iter">num-iter</a>, <a href="https://docs.rs/num-rational">num-rational</a>, <a href="https://docs.rs/num-traits">num-traits</a>, <a href="https://docs.rs/num_cpus">num_cpus</a>, <a href="https://docs.rs/num_threads">num_threads</a></td></tr>
+<tr><td style="text-align: center"><strong>O</strong>（5）</td><td style="text-align: left"><a href="https://docs.rs/object">object</a>, <a href="https://docs.rs/once_cell">once_cell</a>, <a href="https://docs.rs/openssl-probe">openssl-probe</a>, <a href="https://docs.rs/ordered-float">ordered-float</a>, <a href="https://docs.rs/ordered-multimap">ordered-multimap</a></td></tr>
+<tr><td style="text-align: center"><strong>P</strong>（39）</td><td style="text-align: left"><a href="https://docs.rs/parking_lot">parking_lot</a>, <a href="https://docs.rs/parking_lot_core">parking_lot_core</a>, <a href="https://docs.rs/password-hash">password-hash</a>, <a href="https://docs.rs/paste">paste</a>, <a href="https://docs.rs/pastey">pastey</a>, <a href="https://docs.rs/pathdiff">pathdiff</a>, <a href="https://docs.rs/pbkdf2">pbkdf2</a>, <a href="https://docs.rs/percent-encoding">percent-encoding</a>, <a href="https://docs.rs/pest">pest</a>, <a href="https://docs.rs/pest_derive">pest_derive</a>, <a href="https://docs.rs/pest_generator">pest_generator</a>, <a href="https://docs.rs/pest_meta">pest_meta</a>, <a href="https://docs.rs/pest_stack_guard">pest_stack_guard</a>, <a href="https://docs.rs/petgraph">petgraph</a>, <a href="https://docs.rs/phc">phc</a>, <a href="https://docs.rs/phf">phf</a>, <a href="https://docs.rs/phf_codegen">phf_codegen</a>, <a href="https://docs.rs/phf_generator">phf_generator</a>, <a href="https://docs.rs/phf_macros">phf_macros</a>, <a href="https://docs.rs/phf_shared">phf_shared</a>, <a href="https://docs.rs/pin-project-lite">pin-project-lite</a>, <a href="https://docs.rs/pkg-config">pkg-config</a>, <a href="https://docs.rs/png">png</a>, <a href="https://docs.rs/postgres">postgres</a>, <a href="https://docs.rs/postgres-protocol">postgres-protocol</a>, <a href="https://docs.rs/postgres-types">postgres-types</a>, <a href="https://docs.rs/potential_utf">potential_utf</a>, <a href="https://docs.rs/powerfmt">powerfmt</a>, <a href="https://docs.rs/ppv-lite86">ppv-lite86</a>, <a href="https://docs.rs/precomputed-hash">precomputed-hash</a>, <a href="https://docs.rs/proc-macro2">proc-macro2</a>, <a href="https://docs.rs/profiling">profiling</a>, <a href="https://docs.rs/profiling-procmacros">profiling-procmacros</a>, <a href="https://docs.rs/psl-types">psl-types</a>, <a href="https://docs.rs/psm">psm</a>, <a href="https://docs.rs/ptr_meta">ptr_meta</a>, <a href="https://docs.rs/ptr_meta_derive">ptr_meta_derive</a>, <a href="https://docs.rs/publicsuffix">publicsuffix</a>, <a href="https://docs.rs/pxfm">pxfm</a></td></tr>
+<tr><td style="text-align: center"><strong>Q</strong>（3）</td><td style="text-align: left"><a href="https://docs.rs/qoi">qoi</a>, <a href="https://docs.rs/quick-error">quick-error</a>, <a href="https://docs.rs/quote">quote</a></td></tr>
+<tr><td style="text-align: center"><strong>R</strong>（36）</td><td style="text-align: left"><a href="https://docs.rs/radium">radium</a>, <a href="https://docs.rs/rancor">rancor</a>, <a href="https://docs.rs/rand">rand</a>, <a href="https://docs.rs/rand_chacha">rand_chacha</a>, <a href="https://docs.rs/rand_core">rand_core</a>, <a href="https://docs.rs/rand_distr">rand_distr</a>, <a href="https://docs.rs/rav1e">rav1e</a>, <a href="https://docs.rs/ravif">ravif</a>, <a href="https://docs.rs/rawpointer">rawpointer</a>, <a href="https://docs.rs/rayon">rayon</a>, <a href="https://docs.rs/rayon-core">rayon-core</a>, <a href="https://docs.rs/ref-cast">ref-cast</a>, <a href="https://docs.rs/ref-cast-impl">ref-cast-impl</a>, <a href="https://docs.rs/regex">regex</a>, <a href="https://docs.rs/regex-automata">regex-automata</a>, <a href="https://docs.rs/regex-syntax">regex-syntax</a>, <a href="https://docs.rs/rend">rend</a>, <a href="https://docs.rs/reqwest">reqwest</a>, <a href="https://docs.rs/rgb">rgb</a>, <a href="https://docs.rs/ring">ring</a>, <a href="https://docs.rs/rkyv">rkyv</a>, <a href="https://docs.rs/rkyv_derive">rkyv_derive</a>, <a href="https://docs.rs/ron">ron</a>, <a href="https://docs.rs/rusqlite">rusqlite</a>, <a href="https://docs.rs/rust-ini">rust-ini</a>, <a href="https://docs.rs/rustc-demangle">rustc-demangle</a>, <a href="https://docs.rs/rustc-hash">rustc-hash</a>, <a href="https://docs.rs/rustc_version">rustc_version</a>, <a href="https://docs.rs/rustix">rustix</a>, <a href="https://docs.rs/rustls">rustls</a>, <a href="https://docs.rs/rustls-native-certs">rustls-native-certs</a>, <a href="https://docs.rs/rustls-pki-types">rustls-pki-types</a>, <a href="https://docs.rs/rustls-platform-verifier">rustls-platform-verifier</a>, <a href="https://docs.rs/rustls-webpki">rustls-webpki</a>, <a href="https://docs.rs/rustversion">rustversion</a>, <a href="https://docs.rs/ryu">ryu</a></td></tr>
+<tr><td style="text-align: center"><strong>S</strong>（42）</td><td style="text-align: left"><a href="https://docs.rs/safe_arch">safe_arch</a>, <a href="https://docs.rs/same-file">same-file</a>, <a href="https://docs.rs/schemars">schemars</a>, <a href="https://docs.rs/scopeguard">scopeguard</a>, <a href="https://docs.rs/scraper">scraper</a>, <a href="https://docs.rs/selectors">selectors</a>, <a href="https://docs.rs/semver">semver</a>, <a href="https://docs.rs/serde">serde</a>, <a href="https://docs.rs/serde-untagged">serde-untagged</a>, <a href="https://docs.rs/serde-value">serde-value</a>, <a href="https://docs.rs/serde_core">serde_core</a>, <a href="https://docs.rs/serde_derive">serde_derive</a>, <a href="https://docs.rs/serde_json">serde_json</a>, <a href="https://docs.rs/serde_spanned">serde_spanned</a>, <a href="https://docs.rs/serde_urlencoded">serde_urlencoded</a>, <a href="https://docs.rs/serde_yaml">serde_yaml</a>, <a href="https://docs.rs/servo_arc">servo_arc</a>, <a href="https://docs.rs/sha1_smol">sha1_smol</a>, <a href="https://docs.rs/sha2">sha2</a>, <a href="https://docs.rs/sharded-slab">sharded-slab</a>, <a href="https://docs.rs/shlex">shlex</a>, <a href="https://docs.rs/signal-hook-registry">signal-hook-registry</a>, <a href="https://docs.rs/simba">simba</a>, <a href="https://docs.rs/simd-adler32">simd-adler32</a>, <a href="https://docs.rs/simd_helpers">simd_helpers</a>, <a href="https://docs.rs/simdutf8">simdutf8</a>, <a href="https://docs.rs/siphasher">siphasher</a>, <a href="https://docs.rs/slab">slab</a>, <a href="https://docs.rs/smallvec">smallvec</a>, <a href="https://docs.rs/socket2">socket2</a>, <a href="https://docs.rs/sptr">sptr</a>, <a href="https://docs.rs/stable_deref_trait">stable_deref_trait</a>, <a href="https://docs.rs/stacker">stacker</a>, <a href="https://docs.rs/string_cache">string_cache</a>, <a href="https://docs.rs/string_cache_codegen">string_cache_codegen</a>, <a href="https://docs.rs/stringprep">stringprep</a>, <a href="https://docs.rs/strsim">strsim</a>, <a href="https://docs.rs/subtle">subtle</a>, <a href="https://docs.rs/syn">syn</a>, <a href="https://docs.rs/sync_wrapper">sync_wrapper</a>, <a href="https://docs.rs/synstructure">synstructure</a>, <a href="https://docs.rs/syslog">syslog</a></td></tr>
+<tr><td style="text-align: center"><strong>T</strong>（43）</td><td style="text-align: left"><a href="https://docs.rs/tap">tap</a>, <a href="https://docs.rs/tar">tar</a>, <a href="https://docs.rs/target-features">target-features</a>, <a href="https://docs.rs/tempfile">tempfile</a>, <a href="https://docs.rs/tendril">tendril</a>, <a href="https://docs.rs/terminal_size">terminal_size</a>, <a href="https://docs.rs/thiserror">thiserror</a>, <a href="https://docs.rs/thiserror-impl">thiserror-impl</a>, <a href="https://docs.rs/thread-id">thread-id</a>, <a href="https://docs.rs/thread_local">thread_local</a>, <a href="https://docs.rs/tiff">tiff</a>, <a href="https://docs.rs/time">time</a>, <a href="https://docs.rs/time-core">time-core</a>, <a href="https://docs.rs/time-macros">time-macros</a>, <a href="https://docs.rs/tiny-keccak">tiny-keccak</a>, <a href="https://docs.rs/tinystr">tinystr</a>, <a href="https://docs.rs/tinyvec">tinyvec</a>, <a href="https://docs.rs/tokio">tokio</a>, <a href="https://docs.rs/tokio-io">tokio-io</a>, <a href="https://docs.rs/tokio-macros">tokio-macros</a>, <a href="https://docs.rs/tokio-postgres">tokio-postgres</a>, <a href="https://docs.rs/tokio-rustls">tokio-rustls</a>, <a href="https://docs.rs/tokio-stream">tokio-stream</a>, <a href="https://docs.rs/tokio-util">tokio-util</a>, <a href="https://docs.rs/toml">toml</a>, <a href="https://docs.rs/toml_datetime">toml_datetime</a>, <a href="https://docs.rs/toml_edit">toml_edit</a>, <a href="https://docs.rs/toml_parser">toml_parser</a>, <a href="https://docs.rs/toml_writer">toml_writer</a>, <a href="https://docs.rs/tower">tower</a>, <a href="https://docs.rs/tower-http">tower-http</a>, <a href="https://docs.rs/tower-layer">tower-layer</a>, <a href="https://docs.rs/tower-service">tower-service</a>, <a href="https://docs.rs/tracing">tracing</a>, <a href="https://docs.rs/tracing-attributes">tracing-attributes</a>, <a href="https://docs.rs/tracing-core">tracing-core</a>, <a href="https://docs.rs/tracing-log">tracing-log</a>, <a href="https://docs.rs/tracing-subscriber">tracing-subscriber</a>, <a href="https://docs.rs/trpl">trpl</a>, <a href="https://docs.rs/try-lock">try-lock</a>, <a href="https://docs.rs/typeid">typeid</a>, <a href="https://docs.rs/typemap-ors">typemap-ors</a>, <a href="https://docs.rs/typenum">typenum</a></td></tr>
+<tr><td style="text-align: center"><strong>U</strong>（19）</td><td style="text-align: left"><a href="https://docs.rs/ucd-trie">ucd-trie</a>, <a href="https://docs.rs/uncased">uncased</a>, <a href="https://docs.rs/unicase">unicase</a>, <a href="https://docs.rs/unicode-bidi">unicode-bidi</a>, <a href="https://docs.rs/unicode-ident">unicode-ident</a>, <a href="https://docs.rs/unicode-normalization">unicode-normalization</a>, <a href="https://docs.rs/unicode-properties">unicode-properties</a>, <a href="https://docs.rs/unicode-segmentation">unicode-segmentation</a>, <a href="https://docs.rs/unicode-width">unicode-width</a>, <a href="https://docs.rs/unicode-xid">unicode-xid</a>, <a href="https://docs.rs/unsafe-any-ors">unsafe-any-ors</a>, <a href="https://docs.rs/unsafe-libyaml">unsafe-libyaml</a>, <a href="https://docs.rs/untrusted">untrusted</a>, <a href="https://docs.rs/url">url</a>, <a href="https://docs.rs/utf-8">utf-8</a>, <a href="https://docs.rs/utf8_iter">utf8_iter</a>, <a href="https://docs.rs/utf8parse">utf8parse</a>, <a href="https://docs.rs/utf_types">utf_types</a>, <a href="https://docs.rs/uuid">uuid</a></td></tr>
+<tr><td style="text-align: center"><strong>V</strong>（3）</td><td style="text-align: left"><a href="https://docs.rs/v_frame">v_frame</a>, <a href="https://docs.rs/vcpkg">vcpkg</a>, <a href="https://docs.rs/version_check">version_check</a></td></tr>
+<tr><td style="text-align: center"><strong>W</strong>（24）</td><td style="text-align: left"><a href="https://docs.rs/walkdir">walkdir</a>, <a href="https://docs.rs/want">want</a>, <a href="https://docs.rs/wasm-bindgen">wasm-bindgen</a>, <a href="https://docs.rs/wasm-bindgen-macro">wasm-bindgen-macro</a>, <a href="https://docs.rs/wasm-bindgen-macro-support">wasm-bindgen-macro-support</a>, <a href="https://docs.rs/wasm-bindgen-shared">wasm-bindgen-shared</a>, <a href="https://docs.rs/webpki-roots">webpki-roots</a>, <a href="https://docs.rs/weezl">weezl</a>, <a href="https://docs.rs/which">which</a>, <a href="https://docs.rs/whoami">whoami</a>, <a href="https://docs.rs/wide">wide</a>, <a href="https://docs.rs/windows-link">windows-link</a>, <a href="https://docs.rs/windows-sys">windows-sys</a>, <a href="https://docs.rs/windows-targets">windows-targets</a>, <a href="https://docs.rs/windows_aarch64_gnullvm">windows_aarch64_gnullvm</a>, <a href="https://docs.rs/windows_aarch64_msvc">windows_aarch64_msvc</a>, <a href="https://docs.rs/windows_i686_gnu">windows_i686_gnu</a>, <a href="https://docs.rs/windows_i686_msvc">windows_i686_msvc</a>, <a href="https://docs.rs/windows_x86_64_gnu">windows_x86_64_gnu</a>, <a href="https://docs.rs/windows_x86_64_gnullvm">windows_x86_64_gnullvm</a>, <a href="https://docs.rs/windows_x86_64_msvc">windows_x86_64_msvc</a>, <a href="https://docs.rs/winnow">winnow</a>, <a href="https://docs.rs/writeable">writeable</a>, <a href="https://docs.rs/wyz">wyz</a></td></tr>
+<tr><td style="text-align: center"><strong>X</strong>（1）</td><td style="text-align: left"><a href="https://docs.rs/xattr">xattr</a></td></tr>
+<tr><td style="text-align: center"><strong>Y</strong>（4）</td><td style="text-align: left"><a href="https://docs.rs/y4m">y4m</a>, <a href="https://docs.rs/yaml-rust2">yaml-rust2</a>, <a href="https://docs.rs/yoke">yoke</a>, <a href="https://docs.rs/yoke-derive">yoke-derive</a></td></tr>
+<tr><td style="text-align: center"><strong>Z</strong>（15）</td><td style="text-align: left"><a href="https://docs.rs/zerocopy">zerocopy</a>, <a href="https://docs.rs/zerocopy-derive">zerocopy-derive</a>, <a href="https://docs.rs/zerofrom">zerofrom</a>, <a href="https://docs.rs/zerofrom-derive">zerofrom-derive</a>, <a href="https://docs.rs/zeroize">zeroize</a>, <a href="https://docs.rs/zerotrie">zerotrie</a>, <a href="https://docs.rs/zerovec">zerovec</a>, <a href="https://docs.rs/zerovec-derive">zerovec-derive</a>, <a href="https://docs.rs/zmij">zmij</a>, <a href="https://docs.rs/zstd">zstd</a>, <a href="https://docs.rs/zstd-safe">zstd-safe</a>, <a href="https://docs.rs/zstd-sys">zstd-sys</a>, <a href="https://docs.rs/zune-core">zune-core</a>, <a href="https://docs.rs/zune-inflate">zune-inflate</a>, <a href="https://docs.rs/zune-jpeg">zune-jpeg</a></td></tr>
+</tbody>
+</table>
+</div>
 <hr>
 <h2 id="十经典语录"><a class="header" href="#十经典语录">十、经典语录</a></h2>
 <ul>

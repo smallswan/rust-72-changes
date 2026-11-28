@@ -86,7 +86,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-99c235c8.js";
+            window.path_to_searchindex_js = "searchindex-73006c21.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-5040a75a.js"></script>
@@ -415,7 +415,137 @@ UTC-8      太平洋标准时区（PST）（西八区时间）
 <li>美国、欧洲大部分国家仍在使用</li>
 <li>夏令时的开始和结束日期每年可能不同，给程序处理带来复杂性</li>
 </ul>
-<h3 id="443-rust-时区处理"><a class="header" href="#443-rust-时区处理">4.4.3 Rust 时区处理</a></h3>
+<h3 id="443-固定偏移的局限与-iana-命名时区"><a class="header" href="#443-固定偏移的局限与-iana-命名时区">4.4.3 固定偏移的局限与 IANA 命名时区</a></h3>
+<p>4.4.1 节用“UTC±偏移“描述时区，4.4.6 节用 <code>FixedOffset</code> 实现——这在很多场景够用，但有三个硬伤：</p>
+<ol>
+<li><strong>偏移不唯一</strong>：<code>UTC-5</code> 既可能是纽约的 EST，也可能是智利的冬季时间，还可能是全年无夏令时的某个城市。光看偏移无法确定是哪个地区。</li>
+<li><strong>夏令时无法自动处理</strong>：纽约冬天是 UTC-5、夏天是 UTC-4，固定偏移写死就错了。</li>
+<li><strong>存在非整点偏移</strong>：印度 +5:30、尼泊尔 +5:45、查塔姆群岛 +13:45，用小时数乘 3600 很别扭。</li>
+</ol>
+<p>解决办法是使用 <strong>IANA 命名时区</strong>（也叫 tzdb 时区），用“大洲/城市“命名，例如 <code>Asia/Shanghai</code>、<code>America/New_York</code>。这套数据库收录了全球时区自 1970 年以来的偏移规则与夏令时切换历史，并随版本更新。</p>
+<p>常见 IANA 时区名：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">地区</th><th style="text-align: left">IANA 名称</th><th style="text-align: left">标准偏移</th><th style="text-align: left">夏令时</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">北京/上海</td><td style="text-align: left"><code>Asia/Shanghai</code></td><td style="text-align: left">UTC+8</td><td style="text-align: left">无（1991 年后）</td></tr>
+<tr><td style="text-align: left">东京</td><td style="text-align: left"><code>Asia/Tokyo</code></td><td style="text-align: left">UTC+9</td><td style="text-align: left">无</td></tr>
+<tr><td style="text-align: left">新德里</td><td style="text-align: left"><code>Asia/Kolkata</code></td><td style="text-align: left">UTC+5:30</td><td style="text-align: left">无</td></tr>
+<tr><td style="text-align: left">加德满都</td><td style="text-align: left"><code>Asia/Kathmandu</code></td><td style="text-align: left">UTC+5:45</td><td style="text-align: left">无</td></tr>
+<tr><td style="text-align: left">伦敦</td><td style="text-align: left"><code>Europe/London</code></td><td style="text-align: left">UTC+0</td><td style="text-align: left">有（BST，UTC+1）</td></tr>
+<tr><td style="text-align: left">纽约</td><td style="text-align: left"><code>America/New_York</code></td><td style="text-align: left">UTC-5</td><td style="text-align: left">有（EDT，UTC-4）</td></tr>
+<tr><td style="text-align: left">圣约翰斯</td><td style="text-align: left"><code>America/St_Johns</code></td><td style="text-align: left">UTC-3:30</td><td style="text-align: left">有</td></tr>
+<tr><td style="text-align: left">查塔姆群岛</td><td style="text-align: left"><code>Pacific/Chatham</code></td><td style="text-align: left">UTC+12:45</td><td style="text-align: left">有</td></tr>
+<tr><td style="text-align: left">悉尼</td><td style="text-align: left"><code>Australia/Sydney</code></td><td style="text-align: left">UTC+10</td><td style="text-align: left">有（AEDT，UTC+11）</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>注意：时区名要用<strong>城市</strong>，不要用国家缩写。<code>Asia/Shanghai</code>、<code>Asia/Hong_Kong</code>、<code>Asia/Taipei</code> 是三个不同的时区条目，虽然当前偏移都是 +8。</p>
+</blockquote>
+<h3 id="444-rust-时区处理jiff命名时区与夏令时"><a class="header" href="#444-rust-时区处理jiff命名时区与夏令时">4.4.4 Rust 时区处理（jiff：命名时区与夏令时）</a></h3>
+<p><a href="https://docs.rs/jiff">jiff</a> 是后起之秀，内置 tzdb 时区数据库，直接支持 IANA 命名时区，夏令时切换自动处理。下面的例子把同一个 UTC 时刻换算到 9 个城市——包含半小时、45 分钟偏移等 chrono 固定偏移写起来很麻烦的情况：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KamlmZiA9IHsgdmVyc2lvbiA9ICIwLjIuNDMiLCBmZWF0dXJlcyA9IFsidHpkYi1idW5kbGUtYWx3YXlzIl0gfQoqLwp1c2UgamlmZjo6e1RpbWVzdGFtcCwgdHo6OlRpbWVab25lfTsKCmZuIG1haW4oKSB7CiAgICAvLyDkuIDkuKrnsr7noa7nmoQgVVRDIOaXtuWIu++8mjIwMjQtMDEtMTVUMDk6MzA6MDBaCiAgICBsZXQgdHM6IFRpbWVzdGFtcCA9ICIyMDI0LTAxLTE1VDA5OjMwOjAwWiIucGFyc2UoKS51bndyYXAoKTsKICAgIHByaW50bG4hKCJVVEMg5pe25Yi7OiB7fVxuIiwgdHMpOwoKICAgIGxldCB6b25lcyA9IFsKICAgICAgICAiVVRDIiwgIkFzaWEvU2hhbmdoYWkiLCAiQXNpYS9Ub2t5byIsICJBc2lhL0tvbGthdGEiLCAiQXNpYS9LYXRobWFuZHUiLAogICAgICAgICJFdXJvcGUvTG9uZG9uIiwgIkFtZXJpY2EvTmV3X1lvcmsiLCAiQW1lcmljYS9TdF9Kb2hucyIsICJQYWNpZmljL0NoYXRoYW0iLAogICAgXTsKICAgIHByaW50bG4hKCJ7OjwyNH0gezo8MzB9IiwgIklBTkEg5pe25Yy65ZCNIiwgIuacrOWcsOaXtumXtCIpOwogICAgZm9yIG5hbWUgaW4gem9uZXMgewogICAgICAgIGxldCB0eiA9IFRpbWVab25lOjpnZXQobmFtZSkudW53cmFwKCk7CiAgICAgICAgbGV0IHogPSB0cy50b196b25lZCh0eik7CiAgICAgICAgcHJpbnRsbiEoIns6PDI0fSB7OjwzMH0iLCBuYW1lLCB6LnN0cmZ0aW1lKCIlWS0lbS0lZCAlSDolTTolUyAlOnogJVoiKSk7CiAgICB9Cn0=" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+jiff = { version = "0.2.43", features = ["tzdb-bundle-always"] }
+*/
+use jiff::{Timestamp, tz::TimeZone};
+
+fn main() {
+    // 一个精确的 UTC 时刻：2024-01-15T09:30:00Z
+    let ts: Timestamp = "2024-01-15T09:30:00Z".parse().unwrap();
+    println!("UTC 时刻: {}\n", ts);
+
+    let zones = [
+        "UTC", "Asia/Shanghai", "Asia/Tokyo", "Asia/Kolkata", "Asia/Kathmandu",
+        "Europe/London", "America/New_York", "America/St_Johns", "Pacific/Chatham",
+    ];
+    println!("{:&lt;24} {:&lt;30}", "IANA 时区名", "本地时间");
+    for name in zones {
+        let tz = TimeZone::get(name).unwrap();
+        let z = ts.to_zoned(tz);
+        println!("{:&lt;24} {:&lt;30}", name, z.strftime("%Y-%m-%d %H:%M:%S %:z %Z"));
+    }
+}</code></pre>
+<p>输出（节选）：</p>
+<pre><code class="language-text">UTC 时刻: 2024-01-15T09:30:00Z
+
+IANA 时区名               本地时间
+UTC                      2024-01-15 09:30:00 +00:00 UTC
+Asia/Shanghai            2024-01-15 17:30:00 +08:00 CST
+Asia/Kolkata             2024-01-15 15:00:00 +05:30 IST
+Asia/Kathmandu           2024-01-15 15:15:00 +05:45 +0545
+America/New_York         2024-01-15 04:30:00 -05:00 EST
+America/St_Johns         2024-01-15 06:00:00 -03:30 NST
+Pacific/Chatham          2024-01-15 23:15:00 +13:45 +1345
+</code></pre>
+<p><code>%:z</code> 输出带冒号的偏移（<code>+05:30</code>），<code>%Z</code> 输出时区缩写（<code>IST</code>、<code>EST</code>）。注意 <code>Asia/Kathmandu</code> 是 +5:45、<code>Pacific/Chatham</code> 是 +13:45——这种 45 分钟偏移用 <code>FixedOffset::east_opt(5 * 3600 + 45 * 60)</code> 也能写，但远不如时区名直观。</p>
+<p>夏令时是命名时区更大的价值所在。同一个 <code>America/New_York</code>，冬季和夏季的偏移会自动切换：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KamlmZiA9IHsgdmVyc2lvbiA9ICIwLjIuNDMiLCBmZWF0dXJlcyA9IFsidHpkYi1idW5kbGUtYWx3YXlzIl0gfQoqLwp1c2UgamlmZjo6e1RpbWVzdGFtcCwgdHo6OlRpbWVab25lfTsKCmZuIG1haW4oKSB7CiAgICBsZXQgd2ludGVyOiBUaW1lc3RhbXAgPSAiMjAyNC0wMS0xNVQwOTozMDowMFoiLnBhcnNlKCkudW53cmFwKCk7CiAgICBsZXQgc3VtbWVyOiBUaW1lc3RhbXAgPSAiMjAyNC0wNi0xNVQwOTozMDowMFoiLnBhcnNlKCkudW53cmFwKCk7CiAgICBsZXQgdHogPSBUaW1lWm9uZTo6Z2V0KCJBbWVyaWNhL05ld19Zb3JrIikudW53cmFwKCk7CiAgICBmb3IgdHMgaW4gW3dpbnRlciwgc3VtbWVyXSB7CiAgICAgICAgbGV0IHogPSB0cy50b196b25lZCh0ei5jbG9uZSgpKTsKICAgICAgICBwcmludGxuISgie30gLT4ge30iLCB0cywgei5zdHJmdGltZSgiJVktJW0tJWQgJUg6JU06JVMgJTp6ICVaIikpOwogICAgfQogICAgLy8gMjAyNC0wMS0xNVQwOTozMDowMFogLT4gMjAyNC0wMS0xNSAwNDozMDowMCAtMDU6MDAgRVNUCiAgICAvLyAyMDI0LTA2LTE1VDA5OjMwOjAwWiAtPiAyMDI0LTA2LTE1IDA1OjMwOjAwIC0wNDowMCBFRFQKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+jiff = { version = "0.2.43", features = ["tzdb-bundle-always"] }
+*/
+use jiff::{Timestamp, tz::TimeZone};
+
+fn main() {
+    let winter: Timestamp = "2024-01-15T09:30:00Z".parse().unwrap();
+    let summer: Timestamp = "2024-06-15T09:30:00Z".parse().unwrap();
+    let tz = TimeZone::get("America/New_York").unwrap();
+    for ts in [winter, summer] {
+        let z = ts.to_zoned(tz.clone());
+        println!("{} -&gt; {}", ts, z.strftime("%Y-%m-%d %H:%M:%S %:z %Z"));
+    }
+    // 2024-01-15T09:30:00Z -&gt; 2024-01-15 04:30:00 -05:00 EST
+    // 2024-06-15T09:30:00Z -&gt; 2024-06-15 05:30:00 -04:00 EDT
+}</code></pre>
+<p>纽约 1 月是 EST（UTC-5），6 月自动变成 EDT（UTC-4）—— tzdb 里存的不是一条固定偏移，而是一整套“某年某月某日切换到某偏移“的规则。</p>
+<p>jiff 还能查询某个时区在任意时刻的偏移。<code>TimeZone::to_offset()</code> 告诉我们“这一刻该时区用哪个偏移“，对比冬夏两次查询就能判断是否处于夏令时：</p>
+<div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KamlmZiA9IHsgdmVyc2lvbiA9ICIwLjIuNDMiLCBmZWF0dXJlcyA9IFsidHpkYi1idW5kbGUtYWx3YXlzIl0gfQoqLwp1c2UgamlmZjo6e1RpbWVzdGFtcCwgdHo6OlRpbWVab25lfTsKCmZuIG1haW4oKSB7CiAgICBsZXQgdHogPSBUaW1lWm9uZTo6Z2V0KCJBbWVyaWNhL05ld19Zb3JrIikudW53cmFwKCk7CiAgICBwcmludGxuISgi5pe25Yy6OiB7fSIsIHR6LmlhbmFfbmFtZSgpLnVud3JhcF9vcigiVVRDIikpOwoKICAgIGxldCB3aW50ZXI6IFRpbWVzdGFtcCA9ICIyMDI0LTAxLTE1VDA5OjMwOjAwWiIucGFyc2UoKS51bndyYXAoKTsKICAgIGxldCBzdW1tZXI6IFRpbWVzdGFtcCA9ICIyMDI0LTA2LTE1VDA5OjMwOjAwWiIucGFyc2UoKS51bndyYXAoKTsKICAgIGxldCBvZmZfdyA9IHR6LnRvX29mZnNldCh3aW50ZXIpOwogICAgbGV0IG9mZl9zID0gdHoudG9fb2Zmc2V0KHN1bW1lcik7CiAgICBwcmludGxuISgi5Yas5a2j5YGP56e7OiB7fSIsIG9mZl93KTsgICAvLyAtMDU6MDA6MDAKICAgIHByaW50bG4hKCLlpI/lraPlgY/np7s6IHt9Iiwgb2ZmX3MpOyAgIC8vIC0wNDowMDowMAogICAgcHJpbnRsbiEoIuWtmOWcqOWkj+S7pOaXtjoge30iLCBvZmZfdyAhPSBvZmZfcyk7IC8vIHRydWUKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
+
+<pre class="playground"><code class="language-rust edition2024">/*
+[dependencies]
+jiff = { version = "0.2.43", features = ["tzdb-bundle-always"] }
+*/
+use jiff::{Timestamp, tz::TimeZone};
+
+fn main() {
+    let tz = TimeZone::get("America/New_York").unwrap();
+    println!("时区: {}", tz.iana_name().unwrap_or("UTC"));
+
+    let winter: Timestamp = "2024-01-15T09:30:00Z".parse().unwrap();
+    let summer: Timestamp = "2024-06-15T09:30:00Z".parse().unwrap();
+    let off_w = tz.to_offset(winter);
+    let off_s = tz.to_offset(summer);
+    println!("冬季偏移: {}", off_w);   // -05:00:00
+    println!("夏季偏移: {}", off_s);   // -04:00:00
+    println!("存在夏令时: {}", off_w != off_s); // true
+}</code></pre>
+<h3 id="445-chrono-与-jiff-时区方案对比"><a class="header" href="#445-chrono-与-jiff-时区方案对比">4.4.5 chrono 与 jiff 时区方案对比</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: left">维度</th><th style="text-align: left">chrono <code>FixedOffset</code></th><th style="text-align: left">jiff <code>TimeZone</code> + tzdb</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left">时区表示</td><td style="text-align: left">只有 UTC±偏移</td><td style="text-align: left">IANA 命名时区（大洲/城市）</td></tr>
+<tr><td style="text-align: left">夏令时</td><td style="text-align: left">需手动判断和切换</td><td style="text-align: left">自动按 tzdb 规则处理</td></tr>
+<tr><td style="text-align: left">非整点偏移</td><td style="text-align: left">手写 <code>5*3600+30*60</code></td><td style="text-align: left"><code>Asia/Kathmandu</code> 等直接按名字取</td></tr>
+<tr><td style="text-align: left">历史规则</td><td style="text-align: left">不支持</td><td style="text-align: left">收录 1970 年至今的变更</td></tr>
+<tr><td style="text-align: left">依赖体积</td><td style="text-align: left">极小</td><td style="text-align: left">需打包 tzdb（可用 <code>tzdb-bundle-always</code>）</td></tr>
+<tr><td style="text-align: left">适用场景</td><td style="text-align: left">固定偏移、算法练习、轻量依赖</td><td style="text-align: left">业务系统、跨地区调度、需要 DST 正确性</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>选择建议</strong>：如果只需处理 UTC+8 这种固定偏移，chrono 的 <code>FixedOffset</code> 足够轻量；只要涉及“某个城市的时间“、夏令时、或跨地区日程，就该用 jiff（或 chrono-tz）这类带时区数据库的方案。把“地点“和“偏移“分开看，是处理时间问题的重要思维。</p>
+</blockquote>
+<h3 id="446-rust-时区处理chrono-固定偏移"><a class="header" href="#446-rust-时区处理chrono-固定偏移">4.4.6 Rust 时区处理（chrono 固定偏移）</a></h3>
 <div class="rustexplorer"><a href="https://www.rustexplorer.com/b#LyoKW2RlcGVuZGVuY2llc10KY2hyb25vID0gIjAuNC40MiIKKi8KdXNlIGNocm9ubzo6e0xvY2FsLCBEYXRlVGltZSwgVXRjLCBGaXhlZE9mZnNldCwgTmFpdmVEYXRlLCBUaW1lWm9uZX07CnVzZSBjaHJvbm86OntEYXRlbGlrZSwgVGltZWxpa2V9OwoKZm4gbWFpbigpIHsKICAgIC8vIOKdjCDml6fmlrnms5XvvIjlt7LlvIPnlKjvvIkKICAgIC8vIGxldCB1dGNfdGltZSA9IERhdGVUaW1lOjo8VXRjPjo6ZnJvbV91dGMobG9jYWxfdGltZS5uYWl2ZV91dGMoKSwgVXRjKTsKICAgIAogICAgLy8g4pyFIOaWsOaWueazle+8muS9v+eUqCBVdGMuZnJvbV91dGNfZGF0ZXRpbWUoKQogICAgbGV0IGxvY2FsX3RpbWUgPSBMb2NhbDo6bm93KCk7CiAgICBsZXQgdXRjX3RpbWUgPSBVdGMuZnJvbV91dGNfZGF0ZXRpbWUoJmxvY2FsX3RpbWUubmFpdmVfdXRjKCkpOwogICAgCiAgICAvLyDlrprkuYnml7bljLrvvIjms6jmhI/vvJpGaXhlZE9mZnNldDo6ZWFzdCgpIOW3suW8g+eUqO+8jOS9v+eUqCBlYXN0X29wdCgpIOaIliBmcm9tX2hvdXJzKCnvvIkKICAgIGxldCBuZXdfZGVsaGlfdGltZXpvbmUgPSBGaXhlZE9mZnNldDo6ZWFzdF9vcHQoNSAqIDM2MDAgKyAxODAwKS51bndyYXAoKTsKICAgIGxldCBjaGluYV90aW1lem9uZSA9IEZpeGVkT2Zmc2V0OjplYXN0X29wdCg4ICogMzYwMCkudW53cmFwKCk7CiAgICBsZXQgamFwYW5fdGltZXpvbmUgPSBGaXhlZE9mZnNldDo6ZWFzdF9vcHQoOSAqIDM2MDApLnVud3JhcCgpOwogICAgbGV0IHJpb190aW1lem9uZSA9IEZpeGVkT2Zmc2V0Ojp3ZXN0X29wdCgyICogMzYwMCkudW53cmFwKCk7CiAgICBsZXQgZXN0X3RpbWV6b25lID0gRml4ZWRPZmZzZXQ6Ondlc3Rfb3B0KDUgKiAzNjAwKS51bndyYXAoKTsKICAgIGxldCBwc3RfdGltZXpvbmUgPSBGaXhlZE9mZnNldDo6d2VzdF9vcHQoOCAqIDM2MDApLnVud3JhcCgpOwoKICAgIHByaW50bG4hKCJMb2NhbCB0aW1lIG5vdyBpcyB7fSIsIGxvY2FsX3RpbWUpOwogICAgcHJpbnRsbiEoIlVUQyB0aW1lIG5vdyBpcyB7fSIsIHV0Y190aW1lKTsKCiAgICAvLyBVVEMgLS0+IOWQhOaXtuWMuuaXtumXtAogICAgcHJpbnRsbiEoIlRpbWUgaW4gQmVpamluZyBub3cgaXMge30iLCB1dGNfdGltZS53aXRoX3RpbWV6b25lKCZjaGluYV90aW1lem9uZSkpOwogICAgcHJpbnRsbiEoIlRpbWUgaW4gVG9reW8gbm93IGlzIHt9IiwgdXRjX3RpbWUud2l0aF90aW1lem9uZSgmamFwYW5fdGltZXpvbmUpKTsKICAgIHByaW50bG4hKCJUaW1lIGluIFJpbyBkZSBKYW5laXJvIG5vdyBpcyB7fSIsIHV0Y190aW1lLndpdGhfdGltZXpvbmUoJnJpb190aW1lem9uZSkpOwogICAgcHJpbnRsbiEoIlRpbWUgaW4gTmV3IERlbGhpIG5vdyBpcyB7fSIsIHV0Y190aW1lLndpdGhfdGltZXpvbmUoJm5ld19kZWxoaV90aW1lem9uZSkpOwogICAgcHJpbnRsbiEoIlRpbWUgaW4gRVNUIG5vdyBpcyB7fSIsIHV0Y190aW1lLndpdGhfdGltZXpvbmUoJmVzdF90aW1lem9uZSkpOwogICAgcHJpbnRsbiEoIlRpbWUgaW4gUFNUIG5vdyBpcyB7fSIsIHV0Y190aW1lLndpdGhfdGltZXpvbmUoJnBzdF90aW1lem9uZSkpOwogICAgCiAgICAvLyDmoLzlvI/ljJbovpPlh7oKICAgIGxldCBsb2NhbDogRGF0ZVRpbWU8TG9jYWw+ID0gTG9jYWw6Om5vdygpOwogICAgcHJpbnRsbiEoInt9IiwgbG9jYWwuZm9ybWF0KCIlWS0lbS0lZCAlSDolTTolUyIpKTsKICAgIHByaW50bG4hKCLlvZPliY3mnKzlnLDml7bpl7Q6IHt9IiwgbG9jYWwpOwoKICAgIC8vIE5haXZlRGF0ZVRpbWUg5p6E5bu677yI6ZyA6KaBIE5haXZlRGF0ZSDnsbvlnovvvIkKICAgIGxldCBsb2NhbF90aW1lX25vdyA9IExvY2FsOjpub3coKTsKICAgIGxldCBkdCA9IE5haXZlRGF0ZTo6ZnJvbV95bWRfb3B0KAogICAgICAgIGxvY2FsX3RpbWVfbm93LnllYXIoKSwgCiAgICAgICAgbG9jYWxfdGltZV9ub3cubW9udGgoKSwgCiAgICAgICAgbG9jYWxfdGltZV9ub3cuZGF5KCkKICAgICkKICAgIC51bndyYXAoKQogICAgLmFuZF9obXNfb3B0KAogICAgICAgIGxvY2FsX3RpbWVfbm93LmhvdXIoKSwgCiAgICAgICAgbG9jYWxfdGltZV9ub3cubWludXRlKCksIAogICAgICAgIGxvY2FsX3RpbWVfbm93LnNlY29uZCgpCiAgICApCiAgICAudW53cmFwKCk7CiAgICAKICAgIHByaW50bG4hKCJOYWl2ZURhdGVUaW1lOiB7fSIsIGR0KTsKfQ==" target="_blank" rel="noopener noreferrer">▶ 在 Rust Explorer 中运行</a></div>
 
 <pre class="playground"><code class="language-rust edition2024">/*
